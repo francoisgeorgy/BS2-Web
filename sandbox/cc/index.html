@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>BS2 Web - Dump CC</title>
+    <meta name="description" content="BS2 Web Dump CC">
+    <meta name="author" content="francois.georgy@gmail.com">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="webmidi.min.js"></script>
+    <script src="bs2.js?kc=12j34"></script>
+    <style>
+        .gray-box {
+            border:1px solid #aaa;
+            background-color:#f0f0f0;
+            padding:1rem;
+            margin:1rem;
+            text-align:left;
+        }
+        .col {
+            flex: 1;
+        }
+        .pre {
+            font-family: monospace;
+            white-space: pre;
+        }
+    </style>
+</head>
+<body>
+    <div style="display:flex">
+    <div id="values" class="col pre gray-box"></div>
+    <div id="events" class="col pre gray-box"></div>
+    </div>
+    <script>
+
+        var CC = null;
+        var CC_names = null;
+
+        String.prototype.padZero= function(len, c){
+            var s= '', c= c || '0', len= (len || 2)-this.length;
+            while(s.length<len) s+= c;
+            return s+this;
+        }
+
+        function log(msg) {
+            $("#events").prepend(msg + "\n");
+        }
+        function log_value(msg) {
+            $("#values").prepend(msg + "\n");
+        }
+
+
+        /*
+        function logWebMidiEvent(e) {
+            log("[" + e.timestamp.toFixed(3) + "] event:" + e.type + " id:" + e.id.substring(0,6) + "... man:" + e.manufacturer + " name:" + e.name + " in:" + e.input + " out:" + e.output);
+        }
+        */
+
+        /*
+         event Object
+         target          Input       The Input that triggered the event.
+         data            Uint8Array  The raw MIDI message as an array of 8 bit values.
+         receivedTime    Number      The time when the event occurred (in milliseconds since start).
+         timestamp       Uint        The timestamp when the event occurred (in milliseconds since the Unix Epoch).
+         channel         Uint        The channel where the event occurred (between 1 and 16).
+         type            String      The type of event that occurred.
+         controller      Object
+         number      Uint        The number of the controller.
+         name        String      The usual name or function of the controller.
+         value       Uint        The value received (between 0 and 127).
+         */
+        function midiEventForHuman(e) {
+            console.log(e);
+
+            var msg = e.data;   // Uint8Array
+            //return toHexString(msg);
+
+            //console.log(msg.byteLength);
+
+            //console.log(msg[0], msg[1], msg[2]);
+
+            //console.log(toHexString(msg));
+            //console.log(toDecString(msg));
+
+            var dec = "";
+            var hex = "";
+            var bin = "";
+            for (var i=0; i<msg.byteLength; i++) {
+                dec = dec + msg[i].toString(10).padZero(3) + " ";
+                hex = hex + msg[i].toString(16).padZero(2) + " ";
+                bin = bin + msg[i].toString(2).padZero(8) + " ";
+            }
+
+            cc2 = 0;
+
+            return dec.trim() + " - " + hex.trim() + " - " + bin.trim();
+        }
+
+        function doubleByteValue(msb, lsb) {
+            let v = msb << 1;
+            return lsb > 0 ? (v+1) : v;
+        }
+
+        //var cc0 = 0;
+        //var cc1 = 0;
+        var last_cc = -1;
+        var cc_expected = -1;
+        var msb = 0;
+        var lsb = 0;
+
+        function handleCC(e) {
+            var msg = e.data;   // Uint8Array
+            let cc = msg[1];
+            //last_cc = cc;
+            //console.log(cc);
+            if (cc_expected >= 0) {
+                if (cc == cc_expected) {
+                    console.log(`got expected cc ${cc}, last_cc=${last_cc}`);
+                    let cc_name_index = (last_cc << 8) + cc;
+                    console.log(`name index is ${cc_name_index}`);
+                    //cc1 = cc;
+                    lsb = msg[2];
+                    let v = doubleByteValue(msb, lsb);
+                    log_value(`${CC_names[cc_name_index]} = ${v}`);
+                    console.log(`computed value with ${msb} ${lsb} = ${v} ; ${CC_names[cc_name_index]}`);
+                    //cc0 = -1;
+                    //cc1 = -1;
+                    cc_expected = -1;
+                } else {
+                    log(`IGNORED CC ${cc}`);
+                    last_cc = cc;
+                }
+            } else {
+
+                if (CC[cc]) {
+                    console.log('need second CC ' + CC[cc]);
+                    cc_expected = CC[cc];
+                    last_cc = cc;
+                    //cc0 = cc;
+                    msb = msg[2];
+                } else {
+                    let cc_name_index = cc;
+                    let v = msg[2];
+                    log_value(`${CC_names[cc_name_index]} = ${v}`);
+                }
+            }
+        }
+
+        $(function() {
+
+            WebMidi.enable(function (err) {
+
+                if (err) alert("WebMidi could not be enabled.", err);
+
+                console.log("web midi enabled");
+
+                //WebMidi.inputs.map(i => log("input:" + i.name));
+                //WebMidi.outputs.map(i => log("output:" + i.name));
+
+                var input = WebMidi.getInputByName("Bass Station II");
+
+                input.on('controlchange', "all", function(e) {
+                    //console.log("CC: ", e);
+                    log(midiEventForHuman(e));
+                    handleCC(e);
+                });
+
+                CC = CC_Map();
+                CC_names = CC_Names();
+                console.log(CC_names);
+
+                //WebMidi.addListener("connected", e => logWebMidiEvent(e));
+                //WebMidi.addListener("disconnected", e => logWebMidiEvent(e));
+
+            });
+
+        });
+
+    </script>
+</body>
+</html>
