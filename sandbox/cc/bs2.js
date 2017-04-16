@@ -1,4 +1,12 @@
 BS2 = {
+    labels: {
+        waveform: {
+            0: 'sin',
+            1: 'triangle',
+            3: 'saw',
+            4: 'pulse'
+        }
+    },
     _100: function (v) {
         return v < 128 ? (v - 127) : (v - 128);
     },
@@ -7,6 +15,9 @@ BS2 = {
         let a = 240 / 255 * v;
         console.log('a', a);
         return a;
+    },
+    _waveform: function(v) {    // todo: check if this is a good idea
+        return this.labels.waveform.v;
     },
     meta: {
         sysex_length: 154
@@ -58,7 +69,8 @@ BS2 = {
             description: "Osc1 Waveform",
             type: "NRPN",
             cc: [0, 72],
-            range: [],
+            range: [1, 3],
+            transform: v => BS2._waveform(v)    //todo: good idea?
             sysex: {
                 offset: 19,
                 mask: [0x60]
@@ -648,7 +660,7 @@ BS2 = {
         mod: {
             description: "Mod",
             type: "cc",
-            cc: [0],
+            cc: [1],
             range: []   /*,
             sysex: {
                 offset: -1,
@@ -928,9 +940,9 @@ function CC_Map() {
         let param = BS2.param[prop];
         if (param.type != 'cc') continue;
         if (param.cc.length == 1) {
-            m[param.cc[0]] = null;
+            m[param.cc[0]] = -1; // means there is no second CC associated
         } else {
-            m[param.cc[0]] = param.cc[1];
+            m[param.cc[0]] = param.cc[1];   // means a second CC is needed to form the value
         }
     }
     return m;
@@ -941,6 +953,21 @@ function CC_Names() {
     for (var prop in BS2.param) {
         let param = BS2.param[prop];
         if (param.type != 'cc') continue;
+        if (param.cc.length == 1) {
+            m[param.cc[0]] = param.description;
+        } else {
+            let a = (param.cc[0] << 8) + param.cc[1];
+            m[(param.cc[0] << 8) + param.cc[1]] = param.description;
+        }
+    }
+    return m;
+}
+
+function NRPN_Names() {
+    let m = {};
+    for (var prop in BS2.param) {
+        let param = BS2.param[prop];
+        if (param.type == 'cc') continue;
         if (param.cc.length == 1) {
             m[param.cc[0]] = param.description;
         } else {

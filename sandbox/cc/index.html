@@ -34,6 +34,7 @@
 
         var CC = null;
         var CC_names = null;
+        var NRPN_names = null;
 
         String.prototype.padZero= function(len, c){
             var s= '', c= c || '0', len= (len || 2)-this.length;
@@ -69,7 +70,7 @@
          value       Uint        The value received (between 0 and 127).
          */
         function midiEventForHuman(e) {
-            console.log(e);
+            //console.log(e);
 
             var msg = e.data;   // Uint8Array
             //return toHexString(msg);
@@ -102,45 +103,75 @@
 
         //var cc0 = 0;
         //var cc1 = 0;
-        var last_cc = -1;
+        //var last_cc = -1;
         var cc_expected = -1;
-        var msb = 0;
-        var lsb = 0;
+        var cc_msb = -1;
+        var cc_lsb = -1;
+        var value_msb = 0;    // msb to compute value
+        var value_lsb = 0;    // lsb to compute value
+
+        var nrpn = false;
 
         function handleCC(e) {
+
+            console.log('handleCC', e);
+
             var msg = e.data;   // Uint8Array
             let cc = msg[1];
-            //last_cc = cc;
-            //console.log(cc);
+
+            let value = -1;
+
+            if (cc == 99) {
+                cc_msb = msg[2];
+                console.log(`handleCC: NRPN MSB: ${cc_msb}`);
+                nrpn = true;
+                return;
+            } else if (cc == 98) {
+                cc_lsb = msg[2];
+                console.log(`handleCC: NRPN LSB: ${cc_lsb}`);
+                return;
+            } else {
+                if (nrpn) {
+                    value = msg[2];
+                    console.log(`handleCC: NRPN value: ${value}`);
+                    nrpn = false;
+
+                    let cc_name_index = (cc_msb << 8) + cc_lsb;
+                    log_value(`${NRPN_names[cc_name_index]} = ${value}`);
+                    return;
+                }
+            }
+
             if (cc_expected >= 0) {
                 if (cc == cc_expected) {
-                    console.log(`got expected cc ${cc}, last_cc=${last_cc}`);
-                    let cc_name_index = (last_cc << 8) + cc;
+                    console.log(`got expected cc ${cc}, cc_msb=${cc_msb}`);
+
+                    let cc_name_index = (cc_msb << 8) + cc;
                     console.log(`name index is ${cc_name_index}`);
-                    //cc1 = cc;
-                    lsb = msg[2];
-                    let v = doubleByteValue(msb, lsb);
+
+                    value_lsb = msg[2];
+
+                    let v = doubleByteValue(value_msb, value_lsb);
+
                     log_value(`${CC_names[cc_name_index]} = ${v}`);
-                    console.log(`computed value with ${msb} ${lsb} = ${v} ; ${CC_names[cc_name_index]}`);
-                    //cc0 = -1;
-                    //cc1 = -1;
+                    console.log(`computed value with ${value_msb} ${value_lsb} = ${v} ; ${CC_names[cc_name_index]}`);
+
                     cc_expected = -1;
+
                 } else {
                     log(`IGNORED CC ${cc}`);
-                    last_cc = cc;
+                    cc_msb = cc;
                 }
             } else {
 
-                if (CC[cc]) {
+                if (CC[cc] == -1) {
+                    let v = msg[2];
+                    log_value(`${CC_names[cc]} = ${v}`);
+                } else {
                     console.log('need second CC ' + CC[cc]);
                     cc_expected = CC[cc];
-                    last_cc = cc;
-                    //cc0 = cc;
-                    msb = msg[2];
-                } else {
-                    let cc_name_index = cc;
-                    let v = msg[2];
-                    log_value(`${CC_names[cc_name_index]} = ${v}`);
+                    cc_msb = cc;
+                    value_msb = msg[2];
                 }
             }
         }
@@ -165,8 +196,10 @@
                 });
 
                 CC = CC_Map();
+                //console.log(CC);
                 CC_names = CC_Names();
-                console.log(CC_names);
+                //console.log(CC_names);
+                NRPN_names = NRPN_Names();
 
                 //WebMidi.addListener("connected", e => logWebMidiEvent(e));
                 //WebMidi.addListener("disconnected", e => logWebMidiEvent(e));
