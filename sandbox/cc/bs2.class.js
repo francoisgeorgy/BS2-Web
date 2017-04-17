@@ -18,6 +18,75 @@ class BS2 {
         this.data = bytes;	// will call data setter
     }*/
 
+    static _100(v) {
+        return v < 128 ? (v - 127) : (v - 128);
+    }
+
+    static _12(v) {
+        //let a = v < 128 ? (v - 127) : (v - 128);
+        let a = 240 / 255 * v;
+        //console.log('a', a);
+        return COARSE_VALUES[v] / 10;
+    }
+
+    static _waveform(v) {    // todo: check if this is a good idea
+        return this.labels.waveform.v;
+    }
+
+    static _pw(v) {
+        console.log(v * 2 * 91.0 / 256 + 5 -0.4);
+        return Math.round(v * 2 * 91.0 / 256 + 5 -0.4);
+    }
+
+    static _depth(v) {
+        /*
+         let w = v * 1.0;
+         if (v < 64) {
+         let OutputHigh = 0.0;
+         let OutputLow = -90.0;
+         let InputHigh = 63.0;
+         let InputLow = 0.0;
+         console.log(v, ((w - InputLow) / (InputHigh - InputLow)) * (OutputHigh - OutputLow) + OutputLow + 0.5);
+         } else {
+         let OutputHigh = 90.0;
+         let OutputLow = 0.0;
+         let InputHigh = 127.0;
+         let InputLow = 64.0;
+         console.log(v, ((w - InputLow) / (InputHigh - InputLow)) * (OutputHigh - OutputLow) + OutputLow);
+         }
+         */
+        return v < 64 ? (v - 63) : (v - 64);
+    }
+
+    static _scale(v) {
+        //console.log(v, v * 182.0 / 128, Math.round(v * 182.0 / 128));
+        /*
+         let v = w * 1.0;
+         let r = v < 0 ?
+         ((v - 1.0) * 90.0 / 64.0) :
+         (v * 90.0 / 64);
+
+         //console.log(v, v - 1, r, v < 0 ? Math.ceil(r) : Math.round(r));
+
+         return Math.round(v * 2 * 90.0 / 128 );
+         */
+        // in progres..... still not working correctly :-(
+
+        let OutputHigh = 90.0;
+        let OutputLow = -90.0;
+        let InputHigh = 63.0;
+        let InputLow = -63.0;
+        let r;
+        if (v < 0) {
+            console.log(((v - InputLow) / (InputHigh - InputLow)) * (OutputHigh - OutputLow) + OutputLow + 0.4);
+            r = Math.round(((v - InputLow) / (InputHigh - InputLow)) * (OutputHigh - OutputLow) + OutputLow + 0.4);
+        } else {
+            console.log(((v - InputLow) / (InputHigh - InputLow)) * (OutputHigh - OutputLow) + OutputLow - 0.4);
+            r = Math.round(((v - InputLow) / (InputHigh - InputLow)) * (OutputHigh - OutputLow) + OutputLow - 0.4);
+        }
+        return r;
+    }
+
     static get control_id() {
         return {
             patch_volume: 7,
@@ -112,322 +181,323 @@ class BS2 {
     static get control() {
         let control = new Array(127);
         control[BS2.control_id.patch_volume] = { // 7
-            descr: "Patch Volume",
+            name: "Patch Volume",
             range: [],
             lsb: -1
         };
         control[BS2.control_id.osc1_fine] = { // 26 (msb), 58 (lsb)
-            descr: "Osc1 Fine",
+            name: "Osc1 Fine",
             range: [-100,100],
+            map: v => BS2._100(v),
             lsb: 58
         };
         control[BS2.control_id.osc1_range] = { // 70
-            descr: "Osc1 Range",
+            name: "Osc1 Range",
             range: [63,66],
             lsb: -1
         };
         control[BS2.control_id.osc1_coarse] = { // 27 (msb), 59 (lsb)
-            descr: "Osc1 Coarse",
+            name: "Osc1 Coarse",
             range: [-12,12],
             lsb: 59
         };
         control[BS2.control_id.osc1_mod_env_depth] = { // 71
-            descr: "Osc1 Mod Env Depth",
+            name: "Osc1 Mod Env Depth",
             range: [-63,63],
             lsb: -1
         };
         control[BS2.control_id.osc1_lfo1_depth] = { // 28 (msb), 60 (lsb)
-            descr: "Osc1 LFO1 Depth",
+            name: "Osc1 LFO1 Depth",
             range: [-127,127],
             lsb: 60
         };
         control[BS2.control_id.osc1_mod_env_pw_mod] = { // 72
-            descr: "Osc1 Mod Env PW Mod",
+            name: "Osc1 Mod Env PW Mod",
             range: [-63,63],
             lsb: -1
         };
         control[BS2.control_id.osc1_lfo2_pw_mod] = { // 73
-            descr: "Osc1 LFO2 PW Mod",
+            name: "Osc1 LFO2 PW Mod",
             range: [-90,90],
             lsb: -1
         };
         control[BS2.control_id.osc1_manual_pw] = { // 74
-            descr: "Osc1 Manual PW",
+            name: "Osc1 Manual PW",
             range: [5,95],
             lsb: -1
         };
         control[BS2.control_id.osc2_fine] = { // 29 (msb), 61 (lsb)
-            descr: "Osc2 Fine",
+            name: "Osc2 Fine",
             range: [-100,100],
             lsb: 61
         };
         control[BS2.control_id.osc2_range] = { // 75
-            descr: "Osc2 Range",
+            name: "Osc2 Range",
             range: [63,66],
             lsb: -1
         };
         control[BS2.control_id.osc2_coarse] = { // 30 (msb), 62 (lsb)
-            descr: "Osc2 Coarse",
+            name: "Osc2 Coarse",
             range: [-12,12],
             lsb: 62
         };
         control[BS2.control_id.osc2_mod_env_depth] = { // 76
-            descr: "Osc2 Mod Env Depth",
+            name: "Osc2 Mod Env Depth",
             range: [-63,63],
             lsb: -1
         };
         control[BS2.control_id.osc2_lfo1_depth] = { // 31 (msb), 63 (lsb)
-            descr: "Osc2 LFO1 Depth",
+            name: "Osc2 LFO1 Depth",
             range: [-127,127],
             lsb: 63
         };
         control[BS2.control_id.osc2_env2_pw_mod] = { // 77
-            descr: "Osc2 Env2 PW Mod",
+            name: "Osc2 Env2 PW Mod",
             range: [-63,63],
             lsb: -1
         };
         control[BS2.control_id.osc2_lfo2_pw_mod] = { // 78
-            descr: "Osc2 LFO2 PW Mod",
+            name: "Osc2 LFO2 PW Mod",
             range: [-90,90],
             lsb: -1
         };
         control[BS2.control_id.osc2_manual_pw] = { // 79
-            descr: "Osc2 Manual PW",
+            name: "Osc2 Manual PW",
             range: [5,95],
             lsb: -1
         };
         control[BS2.control_id.sub_osc_oct] = { // 81
-            descr: "Sub Osc Oct",
+            name: "Sub Osc Oct",
             range: [0,0],
             lsb: -1
         };
         control[BS2.control_id.sub_osc_wave] = { // 80
-            descr: "Sub Osc Wave",
+            name: "Sub Osc Wave",
             range: [],
             lsb: -1
         };
         control[BS2.control_id.mixer_osc_1_level] = { // 20 (msb), 52 (lsb)
-            descr: "Mixer Osc 1 Level",
+            name: "Mixer Osc 1 Level",
             range: [0,255],
             lsb: 52
         };
         control[BS2.control_id.mixer_osc_2_level] = { // 21 (msb), 53 (lsb)
-            descr: "Mixer Osc 2 Level",
+            name: "Mixer Osc 2 Level",
             range: [],
             lsb: 53
         };
         control[BS2.control_id.mixer_sub_osc_level] = { // 22 (msb), 54 (lsb)
-            descr: "Mixer Sub Osc Level",
+            name: "Mixer Sub Osc Level",
             range: [0,255],
             lsb: 54
         };
         control[BS2.control_id.mixer_noise_level] = { // 23 (msb), 55 (lsb)
-            descr: "Mixer Noise Level",
+            name: "Mixer Noise Level",
             range: [],
             lsb: 55
         };
         control[BS2.control_id.mixer_ring_mod_level] = { // 24 (msb), 56 (lsb)
-            descr: "Mixer Ring Mod Level",
+            name: "Mixer Ring Mod Level",
             range: [],
             lsb: 56
         };
         control[BS2.control_id.mixer_external_signal_level] = { // 25 (msb), 57 (lsb)
-            descr: "Mixer External Signal Level",
+            name: "Mixer External Signal Level",
             range: [],
             lsb: 57
         };
         control[BS2.control_id.filter_type] = { // 83
-            descr: "Filter Type",
+            name: "Filter Type",
             range: [],
             lsb: -1
         };
         control[BS2.control_id.filter_slope] = { // 106
-            descr: "Filter Slope",
+            name: "Filter Slope",
             range: [],
             lsb: -1
         };
         control[BS2.control_id.filter_shape] = { // 84
-            descr: "Filter Shape",
+            name: "Filter Shape",
             range: [],
             lsb: -1
         };
         control[BS2.control_id.filter_frequency] = { // 16 (msb), 48 (lsb)
-            descr: "Filter Frequency",
+            name: "Filter Frequency",
             range: [0,255],
             lsb: 48
         };
         control[BS2.control_id.filter_resonance] = { // 82
-            descr: "Filter Resonance",
+            name: "Filter Resonance",
             range: [0,127],
             lsb: -1
         };
         control[BS2.control_id.filter_mod_env_depth] = { // 85
-            descr: "Filter Mod Env Depth",
+            name: "Filter Mod Env Depth",
             range: [-63,63],
             lsb: -1
         };
         control[BS2.control_id.filter_lfo2_depth] = { // 17 (msb), 49 (lsb)
-            descr: "Filter LFO2 Depth",
+            name: "Filter LFO2 Depth",
             range: [0,127],
             lsb: 49
         };
         control[BS2.control_id.filter_overdrive] = { // 114
-            descr: "Filter Overdrive",
+            name: "Filter Overdrive",
             range: [0,127],
             lsb: -1
         };
         control[BS2.control_id.portamento_time] = { // 5
-            descr: "Portamento Time",
+            name: "Portamento Time",
             range: [0,127],
             lsb: -1
         };
         control[BS2.control_id.lfo1_speed] = { // 18 (msb), 50 (lsb)
-            descr: "LFO1 Speed",
+            name: "LFO1 Speed",
             range: [0,255],
             lsb: 50
         };
         control[BS2.control_id.lfo1_delay] = { // 86
-            descr: "LFO1 Delay",
+            name: "LFO1 Delay",
             range: [0,127],
             lsb: -1
         };
         control[BS2.control_id.lfo2_speed] = { // 19 (msb), 51 (lsb)
-            descr: "LFO2 Speed",
+            name: "LFO2 Speed",
             range: [0,255],
             lsb: 51
         };
         control[BS2.control_id.lfo2_delay] = { // 87
-            descr: "LFO2 Delay",
+            name: "LFO2 Delay",
             range: [0,127],
             lsb: -1
         };
         control[BS2.control_id.lfo1_wave] = { // 88
-            descr: "LFO1 Wave",
+            name: "LFO1 Wave",
             range: [],
             lsb: -1
         };
         control[BS2.control_id.lfo2_wave] = { // 89
-            descr: "LFO2 Wave",
+            name: "LFO2 Wave",
             range: [],
             lsb: -1
         };
         control[BS2.control_id.amp_env_attack] = { // 90
-            descr: "Amp Env Attack",
+            name: "Amp Env Attack",
             range: [0,127],
             lsb: -1
         };
         control[BS2.control_id.amp_env_decay] = { // 91
-            descr: "Amp Env Decay",
+            name: "Amp Env Decay",
             range: [0,127],
             lsb: -1
         };
         control[BS2.control_id.amp_env_sustain] = { // 92
-            descr: "Amp Env Sustain",
+            name: "Amp Env Sustain",
             range: [0,127],
             lsb: -1
         };
         control[BS2.control_id.amp_env_release] = { // 93
-            descr: "Amp Env Release",
+            name: "Amp Env Release",
             range: [0,127],
             lsb: -1
         };
         control[BS2.control_id.mod_env_attack] = { // 102
-            descr: "Mod Env Attack",
+            name: "Mod Env Attack",
             range: [0,127],
             lsb: -1
         };
         control[BS2.control_id.mod_env_decay] = { // 103
-            descr: "Mod Env Decay",
+            name: "Mod Env Decay",
             range: [0,127],
             lsb: -1
         };
         control[BS2.control_id.mod_env_sustain] = { // 104
-            descr: "Mod Env Sustain",
+            name: "Mod Env Sustain",
             range: [0,127],
             lsb: -1
         };
         control[BS2.control_id.mod_env_release] = { // 105
-            descr: "Mod Env Release",
+            name: "Mod Env Release",
             range: [0,127],
             lsb: -1
         };
         control[BS2.control_id.fx_distortion] = { // 94
-            descr: "Fx Distortion",
+            name: "Fx Distortion",
             range: [0,127],
             lsb: -1
         };
         control[BS2.control_id.fx_osc_filter_mod] = { // 115
-            descr: "Fx Osc Filter Mod",
+            name: "Fx Osc Filter Mod",
             range: [],
             lsb: -1
         };
         control[BS2.control_id.arp_on] = { // 108
-            descr: "Arp On",
+            name: "Arp On",
             range: [0,1],
             lsb: -1
         };
         control[BS2.control_id.arp_latch] = { // 109
-            descr: "Arp Latch",
+            name: "Arp Latch",
             range: [0,1],
             lsb: -1
         };
         control[BS2.control_id.arp_rhythm] = { // 119
-            descr: "Arp Rhythm",
+            name: "Arp Rhythm",
             range: [1,32],
             lsb: -1
         };
         control[BS2.control_id.arp_note_mode] = { // 118
-            descr: "Arp Note Mode",
+            name: "Arp Note Mode",
             range: [],
             lsb: -1
         };
         control[BS2.control_id.arp_octaves] = { // 111
-            descr: "Arp Octaves",
+            name: "Arp Octaves",
             range: [1,4],
             lsb: -1
         };
         control[BS2.control_id.mod] = { // 1
-            descr: "Mod",
+            name: "Mod",
             range: [],
             lsb: -1
         };
         control[BS2.control_id.mod_wheel_filter_freq] = { // 99
-            descr: "Mod Wheel Filter Freq",
+            name: "Mod Wheel Filter Freq",
             range: [-64,63],
             lsb: -1
         };
         control[BS2.control_id.sustain] = { // 64
-            descr: "Sustain",
+            name: "Sustain",
             range: [],
             lsb: -1
         };
         control[BS2.control_id.osc_pitch_bend_range] = { // 107
-            descr: "Osc Pitch Bend Range",
+            name: "Osc Pitch Bend Range",
             range: [-12,12],
             lsb: -1
         };
         control[BS2.control_id.osc_1_2_sync] = { // 110
-            descr: "Osc 1 2 Sync",
+            name: "Osc 1 2 Sync",
             range: [0,1],
             lsb: -1
         };
         control[BS2.control_id.velocity_amp_env] = { // 112
-            descr: "Velocity Amp Env",
+            name: "Velocity Amp Env",
             range: [-63,63],
             lsb: -1
         };
         control[BS2.control_id.velocity_mod_env] = { // 113
-            descr: "Velocity Mod Env",
+            name: "Velocity Mod Env",
             range: [-63,63],
             lsb: -1
         };
         control[BS2.control_id.vca_limit] = { // 95
-            descr: "VCA Limit",
+            name: "VCA Limit",
             range: [0,127],
             lsb: -1
         };
         control[BS2.control_id.arp_swing] = { // 116
-            descr: "Arp Swing",
+            name: "Arp Swing",
             range: [3,97],
             lsb: -1
         };
@@ -436,97 +506,97 @@ class BS2 {
     static get nrpn() {
         let nrpn = new Array(127);
         nrpn[BS2.nrpn_id.osc1_waveform] = { // 0 (msb), 72 (lsb)
-            descr: "Osc1 Waveform",
+            name: "Osc1 Waveform",
             range: [1,3],
             msb: 0
         };
         nrpn[BS2.nrpn_id.osc2_waveform] = { // 0 (msb), 82 (lsb)
-            descr: "Osc2 Waveform",
+            name: "Osc2 Waveform",
             range: [],
             msb: 0
         };
         nrpn[BS2.nrpn_id.lfo1_sync_value] = { // 87
-            descr: "LFO1 Sync Value",
+            name: "LFO1 Sync Value",
             range: [],
             msb: -1
         };
         nrpn[BS2.nrpn_id.lfo2_sync_value] = { // 91
-            descr: "LFO2 Sync Value",
+            name: "LFO2 Sync Value",
             range: [],
             msb: -1
         };
         nrpn[BS2.nrpn_id.amp_env_triggering] = { // 0 (msb), 73 (lsb)
-            descr: "Amp Env Triggering",
+            name: "Amp Env Triggering",
             range: [],
             msb: 0
         };
         nrpn[BS2.nrpn_id.mod_env_triggering] = { // 0 (msb), 105 (lsb)
-            descr: "Mod Env Triggering",
+            name: "Mod Env Triggering",
             range: [],
             msb: 0
         };
         nrpn[BS2.nrpn_id.mod_wheel_lfo2_filter_freq] = { // 0 (msb), 71 (lsb)
-            descr: "Mod Wheel LFO2 to Filter Freq",
+            name: "Mod Wheel LFO2 to Filter Freq",
             range: [-63,63],
             msb: 0
         };
         nrpn[BS2.nrpn_id.mod_wheel_lfo1_osc_pitch] = { // 0 (msb), 70 (lsb)
-            descr: "Mod Wheel LFO1 to Osc Pitch",
+            name: "Mod Wheel LFO1 to Osc Pitch",
             range: [-63,63],
             msb: 0
         };
         nrpn[BS2.nrpn_id.mod_wheel_osc2_pitch] = { // 0 (msb), 78 (lsb)
-            descr: "Mod Wheel Osc2 Pitch",
+            name: "Mod Wheel Osc2 Pitch",
             range: [-63,63],
             msb: 0
         };
         nrpn[BS2.nrpn_id.aftertouch_filter_freq] = { // 0 (msb), 74 (lsb)
-            descr: "Aftertouch Filter Freq",
+            name: "Aftertouch Filter Freq",
             range: [-63,63],
             msb: 0
         };
         nrpn[BS2.nrpn_id.aftertouch_lfo1_to_osc_pitch] = { // 0 (msb), 75 (lsb)
-            descr: "Aftertouch LFO1 to Osc Pitch",
+            name: "Aftertouch LFO1 to Osc Pitch",
             range: [-63,63],
             msb: 0
         };
         nrpn[BS2.nrpn_id.aftertouch_lfo2_speed] = { // 0 (msb), 76 (lsb)
-            descr: "Aftertouch LFO2 Speed",
+            name: "Aftertouch LFO2 Speed",
             range: [-63,63],
             msb: 0
         };
         nrpn[BS2.nrpn_id.lfo_key_sync_lfo1] = { // 0 (msb), 89 (lsb)
-            descr: "LFO Key Sync LFO1",
+            name: "LFO Key Sync LFO1",
             range: [0,1],
             msb: 0
         };
         nrpn[BS2.nrpn_id.lfo_key_sync_lfo2] = { // 0 (msb), 93 (lsb)
-            descr: "LFO Key Sync LFO2",
+            name: "LFO Key Sync LFO2",
             range: [0,1],
             msb: 0
         };
         nrpn[BS2.nrpn_id.lfo_speed_sync_lfo1] = { // 0 (msb), 87 (lsb)
-            descr: "LFO Speed Sync LFO1",
+            name: "LFO Speed Sync LFO1",
             range: [0,1],
             msb: 0
         };
         nrpn[BS2.nrpn_id.lfo_speed_sync_lfo2] = { // 0 (msb), 91 (lsb)
-            descr: "LFO Speed Sync LFO2",
+            name: "LFO Speed Sync LFO2",
             range: [0,1],
             msb: 0
         };
         nrpn[BS2.nrpn_id.lfo_slew_lfo_1] = { // 0 (msb), 86 (lsb)
-            descr: "LFO Slew LFO 1",
+            name: "LFO Slew LFO 1",
             range: [0,127],
             msb: 0
         };
         nrpn[BS2.nrpn_id.lfo_slew_lfo_2] = { // 0 (msb), 90 (lsb)
-            descr: "LFO Slew LFO 2",
+            name: "LFO Slew LFO 2",
             range: [0,127],
             msb: 0
         };
         nrpn[BS2.nrpn_id.arp_seq_retrig] = { // 106
-            descr: "Arp Seq Retrig",
+            name: "Arp Seq Retrig",
             range: [0,1],
             msb: -1
         };
