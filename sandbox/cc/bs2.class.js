@@ -503,6 +503,7 @@ class BS2 {
         };
         return control;
     }
+
     static get nrpn() {
         let nrpn = new Array(127);
         nrpn[BS2.nrpn_id.osc1_waveform] = { // 0 (msb), 72 (lsb)
@@ -602,74 +603,359 @@ class BS2 {
         };
         return nrpn;
     }
-/*
-    static findControl(id) {
-        console.log(C.controls);
-        for (let i=0; i < C.controls.length; i++) {
-            console.log('findControl', i);
-            if (C.controls[i].id == id) {
-                console.log('found control', C.controls[i]);
-                return C.controls[i];
+
+    static get sysex() {
+        return [
+            {
+                offset: 0,
+                mask: [0xFF],
+                control: -1,
+                name: "start of sysex data"
+            }, {
+                control: BS2.control_id.osc1_range,
+                offset: 20,
+                mask: [0x07, 0x78]
+            }, {
+                control: BS2.nrpn_id.osc1_waveform,
+                offset: 19,
+                mask: [0x60]
+            }, {
+                control: BS2.control_id.osc1_coarse,
+                offset: 21,
+                mask: [0x03, 0x7C]
+            }, {
+                control: BS2.control_id.osc1_fine,
+                offset: 22,
+                mask: [0x03, 0x7E]
+            }, {
+                control: BS2.control_id.osc1_mod_env_depth,
+                offset: 98,
+                mask: [0x1F, 0x60]
+            }, {
+                control: BS2.control_id.osc1_lfo1_depth,
+                offset: 90,
+                mask: [0x3F, 0x60]
+            }, {
+                control: BS2.control_id.osc1_mod_env_pw_mod,
+                offset: 101,
+                mask: [0x01, 0x7C]
+            }, {
+                control: BS2.control_id.osc1_manual_pw,
+                offset: 19,
+                mask: [0x0F, 0x70]
+            }, {
+                control: BS2.control_id.osc1_lfo2_pw_mod,
+                offset: 93,
+                mask: [0x03, 0x7C]
+            }, {
+                control: BS2.control_id.osc2_range,
+                offset: 26,
+                mask: [0x1F, 0x20]
+            }, {
+                control: BS2.nrpn_id.osc2_waveform,
+                offset: 24,
+                mask: [0x03]
+            }, {
+                control: BS2.control_id.osc2_coarse,
+                offset: 27,
+                mask: [0x1F, 0x70]
+            }, {
+                control: BS2.control_id.osc2_fine,
+                offset: 28,
+                mask: [0x0F, 0x78]
+            }, {
+                control: BS2.control_id.osc2_mod_env_depth,
+                offset: 99,
+                mask: [0x0F, 0x70]
+            }, {
+                control: BS2.control_id.osc2_lfo1_depth,
+                offset: 91,
+                mask: [0x1F, 0x70]
+            }, {
+                control: BS2.control_id.osc2_lfo2_pw_mod,
+                offset: 94,
+                mask: [0x01, 0x7E]
+            }, {
+                control: BS2.control_id.osc2_manual_pw,
+                offset: 25,
+                mask: [0x1F, 0x40]
+            }, {
+                control: BS2.control_id.osc2_env2_pw_mod,
+                offset: 102,
+                mask: [0x01, 0x7E]
+            }, {
+                control: BS2.control_id.osc2_manual_pw,
+                offset: 102,
+                mask: [0x01, 0x7E]
+            }, {
+                control: BS2.control_id.sub_osc_wave,
+                offset: 36,
+                mask: [0x30]
+            }, {
+                control: BS2.control_id.sub_osc_oct,
+                offset: 37,
+                mask: [0x08]
+            }, {
+                control: BS2.control_id.mixer_sub_osc_level,
+                offset: 39,
+                mask: [0x01, 0x7F]
+            }, {
+                control: BS2.control_id.mixer_osc_1_level,
+                offset: 37,
+                mask: [0x07, 0x7C]
+            }, {
+                control: BS2.control_id.mixer_osc_2_level,
+                offset: 38,
+                mask: [0x03, 0x7E]
+            }, {
+                control: BS2.control_id.mixer_noise_level,
+                offset: 41,
+                mask: [0x7F, 0x40]
+            }, {
+                control: BS2.control_id.mixer_ring_mod_level,
+                offset: 42,
+                mask: [0x3F, 0x60]
+            }, {
+                control: BS2.control_id.mixer_external_signal_level
+                offset: 43,
+                mask: [0x1F, 0x70]
+            }, {
+                control: BS2.control_id.filter_type,
+                offset: 48,
+                mask: [0x04]
+            }, {
+                control: BS2.control_id.filter_slope,
+                offset: 48,
+                mask: [0x08]
+            }, {
+                control: BS2.control_id.filter_shape,
+                offset: 48,
+                mask: [0x03]
+            }, {
+                control: BS2.control_id.filter_frequency,
+                offset: 44,
+                mask: [0x0F, 0x78]
+            }, {
+                control: BS2.control_id.filter_resonance,
+                offset: 45,
+                mask: [0x03, 0x7C]
+            }, {
+                control: BS2.control_id.filter_mod_env_depth,
+                offset: 105,
+                mask: [0x3F, 0x40]
+            }, {
+                control: BS2.control_id.filter_lfo2_depth,
+                offset: 97,
+                mask: [0x3F, 0x40]
+            }, {
+                control: BS2.control_id.filter_overdrive,
+                offset: 46,
+                mask: [0x01, 0x7E]
+            }, {
+                control: BS2.control_id.portamento_time,
+                offset: 13,
+                mask: [0x03, 0x7C]
+            }, {
+                control: BS2.control_id.lfo1_wave,
+                offset: 63,
+                mask: [0x06]
+            }, {
+                control: BS2.control_id.lfo1_speed,
+                offset: 66,
+                mask: [0x3F, 0x60]
+            }, {
+                control: BS2.control_id.lfo1_delay,
+                offset: 64,
+                mask: [0x7F]
+            }, {
+                control: BS2.nrpn_id.lfo1_sync_value        // TODO
+            }, {
+                control: BS2.control_id.lfo2_wave,
+                offset: 70,
+                mask: [0x0C]
+            }, {
+                control: BS2.control_id.lfo2_speed,
+                offset: 73,
+                mask: [0x7F, 0x40]
+            }, {
+                control: BS2.control_id.lfo2_delay,
+                offset: 70,
+                mask: [0x01, 0x7E]
+            }, {
+                control: BS2.nrpn_id.lfo2_sync_value        // TODO
+            }, {
+                control: BS2.control_id.amp_env_attack,
+                offset: 50,
+                mask: [0x1F, 0x60]
+            }, {
+                control: BS2.control_id.amp_env_decay,
+                offset: 51,
+                mask: [0x0F, 0x70]
+            }, {
+                control: BS2.control_id.amp_env_sustain,
+                offset: 52,
+                mask: [0x07, 0x78]
+            }, {
+                control: BS2.control_id.amp_env_release,
+                offset: 53,
+                mask: [0x03, 0x7C]
+            }, {
+                control: BS2.nrpn_id.amp_env_triggering,
+                offset: 55,
+                mask: [0x06]
+            }, {
+                control: BS2.control_id.mod_env_attack,
+                offset: 57,
+                mask: [0x3F, 0x40]
+            }, {
+                control: BS2.control_id.mod_env_decay,
+                offset: 58,
+                mask: [0x1F, 0x60]
+            }, {
+                control: BS2.control_id.mod_env_sustain,
+                offset: 59,
+                mask: [0x0F, 0x70]
+            }, {
+                control: BS2.control_id.mod_env_release,
+                offset: 60,
+                mask: [0x07, 0x78]
+            }, {
+                control: BS2.nrpn_id.mod_env_triggering,
+                offset: 55,
+                mask: [0x06]
+            }, {
+                control: BS2.control_id.fx_distortion,
+                offset: 107,
+                mask: [0x0F, 0x70]
+            }, {
+                control: BS2.control_id.fx_osc_filter_mod,
+                offset: 106,
+                mask: [0x1F, 0x60]
+            }, {
+                control: BS2.control_id.arp_on,
+                offset: 77,
+                mask: [0x08]
+            }, {
+                control: BS2.control_id.arp_latch,
+                offset: 77,
+                mask: [0x10]
+            }, {
+                control: BS2.control_id.arp_rhythm,
+                offset: 80,
+                mask: [0x1F]
+            }, {
+                control: BS2.control_id.arp_note_mode,
+                offset: 79,
+                mask: [0x0A]                             //TODO: check
+            }, {
+                control: BS2.control_id.arp_octaves,
+                offset: 78,
+                mask: [0x14]
+            }, {
+                control: BS2.control_id.pitch
+            }, {
+                control: BS2.control_id.mod
+            }, {
+                control: BS2.nrpn_id.mod_wheel_lfo2_filter_freq,
+                offset: 84,
+                mask: [0x07, 0x78]
+            }, {
+                control: BS2.nrpn_id.mod_wheel_lfo1_osc_pitch,
+                offset: 83,
+                mask: [0x0F, 0x70]
+            }, {
+                control: BS2.nrpn_id.mod_wheel_osc2_pitch,
+                offset: 85,
+                mask: [0x03, 0x7C]
+            }, {
+                control: BS2.control_id.mod_wheel_filter_freq, // check. maybe this is the cc transmitted during the configuration of the parameter
+                offset: 82,
+                mask: [0x1F, 0x60]
+            }, {
+                control: BS2.control_id.sustain
+            }, {
+                control: BS2.control_id.aftertouch_filter_freq,
+                offset: 86,
+                mask: [0x01, 0x7E]
+            }, {
+                control: BS2.nrpn_id.aftertouch_lfo1_to_osc_pitch,
+                offset: 88,
+                mask: [0x7F]
+            }, {
+                control: BS2.nrpn_id.aftertouch_lfo2_speed,
+                offset: 89,
+                mask: [0x3F, 0x40]
+            }, {
+                control: BS2.nrpn_id.lfo_key_sync_lfo1,
+                offset: 69,
+                mask: [0x10]
+            }, {
+                control: BS2.nrpn_id.lfo_key_sync_lfo2,
+                offset: 76,
+                mask: [0x20]
+            }, {
+                control: BS2.nrpn_id.lfo_speed_sync_lfo1,
+                offset: 69,
+                mask: [0x08]
+            }, {
+                control: BS2.nrpn_id.lfo_speed_sync_lfo2,
+                offset: 76,
+                mask: [0x10]
+            }, {
+                control: BS2.nrpn_id.lfo_slew_lfo_1,
+                offset: 65,
+                mask: [0x3F, 0x40]
+            }, {
+                control: BS2.nrpn_id.lfo_slew_lfo_2,
+                offset: 72,
+                mask: [0x7F]
+            }, {
+                control: BS2.control_id.osc_pitch_bend_range,
+                offset: 16,
+                mask: [0x7F]        // to check
+            }, {
+                control: BS2.control_id.osc_1_2_sync,
+                offset: 18,
+                mask: [0x40]
+            }, {
+                control: BS2.control_id.velocity_amp_env,
+                offset: 49,
+                mask: [0x3F]
+            }, {
+                control: BS2.control_id.velocity_mod_env,
+                offset: 56,
+                mask: [0x7E]
+            }, {
+                control: BS2.control_id.vca_limit,
+                offset: 108,
+                mask: [0x07, 0x78]
+            }, {
+                control: BS2.control_id.arp_swing,
+                offset: 81,
+                mask: [0x6F, 0x40]   // todo: check
+            }, {
+                control: BS2.nrpn_id.arp_seq_retrig,
+                offset: 77,
+                mask: [0x20]
+            }, {
+                control: BS2.control_id.octave,
+                offset: 14,
+                mask: [0x01, 0x78]   // to check
+            }, {
+                control: -1,
+                offset: 153,
+                mask: [0xFF],
+                name: "end of sysex data"
             }
-        }
-    }
-*/
-}
+            /*
+             control: BS2.control_id.after_touch
+             control: BS2.control_id.octave_key_transpose
+             control: BS2.control_id.global_midi_chan
+             control: BS2.control_id.global_local
+             control: BS2.control_id.global_tune
+             control: BS2.control_id.global_input_gain
+             */
+        ];
+    } // sysex()
 
-
-//var b = new BS2();
-console.log(BS2.control_id.vca_limit);
-console.log(BS2.control[95]);
-
-console.log(BS2.nrpn_id.osc1_waveform);
-console.log(BS2.nrpn[72]);
-
-
-/*
-C.ctrls = function() {
-    return [
-        { id: 'a', v: 0 },
-        { id: 'b', v: 1 }
-    ];
-}
-
-
-var c = new C();
-
-console.log(c);
-console.log(C.controls);
-console.log(C.controls[0].id);
-console.log("explicit", C.controls[0].toString());
-console.log("implicit", C.controls[0]);
-console.log("implicit: " + C.controls[0]);
-
-c.data = [1,2,3,4,5];
-console.log(c);
-
-c.load([7,8,9]);
-console.log(c);
-
-c.another_load([11,12,13]);
-console.log(c);
-
-console.log(c.data);
-console.log(c.data[2]);
-
-var ctrl = C.findControl('b');
-console.log(ctrl);
-
-var c1 = C.controls;
-var c2 = C.controls;
-console.log(c1 == c2);	// false
-
-console.log(C.ctrls);
-
-var c3 = C.ctrls();
-var c4 = C.ctrls();
-console.log(c3 == c4);	// false
-
-c3[1].v = 9;
-console.log(c3, c4);
-
-console.log(global);
-    */
+} // class BS2
