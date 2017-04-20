@@ -7,7 +7,7 @@
     <meta name="author" content="francois.georgy@gmail.com">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="webmidi.min.js"></script>
-    <script src="bs2.class.js?kc=12j34"></script>
+    <script src="bs2.js"></script>
     <style>
         .gray-box {
             border:1px solid #aaa;
@@ -133,12 +133,12 @@
 
             let value = -1;
 
-            if (cc == 99) {
+            if (cc == WebMidi.MIDI_CONTROL_CHANGE_MESSAGES['nonregisteredparameterfine']) {   // 99
                 cc_msb = msg[2];
                 console.log(`handleCC: NRPN MSB: ${cc_msb}`);
                 nrpn = true;
                 return;
-            } else if (cc == 98) {
+            } else if (cc == WebMidi.MIDI_CONTROL_CHANGE_MESSAGES['nonregisteredparametercoarse']) {  // 98
                 cc_lsb = msg[2];
                 console.log(`handleCC: NRPN LSB: ${cc_lsb}`);
                 return;
@@ -148,10 +148,9 @@
                     console.log(`handleCC: NRPN value: ${value}`);
                     nrpn = false;
 
-                    let cc_name_index = (cc_msb << 8) + cc_lsb;
+                    //let cc_name_index = (cc_msb << 8) + cc_lsb;
                     //log_value(`${NRPN_names[cc_name_index]} = ${value}`);
                     log_value(`${BS2.nrpn[cc_lsb]} = ${value}`);
-
 
                     return;
                 }
@@ -161,13 +160,12 @@
                 if (cc == cc_expected) {
                     console.log(`got expected cc ${cc}, cc_msb=${cc_msb}`);
 
-                    let cc_name_index = (cc_msb << 8) + cc;
-                    console.log(`name index is ${cc_name_index}`);
+//                    let cc_name_index = (cc_msb << 8) + cc;
+//                    console.log(`name index is ${cc_name_index}`);
 
                     value_lsb = msg[2];
 
                     let v = doubleByteValue(value_msb, value_lsb);
-
 
                     if (BS2.control[cc_msb].hasOwnProperty('map')) {
                         let r = BS2.control[cc_msb].map(v);
