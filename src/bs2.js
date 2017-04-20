@@ -97,8 +97,16 @@ var BS2 = (function BassStationII() {
     };
 
 
+    var _127 = function(v) {
+        return v < 128 ? (v - 127) : (v - 128);
+    };
+
     var _100 = function(v) {
         return v < 128 ? (v - 127) : (v - 128);
+    };
+
+    var _63 = function(v) {
+        return v < 64 ? (v - 63) : (v - 64);
     };
 
     var _12 = function(v) {
@@ -193,6 +201,7 @@ var BS2 = (function BassStationII() {
             name: "Osc1 Range",
             lsb: -1,
             range: [63, 66],
+            map: v => OSC_RANGES[v - 63],
             sysex: {
                 control: control_id.osc1_range,
                 offset: 20,
@@ -213,6 +222,7 @@ var BS2 = (function BassStationII() {
             name: "Osc1 Mod Env Depth",
             lsb: -1,
             range: [-63,63],
+            map: _63,
             sysex: {
                 offset: 98,
                 mask: [0x1F, 0x60]
@@ -222,6 +232,7 @@ var BS2 = (function BassStationII() {
             name: "Osc1 LFO1 Depth",
             lsb: 60,
             range: [-127,127],
+            map: _127,
             sysex: {
                 offset: 90,
                 mask: [0x3F, 0x60]
@@ -231,6 +242,7 @@ var BS2 = (function BassStationII() {
             name: "Osc1 Mod Env PW Mod",
             lsb: -1,
             range: [-63,63],
+            map: _63,
             sysex: {
                 offset: 101,
                 mask: [0x01, 0x7C]
@@ -268,9 +280,10 @@ var BS2 = (function BassStationII() {
             name: "Osc2 Range",
             lsb: -1,
             range: [63,66],
+            map: v => OSC_RANGES[v - 63],
             sysex: {
                 offset: 26,
-                mask: [0x1F, 0x20]
+                mask: [0x1F, 0x60]
             }
         };
         control[control_id.osc2_coarse] = { // 30 (msb), 62 (lsb)
@@ -287,7 +300,7 @@ var BS2 = (function BassStationII() {
             name: "Osc2 Mod Env Depth",
             lsb: -1,
             range: [-63, 63],
-            map: _depth,
+            map: _63,
             sysex: {
                 offset: 99,
                 mask: [0x0F, 0x70]
@@ -297,6 +310,7 @@ var BS2 = (function BassStationII() {
             name: "Osc2 LFO1 Depth",
             range: [-127,127],
             lsb: 63,
+            mod: _127,
             sysex: {
                 offset: 91,
                 mask: [0x1F, 0x70]
@@ -306,7 +320,7 @@ var BS2 = (function BassStationII() {
             name: "Osc2 Env2 PW Mod",
             lsb: -1,
             range: [-63,63],
-            map: _depth,
+            map: _63,
             sysex: {
                 offset: 102,
                 mask: [0x01, 0x7E]
@@ -404,8 +418,9 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.filter_type] = { // 83
             name: "Filter Type",
-            range: [],
+            range: [0, 1],
             lsb: -1,
+            map: v => v===0 ? 'classic' : 'acid',
             sysex: {
                 offset: 48,
                 mask: [0x04]
@@ -413,8 +428,9 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.filter_slope] = { // 106
             name: "Filter Slope",
-            range: [],
+            range: [0, 1],
             lsb: -1,
+            map: v => v===0 ? '12dB' : '24dB',
             sysex: {
                 offset: 48,
                 mask: [0x08]
@@ -422,8 +438,9 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.filter_shape] = { // 84
             name: "Filter Shape",
-            range: [],
+            range: [0, 1],
             lsb: -1,
+            map: v => FILTER_SHAPES[v],
             sysex: {
                 offset: 48,
                 mask: [0x03]
@@ -451,7 +468,7 @@ var BS2 = (function BassStationII() {
             name: "Filter Mod Env Depth",
             lsb: -1,
             range: [-63,63],
-            map: _depth,
+            map: _63,
             sysex: {
                 offset: 105,
                 mask: [0x3F, 0x40]
@@ -461,6 +478,7 @@ var BS2 = (function BassStationII() {
             name: "Filter LFO2 Depth",
             range: [0,127],
             lsb: 49,
+            map: _127,
             sysex: {
                 offset: 97,
                 mask: [0x3F, 0x40]
@@ -757,7 +775,7 @@ var BS2 = (function BassStationII() {
             name: "Osc1 Waveform",
             msb: 0,
             range: [1, 3],
-            toString: v => { return WAVE_FORMS[v % WAVE_FORMS.length] },
+            map: v => { return WAVE_FORMS[v % WAVE_FORMS.length] },
             sysex: {
                 offset: 19,
                 mask: [0x60]
@@ -767,7 +785,7 @@ var BS2 = (function BassStationII() {
             name: "Osc2 Waveform",
             msb: 0,
             range: [1, 3],
-            toString: v => { return WAVE_FORMS[v % WAVE_FORMS.length] },
+            map: v => { return WAVE_FORMS[v % WAVE_FORMS.length] },
             sysex: {
                 offset: 24,
                 mask: [0x03]
@@ -809,6 +827,7 @@ var BS2 = (function BassStationII() {
             name: "Mod Wheel LFO1 to Osc Pitch",
             range: [-63, 63],
             msb: 0,
+            map: _63,
             sysex: {
                 offset: 83,
                 mask: [0x0F, 0x70]
@@ -827,7 +846,7 @@ var BS2 = (function BassStationII() {
             name: "Mod Wheel Osc2 Pitch",
             msb: 0,
             range: [-63,63],
-            map: _depth,
+            map: _63,
             sysex: {
                 offset: 85,
                 mask: [0x03, 0x7C]
@@ -837,6 +856,7 @@ var BS2 = (function BassStationII() {
             name: "Aftertouch Filter Freq",
             range: [-63,63],
             msb: 0,
+            map: _63,
             sysex: {
                 offset: 86,
                 mask: [0x01, 0x7E]
@@ -846,6 +866,7 @@ var BS2 = (function BassStationII() {
             name: "Aftertouch LFO1 to Osc Pitch",
             range: [-63,63],
             msb: 0,
+            map: _63,
             sysex: {
                 offset: 88,
                 mask: [0x7F]
@@ -925,8 +946,16 @@ var BS2 = (function BassStationII() {
         };
     } // defineNRPNs()
 
+    var OSC_RANGES = [
+        16, 8, 4, 2
+    ];
+
     var WAVE_FORMS = [
         "sin", "triangle", "saw", "pulse"
+    ];
+
+    var FILTER_SHAPES = [
+        "LP", "BP", "HP"
     ];
 
     // Mapping 0..255 to -12.0..12.0

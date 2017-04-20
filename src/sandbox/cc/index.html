@@ -113,9 +113,6 @@
             return lsb > 0 ? (v+1) : v;
         }
 
-        //var cc0 = 0;
-        //var cc1 = 0;
-        //var last_cc = -1;
         var cc_expected = -1;
         var cc_msb = -1;
         var cc_lsb = -1;
@@ -145,13 +142,18 @@
             } else {
                 if (nrpn) {
                     value = msg[2];
-                    console.log(`handleCC: NRPN value: ${value}`);
+
+                    let v = value;
+
+                    if (BS2.nrpn[cc_lsb].hasOwnProperty('map')) {
+                        let r = BS2.nrpn[cc_lsb].map(v);
+                        log_value(`${BS2.nrpn[cc_lsb].name} = ${r} (${v})`);
+                    } else {
+                        //r = v;
+                        log_value(`${BS2.nrpn[cc_lsb].name} = ${v}`);
+                    }
+
                     nrpn = false;
-
-                    //let cc_name_index = (cc_msb << 8) + cc_lsb;
-                    //log_value(`${NRPN_names[cc_name_index]} = ${value}`);
-                    log_value(`${BS2.nrpn[cc_lsb]} = ${value}`);
-
                     return;
                 }
             }
@@ -159,9 +161,6 @@
             if (cc_expected >= 0) {
                 if (cc == cc_expected) {
                     console.log(`got expected cc ${cc}, cc_msb=${cc_msb}`);
-
-//                    let cc_name_index = (cc_msb << 8) + cc;
-//                    console.log(`name index is ${cc_name_index}`);
 
                     value_lsb = msg[2];
 
@@ -174,8 +173,6 @@
                         //r = v;
                         log_value(`${BS2.control[cc_msb].name} = ${v}`);
                     }
-
-                    //console.log(`computed value with ${value_msb} ${value_lsb} = ${v} ; ${CC_names[cc_name_index]}`);
 
                     cc_expected = -1;
 
@@ -223,14 +220,7 @@
                     log(midiEventForHuman(e));
                     handleCC(e);
                 });
-/*
-                CC = CC_Map();
-                //console.log(CC);
-                CC_names = CC_Names();
-                CC_transforms = CC_Transforms();
-                //console.log(CC_names);
-                NRPN_names = NRPN_Names();
-*/
+
                 //WebMidi.addListener("connected", e => logWebMidiEvent(e));
                 //WebMidi.addListener("disconnected", e => logWebMidiEvent(e));
 
