@@ -102,9 +102,6 @@ var BS2 = (function BassStationII() {
     };
 
     var _12 = function(v) {
-        //let a = v < 128 ? (v - 127) : (v - 128);
-        let a = 240 / 255 * v;
-        //console.log('a', a);
         return COARSE_VALUES[v] / 10;
     };
 
@@ -112,6 +109,7 @@ var BS2 = (function BassStationII() {
         return this.labels.waveform.v;
     };
 
+    // Map 0..255 to -90..+90
     var _pw = function(v) {
         console.log(v * 2 * 91.0 / 256 + 5 -0.4);
         return Math.round(v * 2 * 91.0 / 256 + 5 -0.4);
@@ -151,17 +149,17 @@ var BS2 = (function BassStationII() {
          */
         // in progres..... still not working correctly :-(
 
-        let OutputHigh = 90.0;
-        let OutputLow = -90.0;
-        let InputHigh = 63.0;
-        let InputLow = -63.0;
+        let out_max = 90.0;
+        let out_min = -90.0;
+        let in_max = 63.0;
+        let in_min = -63.0;
         let r;
         if (v < 0) {
-            console.log(((v - InputLow) / (InputHigh - InputLow)) * (OutputHigh - OutputLow) + OutputLow + 0.4);
-            r = Math.round(((v - InputLow) / (InputHigh - InputLow)) * (OutputHigh - OutputLow) + OutputLow + 0.4);
+            console.log(((v - in_min) / (in_max - in_min)) * (out_max - out_min) + out_min + 0.4);
+            r = Math.round(((v - in_min) / (in_max - in_min)) * (out_max - out_min) + out_min + 0.4);
         } else {
-            console.log(((v - InputLow) / (InputHigh - InputLow)) * (OutputHigh - OutputLow) + OutputLow - 0.4);
-            r = Math.round(((v - InputLow) / (InputHigh - InputLow)) * (OutputHigh - OutputLow) + OutputLow - 0.4);
+            console.log(((v - in_min) / (in_max - in_min)) * (out_max - out_min) + out_min - 0.4);
+            r = Math.round(((v - in_min) / (in_max - in_min)) * (out_max - out_min) + out_min - 0.4);
         }
         return r;
     };
@@ -174,7 +172,6 @@ var BS2 = (function BassStationII() {
     var nrpn = new Array(127);
 
     function defineControls() {
-
         control[control_id.patch_volume] = { // 7
             name: "Patch Volume",
             range: [],
@@ -184,9 +181,9 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.osc1_fine] = { // 26 (msb), 58 (lsb)
             name: "Osc1 Fine",
+            lsb: 58,
             range: [-100,100],
             map: _100,
-            lsb: 58,
             sysex: {
                 offset: 22,
                 mask: [0x03, 0x7E]
@@ -194,8 +191,8 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.osc1_range] = { // 70
             name: "Osc1 Range",
-            range: [63, 66],
             lsb: -1,
+            range: [63, 66],
             sysex: {
                 control: control_id.osc1_range,
                 offset: 20,
@@ -204,8 +201,9 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.osc1_coarse] = { // 27 (msb), 59 (lsb)
             name: "Osc1 Coarse",
-            range: [-12,12],
             lsb: 59,
+            range: [-12,12],
+            map: _12,
             sysex: {
                 offset: 21,
                 mask: [0x03, 0x7C]
@@ -213,8 +211,8 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.osc1_mod_env_depth] = { // 71
             name: "Osc1 Mod Env Depth",
-            range: [-63,63],
             lsb: -1,
+            range: [-63,63],
             sysex: {
                 offset: 98,
                 mask: [0x1F, 0x60]
@@ -222,8 +220,8 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.osc1_lfo1_depth] = { // 28 (msb), 60 (lsb)
             name: "Osc1 LFO1 Depth",
-            range: [-127,127],
             lsb: 60,
+            range: [-127,127],
             sysex: {
                 offset: 90,
                 mask: [0x3F, 0x60]
@@ -231,8 +229,8 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.osc1_mod_env_pw_mod] = { // 72
             name: "Osc1 Mod Env PW Mod",
-            range: [-63,63],
             lsb: -1,
+            range: [-63,63],
             sysex: {
                 offset: 101,
                 mask: [0x01, 0x7C]
@@ -249,8 +247,8 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.osc1_manual_pw] = { // 74
             name: "Osc1 Manual PW",
-            range: [5,95],
             lsb: -1,
+            range: [5,95],
             sysex: {
                 offset: 19,
                 mask: [0x0F, 0x70]
@@ -258,8 +256,9 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.osc2_fine] = { // 29 (msb), 61 (lsb)
             name: "Osc2 Fine",
-            range: [-100,100],
             lsb: 61,
+            range: [-100,100],
+            map: _100,
             sysex: {
                 offset: 28,
                 mask: [0x0F, 0x78]
@@ -267,8 +266,8 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.osc2_range] = { // 75
             name: "Osc2 Range",
-            range: [63,66],
             lsb: -1,
+            range: [63,66],
             sysex: {
                 offset: 26,
                 mask: [0x1F, 0x20]
@@ -276,8 +275,9 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.osc2_coarse] = { // 30 (msb), 62 (lsb)
             name: "Osc2 Coarse",
-            range: [-12,12],
             lsb: 62,
+            range: [-12,12],
+            map: _12,
             sysex: {
                 offset: 27,
                 mask: [0x1F, 0x70]
@@ -285,8 +285,9 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.osc2_mod_env_depth] = { // 76
             name: "Osc2 Mod Env Depth",
-            range: [-63,63],
             lsb: -1,
+            range: [-63, 63],
+            map: _depth,
             sysex: {
                 offset: 99,
                 mask: [0x0F, 0x70]
@@ -303,8 +304,9 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.osc2_env2_pw_mod] = { // 77
             name: "Osc2 Env2 PW Mod",
-            range: [-63,63],
             lsb: -1,
+            range: [-63,63],
+            map: _depth,
             sysex: {
                 offset: 102,
                 mask: [0x01, 0x7E]
@@ -447,8 +449,9 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.filter_mod_env_depth] = { // 85
             name: "Filter Mod Env Depth",
-            range: [-63,63],
             lsb: -1,
+            range: [-63,63],
+            map: _depth,
             sysex: {
                 offset: 105,
                 mask: [0x3F, 0x40]
@@ -704,7 +707,7 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.osc_1_2_sync] = { // 110
             name: "Osc 1 2 Sync",
-            range: [0,1],
+            range: [0, 1],
             lsb: -1,
             sysex: {
                 offset: 18,
@@ -713,7 +716,7 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.velocity_amp_env] = { // 112
             name: "Velocity Amp Env",
-            range: [-63,63],
+            range: [-63, 63],
             lsb: -1,
             sysex: {
                 offset: 49,
@@ -722,7 +725,7 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.velocity_mod_env] = { // 113
             name: "Velocity Mod Env",
-            range: [-63,63],
+            range: [-63, 63],
             lsb: -1,
             sysex: {
                 offset: 56,
@@ -731,7 +734,7 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.vca_limit] = { // 95
             name: "VCA Limit",
-            range: [0,127],
+            range: [0, 127],
             lsb: -1,
             sysex: {
                 offset: 108,
@@ -752,8 +755,9 @@ var BS2 = (function BassStationII() {
     function defineNRPNs() {
         nrpn[nrpn_id.osc1_waveform] = { // 0 (msb), 72 (lsb)
             name: "Osc1 Waveform",
-            range: [1,3],
             msb: 0,
+            range: [1, 3],
+            toString: v => { return WAVE_FORMS[v % WAVE_FORMS.length] },
             sysex: {
                 offset: 19,
                 mask: [0x60]
@@ -761,8 +765,9 @@ var BS2 = (function BassStationII() {
         };
         nrpn[nrpn_id.osc2_waveform] = { // 0 (msb), 82 (lsb)
             name: "Osc2 Waveform",
-            range: [],
             msb: 0,
+            range: [1, 3],
+            toString: v => { return WAVE_FORMS[v % WAVE_FORMS.length] },
             sysex: {
                 offset: 24,
                 mask: [0x03]
@@ -770,24 +775,24 @@ var BS2 = (function BassStationII() {
         };
         nrpn[nrpn_id.lfo1_sync_value] = { // 87
             name: "LFO1 Sync Value",
-            range: [],
             msb: -1,
-            sysex: {
+            range: [],
+            sysex: {        // TODO
             }
         };
         nrpn[nrpn_id.lfo2_sync_value] = { // 91
             name: "LFO2 Sync Value",
-            range: [],
             msb: -1,
-            sysex: {
+            range: [],
+            sysex: {        // TODO
             }
         };
         nrpn[nrpn_id.amp_env_triggering] = { // 0 (msb), 73 (lsb)
             name: "Amp Env Triggering",
-            range: [],
             msb: 0,
+            range: [],
             sysex: {
-                offset: 55,
+                offset: 55,     //TODO: check
                 mask: [0x06]
             }
         };
@@ -795,12 +800,14 @@ var BS2 = (function BassStationII() {
             name: "Mod Env Triggering",
             range: [],
             msb: 0,
-            sysex: {
+            sysex: {        // TODO
+                // offset: 55,
+                // mask: [0x06]
             }
         };
         nrpn[nrpn_id.mod_wheel_lfo1_osc_pitch] = { // 0 (msb), 70 (lsb)
             name: "Mod Wheel LFO1 to Osc Pitch",
-            range: [-63,63],
+            range: [-63, 63],
             msb: 0,
             sysex: {
                 offset: 83,
@@ -809,7 +816,7 @@ var BS2 = (function BassStationII() {
         };
         nrpn[nrpn_id.mod_wheel_lfo2_filter_freq] = { // 0 (msb), 71 (lsb)
             name: "Mod Wheel LFO2 to Filter Freq",
-            range: [-63,63],
+            range: [-63, 63],
             msb: 0,
             sysex: {
                 offset: 84,
@@ -818,8 +825,9 @@ var BS2 = (function BassStationII() {
         };
         nrpn[nrpn_id.mod_wheel_osc2_pitch] = { // 0 (msb), 78 (lsb)
             name: "Mod Wheel Osc2 Pitch",
-            range: [-63,63],
             msb: 0,
+            range: [-63,63],
+            map: _depth,
             sysex: {
                 offset: 85,
                 mask: [0x03, 0x7C]
@@ -916,6 +924,271 @@ var BS2 = (function BassStationII() {
             }
         };
     } // defineNRPNs()
+
+    var WAVE_FORMS = [
+        "sin", "triangle", "saw", "pulse"
+    ];
+
+    // Mapping 0..255 to -12.0..12.0
+    var COARSE_VALUES = [
+        -120, // -12.0; -12.00000; 0
+        -119, // -11.9; -11.89699; 1
+        -118, // -11.8; -11.79398; 2
+        -117, // -11.7; -11.69098; 3
+        -116, // -11.6; -11.58799; 4
+        -115, // -11.5; -11.48498; 5
+        -114, // -11.4; -11.38198; 6
+        -113, // -11.3; -11.27897; 7
+        -112, // -11.2; -11.17596; 8
+        -111, // -11.1; -11.07295; 9
+        -110, // -11.0; -11.00002; 10
+        -109, // -10.9; -10.86696; 11
+        -108, // -10.8; -10.76395; 12
+        -107, // -10.7; -10.66094; 13
+        -106, // -10.6; -10.55794; 14
+        -105, // -10.5; -10.45493; 15
+        -104, // -10.4; -10.35192; 16
+        -102, // -10.2; -10.24894; 17
+        -101, // -10.1; -10.14593; 18
+        -100, // -10.0; -10.00001; 19
+        -100, // -10.0; -10.00001; 20
+        -99, // -9.9; -9.93991; 21
+        -98, // -9.8; -9.83690; 22
+        -97, // -9.7; -9.73390; 23
+        -96, // -9.6; -9.63091; 24
+        -95, // -9.5; -9.52790; 25
+        -94, // -9.4; -9.42490; 26
+        -93, // -9.3; -9.32189; 27
+        -92, // -9.2; -9.21888; 28
+        -91, // -9.1; -9.11587; 29
+        -90, // -9.0; -9.00000; 30
+        -90, // -9.0; -9.00000; 31
+        -89, // -8.9; -8.90988; 32
+        -88, // -8.8; -8.80687; 33
+        -87, // -8.7; -8.70386; 34
+        -86, // -8.6; -8.60086; 35
+        -85, // -8.5; -8.49785; 36
+        -84, // -8.4; -8.39484; 37
+        -83, // -8.3; -8.29186; 38
+        -82, // -8.2; -8.18885; 39
+        -81, // -8.1; -8.08584; 40
+        -80, // -8.0; -8.00002; 41
+        -80, // -8.0; -8.00002; 42
+        -79, // -7.9; -7.87982; 43
+        -78, // -7.8; -7.77682; 44
+        -77, // -7.7; -7.67381; 45
+        -76, // -7.6; -7.57082; 46
+        -75, // -7.5; -7.46782; 47
+        -74, // -7.4; -7.36481; 48
+        -73, // -7.3; -7.26180; 49
+        -72, // -7.2; -7.15879; 50
+        -71, // -7.1; -7.05578; 51
+        -70, // -7.0; -7.00001; 52
+        -70, // -7.0; -7.00001; 53
+        -68, // -6.8; -6.84979; 54
+        -67, // -6.7; -6.74678; 55
+        -66, // -6.6; -6.64378; 56
+        -65, // -6.5; -6.54077; 57
+        -64, // -6.4; -6.43776; 58
+        -63, // -6.3; -6.33478; 59
+        -62, // -6.2; -6.23177; 60
+        -61, // -6.1; -6.12876; 61
+        -60, // -6.0; -6.00000; 62
+        -60, // -6.0; -6.00000; 63
+        -59, // -5.9; -5.92274; 64
+        -58, // -5.8; -5.81974; 65
+        -57, // -5.7; -5.71673; 66
+        -56, // -5.6; -5.61374; 67
+        -55, // -5.5; -5.51074; 68
+        -54, // -5.4; -5.40773; 69
+        -53, // -5.3; -5.30472; 70
+        -52, // -5.2; -5.20171; 71
+        -51, // -5.1; -5.09870; 72
+        -50, // -5.0; -5.00002; 73
+        -50, // -5.0; -5.00002; 74
+        -49, // -4.9; -4.89271; 75
+        -48, // -4.8; -4.78970; 76
+        -47, // -4.7; -4.68670; 77
+        -46, // -4.6; -4.58369; 78
+        -45, // -4.5; -4.48068; 79
+        -44, // -4.4; -4.37767; 80
+        -43, // -4.3; -4.27469; 81
+        -42, // -4.2; -4.17168; 82
+        -41, // -4.1; -4.06867; 83
+        -40, // -4.0; -4.00001; 84
+        -40, // -4.0; -4.00001; 85
+        -39, // -3.9; -3.86266; 86
+        -38, // -3.8; -3.75965; 87
+        -37, // -3.7; -3.65666; 88
+        -36, // -3.6; -3.55366; 89
+        -35, // -3.5; -3.45065; 90
+        -33, // -3.3; -3.34764; 91
+        -32, // -3.2; -3.24463; 92
+        -31, // -3.1; -3.14162; 93
+        -30, // -3.0; -3.00000; 94
+        -30, // -3.0; -3.00000; 95
+        -29, // -2.9; -2.93563; 96
+        -28, // -2.8; -2.83262; 97
+        -27, // -2.7; -2.72962; 98
+        -26, // -2.6; -2.62661; 99
+        -25, // -2.5; -2.52360; 100
+        -24, // -2.4; -2.42059; 101
+        -23, // -2.3; -2.31761; 102
+        -22, // -2.2; -2.21460; 103
+        -21, // -2.1; -2.11159; 104
+        -20, // -2.0; -2.00002; 105
+        -20, // -2.0; -2.00002; 106
+        -19, // -1.9; -1.90558; 107
+        -18, // -1.8; -1.80257; 108
+        -17, // -1.7; -1.69956; 109
+        -16, // -1.6; -1.59658; 110
+        -15, // -1.5; -1.49357; 111
+        -14, // -1.4; -1.39056; 112
+        -13, // -1.3; -1.28755; 113
+        -12, // -1.2; -1.18454; 114
+        -11, // -1.1; -1.08154; 115
+        -10, // -1.0; -1.00001; 116
+        -10, // -1.0; -1.00001; 117
+        -9, // -0.9; -0.87554; 118
+        -8, // -0.8; -0.77254; 119
+        -7, // -0.7; -0.66953; 120
+        -6, // -0.6; -0.56652; 121
+        -5, // -0.5; -0.46351; 122
+        -4, // -0.4; -0.36050; 123
+        -3, // -0.3; -0.25752; 124
+        -2, // -0.2; -0.15451; 125
+        -1, // -0.1; -0.05150; 126
+        0, // 0.0; 0.00000; 127
+        0, // 0.0; 0.00000; 128
+        1, // 0.1; 0.05150; 129
+        2, // 0.2; 0.15451; 130
+        3, // 0.3; 0.25752; 131
+        4, // 0.4; 0.36051; 132
+        5, // 0.5; 0.46351; 133
+        6, // 0.6; 0.56652; 134
+        7, // 0.7; 0.66953; 135
+        8, // 0.8; 0.77254; 136
+        9, // 0.9; 0.87555; 137
+        10, // 1.0; 1.00001; 138
+        10, // 1.0; 1.00001; 139
+        11, // 1.1; 1.08154; 140
+        12, // 1.2; 1.18454; 141
+        13, // 1.3; 1.28755; 142
+        14, // 1.4; 1.39056; 143
+        15, // 1.5; 1.49357; 144
+        16, // 1.6; 1.59658; 145
+        17, // 1.7; 1.69956; 146
+        18, // 1.8; 1.80257; 147
+        19, // 1.9; 1.90558; 148
+        20, // 2.0; 2.00002; 149
+        20, // 2.0; 2.00002; 150
+        21, // 2.1; 2.11159; 151
+        22, // 2.2; 2.21460; 152
+        23, // 2.3; 2.31761; 153
+        24, // 2.4; 2.42059; 154
+        25, // 2.5; 2.52360; 155
+        26, // 2.6; 2.62661; 156
+        27, // 2.7; 2.72962; 157
+        28, // 2.8; 2.83262; 158
+        29, // 2.9; 2.93563; 159
+        30, // 3.0; 3.00000; 160
+        30, // 3.0; 3.00000; 161
+        31, // 3.1; 3.14162; 162
+        32, // 3.2; 3.24463; 163
+        33, // 3.3; 3.34764; 164
+        35, // 3.5; 3.45065; 165
+        36, // 3.6; 3.55366; 166
+        37, // 3.7; 3.65666; 167
+        38, // 3.8; 3.75965; 168
+        39, // 3.9; 3.86266; 169
+        40, // 4.0; 4.00001; 170
+        40, // 4.0; 4.00001; 171
+        41, // 4.1; 4.06867; 172
+        42, // 4.2; 4.17168; 173
+        43, // 4.3; 4.27469; 174
+        44, // 4.4; 4.37767; 175
+        45, // 4.5; 4.48068; 176
+        46, // 4.6; 4.58369; 177
+        47, // 4.7; 4.68670; 178
+        48, // 4.8; 4.78970; 179
+        49, // 4.9; 4.89271; 180
+        50, // 5.0; 5.00002; 181
+        50, // 5.0; 5.00002; 182
+        51, // 5.1; 5.09870; 183
+        52, // 5.2; 5.20171; 184
+        53, // 5.3; 5.30472; 185
+        54, // 5.4; 5.40773; 186
+        55, // 5.5; 5.51074; 187
+        56, // 5.6; 5.61374; 188
+        57, // 5.7; 5.71673; 189
+        58, // 5.8; 5.81974; 190
+        59, // 5.9; 5.92274; 191
+        60, // 6.0; 6.00000; 192
+        60, // 6.0; 6.00000; 193
+        61, // 6.1; 6.12876; 194
+        62, // 6.2; 6.23177; 195
+        63, // 6.3; 6.33478; 196
+        64, // 6.4; 6.43776; 197
+        65, // 6.5; 6.54077; 198
+        66, // 6.6; 6.64378; 199
+        67, // 6.7; 6.74678; 200
+        68, // 6.8; 6.84979; 201
+        70, // 7.0; 7.00001; 202
+        70, // 7.0; 7.00001; 203
+        71, // 7.1; 7.05579; 204
+        72, // 7.2; 7.15879; 205
+        73, // 7.3; 7.26180; 206
+        74, // 7.4; 7.36481; 207
+        75, // 7.5; 7.46782; 208
+        76, // 7.6; 7.57083; 209
+        77, // 7.7; 7.67381; 210
+        78, // 7.8; 7.77682; 211
+        79, // 7.9; 7.87982; 212
+        80, // 8.0; 8.00002; 213
+        80, // 8.0; 8.00002; 214
+        81, // 8.1; 8.08584; 215
+        82, // 8.2; 8.18885; 216
+        83, // 8.3; 8.29186; 217
+        84, // 8.4; 8.39484; 218
+        85, // 8.5; 8.49785; 219
+        86, // 8.6; 8.60086; 220
+        87, // 8.7; 8.70386; 221
+        88, // 8.8; 8.80687; 222
+        89, // 8.9; 8.90988; 223
+        90, // 9.0; 9.00000; 224
+        90, // 9.0; 9.00000; 225
+        91, // 9.1; 9.11587; 226
+        92, // 9.2; 9.21888; 227
+        93, // 9.3; 9.32189; 228
+        94, // 9.4; 9.42490; 229
+        95, // 9.5; 9.52791; 230
+        96, // 9.6; 9.63091; 231
+        97, // 9.7; 9.73390; 232
+        98, // 9.8; 9.83690; 233
+        99, // 9.9; 9.93991; 234
+        100, // 10.0; 10.00001; 235
+        100, // 10.0; 10.00001; 236
+        101, // 10.1; 10.14593; 237
+        102, // 10.2; 10.24894; 238
+        104, // 10.4; 10.35192; 239
+        105, // 10.5; 10.45493; 240
+        106, // 10.6; 10.55794; 241
+        107, // 10.7; 10.66094; 242
+        108, // 10.8; 10.76395; 243
+        109, // 10.9; 10.86696; 244
+        110, // 11.0; 11.00002; 245
+        111, // 11.1; 11.07295; 246
+        112, // 11.2; 11.17596; 247
+        113, // 11.3; 11.27897; 248
+        114, // 11.4; 11.38198; 249
+        115, // 11.5; 11.48498; 250
+        116, // 11.6; 11.58799; 251
+        117, // 11.7; 11.69098; 252
+        118, // 11.8; 11.79398; 253
+        119, // 11.9; 11.89699; 254
+        120  // 12.0; 12.00000; 255
+    ];
+
 
     defineControls();
     defineNRPNs();
