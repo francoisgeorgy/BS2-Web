@@ -138,10 +138,10 @@
             let param_value = 0;
             if (sysex.mask.length === 2) {
                 param_value = v16(data[sysex.offset], data[sysex.offset + 1], sysex.mask[0], sysex.mask[1])
-                s += ` computed: ${param_value.toString().paddingLeft('   ')} `;
+                s += ` ${param_value.toString().paddingLeft('   ')} `;
             } else {
                 param_value = v8(data[sysex.offset], sysex.mask[0]);
-                s += ` ........: ${param_value.toString().paddingLeft('   ')} `;
+                s += ` ${param_value.toString().paddingLeft('   ')} `;
             }
 
             s += ' final value: ';
