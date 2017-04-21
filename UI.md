@@ -18,5 +18,8 @@ The UI will try to emphasize the signal flow (sound path). It is not important t
 - Portamento
 - Arpeggiator
 
+## Libs used
 
+- Nexus UI : https://github.com/lsu-emdm/nexusUI
+- Possible replacement: http://anthonyterrien.com/knob/
 

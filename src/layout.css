@@ -1,0 +1,29 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    /*font-family: 'Roboto Mono', monospace;*/
+}
+
+h1, h2 {
+    font-family: 'Roboto Condensed', sans-serif;
+    font-weight: normal;
+}
+
+h1 {
+    margin: 0 0 10px 0;
+}
+
+h2 {
+    margin: 0 0 10px 0;
+}
+
+main {
+    display: grid;
+    grid-gap: 3px;
+    grid-template-columns: 1fr 1fr 1fr 0.8fr 0.8fr;
+    grid-auto-flow: row;
+}
+
+main > div {
+    border: 1px solid #aaaaaa;
+    padding: 5px;
+}

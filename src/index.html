@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bass Station II Web Interface</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Condensed:400,700" rel="stylesheet">
+    <link rel="stylesheet" media="all" href="layout.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="lib/nexusUI.js"></script>
+</head>
+<body>
+    <header></header>
+    <main>
+        <div>
+            <div>
+            </div>
+        </div>
+        <div>
+            <h2>Sub-Oscillator</h2>
+            <div>
+            </div>
+        </div>
+        <div>
+            <h2>Ext</h2>
+            <div>
+            </div>
+        </div>
+        <div>
+            <h2>Effects</h2>
+            <div>
+            </div>
+        </div>
+        <div>
+        </div>
+
+        <div>
+            <h1>Osc 1</h1>
+            <select><option>sin</option><option>saw</option></select>
+            <div>
+                <canvas id="d1" nx="dial" min="0" max="127" label="Fine" height="80" width="80"></canvas>
+                <canvas id="d2" nx="dial" min="0" max="127" label="Coarse" height="80" width="80"></canvas>
+                <br />
+                <canvas id="d3" nx="dial" min="0" max="127" label="Mod Env" height="80" width="80"></canvas>
+                <canvas id="d4" nx="dial" min="0" max="127" label="LFO1" height="80" width="80"></canvas>
+                <br />
+                <canvas id="d95" nx="dial" min="0" max="127" label="PW Mod" height="80" width="80"></canvas>
+                <canvas id="d96" nx="dial" min="0" max="127" label="PW LFO2" height="80" width="80"></canvas>
+                <canvas id="d97" nx="dial" min="0" max="127" label="PW Man" height="80" width="80"></canvas>
+            </div>
+        </div>
+        <div>
+            <h1>Osc 1</h1>
+            <div>
+                <canvas id="d991" nx="dial" min="0" max="127" label="Fine" height="80" width="80"></canvas>
+                <canvas id="d992" nx="dial" min="0" max="127" label="Coarse" height="80" width="80"></canvas>
+                <br />
+                <canvas id="d993" nx="dial" min="0" max="127" label="Mod Env" height="80" width="80"></canvas>
+                <canvas id="d994" nx="dial" min="0" max="127" label="LFO1" height="80" width="80"></canvas>
+                <br />
+                <canvas id="d9995" nx="dial" min="0" max="127" label="PW Mod" height="80" width="80"></canvas>
+                <canvas id="d9996" nx="dial" min="0" max="127" label="PW LFO2" height="80" width="80"></canvas>
+                <canvas id="d9997" nx="dial" min="0" max="127" label="PW Man" height="80" width="80"></canvas>
+            </div>
+        </div>
+        <div>
+            <h1>Mixer</h1>
+            <div>
+                <canvas id="d11" nx="dial" min="0" max="127" label="Osc 1" height="80" width="80"></canvas>
+                <canvas id="d12" nx="dial" min="0" max="127" label="Osc 2" height="80" width="80"></canvas>
+                <canvas id="d13" nx="dial" min="0" max="127" label="Sub" height="80" width="80"></canvas>
+                <br />
+                <canvas id="d415" nx="dial" min="0" max="127" label="Ext" height="80" width="80"></canvas>
+                <canvas id="d416" nx="dial" min="0" max="127" label="Ring" height="80" width="80"></canvas>
+                <canvas id="d417" nx="dial" min="0" max="127" label="Noise" height="80" width="80"></canvas>
+            </div>
+        </div>
+        <div>
+            <h1>Filter</h1>
+            <div>
+                <canvas id="d21" nx="dial" min="0" max="127" label="C1" height="80" width="80"></canvas>
+                <canvas id="d22" nx="dial" min="0" max="127" label="C2" height="80" width="80"></canvas>
+                <canvas id="d23" nx="dial" min="0" max="127" label="C3" height="80" width="80"></canvas>
+                <canvas id="d24" nx="dial" min="0" max="127" label="C4" height="80" width="80"></canvas>
+                <canvas id="d25" nx="dial" min="0" max="127" label="C4" height="120" width="120"></canvas>
+            </div>
+        </div>
+        <div>
+            <h1>Amplifier</h1>
+            <div>
+            </div>
+        </div>
+
+        <div>
+            <h1>LFO 1</h1>
+            <div>
+                <canvas id="d1155" nx="dial" min="0" max="127" label="Speed" height="80" width="80"></canvas>
+                <canvas id="d1156" nx="dial" min="0" max="127" label="Delay" height="80" width="80"></canvas>
+            </div>
+        </div>
+        <div>
+            <h1>LFO 2</h1>
+            <div>
+                <canvas id="d155" nx="dial" min="0" max="127" label="Speed" height="80" width="80"></canvas>
+                <canvas id="d156" nx="dial" min="0" max="127" label="Delay" height="80" width="80"></canvas>
+            </div>
+        </div>
+        <div>
+        </div>
+        <div>
+            <h1>Mod Env</h1>
+            <div>
+                <canvas id="s1" nx="slider" min="0" max="127" label="C9" width="30" height="160"></canvas>
+                &nbsp;
+                <canvas id="s2" nx="slider" min="0" max="127" label="C10" width="30" height="160"></canvas>
+                &nbsp;
+                <canvas id="s3" nx="slider" min="0" max="127" label="C11" width="30" height="160"></canvas>
+                &nbsp;
+                <canvas id="s4" nx="slider" min="0" max="127" label="C12" width="30" height="160"></canvas>
+            </div>
+        </div>
+        <div>
+            <h1>Amp Env</h1>
+            <div>
+                <canvas id="s5" nx="slider" min="0" max="127" label="C9" width="30" height="160"></canvas>
+                &nbsp;
+                <canvas id="s6" nx="slider" min="0" max="127" label="C10" width="30" height="160"></canvas>
+                &nbsp;
+                <canvas id="s7" nx="slider" min="0" max="127" label="C11" width="30" height="160"></canvas>
+                &nbsp;
+                <canvas id="s8" nx="slider" min="0" max="127" label="C12" width="30" height="160"></canvas>
+            </div>
+        </div>
+    </main>
+    <footer></footer>
+    <script>
+
+        nx.onload = function () {
+            //console.log(nx.fontSize);
+            //nx.fontSize = 20;
+            //console.log(nx.fontSize);
+            nx.colorize("#00CCFF"); // sets accent (default)
+        };
+
+
+        $(function () {
+            /*
+            navigator.requestMIDIAccess({ sysex: true }).then(onMIDISuccess, onMIDIFailure);
+            function onMIDISuccess(midiAccess) {
+                console.log("Got access to MIDI");
+                midi = midiAccess;
+                subscribeInputs(midi);
+            }
+            function onMIDIFailure(msg) {
+                console.log("onMIDIFailure", msg);
+            }
+            */
+
+//            nx.onload = function () {
+//                nx.colorize("#00CCFF"); // sets accent (default)
+
+                nx.labelSize(50);
+//                d1.draw();
+
+                /*
+                d1.on('*', function (e) { console.log(e); });
+                d1.val.value = Math.random() * 127;
+                d1.draw();
+                d2.val.value = Math.random() * 127;
+                d2.draw();
+                d3.val.value = Math.random() * 127;
+                d3.draw();
+                d4.val.value = Math.random() * 127;
+                d4.draw();
+                d5.val.value = Math.random() * 127;
+                d5.draw();
+                d6.val.value = Math.random() * 127;
+                d6.draw();
+                d7.val.value = Math.random() * 127;
+                d7.draw();
+                d8.val.value = Math.random() * 127;
+                d8.draw();
+
+                s1.hslider = false;
+                s1.val.value = Math.random() * 127;
+                //nx.labelSize(22);
+                s1.draw();
+                s2.hslider = false;
+                s2.val.value = Math.random() * 127;
+                s2.draw();
+                s3.hslider = false;
+                s3.val.value = Math.random() * 127;
+                s3.draw();
+                s4.hslider = false;
+                s4.val.value = Math.random() * 127;
+                s4.draw();
+
+                keyboard1.octaves = 7;
+                keyboard1.init();
+
+                matrix1.row = 2;
+                matrix1.col = 16;
+                matrix1.init()
+                */
+//            }
+        });
+
+
+    </script>
+</body>
+</html>
