@@ -20,6 +20,6 @@ The UI will try to emphasize the signal flow (sound path). It is not important t
 
 ## Libs used
 
-- Nexus UI : https://github.com/lsu-emdm/nexusUI
-- Possible replacement: http://anthonyterrien.com/knob/
+- jQuery Knob: http://anthonyterrien.com/knob/ (https://github.com/aterrien/jQuery-Knob)
+- ~~Nexus UI : https://github.com/lsu-emdm/nexusUI~~
 

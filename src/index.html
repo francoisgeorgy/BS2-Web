@@ -6,7 +6,32 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Condensed:400,700" rel="stylesheet">
     <link rel="stylesheet" media="all" href="layout.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="lib/nexusUI.js"></script>
+    <script src="lib/webmidi.min.js"></script>
+    <script src="lib/jquery.knob.min.js"></script>
+    <script src="bs2.js"></script>
+    <style>
+        div.control {
+            float: left;
+            width: 60px;
+            text-align: center;
+            margin: 0 5px 5px 0;
+        }
+        div.control > label {
+            display: block;
+            margin-top:-10px;
+            font-size: 0.8em;
+            color: #999;
+        }
+        /*div.label {
+            background-color: yellow;
+            margin-top:-10px;
+        }*/
+        .group:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+    </style>
 </head>
 <body>
     <header></header>
@@ -37,51 +62,58 @@
             <h1>Osc 1</h1>
             <select><option>sin</option><option>saw</option></select>
             <div>
-                <canvas id="d1" nx="dial" min="0" max="127" label="Fine" height="80" width="80"></canvas>
-                <canvas id="d2" nx="dial" min="0" max="127" label="Coarse" height="80" width="80"></canvas>
-                <br />
-                <canvas id="d3" nx="dial" min="0" max="127" label="Mod Env" height="80" width="80"></canvas>
-                <canvas id="d4" nx="dial" min="0" max="127" label="LFO1" height="80" width="80"></canvas>
-                <br />
-                <canvas id="d95" nx="dial" min="0" max="127" label="PW Mod" height="80" width="80"></canvas>
-                <canvas id="d96" nx="dial" min="0" max="127" label="PW LFO2" height="80" width="80"></canvas>
-                <canvas id="d97" nx="dial" min="0" max="127" label="PW Man" height="80" width="80"></canvas>
+                <div class="group">
+                    <div class="control">
+                        <input id="cc-27" class="dial" data-width="60" data-height="60" value="0" />
+                        <label>Coarse</label>
+                    </div>
+                    <div class="control">
+                        <input id="cc-26" class="dial" data-width="60" data-height="60" value="0" />
+                        <label>Fine</label>
+                    </div>
+                </div>
+                <div class="group">
+                    <div class="control">
+                        <input id="cc-71" class="dial" data-width="60" data-height="60" value="0" />
+                        <label>Mod Env</label>
+                    </div>
+                    <div class="control">
+                        <input id="cc-28" class="dial" data-width="60" data-height="60" value="0" />
+                        <label>LFO 1</label>
+                    </div>
+                </div>
+                <div class="group">
+                    <div class="control">
+                        <input id="cc-72" class="dial" data-width="60" data-height="60" value="0" />
+                        <label>Mod Env PW</label>
+                    </div>
+                    <div class="control">
+                        <input id="cc-74" class="dial" data-width="60" data-height="60" value="0" />
+                        <label>Man PW</label>
+                    </div>
+                    <div class="control">
+                        <input id="cc-73" class="dial" data-width="60" data-height="60" value="0" />
+                        <label>LFO2 2 PW</label>
+                    </div>
+                </div>
             </div>
         </div>
         <div>
-            <h1>Osc 1</h1>
+            <h1>Osc 2</h1>
             <div>
-                <canvas id="d991" nx="dial" min="0" max="127" label="Fine" height="80" width="80"></canvas>
-                <canvas id="d992" nx="dial" min="0" max="127" label="Coarse" height="80" width="80"></canvas>
-                <br />
-                <canvas id="d993" nx="dial" min="0" max="127" label="Mod Env" height="80" width="80"></canvas>
-                <canvas id="d994" nx="dial" min="0" max="127" label="LFO1" height="80" width="80"></canvas>
-                <br />
-                <canvas id="d9995" nx="dial" min="0" max="127" label="PW Mod" height="80" width="80"></canvas>
-                <canvas id="d9996" nx="dial" min="0" max="127" label="PW LFO2" height="80" width="80"></canvas>
-                <canvas id="d9997" nx="dial" min="0" max="127" label="PW Man" height="80" width="80"></canvas>
+
             </div>
         </div>
         <div>
             <h1>Mixer</h1>
             <div>
-                <canvas id="d11" nx="dial" min="0" max="127" label="Osc 1" height="80" width="80"></canvas>
-                <canvas id="d12" nx="dial" min="0" max="127" label="Osc 2" height="80" width="80"></canvas>
-                <canvas id="d13" nx="dial" min="0" max="127" label="Sub" height="80" width="80"></canvas>
-                <br />
-                <canvas id="d415" nx="dial" min="0" max="127" label="Ext" height="80" width="80"></canvas>
-                <canvas id="d416" nx="dial" min="0" max="127" label="Ring" height="80" width="80"></canvas>
-                <canvas id="d417" nx="dial" min="0" max="127" label="Noise" height="80" width="80"></canvas>
+
             </div>
         </div>
         <div>
             <h1>Filter</h1>
             <div>
-                <canvas id="d21" nx="dial" min="0" max="127" label="C1" height="80" width="80"></canvas>
-                <canvas id="d22" nx="dial" min="0" max="127" label="C2" height="80" width="80"></canvas>
-                <canvas id="d23" nx="dial" min="0" max="127" label="C3" height="80" width="80"></canvas>
-                <canvas id="d24" nx="dial" min="0" max="127" label="C4" height="80" width="80"></canvas>
-                <canvas id="d25" nx="dial" min="0" max="127" label="C4" height="120" width="120"></canvas>
+
             </div>
         </div>
         <div>
@@ -93,15 +125,13 @@
         <div>
             <h1>LFO 1</h1>
             <div>
-                <canvas id="d1155" nx="dial" min="0" max="127" label="Speed" height="80" width="80"></canvas>
-                <canvas id="d1156" nx="dial" min="0" max="127" label="Delay" height="80" width="80"></canvas>
+
             </div>
         </div>
         <div>
             <h1>LFO 2</h1>
             <div>
-                <canvas id="d155" nx="dial" min="0" max="127" label="Speed" height="80" width="80"></canvas>
-                <canvas id="d156" nx="dial" min="0" max="127" label="Delay" height="80" width="80"></canvas>
+
             </div>
         </div>
         <div>
@@ -109,99 +139,183 @@
         <div>
             <h1>Mod Env</h1>
             <div>
-                <canvas id="s1" nx="slider" min="0" max="127" label="C9" width="30" height="160"></canvas>
-                &nbsp;
-                <canvas id="s2" nx="slider" min="0" max="127" label="C10" width="30" height="160"></canvas>
-                &nbsp;
-                <canvas id="s3" nx="slider" min="0" max="127" label="C11" width="30" height="160"></canvas>
-                &nbsp;
-                <canvas id="s4" nx="slider" min="0" max="127" label="C12" width="30" height="160"></canvas>
+
             </div>
         </div>
         <div>
             <h1>Amp Env</h1>
             <div>
-                <canvas id="s5" nx="slider" min="0" max="127" label="C9" width="30" height="160"></canvas>
-                &nbsp;
-                <canvas id="s6" nx="slider" min="0" max="127" label="C10" width="30" height="160"></canvas>
-                &nbsp;
-                <canvas id="s7" nx="slider" min="0" max="127" label="C11" width="30" height="160"></canvas>
-                &nbsp;
-                <canvas id="s8" nx="slider" min="0" max="127" label="C12" width="30" height="160"></canvas>
+
             </div>
         </div>
     </main>
     <footer></footer>
     <script>
 
-        nx.onload = function () {
-            //console.log(nx.fontSize);
-            //nx.fontSize = 20;
-            //console.log(nx.fontSize);
-            nx.colorize("#00CCFF"); // sets accent (default)
-        };
 
+
+        function dispatch(type, control, value) {
+            type = type.toLowerCase();
+            console.log(type, control, value, '#' + type + '-' + control);
+            if ((type != 'cc') && (type != 'nrpn')) return; //TODO: signal an error
+//            if (control == 27) value = value * 10;
+            $('#' + type + '-' + control).val(value).trigger('change');
+        }
+
+
+
+        //TODO: put into BS2 object
+        function doubleByteValue(msb, lsb) {
+            let v = msb << 1;
+            return lsb > 0 ? (v+1) : v;
+        }
+
+        var cc_expected = -1;
+        var cc_msb = -1;
+        var cc_lsb = -1;
+        var value_msb = 0;    // msb to compute value
+        var value_lsb = 0;    // lsb to compute value
+
+        var nrpn = false;
+
+        function handleCC(e) {
+
+            var msg = e.data;   // Uint8Array
+            let cc = msg[1];
+
+            let value = -1;
+
+            if (cc == WebMidi.MIDI_CONTROL_CHANGE_MESSAGES['nonregisteredparameterfine']) {   // 99
+                cc_msb = msg[2];
+                nrpn = true;
+                return;
+            } else if (cc == WebMidi.MIDI_CONTROL_CHANGE_MESSAGES['nonregisteredparametercoarse']) {  // 98
+                cc_lsb = msg[2];
+                return;
+            } else {
+                if (nrpn) {
+                    value = msg[2];
+                    let v = value;
+                    let r;
+                    if (BS2.nrpn[cc_lsb].hasOwnProperty('map')) {
+                        r = BS2.nrpn[cc_lsb].map(v);
+//                        log_value(`${BS2.nrpn[cc_lsb].name} = ${r} (${v})`);
+                    } else {
+                        r = v;
+//                        log_value(`${BS2.nrpn[cc_lsb].name} = ${v}`);
+                    }
+                    dispatch('NRPN', cc_lsb, r);
+                    nrpn = false;
+                    return;
+                }
+            }
+
+            if (cc_expected >= 0) {
+                if (cc == cc_expected) {
+//                    console.log(`got expected cc ${cc}, cc_msb=${cc_msb}`);
+
+                    value_lsb = msg[2];
+
+                    let v = doubleByteValue(value_msb, value_lsb);
+                    let r;
+                    if (BS2.control[cc_msb].hasOwnProperty('map')) {
+                        r = BS2.control[cc_msb].map(v);
+//                        log_value(`${BS2.control[cc_msb].name} = ${r} (${v})`);
+                    } else {
+                        r = v;
+//                        log_value(`${BS2.control[cc_msb].name} = ${v}`);
+                    }
+                    dispatch('CC', cc_msb, r);
+
+                    cc_expected = -1;
+
+                } else {
+//                    log(`IGNORED CC ${cc}`);
+                    cc_msb = cc;
+                }
+            } else {
+
+                if (BS2.control[cc].lsb == -1) {
+                    let v = msg[2];
+                    let r;
+                    if (BS2.control[cc].hasOwnProperty('map')) {
+                        r = BS2.control[cc].map(v);
+                        //log_value(`${CC_names[cc]} = ${r} (${v})`);
+//                        log_value(`${BS2.control[cc]} = ${r} (${v})`);
+                    } else {
+//                        log_value(`${BS2.control[cc].name} = ${v}`);
+                        r = v;
+                    }
+
+                    dispatch('CC', cc, r);
+
+                } else {
+//                    console.log('need second CC ' + BS2.control[cc].lsb);
+                    cc_expected = BS2.control[cc].lsb;
+                    cc_msb = cc;
+                    value_msb = msg[2];
+                }
+            }
+        }
+
+        function setUpDials() {
+
+            $(".dial").knob({
+                change : function (v) { console.log('change', v); },
+                release : function (v) { console.log('release', v); },
+//                fgColor:"#FF0000",
+                angleOffset: -135,
+                angleArc: 270
+            });
+
+//            $(".dial").knob({
+//                'min': -120,
+//                'max': 120,
+//                width: 60
+//            });
+
+            $("#cc-26").trigger('configure', { min: -100, max: 100 });
+            $("#cc-27").trigger('configure', { min: -12.0, max: 12.0, step: 0.1 });
+            $("#cc-28").trigger('configure', { min: -127, max: 127 });
+            $("#cc-71").trigger('configure', { min: -63, max: 63 });
+            $("#cc-72").trigger('configure', { min: -63, max: 63 });
+            $("#cc-73").trigger('configure', { min: -90, max: 90 });
+            $("#cc-74").trigger('configure', { min: 0, max: 95 });
+
+        }
 
         $(function () {
-            /*
-            navigator.requestMIDIAccess({ sysex: true }).then(onMIDISuccess, onMIDIFailure);
-            function onMIDISuccess(midiAccess) {
-                console.log("Got access to MIDI");
-                midi = midiAccess;
-                subscribeInputs(midi);
-            }
-            function onMIDIFailure(msg) {
-                console.log("onMIDIFailure", msg);
-            }
-            */
+
+            setUpDials();
+
+            WebMidi.enable(function (err) {
+
+                if (err) {
+                    alert("WebMidi could not be enabled.", err);
+                } else {
+
+                //WebMidi.inputs.map(i => log("input:" + i.name));
+                //WebMidi.outputs.map(i => log("output:" + i.name));
+
+                var input = WebMidi.getInputByName("Bass Station II");
+
+                input.on('controlchange', "all", function(e) {
+                    //console.log("CC: ", e);
+//                    log(midiEventForHuman(e));
+                    handleCC(e);
+                });
+
+                //WebMidi.addListener("connected", e => logWebMidiEvent(e));
+                //WebMidi.addListener("disconnected", e => logWebMidiEvent(e));
+
+                }
+
+            });
+
 
 //            nx.onload = function () {
 //                nx.colorize("#00CCFF"); // sets accent (default)
-
-                nx.labelSize(50);
-//                d1.draw();
-
-                /*
-                d1.on('*', function (e) { console.log(e); });
-                d1.val.value = Math.random() * 127;
-                d1.draw();
-                d2.val.value = Math.random() * 127;
-                d2.draw();
-                d3.val.value = Math.random() * 127;
-                d3.draw();
-                d4.val.value = Math.random() * 127;
-                d4.draw();
-                d5.val.value = Math.random() * 127;
-                d5.draw();
-                d6.val.value = Math.random() * 127;
-                d6.draw();
-                d7.val.value = Math.random() * 127;
-                d7.draw();
-                d8.val.value = Math.random() * 127;
-                d8.draw();
-
-                s1.hslider = false;
-                s1.val.value = Math.random() * 127;
-                //nx.labelSize(22);
-                s1.draw();
-                s2.hslider = false;
-                s2.val.value = Math.random() * 127;
-                s2.draw();
-                s3.hslider = false;
-                s3.val.value = Math.random() * 127;
-                s3.draw();
-                s4.hslider = false;
-                s4.val.value = Math.random() * 127;
-                s4.draw();
-
-                keyboard1.octaves = 7;
-                keyboard1.init();
-
-                matrix1.row = 2;
-                matrix1.col = 16;
-                matrix1.init()
-                */
-//            }
+//                nx.labelSize(50);
         });
 
 
