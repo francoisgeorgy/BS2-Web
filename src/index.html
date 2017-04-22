@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <title>Bass Station II Web Interface</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Condensed:400,700" rel="stylesheet">
-    <link rel="stylesheet" media="all" href="layout.css" />
+    <link rel="stylesheet" media="all" href="css/layout.css" />
+    <!--<link rel="stylesheet" href="css/spectre.min.css" />-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="lib/webmidi.min.js"></script>
     <script src="lib/jquery.knob.min.js"></script>
@@ -15,6 +16,9 @@
             width: 60px;
             text-align: center;
             margin: 0 5px 5px 0;
+        }
+        div.double {
+            width: 125px;
         }
         div.control > label {
             display: block;
@@ -31,23 +35,29 @@
             display: table;
             clear: both;
         }
+        .spacer {
+            float: left;
+            width: 10px;
+        }
     </style>
 </head>
 <body>
     <header></header>
     <main>
         <div>
+            <h1>Sub</h1>
             <div>
+                Octave
+                Form
             </div>
         </div>
         <div>
-            <h2>Sub-Oscillator</h2>
+            <h1>Mixer</h1>
             <div>
-            </div>
-        </div>
-        <div>
-            <h2>Ext</h2>
-            <div>
+                <div class="control">
+                    <input id="cc-111027" class="dial" data-width="60" data-height="60" value="0" />
+                    <label>Sub</label>
+                </div>
             </div>
         </div>
         <div>
@@ -55,13 +65,24 @@
             <div>
             </div>
         </div>
-        <div>
+        <div>5
         </div>
+        <div>0
+        </div>
+
 
         <div>
             <h1>Osc 1</h1>
-            <select><option>sin</option><option>saw</option></select>
             <div>
+                <div class="group">
+                    <div class="control double">
+                        -RANGE-
+                    </div>
+                    <div class="spacer">&nbsp;</div>
+                    <div class="control double">
+                        -FORM-
+                    </div>
+                </div>
                 <div class="group">
                     <div class="control">
                         <input id="cc-27" class="dial" data-width="60" data-height="60" value="0" />
@@ -70,6 +91,11 @@
                     <div class="control">
                         <input id="cc-26" class="dial" data-width="60" data-height="60" value="0" />
                         <label>Fine</label>
+                    </div>
+                    <div class="spacer">&nbsp;</div>
+                    <div class="control double">
+                        <input id="cc-74" class="dial" data-width="60" data-height="60" value="0" />
+                        <label>Man PW</label>
                     </div>
                 </div>
                 <div class="group">
@@ -81,15 +107,10 @@
                         <input id="cc-28" class="dial" data-width="60" data-height="60" value="0" />
                         <label>LFO 1</label>
                     </div>
-                </div>
-                <div class="group">
+                    <div class="spacer">&nbsp;</div>
                     <div class="control">
                         <input id="cc-72" class="dial" data-width="60" data-height="60" value="0" />
                         <label>Mod Env PW</label>
-                    </div>
-                    <div class="control">
-                        <input id="cc-74" class="dial" data-width="60" data-height="60" value="0" />
-                        <label>Man PW</label>
                     </div>
                     <div class="control">
                         <input id="cc-73" class="dial" data-width="60" data-height="60" value="0" />
@@ -98,16 +119,78 @@
                 </div>
             </div>
         </div>
+
+        <div>
+            <div class="control">
+                <input id="cc-a111027" class="dial" data-width="60" data-height="60" value="0" />
+                <label>Osc 1</label>
+            </div>
+        </div>
+
+        <div>4
+        </div>
+
+        <div>5
+        </div>
+        <div>1
+        </div>
+
+
         <div>
             <h1>Osc 2</h1>
             <div>
-
+                <div class="group">
+                    <div class="control double">
+                        -RANGE-
+                    </div>
+                    <div class="spacer">&nbsp;</div>
+                    <div class="control double">
+                        -FORM-
+                    </div>
+                </div>
+                <div class="group">
+                    <div class="control">
+                        <input id="cc-027" class="dial" data-width="60" data-height="60" value="0" />
+                        <label>Coarse</label>
+                    </div>
+                    <div class="control">
+                        <input id="cc-026" class="dial" data-width="60" data-height="60" value="0" />
+                        <label>Fine</label>
+                    </div>
+                    <div class="spacer">&nbsp;</div>
+                    <div class="control double">
+                        <input id="cc-074" class="dial" data-width="60" data-height="60" value="0" />
+                        <label>Man PW</label>
+                    </div>
+                </div>
+                <div class="group">
+                    <div class="control">
+                        <input id="cc-071" class="dial" data-width="60" data-height="60" value="0" />
+                        <label>Mod Env</label>
+                    </div>
+                    <div class="control">
+                        <input id="cc-028" class="dial" data-width="60" data-height="60" value="0" />
+                        <label>LFO 1</label>
+                    </div>
+                    <div class="spacer">&nbsp;</div>
+                    <div class="control">
+                        <input id="cc-072" class="dial" data-width="60" data-height="60" value="0" />
+                        <label>Mod Env PW</label>
+                    </div>
+                    <div class="control">
+                        <input id="cc-073" class="dial" data-width="60" data-height="60" value="0" />
+                        <label>LFO2 2 PW</label>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div>
-            <h1>Mixer</h1>
-            <div>
+        </div> <!-- / OSC 2-->
 
+        <div>
+            <div>
+                <div class="control">
+                    <input id="cc-b111027" class="dial" data-width="60" data-height="60" value="0" />
+                    <label>Osc 2</label>
+                </div>
             </div>
         </div>
         <div>
@@ -123,29 +206,68 @@
         </div>
 
         <div>
-            <h1>LFO 1</h1>
+        </div>
+
+
+        <div>
+            <h1>LFO 1, LFO 2</h1>
             <div>
 
             </div>
         </div>
         <div>
-            <h1>LFO 2</h1>
+            <h1>Overdrive</h1>
+
             <div>
 
             </div>
-        </div>
-        <div>
         </div>
         <div>
             <h1>Mod Env</h1>
             <div>
-
+                <div class="group">
+                    <div class="control">
+                        <input id="cc-1027" class="dial" data-width="60" data-height="60" value="0" />
+                        <label>A</label>
+                    </div>
+                    <div class="control">
+                        <input id="cc-1026" class="dial" data-width="60" data-height="60" value="0" />
+                        <label>D</label>
+                    </div>
+                    <div class="control">
+                        <input id="cc-11027" class="dial" data-width="60" data-height="60" value="0" />
+                        <label>S</label>
+                    </div>
+                    <div class="control">
+                        <input id="cc-11026" class="dial" data-width="60" data-height="60" value="0" />
+                        <label>R</label>
+                    </div>
+                </div>
             </div>
         </div>
         <div>
             <h1>Amp Env</h1>
             <div>
-
+                <div class="control">
+                    <input id="cc-11027" class="dial" data-width="60" data-height="60" value="0" />
+                    <label>A</label>
+                </div>
+                <div class="control">
+                    <input id="cc-11026" class="dial" data-width="60" data-height="60" value="0" />
+                    <label>D</label>
+                </div>
+                <div class="control">
+                    <input id="cc-111027" class="dial" data-width="60" data-height="60" value="0" />
+                    <label>S</label>
+                </div>
+                <div class="control">
+                    <input id="cc-111026" class="dial" data-width="60" data-height="60" value="0" />
+                    <label>R</label>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div>
             </div>
         </div>
     </main>
