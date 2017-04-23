@@ -7,7 +7,7 @@
     <meta name="author" content="francois.georgy@gmail.com">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="webmidi.min.js"></script>
-    <script src="bs2.js"></script>
+    <script src="../../bs2.js"></script>
     <style>
         .gray-box {
             border:1px solid #aaa;
@@ -130,12 +130,12 @@
 
             let value = -1;
 
-            if (cc == WebMidi.MIDI_CONTROL_CHANGE_MESSAGES['nonregisteredparameterfine']) {   // 99
+            if (cc === WebMidi.MIDI_CONTROL_CHANGE_MESSAGES['nonregisteredparameterfine']) {   // 99
                 cc_msb = msg[2];
                 console.log(`handleCC: NRPN MSB: ${cc_msb}`);
                 nrpn = true;
                 return;
-            } else if (cc == WebMidi.MIDI_CONTROL_CHANGE_MESSAGES['nonregisteredparametercoarse']) {  // 98
+            } else if (cc === WebMidi.MIDI_CONTROL_CHANGE_MESSAGES['nonregisteredparametercoarse']) {  // 98
                 cc_lsb = msg[2];
                 console.log(`handleCC: NRPN LSB: ${cc_lsb}`);
                 return;
@@ -181,6 +181,7 @@
                     cc_msb = cc;
                 }
             } else {
+                //console.log('CC', cc);
 
                 if (BS2.control[cc].lsb == -1) {
                     let v = msg[2];
@@ -188,7 +189,7 @@
                     if (BS2.control[cc].hasOwnProperty('map')) {
                         let r = BS2.control[cc].map(v);
                         //log_value(`${CC_names[cc]} = ${r} (${v})`);
-                        log_value(`${BS2.control[cc]} = ${r} (${v})`);
+                        log_value(`${BS2.control[cc].name} = ${r} (${v})`);
                     } else {
                         log_value(`${BS2.control[cc].name} = ${v}`);
                     }
@@ -220,6 +221,8 @@
                     log(midiEventForHuman(e));
                     handleCC(e);
                 });
+
+                // console.log(BS2);
 
                 //WebMidi.addListener("connected", e => logWebMidiEvent(e));
                 //WebMidi.addListener("disconnected", e => logWebMidiEvent(e));

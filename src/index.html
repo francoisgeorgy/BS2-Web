@@ -12,10 +12,13 @@
     <script src="bs2.js"></script>
     <style>
         div.control {
-            float: left;
+            /*float: left;*/
             width: 60px;
             text-align: center;
             margin: 0 5px 5px 0;
+        }
+        .row {
+            float: left;
         }
         div.double {
             width: 125px;
@@ -44,232 +47,299 @@
 <body>
     <header></header>
     <main>
-        <div>
+
+
+        <div class="box sub">
             <h1>Sub</h1>
             <div>
-                Octave
-                Form
+                <select id="cc-80">
+                    <option>sin</option>
+                    <option>pulse</option>
+                    <option>square</option>
+                </select>
+                <select id="cc-81">
+                    <option>-1</option>
+                    <option>-2</option>
+                </select>
             </div>
         </div>
-        <div>
-            <h1>Mixer</h1>
+        <div class="box lfo1">
+            <h1>LFO 1</h1>
             <div>
+                form
+            </div>
+            <div class="group">
                 <div class="control">
-                    <input id="cc-111027" class="dial" data-width="60" data-height="60" value="0" />
-                    <label>Sub</label>
+                    <input id="cc-86" class="dial" data-width="60" data-height="60" value="0" />
+                    <label>Delay</label>
+                </div>
+                <div class="control">
+                    <input id="cc-18" class="dial" data-width="60" data-height="60" value="0" />
+                    <label>Speed</label>
                 </div>
             </div>
         </div>
-        <div>
-            <h2>Effects</h2>
+        <div class="box lfo2">
+            <h1>LFO 2</h1>
             <div>
+                form
+            </div>
+            <div class="group">
+                <div class="control">
+                    <input id="cc-87" class="dial" data-width="60" data-height="60" value="0" />
+                    <label>Delay</label>
+                </div>
+                <div class="control">
+                    <input id="cc-19" class="dial" data-width="60" data-height="60" value="0" />
+                    <label>Speed</label>
+                </div>
             </div>
         </div>
-        <div>5
-        </div>
-        <div>0
-        </div>
 
-
-        <div>
+        <div class="box osc1">
             <h1>Osc 1</h1>
             <div>
                 <div class="group">
                     <div class="control double">
-                        -RANGE-
-                    </div>
-                    <div class="spacer">&nbsp;</div>
-                    <div class="control double">
-                        -FORM-
+                        <select id="cc-70">
+                            <option>16</option>
+                            <option>8</option>
+                            <option>4</option>
+                            <option>2</option>
+                        </select>
                     </div>
                 </div>
                 <div class="group">
-                    <div class="control">
+                    <div class="control row">
                         <input id="cc-27" class="dial" data-width="60" data-height="60" value="0" />
                         <label>Coarse</label>
                     </div>
-                    <div class="control">
+                    <div class="control row">
                         <input id="cc-26" class="dial" data-width="60" data-height="60" value="0" />
                         <label>Fine</label>
                     </div>
+                </div>
+                <div class="group">
+                    <div class="control row">
+                        <input id="cc-71" class="dial" data-width="60" data-height="60" value="0" />
+                        <label>Mod Env</label>
+                    </div>
+                    <div class="control row">
+                        <input id="cc-28" class="dial" data-width="60" data-height="60" value="0" />
+                        <label>LFO 1</label>
+                    </div>
                     <div class="spacer">&nbsp;</div>
-                    <div class="control double">
+                </div>
+                <div class="control double">
+                    <select id="nrpn-72">
+                        <option>sin</option>
+                        <option>tri</option>
+                        <option>saw</option>
+                        <option>pulse</option>
+                    </select>
+                </div>
+                <div class="group">
+                    <div class="control row double">
                         <input id="cc-74" class="dial" data-width="60" data-height="60" value="0" />
                         <label>Man PW</label>
                     </div>
                 </div>
                 <div class="group">
-                    <div class="control">
-                        <input id="cc-71" class="dial" data-width="60" data-height="60" value="0" />
-                        <label>Mod Env</label>
-                    </div>
-                    <div class="control">
-                        <input id="cc-28" class="dial" data-width="60" data-height="60" value="0" />
-                        <label>LFO 1</label>
-                    </div>
-                    <div class="spacer">&nbsp;</div>
-                    <div class="control">
+                    <div class="control row">
                         <input id="cc-72" class="dial" data-width="60" data-height="60" value="0" />
                         <label>Mod Env PW</label>
                     </div>
-                    <div class="control">
+                    <div class="control row">
                         <input id="cc-73" class="dial" data-width="60" data-height="60" value="0" />
                         <label>LFO2 2 PW</label>
                     </div>
                 </div>
             </div>
+
         </div>
 
-        <div>
-            <div class="control">
-                <input id="cc-a111027" class="dial" data-width="60" data-height="60" value="0" />
-                <label>Osc 1</label>
-            </div>
-        </div>
-
-        <div>4
-        </div>
-
-        <div>5
-        </div>
-        <div>1
-        </div>
-
-
-        <div>
+        <div class="box osc2">
             <h1>Osc 2</h1>
             <div>
                 <div class="group">
                     <div class="control double">
-                        -RANGE-
-                    </div>
-                    <div class="spacer">&nbsp;</div>
-                    <div class="control double">
-                        -FORM-
+                        <select id="cc-75">
+                            <option>16</option>
+                            <option>8</option>
+                            <option>4</option>
+                            <option>2</option>
+                        </select>
                     </div>
                 </div>
                 <div class="group">
-                    <div class="control">
-                        <input id="cc-027" class="dial" data-width="60" data-height="60" value="0" />
+                    <div class="control row">
+                        <input id="cc-30" class="dial" data-width="60" data-height="60" value="0" />
                         <label>Coarse</label>
                     </div>
-                    <div class="control">
-                        <input id="cc-026" class="dial" data-width="60" data-height="60" value="0" />
+                    <div class="control row">
+                        <input id="cc-29" class="dial" data-width="60" data-height="60" value="0" />
                         <label>Fine</label>
                     </div>
+                </div>
+                <div class="group">
+                    <div class="control row">
+                        <input id="cc-76" class="dial" data-width="60" data-height="60" value="0" />
+                        <label>Mod Env</label>
+                    </div>
+                    <div class="control row">
+                        <input id="cc-31" class="dial" data-width="60" data-height="60" value="0" />
+                        <label>LFO 1</label>
+                    </div>
                     <div class="spacer">&nbsp;</div>
-                    <div class="control double">
-                        <input id="cc-074" class="dial" data-width="60" data-height="60" value="0" />
+                </div>
+                <div class="control double">
+                    <select id="nrpn-82">
+                        <option>sin</option>
+                        <option>tri</option>
+                        <option>saw</option>
+                        <option>pulse</option>
+                    </select>
+                </div>
+                <div class="group">
+                    <div class="control row double">
+                        <input id="cc-79" class="dial" data-width="60" data-height="60" value="0" />
                         <label>Man PW</label>
                     </div>
                 </div>
                 <div class="group">
-                    <div class="control">
-                        <input id="cc-071" class="dial" data-width="60" data-height="60" value="0" />
-                        <label>Mod Env</label>
-                    </div>
-                    <div class="control">
-                        <input id="cc-028" class="dial" data-width="60" data-height="60" value="0" />
-                        <label>LFO 1</label>
-                    </div>
-                    <div class="spacer">&nbsp;</div>
-                    <div class="control">
-                        <input id="cc-072" class="dial" data-width="60" data-height="60" value="0" />
+                    <div class="control row">
+                        <input id="cc-77" class="dial" data-width="60" data-height="60" value="0" />
                         <label>Mod Env PW</label>
                     </div>
-                    <div class="control">
-                        <input id="cc-073" class="dial" data-width="60" data-height="60" value="0" />
+                    <div class="control row">
+                        <input id="cc-78" class="dial" data-width="60" data-height="60" value="0" />
                         <label>LFO2 2 PW</label>
                     </div>
                 </div>
             </div>
-        </div> <!-- / OSC 2-->
+        </div>
 
-        <div>
-            <div>
-                <div class="control">
-                    <input id="cc-b111027" class="dial" data-width="60" data-height="60" value="0" />
+        <div class="box mix">
+            <h1>Mixer</h1>
+            <div class="group">
+                <div class="control row">
+                    <input id="cc-22" class="dial" data-width="60" data-height="60" value="0" />
+                    <label>Sub</label>
+                </div>
+                <div class="control row">
+                    <input id="cc-20" class="dial" data-width="60" data-height="60" value="0" />
+                    <label>Osc 1</label>
+                </div>
+                <div class="control row">
+                    <input id="cc-21" class="dial" data-width="60" data-height="60" value="0" />
                     <label>Osc 2</label>
                 </div>
             </div>
+
+            <div class="group">
+                <div class="control row">
+                    <input id="cc-25" class="dial" data-width="60" data-height="60" value="0" />
+                    <label>Ext</label>
+                </div>
+                <div class="control row">
+                    <input id="cc-24" class="dial" data-width="60" data-height="60" value="0" />
+                    <label>Ring</label>
+                </div>
+                <div class="control row">
+                    <input id="cc-23" class="dial" data-width="60" data-height="60" value="0" />
+                    <label>Noise</label>
+                </div>
+            </div>
         </div>
-        <div>
+
+        <div class="box fil">
             <h1>Filter</h1>
             <div>
-
+                <select id="cc-83">
+                    <option>classic</option>
+                    <option>acid</option>
+                </select>
+                <select id="cc-106">
+                    <option>12dB</option>
+                    <option>24dB</option>
+                </select>
+                <select id="cc-84">
+                    <option>LP</option>
+                    <option>BP</option>
+                    <option>HP</option>
+                </select>
+            </div>
+            <div class="group">
+                <div class="control row">
+                    <input id="cc-82" class="dial" data-width="60" data-height="60" value="0" />
+                    <label>Reso</label>
+                </div>
+                <div class="control row">
+                    <input id="cc-16" class="dial" data-width="60" data-height="60" value="0" />
+                    <label>Freq</label>
+                </div>
+            </div>
+            <div class="group">
+                <div class="control row">
+                    <input id="cc-114" class="dial" data-width="60" data-height="60" value="0" />
+                    <label>Over</label>
+                </div>
+                <div class="control row">
+                    <input id="cc-85" class="dial" data-width="60" data-height="60" value="0" />
+                    <label>Mod</label>
+                </div>
+                <div class="control row">
+                    <input id="cc-17" class="dial" data-width="60" data-height="60" value="0" />
+                    <label>LFO 2</label>
+                </div>
             </div>
         </div>
-        <div>
-            <h1>Amplifier</h1>
-            <div>
-            </div>
-        </div>
 
-        <div>
-        </div>
-
-
-        <div>
-            <h1>LFO 1, LFO 2</h1>
-            <div>
-
-            </div>
-        </div>
-        <div>
-            <h1>Overdrive</h1>
-
-            <div>
-
-            </div>
-        </div>
-        <div>
+        <div class="box mod">
             <h1>Mod Env</h1>
             <div>
                 <div class="group">
-                    <div class="control">
-                        <input id="cc-1027" class="dial" data-width="60" data-height="60" value="0" />
+                    <div class="control row">
+                        <input id="cc-102" class="dial" data-width="60" data-height="60" value="0" />
                         <label>A</label>
                     </div>
-                    <div class="control">
-                        <input id="cc-1026" class="dial" data-width="60" data-height="60" value="0" />
+                    <div class="control row">
+                        <input id="cc-103" class="dial" data-width="60" data-height="60" value="0" />
                         <label>D</label>
                     </div>
-                    <div class="control">
-                        <input id="cc-11027" class="dial" data-width="60" data-height="60" value="0" />
+                    <div class="control row">
+                        <input id="cc-104" class="dial" data-width="60" data-height="60" value="0" />
                         <label>S</label>
                     </div>
-                    <div class="control">
-                        <input id="cc-11026" class="dial" data-width="60" data-height="60" value="0" />
+                    <div class="control row">
+                        <input id="cc-105" class="dial" data-width="60" data-height="60" value="0" />
                         <label>R</label>
                     </div>
                 </div>
             </div>
         </div>
-        <div>
+
+        <div class="box amp">
             <h1>Amp Env</h1>
-            <div>
-                <div class="control">
-                    <input id="cc-11027" class="dial" data-width="60" data-height="60" value="0" />
-                    <label>A</label>
-                </div>
-                <div class="control">
-                    <input id="cc-11026" class="dial" data-width="60" data-height="60" value="0" />
-                    <label>D</label>
-                </div>
-                <div class="control">
-                    <input id="cc-111027" class="dial" data-width="60" data-height="60" value="0" />
-                    <label>S</label>
-                </div>
-                <div class="control">
-                    <input id="cc-111026" class="dial" data-width="60" data-height="60" value="0" />
-                    <label>R</label>
-                </div>
+            <div class="control row">
+                <input id="cc-90" class="dial" data-width="60" data-height="60" value="0" />
+                <label>A</label>
+            </div>
+            <div class="control row">
+                <input id="cc-91" class="dial" data-width="60" data-height="60" value="0" />
+                <label>D</label>
+            </div>
+            <div class="control row">
+                <input id="cc-92" class="dial" data-width="60" data-height="60" value="0" />
+                <label>S</label>
+            </div>
+            <div class="control row">
+                <input id="cc-93" class="dial" data-width="60" data-height="60" value="0" />
+                <label>R</label>
             </div>
         </div>
-        <div>
-            <div>
-            </div>
-        </div>
+
+
     </main>
     <footer></footer>
     <script>
@@ -380,7 +450,53 @@
             }
         }
 
+        /**
+         * Set value of the dials
+         */
+        function setDials() {
+
+            for (let i=0; i < BS2.control.length; i++) {
+
+                let c = BS2.control[i];
+
+                if (typeof c === 'undefined') continue;
+
+                if (!c.hasOwnProperty('value')) continue;
+
+                console.log(i, c.value);
+
+                let e = $('#cc-' + i);
+                if (e.hasClass('dial')) {
+                    e.val(c.value).trigger('change');
+                } else {
+                    e.val(c.value);
+                }
+            }
+
+
+            for (let i=0; i < BS2.nrpn.length; i++) {
+
+                let c = BS2.nrpn[i];
+
+                if (typeof c === 'undefined') continue;
+
+                if (!c.hasOwnProperty('value')) continue;
+
+                console.log(i, c.value);
+
+                let e = $('#nrpn-' + i);
+                if (e.hasClass('dial')) {
+                    e.val(c.value).trigger('change');
+                } else {
+                    e.val(c.value);
+                }
+            }
+
+        }
+
         function setUpDials() {
+
+            const CURSOR = 16;
 
             $(".dial").knob({
                 change : function (v) { console.log('change', v); },
@@ -396,13 +512,37 @@
 //                width: 60
 //            });
 
-            $("#cc-26").trigger('configure', { min: -100, max: 100 });
-            $("#cc-27").trigger('configure', { min: -12.0, max: 12.0, step: 0.1 });
-            $("#cc-28").trigger('configure', { min: -127, max: 127 });
-            $("#cc-71").trigger('configure', { min: -63, max: 63 });
-            $("#cc-72").trigger('configure', { min: -63, max: 63 });
-            $("#cc-73").trigger('configure', { min: -90, max: 90 });
-            $("#cc-74").trigger('configure', { min: 0, max: 95 });
+            for (let i=0; i < BS2.control.length; i++) {
+
+                let c = BS2.control[i];
+
+                if (typeof c == 'undefined') continue;
+
+                if (!c.hasOwnProperty('range')) continue;
+
+                let id = '#cc-' + i;
+                let min = c.range[0];
+                let max = c.range[1];
+                let cursor = min < 0 ? CURSOR : false;
+                let step = 1;
+
+                console.log(i, c, min, max, cursor);
+
+                $(id).trigger('configure', { min: min, max: max, step: step, cursor: cursor });
+
+                if (min > 0) {
+                    $(id).val(min).trigger('change');
+                }
+
+            }
+
+//                $("#cc-26").trigger('configure', { min: -100, max: 100, cursor: CURSOR });
+//            $("#cc-27").trigger('configure', { min: -12.0, max: 12.0, step: 0.1, cursor: CURSOR });
+//            $("#cc-28").trigger('configure', { min: -127, max: 127, cursor: CURSOR });
+//            $("#cc-71").trigger('configure', { min: -63, max: 63, cursor: CURSOR });
+//            $("#cc-72").trigger('configure', { min: -63, max: 63, cursor: CURSOR });
+//            $("#cc-73").trigger('configure', { min: -90, max: 90 });
+//            $("#cc-74").trigger('configure', { min: 0, max: 95 });
 
         }
 
@@ -427,12 +567,25 @@
                     handleCC(e);
                 });
 
-                //WebMidi.addListener("connected", e => logWebMidiEvent(e));
+                input.on('sysex', "all", function(e) {
+                    console.log("SysEx: ", e);
+                    BS2.setValuesFromSysex(e.data);
+                    console.log(BS2.control);
+                    console.log(BS2.nrpn);
+                    setDials();
+                });
+
+//                $('#nrpn-72').val('pulse');
+//                console.log($('#nrpn-72').hasClass('dial'));
+//                    console.log($('#cc-86').hasClass('dial'));
+
+
+                    //WebMidi.addListener("connected", e => logWebMidiEvent(e));
                 //WebMidi.addListener("disconnected", e => logWebMidiEvent(e));
 
                 }
 
-            });
+            }, true);   // pass true to enable sysex support
 
 
 //            nx.onload = function () {

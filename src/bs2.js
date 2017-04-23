@@ -117,6 +117,28 @@ var BS2 = (function BassStationII() {
         return this.labels.waveform.v;
     };
 
+    // 0..127 to 5..95
+    var _5_95 = function(v) {
+        //console.log(v * 2 * 91.0 / 256 + 5 -0.4);
+        // return Math.round(v * 2 * 91.0 / 256 + 5 -0.4);
+        let out_max = 95;
+        let out_min = 5;
+        let in_max = 127;
+        let in_min = 0;
+        return Math.round(((v - in_min) / (in_max - in_min)) * (out_max - out_min) + out_min - 0.4);
+    };
+
+    // 0..127 to -90..90            //FIXME: value 63 must gives 0
+    var _90_90 = function(v) {
+        //console.log(v * 2 * 91.0 / 256 + 5 -0.4);
+        // return Math.round(v * 2 * 91.0 / 256 + 5 -0.4);
+        let out_max = 90;
+        let out_min = -90;
+        let in_max = 127;
+        let in_min = 0;
+        return Math.round(((v - in_min) / (in_max - in_min)) * (out_max - out_min) + out_min - 0.4);
+    };
+
     // Map 0..255 to -90..+90
     var _pw = function(v) {
         console.log(v * 2 * 91.0 / 256 + 5 -0.4);
@@ -250,8 +272,9 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.osc1_lfo2_pw_mod] = { // 73
             name: "Osc1 LFO2 PW Mod",
-            range: [-90,90],
             lsb: -1,
+            range: [-90,90],
+            map: _90_90,
             sysex: {
                 offset: 93,
                 mask: [0x03, 0x7C]
@@ -261,6 +284,7 @@ var BS2 = (function BassStationII() {
             name: "Osc1 Manual PW",
             lsb: -1,
             range: [5,95],
+            map: _5_95,
             sysex: {
                 offset: 19,
                 mask: [0x0F, 0x70]
@@ -328,8 +352,8 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.osc2_lfo2_pw_mod] = { // 78
             name: "Osc2 LFO2 PW Mod",
-            range: [-90,90],
             lsb: -1,
+            range: [-90,90],
             sysex: {
                 offset: 94,
                 mask: [0x01, 0x7E]
@@ -337,8 +361,9 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.osc2_manual_pw] = { // 79
             name: "Osc2 Manual PW",
-            range: [5,95],
             lsb: -1,
+            range: [5,95],
+            map: _5_95,
             sysex: {
                 offset: 25,
                 mask: [0x1F, 0x40]
@@ -346,8 +371,9 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.sub_osc_wave] = { // 80
             name: "Sub Osc Wave",
-            range: [],
+            range: [0, 2],
             lsb: -1,
+            map: v => { return SUB_WAVE_FORMS[v % SUB_WAVE_FORMS.length] },
             sysex: {
                 offset: 36,
                 mask: [0x30]
@@ -355,8 +381,9 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.sub_osc_oct] = { // 81
             name: "Sub Osc Oct",
-            range: [0,0],
+            range: [-2, -1],
             lsb: -1,
+            map: v => v - 2,
             sysex: {
                 offset: 37,
                 mask: [0x08]
@@ -373,7 +400,7 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.mixer_osc_2_level] = { // 21 (msb), 53 (lsb)
             name: "Mixer Osc 2 Level",
-            range: [],
+            range: [0,255],
             lsb: 53,
             sysex: {
                 offset: 38,
@@ -391,7 +418,7 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.mixer_noise_level] = { // 23 (msb), 55 (lsb)
             name: "Mixer Noise Level",
-            range: [],
+            range: [0,255],
             lsb: 55,
             sysex: {
                 offset: 41,
@@ -400,7 +427,7 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.mixer_ring_mod_level] = { // 24 (msb), 56 (lsb)
             name: "Mixer Ring Mod Level",
-            range: [],
+            range: [0,255],
             lsb: 56,
             sysex: {
                 offset: 42,
@@ -409,7 +436,7 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.mixer_external_signal_level] = { // 25 (msb), 57 (lsb)
             name: "Mixer External Signal Level",
-            range: [],
+            range: [0,255],
             lsb: 57,
             sysex: {
                 offset: 43,
@@ -467,7 +494,7 @@ var BS2 = (function BassStationII() {
         control[control_id.filter_mod_env_depth] = { // 85
             name: "Filter Mod Env Depth",
             lsb: -1,
-            range: [-63,63],
+            range: [-63, 63],
             map: _63,
             sysex: {
                 offset: 105,
@@ -476,7 +503,7 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.filter_lfo2_depth] = { // 17 (msb), 49 (lsb)
             name: "Filter LFO2 Depth",
-            range: [0,127],
+            range: [-127, 127],
             lsb: 49,
             map: _127,
             sysex: {
@@ -954,6 +981,10 @@ var BS2 = (function BassStationII() {
         "sin", "triangle", "saw", "pulse"
     ];
 
+    var SUB_WAVE_FORMS = [
+        "sin", "pulse", "square"
+    ];
+
     var FILTER_SHAPES = [
         "LP", "BP", "HP"
     ];
@@ -1218,6 +1249,95 @@ var BS2 = (function BassStationII() {
         120  // 12.0; 12.00000; 255
     ];
 
+    /**
+     * Returns the number of bit 0 before the rightmost bit set to 1.
+     * @param {*} v
+     */
+    function getRightShift(v) {
+        if (!v) return -1;  //means there isn't any 1-bit
+        let i = 0;
+        while ((v & 1) == 0) {
+            i++;
+            v = v>>1;
+        }
+        return i;
+    }
+
+    /**
+     * return the number of bit set
+     */
+    function getSetBits(v) {
+        for (var c = 0; v; c++) {
+            v &= v - 1; // clear the least significant bit set
+        }
+        return c;
+    }
+
+    function v8(lsb, mask_lsb) {
+        let r = getRightShift(mask_lsb);
+        let b = (lsb & mask_lsb) >> r;
+        return b;
+    }
+
+    function v16(msb, lsb, mask_msb, mask_lsb) {
+        let r = getRightShift(mask_lsb);
+        let s = getSetBits(mask_lsb);
+        let a = (msb & mask_msb) << s;
+        let b = (lsb & mask_lsb) >> r;
+        return a + b;
+    }
+
+    /**
+     * Get values from sysex data and store the value in a (new) property "value" in each control.
+     * @param data
+     */
+    var decodeSysEx = function(data, controls) {
+
+        for (let i=0; i < controls.length; i++) {
+
+            if (typeof controls[i] === 'undefined') continue;
+            if (!controls[i].hasOwnProperty('sysex')) continue;
+
+            let sysex = controls[i].sysex;
+            if (!sysex.hasOwnProperty('mask')) continue;
+
+            let bytes = new Uint8Array(sysex.mask.length);
+
+            for (let k=0; k<sysex.mask.length; k++) {
+                let b = data[sysex.offset + k];
+                b = b & sysex.mask[k];
+                bytes[k] = b;
+            }
+
+            let raw_value = 0;
+            if (sysex.mask.length === 2) {
+                raw_value = v16(data[sysex.offset], data[sysex.offset + 1], sysex.mask[0], sysex.mask[1])
+                // s += ` ${param_value.toString().paddingLeft('   ')} `;
+            } else {
+                raw_value = v8(data[sysex.offset], sysex.mask[0]);
+                // s += ` ${param_value.toString().paddingLeft('   ')} `;
+            }
+
+            // final value:
+
+            let final_value = 0;
+            if (controls[i].hasOwnProperty('map')) {
+                // console.log('compute final value with transform function and raw_value=' + param_value);
+                final_value = controls[i].map(raw_value);
+                // console.log('final value', final_value);
+            } else {
+                final_value = raw_value;
+            }
+            controls[i]['raw_value'] = raw_value;
+            controls[i]['value'] = final_value;
+        }
+
+    }; // decodeSys
+
+    var setValuesFromSysex = function(data) {
+        decodeSysEx(data, control);
+        decodeSysEx(data, nrpn);
+    };
 
     defineControls();
     defineNRPNs();
@@ -1227,7 +1347,8 @@ var BS2 = (function BassStationII() {
         control_id,
         nrpn_id,
         control,
-        nrpn
+        nrpn,
+        setValuesFromSysex
     };
 
     return publicAPI;
