@@ -69,13 +69,27 @@
                 form
             </div>
             <div class="group">
-                <div class="control">
+                <div class="control row">
                     <input id="cc-86" class="dial" data-width="60" data-height="60" value="0" />
                     <label>Delay</label>
                 </div>
-                <div class="control">
+                <div class="control row">
+                    sync
+                </div>
+            </div>
+            <div class="group">
+                <div class="control row">
                     <input id="cc-18" class="dial" data-width="60" data-height="60" value="0" />
                     <label>Speed</label>
+                </div>
+                <div class="control row">
+                    sync
+                </div>
+            </div>
+            <div class="group">
+                <div class="control">
+                    <input id="nrpn-86" class="dial" data-width="60" data-height="60" value="0" />
+                    <label>Slew</label>
                 </div>
             </div>
         </div>
@@ -85,13 +99,27 @@
                 form
             </div>
             <div class="group">
-                <div class="control">
+                <div class="control row">
                     <input id="cc-87" class="dial" data-width="60" data-height="60" value="0" />
                     <label>Delay</label>
                 </div>
-                <div class="control">
+                <div class="control row">
+                    sync
+                </div>
+            </div>
+            <div class="group">
+                <div class="control row">
                     <input id="cc-19" class="dial" data-width="60" data-height="60" value="0" />
                     <label>Speed</label>
+                </div>
+                <div class="control row">
+                    sync
+                </div>
+            </div>
+            <div class="group">
+                <div class="control">
+                    <input id="nrpn-90" class="dial" data-width="60" data-height="60" value="0" />
+                    <label>Slew</label>
                 </div>
             </div>
         </div>
@@ -100,12 +128,20 @@
             <h1>Osc 1</h1>
             <div>
                 <div class="group">
-                    <div class="control double">
+                    <div class="control row">
                         <select id="cc-70">
                             <option>16</option>
                             <option>8</option>
                             <option>4</option>
                             <option>2</option>
+                        </select>
+                    </div>
+                    <div class="control row">
+                        <select id="nrpn-72">
+                            <option>sin</option>
+                            <option>tri</option>
+                            <option>saw</option>
+                            <option>pulse</option>
                         </select>
                     </div>
                 </div>
@@ -128,15 +164,6 @@
                         <input id="cc-28" class="dial" data-width="60" data-height="60" value="0" />
                         <label>LFO 1</label>
                     </div>
-                    <div class="spacer">&nbsp;</div>
-                </div>
-                <div class="control double">
-                    <select id="nrpn-72">
-                        <option>sin</option>
-                        <option>tri</option>
-                        <option>saw</option>
-                        <option>pulse</option>
-                    </select>
                 </div>
                 <div class="group">
                     <div class="control row double">
@@ -297,6 +324,7 @@
 
         <div class="box mod">
             <h1>Mod Env</h1>
+            triggering
             <div>
                 <div class="group">
                     <div class="control row">
@@ -321,6 +349,9 @@
 
         <div class="box amp">
             <h1>Amp Env</h1>
+            triggering
+            <div>
+                <div class="group">
             <div class="control row">
                 <input id="cc-90" class="dial" data-width="60" data-height="60" value="0" />
                 <label>A</label>
@@ -337,6 +368,7 @@
                 <input id="cc-93" class="dial" data-width="60" data-height="60" value="0" />
                 <label>R</label>
             </div>
+                </div></div>
         </div>
 
 
