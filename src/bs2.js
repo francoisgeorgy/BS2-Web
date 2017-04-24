@@ -835,7 +835,8 @@ var BS2 = (function BassStationII() {
         nrpn[nrpn_id.amp_env_triggering] = { // 0 (msb), 73 (lsb)
             name: "Amp Env Triggering",
             msb: 0,
-            range: [],
+            range: [1, 3],
+            map: v => ENV_TRIGGERING[v],
             sysex: {
                 offset: 55,     //TODO: check
                 mask: [0x06]
@@ -843,8 +844,9 @@ var BS2 = (function BassStationII() {
         };
         nrpn[nrpn_id.mod_env_triggering] = { // 0 (msb), 105 (lsb)
             name: "Mod Env Triggering",
-            range: [],
             msb: 0,
+            range: [1, 3],
+            map: v => ENV_TRIGGERING[v],
             sysex: {        // TODO
                 // offset: 55,
                 // mask: [0x06]
@@ -999,6 +1001,10 @@ var BS2 = (function BassStationII() {
 
     var FILTER_TYPE = [
         "classic", "acid"
+    ];
+
+    var ENV_TRIGGERING = [
+        "", "single", "multi", "autoglide"  // 1, 2, 3
     ];
 
     // Mapping 0..255 to -12.0..12.0
@@ -1367,6 +1373,7 @@ var BS2 = (function BassStationII() {
         FILTER_SHAPES,
         FILTER_SLOPE,
         FILTER_TYPE,
+        ENV_TRIGGERING,
         setValuesFromSysex
     };
 

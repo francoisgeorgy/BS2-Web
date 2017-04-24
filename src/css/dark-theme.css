@@ -40,3 +40,11 @@ select {
 .value {
     color: #ffec03;
 }
+
+.off {
+    color: #707070;
+}
+
+.on {
+    color: #ffec03;
+}

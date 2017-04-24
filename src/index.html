@@ -11,16 +11,19 @@
     <script src="lib/webmidi.min.js"></script>
     <script src="lib/jquery.knob.min.js"></script>
     <script src="bs2.js"></script>
+    <script src="app.js"></script>
 </head>
 <body>
     <main>
-
         <div class="head">
             Bass Station II Web Interface
             <div id="connection-status"></div>
         </div>
 
-        <div class="box sub">
+        <!--
+          -- SUB OSCILLATOR
+          -->
+        <div id="sub">
             <h1>Sub</h1>
             <div>
                 <!--<label>Wave:</label>-->
@@ -34,7 +37,10 @@
             </div>
         </div>
 
-        <div class="box lfo1">
+        <!--
+          -- LFO 1
+          -->
+        <div id="lfo1">
             <h1>LFO 1</h1>
             <div class="space-after">
                 <!--<label>Wave:</label>-->
@@ -69,9 +75,15 @@
                     <label>Slew</label>
                 </div>
             </div>
+            <div style="text-align: center">
+                <label id="nrpn-89" class="off">Key-sync OFF</label>
+            </div>
         </div>
 
-        <div class="box lfo2">
+        <!--
+          -- LFO 2
+          -->
+        <div id="lfo2">
             <h1>LFO 2</h1>
             <div class="space-after">
                 <!--<label>Wave:</label>-->
@@ -113,9 +125,15 @@
                     <label>Slew</label>
                 </div>
             </div>
+            <div style="text-align: center">
+                <label id="nrpn-93" class="off">Key-sync OFF</label>
+            </div>
         </div>
 
-        <div class="box osc1">
+        <!--
+          -- OSCILLATOR 1
+          -->
+        <div id="osc1">
             <h1>Osc 1</h1>
             <div>
                 <div class="group left space-after">
@@ -155,18 +173,21 @@
                 <div class="group">
                     <div class="control row">
                         <input id="cc-72" class="dial" data-width="60" data-height="60" value="0" />
-                        <label>Mod Env PW</label>
+                        <label>Mod Env</label>
                     </div>
                     <div class="control row">
                         <input id="cc-73" class="dial" data-width="60" data-height="60" value="0" />
-                        <label>LFO2 2 PW</label>
+                        <label>LFO 2</label>
                     </div>
                 </div>
             </div>
 
         </div>
 
-        <div class="box osc2">
+        <!--
+          -- OSCILLATOR 2
+          -->
+        <div id="osc2">
             <h1>Osc 2</h1>
             <div>
                 <div class="group left space-after">
@@ -203,20 +224,26 @@
                         <label>Man PW</label>
                     </div>
                 </div>
-                <div class="group">
+                <div class="group space-after">
                     <div class="control row">
                         <input id="cc-77" class="dial" data-width="60" data-height="60" value="0" />
-                        <label>Mod Env PW</label>
+                        <label>Mod Env</label>
                     </div>
                     <div class="control row">
                         <input id="cc-78" class="dial" data-width="60" data-height="60" value="0" />
-                        <label>LFO2 2 PW</label>
+                        <label>LFO 2</label>
                     </div>
+                </div>
+                <div style="text-align: center">
+                    <label id="cc-110" class="off">Osc 1-2 Sync OFF</label>
                 </div>
             </div>
         </div>
 
-        <div class="box mix">
+        <!--
+          -- MIXER
+          -->
+        <div id="mixer">
             <h1>Mixer</h1>
             <div class="group left space-after">
                 <div class="control">&nbsp;</div>
@@ -252,7 +279,10 @@
             </div>
         </div>
 
-        <div class="box fil">
+        <!--
+          -- FILTER
+          -->
+        <div id="filter">
             <h1>Filter</h1>
             <div class="group space-after">
                 <select id="cc-83">
@@ -288,7 +318,10 @@
             </div>
         </div>
 
-        <div class="box mod">
+        <!--
+          -- MOD ENVELOPE
+          -->
+        <div id="mod-env">
             <h1>Mod Env</h1>
             <div class="group space-after">
                 <div class="control row">
@@ -309,14 +342,17 @@
                 </div>
             </div>
             <label>Triggering:</label>
-            <select id="aaaaaa">
+            <select id="nrpn-105">
                 <option>Single</option>
                 <option>Multi</option>
                 <option>Autoglide</option>
             </select>
         </div>
 
-        <div class="box amp">
+        <!--
+          -- AMP ENVELOPE
+          -->
+        <div id="amp-env">
             <h1>Amp Env</h1>
             <div class="group space-after">
                 <div class="control row">
@@ -337,14 +373,17 @@
                 </div>
             </div>
             <label>Triggering:</label>
-            <select id="aaaaaa">
+            <select id="nrpn-73">
                 <option>Single</option>
                 <option>Multi</option>
                 <option>Autoglide</option>
             </select>
         </div>
 
-        <div class="wheels">
+        <!--
+          -- MOD WHEELS
+          -->
+        <div id="wheels">
             <h1>Wheels</h1>
             <div class="group">
                 <div class="control row">
@@ -353,7 +392,10 @@
             </div>
         </div>
 
-        <div class="keyboard">
+        <!--
+          -- KEYBOARD
+          -->
+        <div id="keyboard">
             <h1>Keyboard</h1>
             <div class="group">
                 <div class="control row">
@@ -365,298 +407,34 @@
             </div>
         </div>
 
-        <div class="other1">
+        <!--
+          -- NOT USED YET
+          -->
+        <div id="other1">
         </div>
 
-        <div class="other2">
+        <!--
+          -- NOT USED YET
+          -->
+        <div id="other2">
         </div>
 
-        <div class="status" id="status">
+        <!--
+          -- ARPEGGIATOR
+          -->
+        <div id="arpeggiator">
+            <h1>ARP</h1>
+        </div>
+
+        <!--
+          -- STATUS and MESSAGES
+          -->
+        <div id="status">
         </div>
 
     </main>
     <footer></footer>
     <script>
-
-        function setStatus(msg) {
-            $('#status').removeClass("error").text(msg);
-        }
-
-        function setStatusError(msg) {
-            $('#status').addClass("error").text(msg);
-
-        }
-
-        function setConnectionStatus(status) {
-            $('#connection-status').text(status ? 'connected' : 'not connected');
-        }
-
-        function dispatch(type, control, value) {
-            type = type.toLowerCase();
-            console.log(type, control, value, '#' + type + '-' + control);
-            if ((type != 'cc') && (type != 'nrpn')) return; //TODO: signal an error
-            $('#' + type + '-' + control).val(value).trigger('change');
-        }
-
-        //TODO: put into BS2 object
-        function doubleByteValue(msb, lsb) {
-            let v = msb << 1;
-            return lsb > 0 ? (v+1) : v;
-        }
-
-        var cc_expected = -1;
-        var cc_msb = -1;
-        var cc_lsb = -1;
-        var value_msb = 0;    // msb to compute value
-        var value_lsb = 0;    // lsb to compute value
-
-        var nrpn = false;
-
-        function handleCC(e) {
-
-            var msg = e.data;   // Uint8Array
-            let cc = msg[1];
-
-            let value = -1;
-
-            if (cc == WebMidi.MIDI_CONTROL_CHANGE_MESSAGES['nonregisteredparameterfine']) {   // 99
-                cc_msb = msg[2];
-                nrpn = true;
-                return;
-            } else if (cc == WebMidi.MIDI_CONTROL_CHANGE_MESSAGES['nonregisteredparametercoarse']) {  // 98
-                cc_lsb = msg[2];
-                return;
-            } else {
-                if (nrpn) {
-                    value = msg[2];
-                    let v = value;
-                    let r;
-                    if (BS2.nrpn[cc_lsb].hasOwnProperty('map')) {
-                        r = BS2.nrpn[cc_lsb].map(v);
-//                        log_value(`${BS2.nrpn[cc_lsb].name} = ${r} (${v})`);
-                    } else {
-                        r = v;
-//                        log_value(`${BS2.nrpn[cc_lsb].name} = ${v}`);
-                    }
-                    dispatch('NRPN', cc_lsb, r);
-                    nrpn = false;
-                    return;
-                }
-            }
-
-            if (cc_expected >= 0) {
-                if (cc == cc_expected) {
-//                    console.log(`got expected cc ${cc}, cc_msb=${cc_msb}`);
-
-                    value_lsb = msg[2];
-
-                    let v = doubleByteValue(value_msb, value_lsb);
-                    let r;
-                    if (BS2.control[cc_msb].hasOwnProperty('map')) {
-                        r = BS2.control[cc_msb].map(v);
-//                        log_value(`${BS2.control[cc_msb].name} = ${r} (${v})`);
-                    } else {
-                        r = v;
-//                        log_value(`${BS2.control[cc_msb].name} = ${v}`);
-                    }
-                    dispatch('CC', cc_msb, r);
-
-                    cc_expected = -1;
-
-                } else {
-//                    log(`IGNORED CC ${cc}`);
-                    cc_msb = cc;
-                }
-            } else {
-
-                if (BS2.control[cc].lsb == -1) {
-                    let v = msg[2];
-                    let r;
-                    if (BS2.control[cc].hasOwnProperty('map')) {
-                        r = BS2.control[cc].map(v);
-                        //log_value(`${CC_names[cc]} = ${r} (${v})`);
-//                        log_value(`${BS2.control[cc]} = ${r} (${v})`);
-                    } else {
-//                        log_value(`${BS2.control[cc].name} = ${v}`);
-                        r = v;
-                    }
-
-                    dispatch('CC', cc, r);
-
-                } else {
-//                    console.log('need second CC ' + BS2.control[cc].lsb);
-                    cc_expected = BS2.control[cc].lsb;
-                    cc_msb = cc;
-                    value_msb = msg[2];
-                }
-            }
-        }
-
-        /**
-         * Set value of the dials
-         */
-        function setDials() {
-
-            for (let i=0; i < BS2.control.length; i++) {
-
-                let c = BS2.control[i];
-
-                if (typeof c === 'undefined') continue;
-
-                if (!c.hasOwnProperty('value')) continue;
-
-                console.log(i, c.value);
-
-                let e = $('#cc-' + i);
-                if (e.hasClass('dial')) {
-                    e.val(c.value).trigger('change');
-                } else {
-                    e.val(c.value);
-                }
-            }
-
-
-            for (let i=0; i < BS2.nrpn.length; i++) {
-
-                let c = BS2.nrpn[i];
-
-                if (typeof c === 'undefined') continue;
-
-                if (!c.hasOwnProperty('value')) continue;
-
-                console.log(i, c.value);
-
-                let e = $('#nrpn-' + i);
-                if (e.hasClass('dial')) {
-                    e.val(c.value).trigger('change');
-                } else {
-                    e.val(c.value);
-                }
-            }
-
-        }
-
-        function setupDials() {
-
-            const CURSOR = 16;
-
-            $(".dial").knob({
-                change : function (v) { console.log('change', v); },
-                release : function (v) { console.log('release', v); },
-                angleOffset: -135,
-                angleArc: 270,
-                bgColor: "#606060",
-                fgColor: "#ffec03"
-            });
-
-            for (let i=0; i < BS2.control.length; i++) {
-
-                let c = BS2.control[i];
-
-                if (typeof c == 'undefined') continue;
-
-                if (!c.hasOwnProperty('range')) continue;
-
-                let id = '#cc-' + i;
-                let min = c.range[0];
-                let max = c.range[1];
-                let cursor = min < 0 ? CURSOR : false;
-                let step = 1;
-
-                console.log(i, c, min, max, cursor);
-
-                $(id).trigger('configure', { min: min, max: max, step: step, cursor: cursor });
-
-                if (min > 0) {
-                    $(id).val(min).trigger('change');
-                }
-
-            }
-
-        } // setupDials
-
-        function setupLists() {
-
-            $('#cc-80').append(
-                BS2.SUB_WAVE_FORMS.map(o => { console.log(o); return $("<option>").val(o).text(o); })
-            );
-            $('#cc-88,#cc-89').append(
-                BS2.LFO_WAVE_FORMS.map(o => { console.log(o); return $("<option>").val(o).text(o); })
-            );
-            $('#cc-70,#cc-75').append(
-                BS2.OSC_RANGES.map(o => { console.log(o); return $("<option>").val(o).text(o); })
-            );
-            $('#nrpn-72,#nrpn-82').append(
-                BS2.OSC_WAVE_FORMS.map(o => { console.log(o); return $("<option>").val(o).text(o); })
-            );
-            $('#cc-83').append(
-                BS2.FILTER_TYPE.map(o => { console.log(o); return $("<option>").val(o).text(o); })
-            );
-            $('#cc-106').append(
-                BS2.FILTER_SLOPE.map(o => { console.log(o); return $("<option>").val(o).text(o); })
-            );
-            $('#cc-84').append(
-                BS2.FILTER_SHAPES.map(o => { console.log(o); return $("<option>").val(o).text(o); })
-            );
-        } // setupLists
-
-        $(function () {
-
-            setupDials();
-            setupLists();
-
-            WebMidi.enable(function (err) {
-
-                console.log('webmidi err', err);
-
-                if (err) {
-                    setStatusError("ERROR: WebMidi could not be enabled.");
-                    setConnectionStatus(false);
-                } else {
-
-                    setStatus("WebMidi enabled.");
-
-                    //WebMidi.inputs.map(i => log("input:" + i.name));
-                    //WebMidi.outputs.map(i => log("output:" + i.name));
-
-                    var input = WebMidi.getInputByName("Bass Station II");
-
-                    if (input) {
-
-                        input.on('controlchange', "all", function(e) {
-                            //console.log("CC: ", e);
-                            //                    log(midiEventForHuman(e));
-                            handleCC(e);
-                        });
-
-                        input.on('sysex', "all", function(e) {
-                            console.log("SysEx: ", e);
-                            BS2.setValuesFromSysex(e.data);
-                            console.log(BS2.control);
-                            console.log(BS2.nrpn);
-                            setDials();
-                        });
-
-                        setConnectionStatus(true);
-
-                    } else {
-
-                        setStatusError("Bass Stations II not found.")
-                        setConnectionStatus(false);
-
-                    }
-
-                    //WebMidi.addListener("connected", e => logWebMidiEvent(e));
-                    //WebMidi.addListener("disconnected", e => logWebMidiEvent(e));
-
-                }
-
-            }, true);   // pass true to enable sysex support
-
-            //setStatus("Send a SysDump from your BS2 to initialize the on-screen controls.");
-
-        });
-
 
     </script>
 </body>

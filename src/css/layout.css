@@ -30,7 +30,6 @@ main > div {
 }
 */
 
-
 main {
     display: grid;
     grid-gap: 4px;
@@ -47,62 +46,67 @@ main > div {
     grid-column: 1 / span 8;
     grid-row: 1;
 }
-.sub {
+#sub {
     grid-column: 1 / span 2;
     grid-row: 2 / span 2;
 }
-.lfo1 {
+#lfo1 {
     grid-column: 1;
     grid-row: 4 / span 3;
 }
-.lfo2 {
+#lfo2 {
     grid-column: 2 ;
     grid-row: 4 / span 3;
 }
-.osc1 {
+#osc1 {
     grid-column: 3;
     grid-row: 2 / span 5;
 }
-.osc2 {
+#osc2 {
     grid-column: 4;
     grid-row: 2 / span 5;
 }
-.mix {
+#mixer {
     grid-column: 5 / span 2;
     grid-row: 2 / span 4;
 }
-.fil {
+#filter {
     grid-column: 7 / span 2;
     grid-row: 2 / span 4;
 }
-.mod {
+#mod-env {
     grid-column: 5 / span 2;
     grid-row: 6;
 }
-.amp {
+#amp-env {
     grid-column: 7 / span 2;
     grid-row: 6;
 }
-.wheels {
+#wheels {
     grid-column: 1 / span 2;
     grid-row: 7;
 }
-.keyboard {
+#keyboard {
     grid-column: 3 / span 2;
     grid-row: 7;
 }
-.other1 {
+#other1 {
     grid-column: 5 / span 2;
     grid-row: 7;
 }
-.other2 {
+#other2 {
     grid-column: 7 / span 2;
     grid-row: 7;
 }
-.status {
+#arpeggiator {
     grid-column: 1 / span 8;
     grid-row: 8;
 }
+#status {
+    grid-column: 1 / span 8;
+    grid-row: 9;
+}
+
 
 #status {
     font-size: 0.9em;
