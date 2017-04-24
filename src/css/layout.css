@@ -1,13 +1,12 @@
 body {
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto Condensed', sans-serif;
     /*font-family: 'Roboto Mono', monospace;*/
-    background-color: #eee;
-
 }
 
 h1, h2 {
     font-family: 'Roboto Condensed', sans-serif;
     font-weight: normal;
+    font-size: 1.5em;
 }
 
 h1 {
@@ -35,53 +34,130 @@ main > div {
 main {
     display: grid;
     grid-gap: 4px;
-    grid-template-columns: repeat(8, 1fr);
-    /*background-color: #eee;*/
-    /*color: #444;*/
+    /*grid-template-columns: repeat(8, 1fr);*/
+    justify-content: left;
 }
 
 main > div {
-    background-color: #fff;
-    /*color: #fff;*/
     border-radius: 8px;
     padding: 8px;
-    /*padding: 20px;*/
-    /*font-size: 150%;*/
 }
 
+.head {
+    grid-column: 1 / span 8;
+    grid-row: 1;
+}
 .sub {
     grid-column: 1 / span 2;
-    grid-row: 1 / span 2;
+    grid-row: 2 / span 2;
 }
 .lfo1 {
     grid-column: 1;
-    grid-row: 3 / span 3;
+    grid-row: 4 / span 3;
 }
 .lfo2 {
     grid-column: 2 ;
-    grid-row: 3 / span 3;
+    grid-row: 4 / span 3;
 }
 .osc1 {
     grid-column: 3;
-    grid-row: 1 / span 5;
+    grid-row: 2 / span 5;
 }
 .osc2 {
     grid-column: 4;
-    grid-row: 1 / span 5;
+    grid-row: 2 / span 5;
 }
 .mix {
     grid-column: 5 / span 2;
-    grid-row: 1 / span 4;
+    grid-row: 2 / span 4;
 }
 .fil {
     grid-column: 7 / span 2;
-    grid-row: 1 / span 4;
+    grid-row: 2 / span 4;
 }
 .mod {
-    grid-column: 7 / span 2;
-    grid-row: 5;
+    grid-column: 5 / span 2;
+    grid-row: 6;
 }
 .amp {
+    grid-column: 7 / span 2;
+    grid-row: 6;
+}
+.wheels {
+    grid-column: 1 / span 2;
+    grid-row: 7;
+}
+.keyboard {
+    grid-column: 3 / span 2;
+    grid-row: 7;
+}
+.other1 {
     grid-column: 5 / span 2;
-    grid-row: 5;
+    grid-row: 7;
+}
+.other2 {
+    grid-column: 7 / span 2;
+    grid-row: 7;
+}
+.status {
+    grid-column: 1 / span 8;
+    grid-row: 8;
+}
+
+
+.head {
+    font-size: 0.8em;
+}
+
+#con-status {
+    float:right
+}
+
+div.control {
+    /*float: left;*/
+    width: 60px;
+    text-align: center;
+    margin: 0 5px 5px 0;
+}
+.row {
+    float: left;
+}
+div.left > div.control {
+    text-align: left;
+}
+div.double {
+    width: 125px;
+}
+label {
+    font-size: 0.8em;
+}
+div.control > label {
+    display: block;
+    margin-top:-10px;
+}
+/*div.label {
+    background-color: yellow;
+    margin-top:-10px;
+}*/
+.group:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+.spacer {
+    float: left;
+    width: 10px;
+}
+.space-after {
+    margin-bottom: 15px;
+}
+
+select {
+    font-family: 'Roboto Condensed', sans-serif;
+    border-radius: 4px;
+    font-size: 0.8em;
+}
+
+.value {
+    font-size: 0.8em;
 }

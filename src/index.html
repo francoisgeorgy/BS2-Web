@@ -5,76 +5,46 @@
     <title>Bass Station II Web Interface</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Condensed:400,700" rel="stylesheet">
     <link rel="stylesheet" media="all" href="css/layout.css" />
+    <link rel="stylesheet" media="all" href="css/dark-theme.css" />
     <!--<link rel="stylesheet" href="css/spectre.min.css" />-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="lib/webmidi.min.js"></script>
     <script src="lib/jquery.knob.min.js"></script>
     <script src="bs2.js"></script>
-    <style>
-        div.control {
-            /*float: left;*/
-            width: 60px;
-            text-align: center;
-            margin: 0 5px 5px 0;
-        }
-        .row {
-            float: left;
-        }
-        div.double {
-            width: 125px;
-        }
-        div.control > label {
-            display: block;
-            margin-top:-10px;
-            font-size: 0.8em;
-            color: #999;
-        }
-        /*div.label {
-            background-color: yellow;
-            margin-top:-10px;
-        }*/
-        .group:after {
-            content: "";
-            display: table;
-            clear: both;
-        }
-        .spacer {
-            float: left;
-            width: 10px;
-        }
-    </style>
 </head>
 <body>
-    <header></header>
     <main>
 
+        <div class="head">
+            Bass Station II Web Interface
+            <div id="con-status">not connected</div>
+        </div>
 
         <div class="box sub">
             <h1>Sub</h1>
             <div>
+                <!--<label>Wave:</label>-->
                 <select id="cc-80">
-                    <option>sin</option>
-                    <option>pulse</option>
-                    <option>square</option>
                 </select>
+                <label style="margin-left:10px">Octave:</label>
                 <select id="cc-81">
                     <option>-1</option>
                     <option>-2</option>
                 </select>
             </div>
         </div>
+
         <div class="box lfo1">
             <h1>LFO 1</h1>
-            <div>
-                form
+            <div class="space-after">
+                <!--<label>Wave:</label>-->
+                <select id="cc-88">
+                </select>
             </div>
             <div class="group">
                 <div class="control row">
                     <input id="cc-86" class="dial" data-width="60" data-height="60" value="0" />
                     <label>Delay</label>
-                </div>
-                <div class="control row">
-                    sync
                 </div>
             </div>
             <div class="group">
@@ -82,8 +52,15 @@
                     <input id="cc-18" class="dial" data-width="60" data-height="60" value="0" />
                     <label>Speed</label>
                 </div>
+            </div>
+            <div class="group space-after">
                 <div class="control row">
-                    sync
+                    <!--<label>Sync:</label>-->
+                    <select>
+                        <option>speed</option>
+                        <option>sync</option>
+                    </select>
+                    <div class="value">sync val</div>
                 </div>
             </div>
             <div class="group">
@@ -93,18 +70,18 @@
                 </div>
             </div>
         </div>
+
         <div class="box lfo2">
             <h1>LFO 2</h1>
-            <div>
-                form
+            <div class="space-after">
+                <!--<label>Wave:</label>-->
+                <select id="cc-89">
+                </select>
             </div>
             <div class="group">
                 <div class="control row">
                     <input id="cc-87" class="dial" data-width="60" data-height="60" value="0" />
                     <label>Delay</label>
-                </div>
-                <div class="control row">
-                    sync
                 </div>
             </div>
             <div class="group">
@@ -112,8 +89,22 @@
                     <input id="cc-19" class="dial" data-width="60" data-height="60" value="0" />
                     <label>Speed</label>
                 </div>
+                <!--<div class="control row" style="padding-top:10px">-->
+                    <!--<label>Sync:</label>-->
+                    <!--<select>-->
+                        <!--<option>speed</option>-->
+                        <!--<option>sync</option>-->
+                    <!--</select>-->
+                    <!--<div class="value">sync val</div>-->
+                <!--</div>-->
+            </div>
+            <div class="group space-after">
                 <div class="control row">
-                    sync
+                    <select>
+                        <option>speed</option>
+                        <option>sync</option>
+                    </select>
+                    <div class="value">sync val</div>
                 </div>
             </div>
             <div class="group">
@@ -127,21 +118,11 @@
         <div class="box osc1">
             <h1>Osc 1</h1>
             <div>
-                <div class="group">
-                    <div class="control row">
+                <div class="group left space-after">
+                    <div class="control double">
                         <select id="cc-70">
-                            <option>16</option>
-                            <option>8</option>
-                            <option>4</option>
-                            <option>2</option>
                         </select>
-                    </div>
-                    <div class="control row">
                         <select id="nrpn-72">
-                            <option>sin</option>
-                            <option>tri</option>
-                            <option>saw</option>
-                            <option>pulse</option>
                         </select>
                     </div>
                 </div>
@@ -155,7 +136,7 @@
                         <label>Fine</label>
                     </div>
                 </div>
-                <div class="group">
+                <div class="group space-after">
                     <div class="control row">
                         <input id="cc-71" class="dial" data-width="60" data-height="60" value="0" />
                         <label>Mod Env</label>
@@ -188,13 +169,11 @@
         <div class="box osc2">
             <h1>Osc 2</h1>
             <div>
-                <div class="group">
+                <div class="group left space-after">
                     <div class="control double">
                         <select id="cc-75">
-                            <option>16</option>
-                            <option>8</option>
-                            <option>4</option>
-                            <option>2</option>
+                        </select>
+                        <select id="nrpn-82">
                         </select>
                     </div>
                 </div>
@@ -208,7 +187,7 @@
                         <label>Fine</label>
                     </div>
                 </div>
-                <div class="group">
+                <div class="group space-after">
                     <div class="control row">
                         <input id="cc-76" class="dial" data-width="60" data-height="60" value="0" />
                         <label>Mod Env</label>
@@ -217,15 +196,6 @@
                         <input id="cc-31" class="dial" data-width="60" data-height="60" value="0" />
                         <label>LFO 1</label>
                     </div>
-                    <div class="spacer">&nbsp;</div>
-                </div>
-                <div class="control double">
-                    <select id="nrpn-82">
-                        <option>sin</option>
-                        <option>tri</option>
-                        <option>saw</option>
-                        <option>pulse</option>
-                    </select>
                 </div>
                 <div class="group">
                     <div class="control row double">
@@ -248,6 +218,9 @@
 
         <div class="box mix">
             <h1>Mixer</h1>
+            <div class="group left space-after">
+                <div class="control">&nbsp;</div>
+            </div>
             <div class="group">
                 <div class="control row">
                     <input id="cc-22" class="dial" data-width="60" data-height="60" value="0" />
@@ -281,7 +254,7 @@
 
         <div class="box fil">
             <h1>Filter</h1>
-            <div>
+            <div class="group space-after">
                 <select id="cc-83">
                     <option>classic</option>
                     <option>acid</option>
@@ -324,51 +297,89 @@
 
         <div class="box mod">
             <h1>Mod Env</h1>
-            triggering
-            <div>
-                <div class="group">
-                    <div class="control row">
-                        <input id="cc-102" class="dial" data-width="60" data-height="60" value="0" />
-                        <label>A</label>
-                    </div>
-                    <div class="control row">
-                        <input id="cc-103" class="dial" data-width="60" data-height="60" value="0" />
-                        <label>D</label>
-                    </div>
-                    <div class="control row">
-                        <input id="cc-104" class="dial" data-width="60" data-height="60" value="0" />
-                        <label>S</label>
-                    </div>
-                    <div class="control row">
-                        <input id="cc-105" class="dial" data-width="60" data-height="60" value="0" />
-                        <label>R</label>
-                    </div>
+            <div class="group space-after">
+                <div class="control row">
+                    <input id="cc-102" class="dial" data-width="60" data-height="60" value="0" />
+                    <label>A</label>
+                </div>
+                <div class="control row">
+                    <input id="cc-103" class="dial" data-width="60" data-height="60" value="0" />
+                    <label>D</label>
+                </div>
+                <div class="control row">
+                    <input id="cc-104" class="dial" data-width="60" data-height="60" value="0" />
+                    <label>S</label>
+                </div>
+                <div class="control row">
+                    <input id="cc-105" class="dial" data-width="60" data-height="60" value="0" />
+                    <label>R</label>
                 </div>
             </div>
+            <label>Triggering:</label>
+            <select id="aaaaaa">
+                <option>Single</option>
+                <option>Multi</option>
+                <option>Autoglide</option>
+            </select>
         </div>
 
         <div class="box amp">
             <h1>Amp Env</h1>
-            triggering
-            <div>
-                <div class="group">
-            <div class="control row">
-                <input id="cc-90" class="dial" data-width="60" data-height="60" value="0" />
-                <label>A</label>
+            <div class="group space-after">
+                <div class="control row">
+                    <input id="cc-90" class="dial" data-width="60" data-height="60" value="0"/>
+                    <label>A</label>
+                </div>
+                <div class="control row">
+                    <input id="cc-91" class="dial" data-width="60" data-height="60" value="0"/>
+                    <label>D</label>
+                </div>
+                <div class="control row">
+                    <input id="cc-92" class="dial" data-width="60" data-height="60" value="0"/>
+                    <label>S</label>
+                </div>
+                <div class="control row">
+                    <input id="cc-93" class="dial" data-width="60" data-height="60" value="0"/>
+                    <label>R</label>
+                </div>
             </div>
-            <div class="control row">
-                <input id="cc-91" class="dial" data-width="60" data-height="60" value="0" />
-                <label>D</label>
+            <label>Triggering:</label>
+            <select id="aaaaaa">
+                <option>Single</option>
+                <option>Multi</option>
+                <option>Autoglide</option>
+            </select>
+        </div>
+
+        <div class="wheels">
+            <h1>Wheels</h1>
+            <div class="group">
+                <div class="control row">
+                    <label>Mod Wheel</label>
+                </div>
             </div>
-            <div class="control row">
-                <input id="cc-92" class="dial" data-width="60" data-height="60" value="0" />
-                <label>S</label>
+        </div>
+
+        <div class="keyboard">
+            <h1>Keyboard</h1>
+            <div class="group">
+                <div class="control row">
+                    <label>Aftertouch</label>
+                </div>
+                <div class="control row">
+                    <label>Aftertouch</label>
+                </div>
             </div>
-            <div class="control row">
-                <input id="cc-93" class="dial" data-width="60" data-height="60" value="0" />
-                <label>R</label>
-            </div>
-                </div></div>
+        </div>
+
+        <div class="other1">
+        </div>
+
+        <div class="other2">
+        </div>
+
+        <div class="status">
+            Status messages...
         </div>
 
 
@@ -526,7 +537,7 @@
 
         }
 
-        function setUpDials() {
+        function setupDials() {
 
             const CURSOR = 16;
 
@@ -535,7 +546,48 @@
                 release : function (v) { console.log('release', v); },
 //                fgColor:"#FF0000",
                 angleOffset: -135,
-                angleArc: 270
+                angleArc: 270,
+                bgColor: "#606060",
+                fgColor: "#ffec03"
+//                skin: "tron",
+//                thickness:.2,
+/*
+                draw : function () {
+
+                    // "tron" case
+//                    if(this.$.data('skin') == 'tron') {
+
+                        this.cursorExt = 0.3;
+
+                        var a = this.arc(this.cv)  // Arc
+                            , pa                   // Previous arc
+                            , r = 1;
+
+                        this.g.lineWidth = this.lineWidth;
+
+                        if (this.o.displayPrevious) {
+                            pa = this.arc(this.v);
+                            this.g.beginPath();
+                            this.g.strokeStyle = this.pColor;
+                            this.g.arc(this.xy, this.xy, this.radius - this.lineWidth, pa.s, pa.e, pa.d);
+                            this.g.stroke();
+                        }
+
+                        this.g.beginPath();
+                        this.g.strokeStyle = r ? this.o.fgColor : this.fgColor ;
+                        this.g.arc(this.xy, this.xy, this.radius - this.lineWidth, a.s, a.e, a.d);
+                        this.g.stroke();
+
+                        this.g.lineWidth = 2;
+                        this.g.beginPath();
+                        this.g.strokeStyle = this.o.fgColor;
+                        this.g.arc( this.xy, this.xy, this.radius - this.lineWidth + 1 + this.lineWidth * 2 / 3, 0, 2 * Math.PI, false);
+                        this.g.stroke();
+
+                        return false;
+                    }
+//                } // draw
+*/
             });
 
 //            $(".dial").knob({
@@ -578,9 +630,26 @@
 
         }
 
+        function setupLists() {
+
+            $('#cc-80').append(
+                BS2.SUB_WAVE_FORMS.map(o => { console.log(o); return $("<option>").val(o).text(o); })
+            );
+            $('#cc-88,#cc-89').append(
+                BS2.LFO_WAVE_FORMS.map(o => { console.log(o); return $("<option>").val(o).text(o); })
+            );
+            $('#cc-70,#cc-75').append(
+                BS2.OSC_RANGES.map(o => { console.log(o); return $("<option>").val(o).text(o); })
+            );
+            $('#nrpn-72,#nrpn-82').append(
+                BS2.OSC_WAVE_FORMS.map(o => { console.log(o); return $("<option>").val(o).text(o); })
+            );
+        }
+
         $(function () {
 
-            setUpDials();
+            setupDials();
+            setupLists();
 
             WebMidi.enable(function (err) {
 

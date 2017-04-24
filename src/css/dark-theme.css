@@ -1,0 +1,38 @@
+body {
+    background-color: #000000;
+    color: #eee;
+}
+
+h1, h2 {
+    color: #707070;
+}
+
+main > div {
+    background-color: #333;
+    /*color: #fff;*/
+}
+
+.head {
+    color: #666;
+}
+
+#con-status {
+    color: #ffec03;
+}
+
+.control {
+    color: #aaa;
+}
+label {
+     color: #aaa;
+ }
+
+select {
+    color: #ffec03;
+    background-color: #333;
+    border-color: #707070;
+}
+
+.value {
+    color: #ffec03;
+}

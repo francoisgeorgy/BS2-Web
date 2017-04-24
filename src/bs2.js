@@ -802,7 +802,7 @@ var BS2 = (function BassStationII() {
             name: "Osc1 Waveform",
             msb: 0,
             range: [1, 3],
-            map: v => { return WAVE_FORMS[v % WAVE_FORMS.length] },
+            map: v => { return OSC_WAVE_FORMS[v % OSC_WAVE_FORMS.length] },
             sysex: {
                 offset: 19,
                 mask: [0x60]
@@ -812,7 +812,7 @@ var BS2 = (function BassStationII() {
             name: "Osc2 Waveform",
             msb: 0,
             range: [1, 3],
-            map: v => { return WAVE_FORMS[v % WAVE_FORMS.length] },
+            map: v => { return OSC_WAVE_FORMS[v % OSC_WAVE_FORMS.length] },
             sysex: {
                 offset: 24,
                 mask: [0x03]
@@ -974,11 +974,15 @@ var BS2 = (function BassStationII() {
     } // defineNRPNs()
 
     var OSC_RANGES = [
-        16, 8, 4, 2
+        "16'", "8'", "4'", "2'"
     ];
 
-    var WAVE_FORMS = [
+    var OSC_WAVE_FORMS = [
         "sin", "triangle", "saw", "pulse"
+    ];
+
+    var LFO_WAVE_FORMS = [
+        "triangle", "saw", "square", "S+H"
     ];
 
     var SUB_WAVE_FORMS = [
@@ -1348,6 +1352,11 @@ var BS2 = (function BassStationII() {
         nrpn_id,
         control,
         nrpn,
+        OSC_RANGES,
+        OSC_WAVE_FORMS,
+        LFO_WAVE_FORMS,
+        SUB_WAVE_FORMS,
+        FILTER_SHAPES,
         setValuesFromSysex
     };
 
