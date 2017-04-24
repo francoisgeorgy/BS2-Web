@@ -16,8 +16,12 @@ main > div {
     color: #666;
 }
 
-#con-status {
-    color: #ffec03;
+#connection-status {
+    color: #C0C040;
+}
+
+.error {
+    color: #ff2222;
 }
 
 .control {

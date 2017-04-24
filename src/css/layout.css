@@ -104,12 +104,15 @@ main > div {
     grid-row: 8;
 }
 
+#status {
+    font-size: 0.9em;
+}
 
 .head {
     font-size: 0.8em;
 }
 
-#con-status {
+#connection-status {
     float:right
 }
 

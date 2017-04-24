@@ -447,7 +447,7 @@ var BS2 = (function BassStationII() {
             name: "Filter Type",
             range: [0, 1],
             lsb: -1,
-            map: v => v===0 ? 'classic' : 'acid',
+            map: v => FILTER_TYPE[v],
             sysex: {
                 offset: 48,
                 mask: [0x04]
@@ -457,7 +457,7 @@ var BS2 = (function BassStationII() {
             name: "Filter Slope",
             range: [0, 1],
             lsb: -1,
-            map: v => v===0 ? '12dB' : '24dB',
+            map: v => FILTER_SLOPE[v],
             sysex: {
                 offset: 48,
                 mask: [0x08]
@@ -993,6 +993,14 @@ var BS2 = (function BassStationII() {
         "LP", "BP", "HP"
     ];
 
+    var FILTER_SLOPE = [
+        "12dB", "24dB"
+    ];
+
+    var FILTER_TYPE = [
+        "classic", "acid"
+    ];
+
     // Mapping 0..255 to -12.0..12.0
     var COARSE_VALUES = [
         -120, // -12.0; -12.00000; 0
@@ -1357,6 +1365,8 @@ var BS2 = (function BassStationII() {
         LFO_WAVE_FORMS,
         SUB_WAVE_FORMS,
         FILTER_SHAPES,
+        FILTER_SLOPE,
+        FILTER_TYPE,
         setValuesFromSysex
     };
 

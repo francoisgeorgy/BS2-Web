@@ -17,7 +17,7 @@
 
         <div class="head">
             Bass Station II Web Interface
-            <div id="con-status">not connected</div>
+            <div id="connection-status"></div>
         </div>
 
         <div class="box sub">
@@ -256,17 +256,10 @@
             <h1>Filter</h1>
             <div class="group space-after">
                 <select id="cc-83">
-                    <option>classic</option>
-                    <option>acid</option>
                 </select>
                 <select id="cc-106">
-                    <option>12dB</option>
-                    <option>24dB</option>
                 </select>
                 <select id="cc-84">
-                    <option>LP</option>
-                    <option>BP</option>
-                    <option>HP</option>
                 </select>
             </div>
             <div class="group">
@@ -378,26 +371,32 @@
         <div class="other2">
         </div>
 
-        <div class="status">
-            Status messages...
+        <div class="status" id="status">
         </div>
-
 
     </main>
     <footer></footer>
     <script>
 
+        function setStatus(msg) {
+            $('#status').removeClass("error").text(msg);
+        }
 
+        function setStatusError(msg) {
+            $('#status').addClass("error").text(msg);
+
+        }
+
+        function setConnectionStatus(status) {
+            $('#connection-status').text(status ? 'connected' : 'not connected');
+        }
 
         function dispatch(type, control, value) {
             type = type.toLowerCase();
             console.log(type, control, value, '#' + type + '-' + control);
             if ((type != 'cc') && (type != 'nrpn')) return; //TODO: signal an error
-//            if (control == 27) value = value * 10;
             $('#' + type + '-' + control).val(value).trigger('change');
         }
-
-
 
         //TODO: put into BS2 object
         function doubleByteValue(msb, lsb) {
@@ -544,57 +543,11 @@
             $(".dial").knob({
                 change : function (v) { console.log('change', v); },
                 release : function (v) { console.log('release', v); },
-//                fgColor:"#FF0000",
                 angleOffset: -135,
                 angleArc: 270,
                 bgColor: "#606060",
                 fgColor: "#ffec03"
-//                skin: "tron",
-//                thickness:.2,
-/*
-                draw : function () {
-
-                    // "tron" case
-//                    if(this.$.data('skin') == 'tron') {
-
-                        this.cursorExt = 0.3;
-
-                        var a = this.arc(this.cv)  // Arc
-                            , pa                   // Previous arc
-                            , r = 1;
-
-                        this.g.lineWidth = this.lineWidth;
-
-                        if (this.o.displayPrevious) {
-                            pa = this.arc(this.v);
-                            this.g.beginPath();
-                            this.g.strokeStyle = this.pColor;
-                            this.g.arc(this.xy, this.xy, this.radius - this.lineWidth, pa.s, pa.e, pa.d);
-                            this.g.stroke();
-                        }
-
-                        this.g.beginPath();
-                        this.g.strokeStyle = r ? this.o.fgColor : this.fgColor ;
-                        this.g.arc(this.xy, this.xy, this.radius - this.lineWidth, a.s, a.e, a.d);
-                        this.g.stroke();
-
-                        this.g.lineWidth = 2;
-                        this.g.beginPath();
-                        this.g.strokeStyle = this.o.fgColor;
-                        this.g.arc( this.xy, this.xy, this.radius - this.lineWidth + 1 + this.lineWidth * 2 / 3, 0, 2 * Math.PI, false);
-                        this.g.stroke();
-
-                        return false;
-                    }
-//                } // draw
-*/
             });
-
-//            $(".dial").knob({
-//                'min': -120,
-//                'max': 120,
-//                width: 60
-//            });
 
             for (let i=0; i < BS2.control.length; i++) {
 
@@ -620,15 +573,7 @@
 
             }
 
-//                $("#cc-26").trigger('configure', { min: -100, max: 100, cursor: CURSOR });
-//            $("#cc-27").trigger('configure', { min: -12.0, max: 12.0, step: 0.1, cursor: CURSOR });
-//            $("#cc-28").trigger('configure', { min: -127, max: 127, cursor: CURSOR });
-//            $("#cc-71").trigger('configure', { min: -63, max: 63, cursor: CURSOR });
-//            $("#cc-72").trigger('configure', { min: -63, max: 63, cursor: CURSOR });
-//            $("#cc-73").trigger('configure', { min: -90, max: 90 });
-//            $("#cc-74").trigger('configure', { min: 0, max: 95 });
-
-        }
+        } // setupDials
 
         function setupLists() {
 
@@ -644,7 +589,16 @@
             $('#nrpn-72,#nrpn-82').append(
                 BS2.OSC_WAVE_FORMS.map(o => { console.log(o); return $("<option>").val(o).text(o); })
             );
-        }
+            $('#cc-83').append(
+                BS2.FILTER_TYPE.map(o => { console.log(o); return $("<option>").val(o).text(o); })
+            );
+            $('#cc-106').append(
+                BS2.FILTER_SLOPE.map(o => { console.log(o); return $("<option>").val(o).text(o); })
+            );
+            $('#cc-84').append(
+                BS2.FILTER_SHAPES.map(o => { console.log(o); return $("<option>").val(o).text(o); })
+            );
+        } // setupLists
 
         $(function () {
 
@@ -653,45 +607,54 @@
 
             WebMidi.enable(function (err) {
 
+                console.log('webmidi err', err);
+
                 if (err) {
-                    alert("WebMidi could not be enabled.", err);
+                    setStatusError("ERROR: WebMidi could not be enabled.");
+                    setConnectionStatus(false);
                 } else {
 
-                //WebMidi.inputs.map(i => log("input:" + i.name));
-                //WebMidi.outputs.map(i => log("output:" + i.name));
+                    setStatus("WebMidi enabled.");
 
-                var input = WebMidi.getInputByName("Bass Station II");
+                    //WebMidi.inputs.map(i => log("input:" + i.name));
+                    //WebMidi.outputs.map(i => log("output:" + i.name));
 
-                input.on('controlchange', "all", function(e) {
-                    //console.log("CC: ", e);
-//                    log(midiEventForHuman(e));
-                    handleCC(e);
-                });
+                    var input = WebMidi.getInputByName("Bass Station II");
 
-                input.on('sysex', "all", function(e) {
-                    console.log("SysEx: ", e);
-                    BS2.setValuesFromSysex(e.data);
-                    console.log(BS2.control);
-                    console.log(BS2.nrpn);
-                    setDials();
-                });
+                    if (input) {
 
-//                $('#nrpn-72').val('pulse');
-//                console.log($('#nrpn-72').hasClass('dial'));
-//                    console.log($('#cc-86').hasClass('dial'));
+                        input.on('controlchange', "all", function(e) {
+                            //console.log("CC: ", e);
+                            //                    log(midiEventForHuman(e));
+                            handleCC(e);
+                        });
 
+                        input.on('sysex', "all", function(e) {
+                            console.log("SysEx: ", e);
+                            BS2.setValuesFromSysex(e.data);
+                            console.log(BS2.control);
+                            console.log(BS2.nrpn);
+                            setDials();
+                        });
+
+                        setConnectionStatus(true);
+
+                    } else {
+
+                        setStatusError("Bass Stations II not found.")
+                        setConnectionStatus(false);
+
+                    }
 
                     //WebMidi.addListener("connected", e => logWebMidiEvent(e));
-                //WebMidi.addListener("disconnected", e => logWebMidiEvent(e));
+                    //WebMidi.addListener("disconnected", e => logWebMidiEvent(e));
 
                 }
 
             }, true);   // pass true to enable sysex support
 
+            //setStatus("Send a SysDump from your BS2 to initialize the on-screen controls.");
 
-//            nx.onload = function () {
-//                nx.colorize("#00CCFF"); // sets accent (default)
-//                nx.labelSize(50);
         });
 
 
