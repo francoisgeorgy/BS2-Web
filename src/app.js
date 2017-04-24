@@ -8,13 +8,20 @@
 
     }
 
+    function hide(sel) {
+        $(sel).css('visibility', 'hidden');
+    }
+    function show(sel) {
+        $(sel).css('visibility', 'visible');
+    }
+
     function setConnectionStatus(status) {
-        $('#connection-status').text(status ? 'connected' : 'not connected');
+        $('#connection-status').html(status ? 'connected' : 'not connected');
     }
 
     function dispatch(type, control, value) {
         type = type.toLowerCase();
-        console.log(type, control, value, '#' + type + '-' + control);
+        //console.log(type, control, value, '#' + type + '-' + control);
         if ((type != 'cc') && (type != 'nrpn')) return; //TODO: signal an error
         $('#' + type + '-' + control).val(value).trigger('change');
     }
@@ -141,7 +148,7 @@
             let cursor = min < 0 ? CURSOR : false;
             let step = 1;
 
-            console.log(i, c, min, max, cursor);
+            //console.log(i, c, min, max, cursor);
 
             $(id).trigger('configure', { min: min, max: max, step: step, cursor: cursor });
 
@@ -150,6 +157,7 @@
             }
 
         }
+
 
     } // setupDials
 
@@ -193,6 +201,7 @@
         $('#cc-106').append(BS2.FILTER_SLOPE.map(o => { return $("<option>").val(o).text(o); }));
         $('#cc-84').append(BS2.FILTER_SHAPES.map(o => { return $("<option>").val(o).text(o); }));
         $('#nrpn-73,#nrpn-105').append(BS2.ENV_TRIGGERING.map(o => { return $("<option>").val(o).text(o); }));
+        //$('#nrpn-72,#nrpn-82').change(updateCustoms);
     } // setupLists
 
     function updateLists() {
@@ -205,9 +214,23 @@
         // $('#nrpn-89').removeClass("off").addClass("on").text("Key-sync ON");
         $('#nrpn-93').removeClass("on").addClass("off").text("Key-sync OFF");
         // $('#nrpn-93').removeClass("off").addClass("on").text("Key-sync ON");
+
+        $('#osc1-pw-controls').css('visibility','hidden');
+        $('#osc2-pw-controls').css('visibility','hidden');
     }
 
     function updateCustoms() {
+        //console.log('updateCustoms');
+        if (BS2.control[BS2.nrpn_id.osc1_waveform].value == "pulse") {
+            show('#osc1-pw-controls');
+        } else {
+            hide('#osc1-pw-controls');
+        }
+        if (BS2.control[BS2.nrpn_id.osc2_waveform].value == "pulse") {
+            show('#osc2-pw-controls');
+        } else {
+            hide('#osc2-pw-controls');
+        }
     }
 
     function setupUI() {
@@ -251,10 +274,10 @@
                     });
 
                     input.on('sysex', "all", function(e) {
-                        console.log("SysEx: ", e);
+                        // console.log("SysEx: ", e);
                         BS2.setValuesFromSysex(e.data);
-                        console.log(BS2.control);
-                        console.log(BS2.nrpn);
+                        // console.log(BS2.control);
+                        // console.log(BS2.nrpn);
                         updateUI();
                     });
 

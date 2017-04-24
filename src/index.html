@@ -16,7 +16,7 @@
 <body>
     <main>
         <div class="head">
-            Bass Station II Web Interface
+            <span class="novation-blue">Bass Station II Web Interface</span>
             <div id="connection-status"></div>
         </div>
 
@@ -144,7 +144,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="group">
+                <div class="group space-after">
                     <div class="control row">
                         <input id="cc-27" class="dial" data-width="60" data-height="60" value="0" />
                         <label>Coarse</label>
@@ -164,20 +164,22 @@
                         <label>LFO 1</label>
                     </div>
                 </div>
-                <div class="group">
-                    <div class="control row double">
-                        <input id="cc-74" class="dial" data-width="60" data-height="60" value="0" />
-                        <label>Man PW</label>
+                <div id="osc1-pw-controls">
+                    <div class="group">
+                        <div class="control row double">
+                            <input id="cc-74" class="dial" data-width="60" data-height="60" value="0" />
+                            <label>Man PW</label>
+                        </div>
                     </div>
-                </div>
-                <div class="group">
-                    <div class="control row">
-                        <input id="cc-72" class="dial" data-width="60" data-height="60" value="0" />
-                        <label>Mod Env</label>
-                    </div>
-                    <div class="control row">
-                        <input id="cc-73" class="dial" data-width="60" data-height="60" value="0" />
-                        <label>LFO 2</label>
+                    <div class="group">
+                        <div class="control row">
+                            <input id="cc-72" class="dial" data-width="60" data-height="60" value="0" />
+                            <label>Mod Env</label>
+                        </div>
+                        <div class="control row">
+                            <input id="cc-73" class="dial" data-width="60" data-height="60" value="0" />
+                            <label>LFO 2</label>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -198,7 +200,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="group">
+                <div class="group space-after">
                     <div class="control row">
                         <input id="cc-30" class="dial" data-width="60" data-height="60" value="0" />
                         <label>Coarse</label>
@@ -218,20 +220,22 @@
                         <label>LFO 1</label>
                     </div>
                 </div>
-                <div class="group">
-                    <div class="control row double">
-                        <input id="cc-79" class="dial" data-width="60" data-height="60" value="0" />
-                        <label>Man PW</label>
+                <div id="osc2-pw-controls">
+                    <div class="group">
+                        <div class="control row double">
+                            <input id="cc-79" class="dial" data-width="60" data-height="60" value="0" />
+                            <label>Man PW</label>
+                        </div>
                     </div>
-                </div>
-                <div class="group space-after">
-                    <div class="control row">
-                        <input id="cc-77" class="dial" data-width="60" data-height="60" value="0" />
-                        <label>Mod Env</label>
-                    </div>
-                    <div class="control row">
-                        <input id="cc-78" class="dial" data-width="60" data-height="60" value="0" />
-                        <label>LFO 2</label>
+                    <div class="group space-after">
+                        <div class="control row">
+                            <input id="cc-77" class="dial" data-width="60" data-height="60" value="0" />
+                            <label>Mod Env</label>
+                        </div>
+                        <div class="control row">
+                            <input id="cc-78" class="dial" data-width="60" data-height="60" value="0" />
+                            <label>LFO 2</label>
+                        </div>
                     </div>
                 </div>
                 <div style="text-align: center">
@@ -248,7 +252,7 @@
             <div class="group left space-after">
                 <div class="control">&nbsp;</div>
             </div>
-            <div class="group">
+            <div class="group space-after">
                 <div class="control row">
                     <input id="cc-22" class="dial" data-width="60" data-height="60" value="0" />
                     <label>Sub</label>
@@ -284,36 +288,60 @@
           -->
         <div id="filter">
             <h1>Filter</h1>
+            <div>
+                <div class="group space-after">
+                    <select id="cc-83">
+                    </select>
+                    <select id="cc-106">
+                    </select>
+                    <select id="cc-84">
+                    </select>
+                </div>
+                <div class="group space-after">
+                    <div class="control row">
+                        <input id="cc-82" class="dial" data-width="60" data-height="60" value="0" />
+                        <label>Reso</label>
+                    </div>
+                    <div class="control row">
+                        <input id="cc-16" class="dial" data-width="60" data-height="60" value="0" />
+                        <label>Freq</label>
+                    </div>
+                </div>
+                <div class="group">
+                    <div class="control row">
+                        <input id="cc-114" class="dial" data-width="60" data-height="60" value="0" />
+                        <label>Over</label>
+                    </div>
+                    <div class="control row">
+                        <input id="cc-85" class="dial" data-width="60" data-height="60" value="0" />
+                        <label>Mod</label>
+                    </div>
+                    <div class="control row">
+                        <input id="cc-17" class="dial" data-width="60" data-height="60" value="0" />
+                        <label>LFO 2</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--
+          -- EFFECTS
+          -->
+        <div id="effects">
+            <h1>Effects</h1>
+            <div class="group left space-after">
+                <div class="control">&nbsp;</div>
+            </div>
             <div class="group space-after">
-                <select id="cc-83">
-                </select>
-                <select id="cc-106">
-                </select>
-                <select id="cc-84">
-                </select>
-            </div>
-            <div class="group">
                 <div class="control row">
-                    <input id="cc-82" class="dial" data-width="60" data-height="60" value="0" />
-                    <label>Reso</label>
-                </div>
-                <div class="control row">
-                    <input id="cc-16" class="dial" data-width="60" data-height="60" value="0" />
-                    <label>Freq</label>
+                    <input id="cc-94" class="dial" data-width="60" data-height="60" value="0" />
+                    <label>Distorsion</label>
                 </div>
             </div>
             <div class="group">
                 <div class="control row">
-                    <input id="cc-114" class="dial" data-width="60" data-height="60" value="0" />
-                    <label>Over</label>
-                </div>
-                <div class="control row">
-                    <input id="cc-85" class="dial" data-width="60" data-height="60" value="0" />
-                    <label>Mod</label>
-                </div>
-                <div class="control row">
-                    <input id="cc-17" class="dial" data-width="60" data-height="60" value="0" />
-                    <label>LFO 2</label>
+                    <input id="cc-115" class="dial" data-width="60" data-height="60" value="0" />
+                    <label>Osc Filter Mod</label>
                 </div>
             </div>
         </div>
@@ -378,6 +406,12 @@
                 <option>Multi</option>
                 <option>Autoglide</option>
             </select>
+        </div>
+
+        <!--
+          -- NOT USED YET
+          -->
+        <div id="avail01">
         </div>
 
         <!--
