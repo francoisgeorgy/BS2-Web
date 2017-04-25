@@ -121,9 +121,33 @@
     }
 
 
+    function importFromFile() {
+        alert('Sorry, this feature is not yet implemented.');
+    }
+    function exportToFile() {
+        alert('Sorry, this feature is not yet implemented.');
+    }
+    function sendToBS2() {
+        alert('Sorry, this feature is not yet implemented.');
+    }
+    function initBS2() {
+        alert('Sorry, this feature is not yet implemented.');
+    }
+    function randomizeBS2() {
+        alert('Sorry, this feature is not yet implemented.');
+    }
+
+    function setupCommands() {
+        $('#cmd-export').click(exportToFile);
+        $('#cmd-import').click(importFromFile);
+        $('#cmd-send').click(sendToBS2);
+        $('#cmd-init').click(initBS2);
+        $('#cmd-randomize').click(randomizeBS2);
+    }
+
     function setupDials() {
 
-        const CURSOR = 16;
+        const CURSOR = 12;
 
         $(".dial").knob({
             change : function (v) { console.log('change', v); },
@@ -201,6 +225,8 @@
         $('#cc-106').append(BS2.FILTER_SLOPE.map(o => { return $("<option>").val(o).text(o); }));
         $('#cc-84').append(BS2.FILTER_SHAPES.map(o => { return $("<option>").val(o).text(o); }));
         $('#nrpn-73,#nrpn-105').append(BS2.ENV_TRIGGERING.map(o => { return $("<option>").val(o).text(o); }));
+        $('#cc-111').append(BS2.ARP_OCTAVES.map(o => { return $("<option>").val(o).text(o); }));
+        $('#cc-118').append(BS2.ARP_NOTES_MODE.map(o => { return $("<option>").val(o).text(o); }));
         //$('#nrpn-72,#nrpn-82').change(updateCustoms);
     } // setupLists
 
@@ -237,6 +263,7 @@
         setupDials();
         setupLists();
         setupCustoms();
+        setupCommands();
     }
 
     function updateUI() {
@@ -248,6 +275,7 @@
     $(function () {
 
         setupUI();
+        setStatus("Waiting for MIDI interface...");
 
         WebMidi.enable(function (err) {
 

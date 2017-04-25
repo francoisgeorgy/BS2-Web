@@ -16,6 +16,10 @@ main > div {
     color: #666;
 }
 
+.commands {
+    /*color: #C0C040;*/
+}
+
 #connection-status {
     color: #C0C040;
 }
@@ -30,6 +34,12 @@ main > div {
 label {
      color: #aaa;
  }
+
+button {
+    background-color: #666;
+    border: 1px solid #999;
+    color: #ccc;
+}
 
 select {
     color: #ffec03;

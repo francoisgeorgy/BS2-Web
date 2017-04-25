@@ -16,7 +16,14 @@
 <body>
     <main>
         <div class="head">
-            <span class="novation-blue">Bass Station II Web Interface</span>
+            <span class="novation-blue">Bass Station II Web Interface</span><span id="patch-number" class="novation-blue">&nbsp;&nbsp;&#9830;&nbsp;&nbsp;Patch 123</span>
+            <span class="commands">
+                <button id="cmd-export" title="Export the current configuration in a file">export</button>
+                <button id="cmd-import" title="Import a configuration from a file (will not send to the BS2)">import</button>
+                <button id="cmd-send" title="Send all parameters to the connected Bass Stations II">send</button>
+                <button id="cmd-init" title="Set all parameters to their default value">init</button>
+                <button id="cmd-randomize" title="Set all parameters to a random value">random</button>
+            </span>
             <div id="connection-status"></div>
         </div>
 
@@ -350,7 +357,17 @@
           -- MOD ENVELOPE
           -->
         <div id="mod-env">
-            <h1>Mod Env</h1>
+            <div>
+                <div class="subhead">
+                    <label>Triggering:</label>
+                    <select id="nrpn-105">
+                    </select>
+                    <!--<label id="mod-env-osc1" class="off">Osc1</label>-->
+                    <!--<label id="mod-env-osc2" class="off">Osc2</label>-->
+                    <!--<label id="mod-env-filter" class="off">Filter</label>-->
+                </div>
+                <h1>Mod Env</h1>
+            </div>
             <div class="group space-after">
                 <div class="control row">
                     <input id="cc-102" class="dial" data-width="60" data-height="60" value="0" />
@@ -369,19 +386,20 @@
                     <label>R</label>
                 </div>
             </div>
-            <label>Triggering:</label>
-            <select id="nrpn-105">
-                <option>Single</option>
-                <option>Multi</option>
-                <option>Autoglide</option>
-            </select>
         </div>
 
         <!--
           -- AMP ENVELOPE
           -->
         <div id="amp-env">
-            <h1>Amp Env</h1>
+            <div>
+                <div class="subhead">
+                    <label>Triggering:</label>
+                    <select id="nrpn-73">
+                    </select>
+                </div>
+                <h1>Amp Env</h1>
+            </div>
             <div class="group space-after">
                 <div class="control row">
                     <input id="cc-90" class="dial" data-width="60" data-height="60" value="0"/>
@@ -400,12 +418,9 @@
                     <label>R</label>
                 </div>
             </div>
-            <label>Triggering:</label>
-            <select id="nrpn-73">
-                <option>Single</option>
-                <option>Multi</option>
-                <option>Autoglide</option>
-            </select>
+            <div>
+                ADSR graph here...
+            </div>
         </div>
 
         <!--
@@ -418,11 +433,23 @@
           -- MOD WHEELS
           -->
         <div id="wheels">
+            <!--<h1 style="float:left;margin-right:10px">Wheels</h1>-->
+            <!--<div class="group" style="margin-top:10px">-->
             <h1>Wheels</h1>
             <div class="group">
                 <div class="control row">
-                    <label>Mod Wheel</label>
+                    <input id="nrpn-70" class="dial" data-width="60" data-height="60" value="0"/>
+                    <label>LFO 1 Osc Pitch</label>
                 </div>
+                <div class="control row">
+                    <input id="nrpn-71" class="dial" data-width="60" data-height="60" value="0"/>
+                    <label>LFO 2 Filter Freq</label>
+                </div>
+                <div class="control row">
+                    <input id="nrpn-78" class="dial" data-width="60" data-height="60" value="0"/>
+                    <label>Osc 2 Pitch</label>
+                </div>
+            </div>
             </div>
         </div>
 
@@ -433,10 +460,35 @@
             <h1>Keyboard</h1>
             <div class="group">
                 <div class="control row">
-                    <label>Aftertouch</label>
+                    <input id="cc-64" class="dial" data-width="60" data-height="60" value="0"/>
+                    <label>Sustain</label>
                 </div>
                 <div class="control row">
-                    <label>Aftertouch</label>
+                    <input id="cc-5" class="dial" data-width="60" data-height="60" value="0"/>
+                    <label>Glide</label>
+                </div>
+                <div class="spacer">
+                    &nbsp;
+                </div>
+                <div class="row" style="margin-top:-20px">
+                    <!--<label>&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; aftertouch &#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</label>-->
+                    <fieldset style="padding:10px 0 0 0;border:0;border-top:1px solid #707070;margin: -5px 0 0;color:#707070;font-size: 0.8em">
+                        <legend style=" margin:0 auto;">Aftertouch</legend>
+                    <!--<div style="border-top:1px solid #aaa;padding-top:10px">-->
+                        <div class="control row">
+                            <input id="nrpn-75" class="dial" data-width="60" data-height="60" value="0"/>
+                            <label>LFO 1<br />Pitch</label>
+                        </div>
+                        <div class="control row">
+                            <input id="nrpn-76" class="dial" data-width="60" data-height="60" value="0"/>
+                            <label>LFO 2<br />Speed</label>
+                        </div>
+                        <div class="control row" style="margin-right:0">
+                            <input id="nrpn-74" class="dial" data-width="60" data-height="60" value="0"/>
+                            <label>Filter Freq</label>
+                        </div>
+                        <!--</div>-->
+                    </fieldset>
                 </div>
             </div>
         </div>
@@ -444,20 +496,54 @@
         <!--
           -- NOT USED YET
           -->
-        <div id="other1">
-        </div>
+        <!--<div id="other1">-->
+        <!--</div>-->
 
         <!--
           -- NOT USED YET
           -->
-        <div id="other2">
-        </div>
+        <!--<div id="other2">-->
+        <!--</div>-->
 
         <!--
           -- ARPEGGIATOR
           -->
         <div id="arpeggiator">
-            <h1>ARP</h1>
+            <h1 style="float:left;margin-right:10px">ARP</h1>
+            <div class="group" style="margin-top:10px">
+                <div class="control row">
+                    <div style="text-align: center">
+                        <label id="cc-108" class="off">ARP OFF</label>
+                    </div>
+                    <div style="text-align: center">
+                        <label id="cc-109" class="off">Latch OFF</label>
+                    </div>
+                    <div style="text-align: center">
+                        <label id="nrpn-106" class="off">Retrig OFF</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div>
+                        <label class="row">Rhythm</label>
+                        <select id="cc-119">
+                        </select>
+                    </div>
+                    <div>
+                        <label class="row">Octaves</label>
+                        <select id="cc-111">
+                        </select>
+                    </div>
+                    <div>
+                        <label>Note mode</label>
+                        <select id="cc-118">
+                        </select>
+                    </div>
+                </div>
+                <div class="control row">
+                    <input id="cc-116" class="dial" data-width="60" data-height="60" value="0"/>
+                    <label>Swing</label>
+                </div>
+            </div>
         </div>
 
         <!--

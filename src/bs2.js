@@ -1007,6 +1007,13 @@ var BS2 = (function BassStationII() {
         "", "single", "multi", "autoglide"  // 1, 2, 3
     ];
 
+    var ARP_NOTES_MODE = [
+        "up", "down", "up-down", "up-down 2", "played", "random"
+    ];
+    var ARP_OCTAVES = [
+        1, 2, 3, 4
+    ];
+
     // Mapping 0..255 to -12.0..12.0
     var COARSE_VALUES = [
         -120, // -12.0; -12.00000; 0
@@ -1374,6 +1381,8 @@ var BS2 = (function BassStationII() {
         FILTER_SLOPE,
         FILTER_TYPE,
         ENV_TRIGGERING,
+        ARP_NOTES_MODE,
+        ARP_OCTAVES,
         setValuesFromSysex
     };
 
