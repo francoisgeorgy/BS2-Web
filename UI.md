@@ -22,4 +22,5 @@ The UI will try to emphasize the signal flow (sound path). It is not important t
 
 - jQuery Knob: http://anthonyterrien.com/knob/ (https://github.com/aterrien/jQuery-Knob)
 - ~~Nexus UI : https://github.com/lsu-emdm/nexusUI~~
+- JS Storage: https://github.com/julien-maurel/js-storage
 
