@@ -233,7 +233,8 @@ var BS2 = (function BassStationII() {
         control[control_id.osc1_coarse] = { // 27 (msb), 59 (lsb)
             name: "Osc1 Coarse",
             lsb: 59,
-            range: [-12,12],
+            range: [-12, 12],
+            step: 0.1,
             map: _12,
             sysex: {
                 offset: 21,
@@ -313,7 +314,8 @@ var BS2 = (function BassStationII() {
         control[control_id.osc2_coarse] = { // 30 (msb), 62 (lsb)
             name: "Osc2 Coarse",
             lsb: 62,
-            range: [-12,12],
+            range: [-12, 12],
+            step: 0.1,
             map: _12,
             sysex: {
                 offset: 27,
@@ -874,7 +876,7 @@ var BS2 = (function BassStationII() {
         nrpn[nrpn_id.mod_wheel_osc2_pitch] = { // 0 (msb), 78 (lsb)
             name: "Mod Wheel Osc2 Pitch",
             msb: 0,
-            range: [-63,63],
+            range: [-63, 63],
             map: _63,
             sysex: {
                 offset: 85,
@@ -883,7 +885,7 @@ var BS2 = (function BassStationII() {
         };
         nrpn[nrpn_id.aftertouch_filter_freq] = { // 0 (msb), 74 (lsb)
             name: "Aftertouch Filter Freq",
-            range: [-63,63],
+            range: [-63, 63],
             msb: 0,
             map: _63,
             sysex: {
@@ -893,7 +895,7 @@ var BS2 = (function BassStationII() {
         };
         nrpn[nrpn_id.aftertouch_lfo1_to_osc_pitch] = { // 0 (msb), 75 (lsb)
             name: "Aftertouch LFO1 to Osc Pitch",
-            range: [-63,63],
+            range: [-63, 63],
             msb: 0,
             map: _63,
             sysex: {

@@ -307,21 +307,21 @@
                 <div class="group space-after">
                     <div class="control row">
                         <input id="cc-82" class="dial" data-width="60" data-height="60" value="0" />
-                        <label>Reso</label>
+                        <label>Resonance</label>
                     </div>
                     <div class="control row">
                         <input id="cc-16" class="dial" data-width="60" data-height="60" value="0" />
-                        <label>Freq</label>
+                        <label>Frequency</label>
                     </div>
                 </div>
                 <div class="group">
                     <div class="control row">
                         <input id="cc-114" class="dial" data-width="60" data-height="60" value="0" />
-                        <label>Over</label>
+                        <label>Overdrive</label>
                     </div>
                     <div class="control row">
                         <input id="cc-85" class="dial" data-width="60" data-height="60" value="0" />
-                        <label>Mod</label>
+                        <label>Mod Env</label>
                     </div>
                     <div class="control row">
                         <input id="cc-17" class="dial" data-width="60" data-height="60" value="0" />
@@ -494,24 +494,55 @@
         </div>
 
         <!--
-          -- NOT USED YET
-          -->
-        <!--<div id="other1">-->
-        <!--</div>-->
-
-        <!--
-          -- NOT USED YET
-          -->
-        <!--<div id="other2">-->
-        <!--</div>-->
-
-        <!--
           -- ARPEGGIATOR
           -->
         <div id="arpeggiator">
             <h1 style="float:left;margin-right:10px">ARP</h1>
             <div class="group" style="margin-top:10px">
-                <div class="control row">
+
+                <div class="row">
+                    <table>
+                        <tr>
+                            <td align="right">
+                                <label id="cc-108" class="off">ARP OFF</label>
+                            </td>
+                            <td align="right" style="padding-left:20px">
+                                <label class="row">Rhythm</label>
+                            </td>
+                            <td>
+                                <select id="cc-119">
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                                <label id="cc-109" class="off">Latch OFF</label>
+                            </td>
+                            <td align="right" style="padding-left:20px">
+                                <label class="row">Octaves</label>
+                            </td>
+                            <td>
+                                <select id="cc-111">
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                                <label id="nrpn-106" class="off">Retrig OFF</label>
+                            </td>
+                            <td align="right" style="padding-left:20px">
+                                <label>Note mode</label>
+                            </td>
+                            <td>
+                                <select id="cc-118">
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!--
+                <div class="row">
                     <div style="text-align: center">
                         <label id="cc-108" class="off">ARP OFF</label>
                     </div>
@@ -543,6 +574,8 @@
                     <input id="cc-116" class="dial" data-width="60" data-height="60" value="0"/>
                     <label>Swing</label>
                 </div>
+                -->
+
             </div>
         </div>
 

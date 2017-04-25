@@ -11,6 +11,7 @@
     function hide(sel) {
         $(sel).css('visibility', 'hidden');
     }
+
     function show(sel) {
         $(sel).css('visibility', 'visible');
     }
@@ -37,14 +38,12 @@
     var cc_lsb = -1;
     var value_msb = 0;    // msb to compute value
     var value_lsb = 0;    // lsb to compute value
-
     var nrpn = false;
 
     function handleCC(e) {
 
-        var msg = e.data;   // Uint8Array
+        let msg = e.data;   // Uint8Array
         let cc = msg[1];
-
         let value = -1;
 
         if (cc == WebMidi.MIDI_CONTROL_CHANGE_MESSAGES['nonregisteredparameterfine']) {   // 99
@@ -61,10 +60,8 @@
                 let r;
                 if (BS2.nrpn[cc_lsb].hasOwnProperty('map')) {
                     r = BS2.nrpn[cc_lsb].map(v);
-    //                        log_value(`${BS2.nrpn[cc_lsb].name} = ${r} (${v})`);
                 } else {
                     r = v;
-    //                        log_value(`${BS2.nrpn[cc_lsb].name} = ${v}`);
                 }
                 dispatch('NRPN', cc_lsb, r);
                 nrpn = false;
@@ -74,25 +71,17 @@
 
         if (cc_expected >= 0) {
             if (cc == cc_expected) {
-    //                    console.log(`got expected cc ${cc}, cc_msb=${cc_msb}`);
-
                 value_lsb = msg[2];
-
                 let v = doubleByteValue(value_msb, value_lsb);
                 let r;
                 if (BS2.control[cc_msb].hasOwnProperty('map')) {
                     r = BS2.control[cc_msb].map(v);
-    //                        log_value(`${BS2.control[cc_msb].name} = ${r} (${v})`);
                 } else {
                     r = v;
-    //                        log_value(`${BS2.control[cc_msb].name} = ${v}`);
                 }
                 dispatch('CC', cc_msb, r);
-
                 cc_expected = -1;
-
             } else {
-    //                    log(`IGNORED CC ${cc}`);
                 cc_msb = cc;
             }
         } else {
@@ -102,17 +91,11 @@
                 let r;
                 if (BS2.control[cc].hasOwnProperty('map')) {
                     r = BS2.control[cc].map(v);
-                    //log_value(`${CC_names[cc]} = ${r} (${v})`);
-    //                        log_value(`${BS2.control[cc]} = ${r} (${v})`);
                 } else {
-    //                        log_value(`${BS2.control[cc].name} = ${v}`);
                     r = v;
                 }
-
                 dispatch('CC', cc, r);
-
             } else {
-    //                    console.log('need second CC ' + BS2.control[cc].lsb);
                 cc_expected = BS2.control[cc].lsb;
                 cc_msb = cc;
                 value_msb = msg[2];
@@ -134,7 +117,28 @@
         alert('Sorry, this feature is not yet implemented.');
     }
     function randomizeBS2() {
-        alert('Sorry, this feature is not yet implemented.');
+
+        function _randomize(controls, prefix) {
+            for (let i=0; i < controls.length; i++) {
+                let c = controls[i];
+                if (typeof c === 'undefined') continue;
+                if (c.range.length === 0) continue;
+                let e = $(prefix + i);
+                let min = Math.min(...c.range);
+                let max = Math.max(...c.range);
+                let v = Math.floor(Math.random() * (max - min)) + min;  //TODO: step
+                //console.log(e, min, max, v);
+                if (e.is('select')) {
+                    //console.log(`${e} is a select`, e, e[0].options);
+                    e[0].options[Math.floor(Math.random() * e[0].options.length)].selected = true
+                } else {
+                    e.val(v).trigger('change');
+                }
+            }
+        }
+
+        _randomize(BS2.control, '#cc-');
+        _randomize(BS2.nrpn, '#nrpn-');
     }
 
     function setupCommands() {
@@ -158,30 +162,30 @@
             fgColor: "#ffec03"
         });
 
-        for (let i=0; i < BS2.control.length; i++) {
-
-            let c = BS2.control[i];
-
-            if (typeof c == 'undefined') continue;
-
-            if (!c.hasOwnProperty('range')) continue;
-
-            let id = '#cc-' + i;
-            let min = c.range[0];
-            let max = c.range[1];
-            let cursor = min < 0 ? CURSOR : false;
-            let step = 1;
-
-            //console.log(i, c, min, max, cursor);
-
-            $(id).trigger('configure', { min: min, max: max, step: step, cursor: cursor });
-
-            if (min > 0) {
-                $(id).val(min).trigger('change');
+        function _setup(controls, prefix) {
+            for (let i=0; i < controls.length; i++) {
+                let c = controls[i];
+                if (typeof c == 'undefined') continue;
+                if (!c.hasOwnProperty('range')) continue;
+                let id = prefix + i;
+                // let min = c.range[0];
+                // let max = c.range[1];
+                if (c.range.length === 0) continue;     //TODO: SIGNAL AN ERROR
+                let min = Math.min(...c.range);
+                let max = Math.max(...c.range);
+                let cursor = min < 0 ? CURSOR : false;
+                //if (c.hasOwnProperty('step')) continue;
+                let step = c.hasOwnProperty('step') ? c.step : 1;
+                console.log('configure', prefix+i, min, max, step, cursor);
+                $(id).trigger('configure', { min: min, max: max, step: step, cursor: cursor });
+                if (min != 0) {
+                    $(id).val(min).trigger('change');
+                }
             }
-
         }
 
+        _setup(BS2.control, '#cc-');
+        _setup(BS2.nrpn, '#nrpn-');
 
     } // setupDials
 
@@ -195,8 +199,14 @@
             if (typeof c === 'undefined') continue;
             if (!c.hasOwnProperty('value')) continue;
             let e = $('#cc-' + i);
-            // if (e.hasClass('dial')) {
+            if (e.is('select')) {
+                //e.val();
+                console.log(`${i} is a select`);
+            } else {
                 e.val(c.value).trigger('change');
+            }
+            // if (e.hasClass('dial')) {
+
             // } else {
             //     e.val(c.value);
             // }
@@ -228,6 +238,11 @@
         $('#cc-111').append(BS2.ARP_OCTAVES.map(o => { return $("<option>").val(o).text(o); }));
         $('#cc-118').append(BS2.ARP_NOTES_MODE.map(o => { return $("<option>").val(o).text(o); }));
         //$('#nrpn-72,#nrpn-82').change(updateCustoms);
+
+        for (let i=1; i<33; i++) {
+            $('#cc-119').append($("<option>").val(i).text(i));
+        }
+
     } // setupLists
 
     function updateLists() {

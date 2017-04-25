@@ -152,7 +152,7 @@ div.control {
     text-align: center;
     margin: 0 5px 5px 0;
 }
-.row {
+div.row {
     float: left;
 }
 div.left > div.control {
