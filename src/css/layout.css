@@ -146,6 +146,7 @@ main > div {
     font-size: 0.8em;
 }
 
+
 div.control {
     /*float: left;*/
     width: 60px;
@@ -181,6 +182,10 @@ div.control > label {
     float: left;
     width: 10px;
 }
+
+.control.space-left {
+    margin-left: 10px;
+}
 .space-after {
     margin-bottom: 15px;
 }
@@ -200,4 +205,8 @@ select {
 
 .value {
     font-size: 0.8em;
+}
+
+.dial {
+    font-size: 0.8em!important;
 }

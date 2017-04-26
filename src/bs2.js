@@ -230,7 +230,7 @@ var BS2 = (function BassStationII() {
     function defineControls() {
         control[control_id.patch_volume] = { // 7
             name: "Patch Volume",
-            range: [],
+            range: [],                  //TODO: verify range
             lsb: -1,
             sysex: {
             }
@@ -559,7 +559,7 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.lfo1_wave] = { // 88
             name: "LFO1 Wave",
-            range: [],
+            range: [],              //TODO: verify range
             lsb: -1,
             sysex: {
                 offset: 63,
@@ -586,7 +586,7 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.lfo2_wave] = { // 89
             name: "LFO2 Wave",
-            range: [],
+            range: [],                  //TODO: verify range
             lsb: -1,
             sysex: {
                 offset: 70,
@@ -694,7 +694,7 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.fx_osc_filter_mod] = { // 115
             name: "Fx Osc Filter Mod",
-            range: [],
+            range: [0, 127],      //TODO: verify range
             lsb: -1,
             sysex: {
                 offset: 106,
@@ -730,7 +730,7 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.arp_note_mode] = { // 118
             name: "Arp Note Mode",
-            range: [],
+            range: [],                      //TODO: verify range
             lsb: -1,
             sysex: {
                 offset: 79,
@@ -748,7 +748,7 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.mod] = { // 1
             name: "Mod",
-            range: [],
+            range: [],                  //TODO: verify range
             lsb: -1,
             sysex: {
             }
@@ -764,7 +764,7 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.sustain] = { // 64
             name: "Sustain",
-            range: [],
+            range: [0, 127],
             lsb: -1,
             sysex: {
             }
@@ -849,14 +849,14 @@ var BS2 = (function BassStationII() {
         nrpn[nrpn_id.lfo1_sync_value] = { // 87
             name: "LFO1 Sync Value",
             msb: -1,
-            range: [],
+            range: [],                  //TODO: verify range
             sysex: {        // TODO
             }
         };
         nrpn[nrpn_id.lfo2_sync_value] = { // 91
             name: "LFO2 Sync Value",
             msb: -1,
-            range: [],
+            range: [],                  //TODO: verify range
             sysex: {        // TODO
             }
         };

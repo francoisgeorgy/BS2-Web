@@ -179,13 +179,17 @@
                 console.log('configure', prefix+i, min, max, step, cursor);
                 $(id).trigger('configure', { min: min, max: max, step: step, cursor: cursor });
                 if (min != 0) {
-                    $(id).val(min).trigger('change');
+                    //$(id).val(min).trigger('change');
+                    $(id).val(min).trigger('blur');
                 }
             }
         }
 
         _setup(BS2.control, '#cc-');
         _setup(BS2.nrpn, '#nrpn-');
+
+        $('#cc-' + BS2.control_id.osc1_coarse).trigger('configure', { format: v => v.toFixed(1) });
+        $('#cc-' + BS2.control_id.osc2_coarse).trigger('configure', { format: v => v.toFixed(1) });
 
     } // setupDials
 

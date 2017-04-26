@@ -24,3 +24,21 @@ The UI will try to emphasize the signal flow (sound path). It is not important t
 - ~~Nexus UI : https://github.com/lsu-emdm/nexusUI~~
 - JS Storage: https://github.com/julien-maurel/js-storage
 
+### jQuery Knob issues
+
+https://github.com/aterrien/jQuery-Knob/pull/242
+
+# Ideas
+
+Routing matrix:
+
+                 Osc1        Osc2     Filter  
+              Pitch  PW   Pitch  PW    Freq   
+    Sub Osc     +           +      
+    LFO 1       X           X
+    LFO 2            X           X     +/- X
+    Osc 2                                X
+    Mod Env     X    X      X    X       X
+
+Modulation source:
+
