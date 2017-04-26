@@ -195,7 +195,33 @@ var BS2 = (function BassStationII() {
     };
 
     var meta = {
-        sysex_length: 154
+        //sysex_length: 154,
+        patch_id: {
+            name: 'Patch Number',
+            sysex: {
+                offset: 8,
+                range: [0, 127],
+                mask: [0x7F]  //TODO: check
+            }
+        },
+        patch_name: {
+            name: 'Patch Name',
+            sysex: {
+                offset: 137,
+                range: [0, 0x7F],
+                mask: [0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F]  //TODO: check
+            }
+        },
+        signature: {
+            name: 'Signature',
+            sysex: {
+                offset: 22,
+                range: [],
+                mask: [0x7F, 0x7F, 0x7F],
+                //mask: [0xFF, 0xFF, 0xFF],  // Manufacturer ID
+                value: [0xFF, 0xFF, 0xFF]  // Manufacturer ID //TODO
+            }
+        }
     };
 
     var control = new Array(127);
@@ -1314,11 +1340,20 @@ var BS2 = (function BassStationII() {
         return a + b;
     }
 
+    var validateSysEx = function(data) {
+        if (data.length != 154) return false;
+        let offset = meta.signature.sysex.offset;
+        for (let i=0; i < meta.signature.sysex.value.length; i++) {
+            if (data[offset + i] != meta.signature.sysex.value[i]) return false;
+        }
+        return true;
+    };
+
     /**
      * Get values from sysex data and store the value in a (new) property "value" in each control.
      * @param data
      */
-    var decodeSysEx = function(data, controls) {
+    var decodeSysExControls = function(data, controls) {
 
         for (let i=0; i < controls.length; i++) {
 
@@ -1361,9 +1396,20 @@ var BS2 = (function BassStationII() {
 
     }; // decodeSys
 
+    var decodeSysExMeta = function(data) {
+        // meta.patch_id
+        // meta.patch_name
+        // meta.signature
+        let name = String.fromCharCode(data.slice(meta.patch_name.sysex.offset, meta.patch_name.sysex.offset + meta.patch_name.sysex.mask.length));
+        meta.patch_name['value'] = name;
+    };
+
     var setValuesFromSysex = function(data) {
-        decodeSysEx(data, control);
-        decodeSysEx(data, nrpn);
+        if (!validateSysEx(data)) return false;
+        decodeSysExMeta(data);
+        decodeSysExControls(data, control);
+        decodeSysExControls(data, nrpn);
+        return true;
     };
 
     defineControls();

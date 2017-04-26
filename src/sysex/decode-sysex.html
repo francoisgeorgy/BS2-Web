@@ -10,16 +10,16 @@
     <style>
         #data {
             font-family: Courier New, Courier, monospace;
+            font-size: 10pt;
             white-space: pre;
         }
     </style>
 </head>
 <body>
-
-<h2>BS2 - decode sysex</h2>
-<hr />
-<div id="data"></div>
-
+    <h2>BS2 - decode sysex</h2>
+    Import SysEx from file: <input type="file" id="file" placeholder="toto" />
+    <hr />
+    <div id="data"></div>
 <script>
     const SYSEX_START = 0xF0;
     const SYSEX_END = 0xF7;
@@ -110,6 +110,8 @@
             let sysex = controls[i].sysex;
             if (!sysex.hasOwnProperty('mask')) continue;
 
+            s += `offset: ${sysex.offset.toString(10).paddingLeft('   ')}  `;
+
             s += 'mask: ';
 
             let bytes = new Uint8Array(sysex.mask.length);
@@ -165,13 +167,37 @@
         return s;
     }
 
+
+    function decodeSysExMeta(data) {
+        let s = '';
+        // meta.patch_id
+        // meta.patch_name
+        // meta.signature
+
+        let n = data[BS2.meta.patch_id.sysex.offset];
+//        s += `Patch number: ${n}<br />`;
+
+        //console.log('meta', BS2.meta.patch_name.sysex.offset, BS2.meta.patch_name.sysex.mask.length, data.slice(BS2.meta.patch_name.sysex.offset, BS2.meta.patch_name.sysex.offset + BS2.meta.patch_name.sysex.mask.length));
+        let name = String.fromCharCode(...data.slice(BS2.meta.patch_name.sysex.offset, BS2.meta.patch_name.sysex.offset + BS2.meta.patch_name.sysex.mask.length));
+        //console.log('decodeSysExMeta', name);
+        //BS2.meta.patch_name['value'] = name;
+        s += `Patch: [${n}] ${name}<br />`;
+        return s;
+    };
+
+
+    function updateDisplay(data) {
+        $("#data").empty()
+            .append(decodeSysExMeta(data))
+            .append(decodeSysEx(data, BS2.control))
+            .append(decodeSysEx(data, BS2.nrpn));
+    }
+
     function handleMessage(event) {
         if (event instanceof MIDIMessageEvent) {
             if (event.data[0] == SYSEX_START) {
                 console.log('sysex message received');
-                $("#data").empty()
-                    .append(decodeSysEx(event.data, BS2.control))
-                    .append(decodeSysEx(event.data, BS2.nrpn));
+                updateDisplay(event.data);
             }
         }
     }
@@ -194,6 +220,35 @@
         function onMIDIFailure(msg) {
             console.log("onMIDIFailure", msg);
         }
+
+        $('#file').change(readFile);
+
+        function readFile() {
+            let data = [];
+            let f = this.files[0];
+            if (f) {
+                let reader = new FileReader();
+                reader.onload = function (e) {
+                    let view   = new Uint8Array(e.target.result);
+                    for (let i=0; i<view.length; i++) {
+                        //console.log(i, view[i]);
+                        data.push(view[i]);
+                        if (view[i] == SYSEX_END) break;
+                    }
+                    //console.log('data', data);
+
+                    updateDisplay(data);
+//                    $("#data").empty()
+//                        .append(decodeSysExMeta(data))
+//                        .append(decodeSysEx(data, BS2.control))
+//                        .append(decodeSysEx(data, BS2.nrpn));
+
+                };
+                reader.readAsArrayBuffer(f);
+            }
+
+        }
+
     });
 
 </script>
