@@ -77,8 +77,6 @@ var BS2 = (function BassStationII() {
     var nrpn_id = {
         osc1_waveform: 72,
         osc2_waveform: 82,
-        lfo1_sync_value: 87,
-        lfo2_sync_value: 91,
         amp_env_triggering: 73,
         mod_env_triggering: 105,
         mod_wheel_lfo2_filter_freq: 71,
@@ -87,12 +85,17 @@ var BS2 = (function BassStationII() {
         aftertouch_filter_freq: 74,
         aftertouch_lfo1_to_osc_pitch: 75,
         aftertouch_lfo2_speed: 76,
-        lfo_key_sync_lfo1: 89,
-        lfo_key_sync_lfo2: 93,
-        lfo_speed_sync_lfo1: 87,
-        lfo_speed_sync_lfo2: 91,
-        lfo_slew_lfo_1: 86,
-        lfo_slew_lfo_2: 90,
+
+        lfo1_key_sync: 89,      // FN key "Key Sync LFO 1"
+        lfo1_speed_sync: 88,    // FN key "Speed/Sync LFO 1"
+        lfo1_sync_value: 87,
+        lfo1_slew: 86,          // FN key "Slew LFO 1"
+
+        lfo2_key_sync: 93,      // FN key "Key Sync LFO 2"
+        lfo2_speed_sync: 92,    // FN key "Speed/Sync LFO 2"
+        lfo2_sync_value: 91,
+        lfo2_slew: 90,          // FN Key "Slew LFO 2"
+
         arp_seq_retrig: 106
     };
 
@@ -215,11 +218,11 @@ var BS2 = (function BassStationII() {
         signature: {
             name: 'Signature',
             sysex: {
-                offset: 22,
+                offset: 1,
                 range: [],
                 mask: [0x7F, 0x7F, 0x7F],
                 //mask: [0xFF, 0xFF, 0xFF],  // Manufacturer ID
-                value: [0xFF, 0xFF, 0xFF]  // Manufacturer ID //TODO
+                value: [0x00, 0x20, 0x29]  // Manufacturer ID //TODO
             }
         }
     };
@@ -231,9 +234,7 @@ var BS2 = (function BassStationII() {
         control[control_id.patch_volume] = { // 7
             name: "Patch Volume",
             range: [],                  //TODO: verify range
-            lsb: -1,
-            sysex: {
-            }
+            lsb: -1
         };
         control[control_id.osc1_fine] = { // 26 (msb), 58 (lsb)
             name: "Osc1 Fine",
@@ -559,8 +560,9 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.lfo1_wave] = { // 88
             name: "LFO1 Wave",
-            range: [],              //TODO: verify range
             lsb: -1,
+            range: [0, 3],
+            map: v => LFO_WAVE_FORMS[v],
             sysex: {
                 offset: 63,
                 mask: [0x06]
@@ -586,8 +588,9 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.lfo2_wave] = { // 89
             name: "LFO2 Wave",
-            range: [],                  //TODO: verify range
             lsb: -1,
+            range: [0, 3],
+            map: v => LFO_WAVE_FORMS[v],
             sysex: {
                 offset: 70,
                 mask: [0x0C]
@@ -694,7 +697,7 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.fx_osc_filter_mod] = { // 115
             name: "Fx Osc Filter Mod",
-            range: [0, 127],      //TODO: verify range
+            range: [0, 127],
             lsb: -1,
             sysex: {
                 offset: 106,
@@ -730,11 +733,12 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.arp_note_mode] = { // 118
             name: "Arp Note Mode",
-            range: [],                      //TODO: verify range
+            range: [0, 7],
             lsb: -1,
+            map: v => ARP_NOTES_MODE[v],
             sysex: {
                 offset: 79,
-                mask: [0x0A]                             //TODO: check
+                mask: [0x0E]
             }
         };
         control[control_id.arp_octaves] = { // 111
@@ -743,14 +747,15 @@ var BS2 = (function BassStationII() {
             lsb: -1,
             sysex: {
                 offset: 78,
-                mask: [0x14]
+                mask: [0x1C]
             }
         };
         control[control_id.mod] = { // 1
             name: "Mod",
-            range: [],                  //TODO: verify range
+            range: [0, 127],
             lsb: -1,
             sysex: {
+                // not in the sysex data sent by the BS2
             }
         };
         control[control_id.mod_wheel_filter_freq] = { // 99
@@ -820,7 +825,7 @@ var BS2 = (function BassStationII() {
             lsb: -1,
             sysex: {
                 offset: 81,
-                mask: [0x6F, 0x40]   // todo: check
+                mask: [0x3F]
             }
         };
     } // defineControls()
@@ -844,20 +849,6 @@ var BS2 = (function BassStationII() {
             sysex: {
                 offset: 24,
                 mask: [0x03]
-            }
-        };
-        nrpn[nrpn_id.lfo1_sync_value] = { // 87
-            name: "LFO1 Sync Value",
-            msb: -1,
-            range: [],                  //TODO: verify range
-            sysex: {        // TODO
-            }
-        };
-        nrpn[nrpn_id.lfo2_sync_value] = { // 91
-            name: "LFO2 Sync Value",
-            msb: -1,
-            range: [],                  //TODO: verify range
-            sysex: {        // TODO
             }
         };
         nrpn[nrpn_id.amp_env_triggering] = { // 0 (msb), 73 (lsb)
@@ -938,8 +929,10 @@ var BS2 = (function BassStationII() {
                 mask: [0x3F, 0x40]
             }
         };
-        nrpn[nrpn_id.lfo_key_sync_lfo1] = { // 0 (msb), 89 (lsb)
-            name: "LFO Key Sync LFO1",
+    // LFO 1
+        // FN key "Key Sync LFO 1"
+        nrpn[nrpn_id.lfo1_key_sync] = { // 0 (msb), 89 (lsb)
+            name: "LFO1 Key Sync",
             range: [0,1],
             msb: 0,
             sysex: {
@@ -947,8 +940,41 @@ var BS2 = (function BassStationII() {
                 mask: [0x10]
             }
         };
-        nrpn[nrpn_id.lfo_key_sync_lfo2] = { // 0 (msb), 93 (lsb)
-            name: "LFO Key Sync LFO2",
+        // FN key "Speed/Sync LFO 1"
+        nrpn[nrpn_id.lfo1_speed_sync] = { // 0 (msb), 88 (lsb)
+            name: "LFO1 Speed/Sync",
+            range: [0, 1],
+            msb: 0,
+            map: v => LFO_SPEED_SYNC[v],
+            sysex: {
+                offset: 69,
+                mask: [0x10]
+            }
+        };
+        nrpn[nrpn_id.lfo1_sync_value] = { // 87
+            name: "LFO1 Sync Value",
+            msb: -1,
+            range: [0, 34],
+            map: v => LFO_SYNC[v],
+            sysex: {
+                offset: 67,
+                mask: [0x07, 0xE0]  // OK
+            }
+        };
+        // FN key "Slew LFO 1"
+        nrpn[nrpn_id.lfo1_slew] = { // 0 (msb), 86 (lsb)
+            name: "LFO1 Slew",
+            range: [0, 127],
+            msb: 0,
+            sysex: {
+                offset: 65,
+                mask: [0x3F, 0x40]
+            }
+        };
+    // LFO 2
+        // FN key "Key Sync LFO 2"
+        nrpn[nrpn_id.lfo2_key_sync] = { // 0 (msb), 93 (lsb)
+            name: "LFO2 Key Sync",
             range: [0,1],
             msb: 0,
             sysex: {
@@ -956,35 +982,30 @@ var BS2 = (function BassStationII() {
                 mask: [0x20]
             }
         };
-        nrpn[nrpn_id.lfo_speed_sync_lfo1] = { // 0 (msb), 87 (lsb)
-            name: "LFO Speed Sync LFO1",
-            range: [0,1],
+        // FN key "Speed/Sync LFO 2"
+        nrpn[nrpn_id.lfo2_speed_sync] = { // 0 (msb), 91 (lsb)
+            name: "LFO2 Speed/Sync",
+            range: [0, 1],
             msb: 0,
-            sysex: {
-                offset: 69,
-                mask: [0x08]
-            }
-        };
-        nrpn[nrpn_id.lfo_speed_sync_lfo2] = { // 0 (msb), 91 (lsb)
-            name: "LFO Speed Sync LFO2",
-            range: [0,1],
-            msb: 0,
+            map: v => LFO_SPEED_SYNC[v],
             sysex: {
                 offset: 76,
                 mask: [0x10]
             }
         };
-        nrpn[nrpn_id.lfo_slew_lfo_1] = { // 0 (msb), 86 (lsb)
-            name: "LFO Slew LFO 1",
-            range: [0,127],
-            msb: 0,
+        nrpn[nrpn_id.lfo2_sync_value] = { // 91
+            name: "LFO2 Sync Value",
+            msb: -1,
+            range: [0, 34],
+            map: v => LFO_SYNC[v],
             sysex: {
-                offset: 65,
-                mask: [0x3F, 0x40]
+                offset: 74,
+                mask: [0x0F, 0x60]  // OK
             }
         };
-        nrpn[nrpn_id.lfo_slew_lfo_2] = { // 0 (msb), 90 (lsb)
-            name: "LFO Slew LFO 2",
+        // FN Key "Slew LFO 2"
+        nrpn[nrpn_id.lfo2_slew] = { // 0 (msb), 90 (lsb)
+            name: "LFO2 Slew",
             range: [0,127],
             msb: 0,
             sysex: {
@@ -992,6 +1013,7 @@ var BS2 = (function BassStationII() {
                 mask: [0x7F]
             }
         };
+    // ARP
         nrpn[nrpn_id.arp_seq_retrig] = { // 106
             name: "Arp Seq Retrig",
             range: [0,1],
@@ -1015,6 +1037,22 @@ var BS2 = (function BassStationII() {
         "triangle", "saw", "square", "S+H"
     ];
 
+    var LFO_SPEED_SYNC = [
+        "speed", "sync" //TODO
+    ];
+
+    var LFO_SYNC = [
+        "64 beats", "48 beats", "42 beats", "36 beats",
+        "32 beats", "30 beats", "28 beats", "24 beats",
+        "21+2/3", "20 beats", "18+2/3", "18 beats",
+        "16 beats", "13+1/3", "12 beats", "10+2/3",
+        "8 beats", "6 beats", "5+1/3", "4 beats",
+        "3 beats", "2+2/3", "2nd", "4th dotted",
+        "1+1/3", "4th", "8th dotted", "4th triplet",
+        "8th", "16th dotted", "8th triplet", "16th",
+        "16th triplet", "32nd", "32nd triplet"
+    ];
+
     var SUB_WAVE_FORMS = [
         "sin", "pulse", "square"
     ];
@@ -1036,7 +1074,7 @@ var BS2 = (function BassStationII() {
     ];
 
     var ARP_NOTES_MODE = [
-        "up", "down", "up-down", "up-down 2", "played", "random"
+        "up", "down", "up-down", "up-down 2", "played", "random", "play", "record"
     ];
     var ARP_OCTAVES = [
         1, 2, 3, 4
@@ -1344,7 +1382,10 @@ var BS2 = (function BassStationII() {
         if (data.length != 154) return false;
         let offset = meta.signature.sysex.offset;
         for (let i=0; i < meta.signature.sysex.value.length; i++) {
-            if (data[offset + i] != meta.signature.sysex.value[i]) return false;
+            if (data[offset + i] != meta.signature.sysex.value[i]) {
+                console.log(`invalid sysex at offset ${offset + i}`, data[offset + i]);
+                return false;
+            }
         }
         return true;
     };
@@ -1400,8 +1441,13 @@ var BS2 = (function BassStationII() {
         // meta.patch_id
         // meta.patch_name
         // meta.signature
+
+        meta.patch_id['value'] = data[meta.patch_id.sysex.offset];
+
+        // console.log(data.slice(meta.patch_name.sysex.offset, meta.patch_name.sysex.offset + meta.patch_name.sysex.mask.length));
         let name = String.fromCharCode(data.slice(meta.patch_name.sysex.offset, meta.patch_name.sysex.offset + meta.patch_name.sysex.mask.length));
         meta.patch_name['value'] = name;
+        // console.log('decodeSysExMeta', name);
     };
 
     var setValuesFromSysex = function(data) {

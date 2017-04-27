@@ -154,8 +154,8 @@
         const CURSOR = 12;
 
         $(".dial").knob({
-            change : function (v) { console.log('change', v); },
-            release : function (v) { console.log('release', v); },
+            // change : function (v) { console.log('change', v); },
+            // release : function (v) { console.log('release', v); },
             angleOffset: -135,
             angleArc: 270,
             bgColor: "#606060",
@@ -176,7 +176,7 @@
                 let cursor = min < 0 ? CURSOR : false;
                 //if (c.hasOwnProperty('step')) continue;
                 let step = c.hasOwnProperty('step') ? c.step : 1;
-                console.log('configure', prefix+i, min, max, step, cursor);
+                // console.log('configure', prefix+i, min, max, step, cursor);
                 $(id).trigger('configure', { min: min, max: max, step: step, cursor: cursor });
                 if (min != 0) {
                     //$(id).val(min).trigger('change');
@@ -278,6 +278,10 @@
         }
     }
 
+    function updateMeta() {
+        $('#patch-number').text(BS2.meta.patch_id.value);
+    }
+
     function setupUI() {
         setupDials();
         setupLists();
@@ -289,6 +293,7 @@
         updateDials();
         updateLists();
         updateCustoms();
+        updateMeta();
     }
 
     $(function () {
@@ -321,11 +326,15 @@
                     });
 
                     input.on('sysex', "all", function(e) {
-                        // console.log("SysEx: ", e);
-                        BS2.setValuesFromSysex(e.data);
-                        // console.log(BS2.control);
-                        // console.log(BS2.nrpn);
-                        updateUI();
+                        console.log("SysEx: ", e);
+                        if (BS2.setValuesFromSysex(e.data)) {
+                            console.log(BS2.control);
+                            console.log(BS2.nrpn);
+                            updateUI();
+                            setStatus("UI updated from SysEx.");
+                        } else {
+                            setStatusError("Unable to set value from SysEx.")
+                        }
                     });
 
                     setConnectionStatus(true);

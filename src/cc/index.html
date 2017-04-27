@@ -147,10 +147,10 @@
 
                     if (BS2.nrpn[cc_lsb].hasOwnProperty('map')) {
                         let r = BS2.nrpn[cc_lsb].map(v);
-                        log_value(`${BS2.nrpn[cc_lsb].name} = ${r} (${v})`);
+                        log_value(`NRPN: ${BS2.nrpn[cc_lsb].name} = ${r} (${v})`);
                     } else {
                         //r = v;
-                        log_value(`${BS2.nrpn[cc_lsb].name} = ${v}`);
+                        log_value(`NRPN: ${BS2.nrpn[cc_lsb].name} = ${v}`);
                     }
 
                     nrpn = false;
@@ -168,10 +168,10 @@
 
                     if (BS2.control[cc_msb].hasOwnProperty('map')) {
                         let r = BS2.control[cc_msb].map(v);
-                        log_value(`${BS2.control[cc_msb].name} = ${r} (${v})`);
+                        log_value(`CC:   ${BS2.control[cc_msb].name} = ${r} (${v})`);
                     } else {
                         //r = v;
-                        log_value(`${BS2.control[cc_msb].name} = ${v}`);
+                        log_value(`CC:   ${BS2.control[cc_msb].name} = ${v}`);
                     }
 
                     cc_expected = -1;
@@ -189,9 +189,9 @@
                     if (BS2.control[cc].hasOwnProperty('map')) {
                         let r = BS2.control[cc].map(v);
                         //log_value(`${CC_names[cc]} = ${r} (${v})`);
-                        log_value(`${BS2.control[cc].name} = ${r} (${v})`);
+                        log_value(`CC:   ${BS2.control[cc].name} = ${r} (${v})`);
                     } else {
-                        log_value(`${BS2.control[cc].name} = ${v}`);
+                        log_value(`CC:   ${BS2.control[cc].name} = ${v}`);
                     }
 
                 } else {
