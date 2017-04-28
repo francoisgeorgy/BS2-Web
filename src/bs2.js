@@ -77,11 +77,14 @@ var BS2 = (function BassStationII() {
     var nrpn_id = {
         osc1_waveform: 72,
         osc2_waveform: 82,
+
         amp_env_triggering: 73,
         mod_env_triggering: 105,
+
         mod_wheel_lfo2_filter_freq: 71,
         mod_wheel_lfo1_osc_pitch: 70,
         mod_wheel_osc2_pitch: 78,
+
         aftertouch_filter_freq: 74,
         aftertouch_lfo1_to_osc_pitch: 75,
         aftertouch_lfo2_speed: 76,
@@ -218,7 +221,7 @@ var BS2 = (function BassStationII() {
             sysex: {
                 offset: 137,
                 range: [0, 0x7F],
-                mask: [0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F]  //TODO: check
+                mask: [0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F]
             }
         },
         signature: {
@@ -227,8 +230,7 @@ var BS2 = (function BassStationII() {
                 offset: 1,
                 range: [],
                 mask: [0x7F, 0x7F, 0x7F],
-                //mask: [0xFF, 0xFF, 0xFF],  // Manufacturer ID
-                value: [0x00, 0x20, 0x29]  // Manufacturer ID //TODO
+                value: [0x00, 0x20, 0x29]  // Manufacturer ID
             }
         }
     };
@@ -237,9 +239,9 @@ var BS2 = (function BassStationII() {
     var nrpn = new Array(127);
 
     function defineControls() {
-        control[control_id.patch_volume] = { // 7
+        control[control_id.patch_volume] = { // 7 Not found in SysEx data & does not send any CC or NRPN
             name: "Patch Volume",
-            range: [],                  //TODO: verify range
+            range: [],
             lsb: -1
         };
         control[control_id.osc1_fine] = { // 26 (msb), 58 (lsb)
@@ -730,7 +732,7 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.arp_rhythm] = { // 119
             name: "Arp Rhythm",
-            range: [1,32],
+            range: [1, 32],
             lsb: -1,
             sysex: {
                 offset: 80,
@@ -860,21 +862,21 @@ var BS2 = (function BassStationII() {
         nrpn[nrpn_id.amp_env_triggering] = { // 0 (msb), 73 (lsb)
             name: "Amp Env Triggering",
             msb: 0,
-            range: [1, 3],
+            range: [0, 2],
             map: v => ENV_TRIGGERING[v],
             sysex: {
-                offset: 55,                     //TODO: check
+                offset: 55,
                 mask: [0x06]
             }
         };
         nrpn[nrpn_id.mod_env_triggering] = { // 0 (msb), 105 (lsb)
             name: "Mod Env Triggering",
             msb: 0,
-            range: [1, 3],
+            range: [0, 2],
             map: v => ENV_TRIGGERING[v],
-            sysex: {                            // TODO
-                // offset: 55,
-                // mask: [0x06]
+            sysex: {
+                offset: 62,
+                mask: [0x0C]
             }
         };
         nrpn[nrpn_id.mod_wheel_lfo1_osc_pitch] = { // 0 (msb), 70 (lsb)
@@ -1001,7 +1003,7 @@ var BS2 = (function BassStationII() {
         };
         nrpn[nrpn_id.lfo2_sync_value] = { // 0 (msb), 91 (lsb)
             name: "LFO2 Sync Value",
-            msb: 0,                     //TODO check
+            msb: 0,
             range: [0, 34],
             map: v => LFO_SYNC[v],
             sysex: {
@@ -1012,7 +1014,7 @@ var BS2 = (function BassStationII() {
         // FN Key "Slew LFO 2"
         nrpn[nrpn_id.lfo2_slew] = { // 0 (msb), 90 (lsb)
             name: "LFO2 Slew",
-            range: [0,127],
+            range: [0, 127],
             msb: 0,
             sysex: {
                 offset: 72,
@@ -1022,8 +1024,8 @@ var BS2 = (function BassStationII() {
     // ARP
         nrpn[nrpn_id.arp_seq_retrig] = { // 106
             name: "Arp Seq Retrig",
-            range: [0,1],
-            msb: -1,            //TODO check
+            range: [0, 1],
+            msb: 0,
             sysex: {
                 offset: 77,
                 mask: [0x20]
@@ -1044,7 +1046,7 @@ var BS2 = (function BassStationII() {
     ];
 
     var LFO_SPEED_SYNC = [
-        "speed", "sync" //TODO
+        "speed", "sync"
     ];
 
     var LFO_SYNC = [
@@ -1076,7 +1078,7 @@ var BS2 = (function BassStationII() {
     ];
 
     var ENV_TRIGGERING = [
-        "INVALID", "single", "multi", "autoglide"  // 1, 2, 3
+        "multi", "single", "autoglide"  // 0, 1, 2
     ];
 
     var ARP_NOTES_MODE = [

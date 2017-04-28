@@ -259,8 +259,8 @@
         $('#cc-111').append(BS2.ARP_OCTAVES.map(o => { return $("<option>").val(o).text(o); }));
         $('#cc-118').append(BS2.ARP_NOTES_MODE.map(o => { return $("<option>").val(o).text(o); }));
 
-        for (let i=1; i<33; i++) {
-            $('#cc-119').append($("<option>").val(i).text(i));
+        for (let i=0; i<32; i++) {
+            $('#cc-119').append($("<option>").val(i).text(i+1));
         }
 
         $('#nrpn-72').change(function (e) { this.value == 'pulse' ? show('#osc1-pw-controls') : hide('#osc1-pw-controls'); });
@@ -269,6 +269,9 @@
     } // setupSelects
 
     function setupOnOffControl(control_id) {
+        $(control_id).change(function() {
+            updateOnOffControl(control_id);
+        });
         $(control_id + '-handle').click(function(){
             let v = $(control_id).val();
             $(control_id).val(v == 0 ? 1 : 0);
