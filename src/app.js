@@ -105,6 +105,11 @@
 
     function updateBS2(control, value) {
         console.log('updateBS2', control, value);
+        let [control_type, control_number] = control.split('-')
+        console.log('updateBS2', control_type, control_number);
+        if (control_type === 'cc') {
+            midi_output.sendControlChange(parseInt(control_number, 10), value);
+        }
     }
 
     function importFromFile() {
@@ -167,8 +172,8 @@
         const CURSOR = 12;
 
         $(".dial").knob({
-            change : function (v) { updateBS2(this, this.value) },
-            // release : function (v) { console.log('release', v); },
+            change : function (v) { /*console.log(this, this.cv, v, this.i[0].id);*/ updateBS2(this.i[0].id, Math.round(v)) },  //TODO: why is v not an integer is step==1?
+            release : function (v) { console.log('release', this, v); },
             angleOffset: -135,
             angleArc: 270,
             bgColor: "#606060",
@@ -337,6 +342,8 @@
         updateMeta();
     }
 
+    var midi_output = null;
+
     $(function () {
 
         setupUI();
@@ -353,10 +360,11 @@
 
                 setStatus("WebMidi enabled.");
 
-                //WebMidi.inputs.map(i => log("input:" + i.name));
-                //WebMidi.outputs.map(i => log("output:" + i.name));
+                WebMidi.inputs.map(i => console.log("input: " + i.name));
+                WebMidi.outputs.map(i => console.log("output: " + i.name));
 
                 var input = WebMidi.getInputByName("Bass Station II");
+                midi_output = WebMidi.getOutputByName("Bass Station II");
 
                 if (input) {
 
