@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Web MIDI Lab - Events</title>
+    <meta name="description" content="BS2 - read sysex data from a file (BS2 patch file)">
+    <meta name="author" content="francois.georgy@gmail.com">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="../bs2.js"></script>
+    <style>
+        #data {
+            font-family: Courier New, Courier, monospace;
+            white-space: pre;
+        }
+    </style>
+</head>
+<body>
+<h2>BS2 - read sysex from file</h2>
+<hr />
+<div id="data"></div>
+<script>
+    const SYSEX_START = 0xF0;
+    const SYSEX_END = 0xF7;
+
+//    var midi = null;  // global MIDIAccess object
+
+    String.prototype.padZero = function (len, c) {
+        var s = '', c = c || '0', len = (len || 2) - this.length;
+        while (s.length < len) s += c;
+        return s + this;
+    };
+    /*
+    String.prototype.padSpace = function(len) {
+        var s = '';
+        while (s.length < len) s += ' ';
+        return s + this;
+    };
+    */
+    String.prototype.paddingLeft = function(paddingValue) {
+        return String(paddingValue + this).slice(-paddingValue.length);
+    };
+
+    function v8(lsb, mask_lsb) {
+        let r = getRightShift(mask_lsb);
+        let b = (lsb & mask_lsb) >> r;
+        return b;
+    }
+
+    function v16(msb, lsb, mask_msb, mask_lsb) {
+        let r = getRightShift(mask_lsb);
+        let s = getSetBits(mask_lsb);
+        let a = (msb & mask_msb) << s;
+        let b = (lsb & mask_lsb) >> r;
+        return a + b;
+    }
+
+    /**
+     * Returns the number of bit 0 before the rightmost bit set to 1.
+     * @param {*} v
+     */
+    function getRightShift(v) {
+        if (!v) return -1;  //means there isn't any 1-bit
+        let i = 0;
+        while ((v & 1) == 0) {
+            i++;
+            v = v>>1;
+        }
+        return i;
+    }
+
+    /**
+     * return the number of bit set
+     */
+    function getSetBits(v) {
+        for (var c = 0; v; c++) {
+            v &= v - 1; // clear the least significant bit set
+        }
+        return c;
+    }
+
+    /**
+     * returns a string
+     */
+    function rawSysEx(data) {
+        let s = '';
+        for (let i=0; i<data.length; i++) {
+            s += data[i].toString(16).padZero(2) + ' ';
+            if ((i+1) % 16 == 0) s += '<br />';
+        }
+        return s;
+    }
+
+    /**
+     * returns a string
+     */
+    function decodeSysEx(data, controls) {
+
+        console.log('decodeSysEx()');
+
+        var s = '';
+
+//        for (var prop in BS2.param) {
+        for (let i=0; i < controls.length; i++) {
+
+            if (typeof controls[i] == 'undefined') continue;
+            if (!controls[i].hasOwnProperty('sysex')) continue;
+
+            let sysex = controls[i].sysex;
+            if (!sysex.hasOwnProperty('mask')) continue;
+
+            s += 'mask: ';
+
+            let bytes = new Uint8Array(sysex.mask.length);
+
+            if (sysex.mask.length < 2) {
+                s += '........ ';
+            }
+
+            for (let k=0; k < sysex.mask.length; k++) {
+                s += sysex.mask[k].toString(2).padZero(8) + ' ';
+            }
+
+            s += ' raw value: ';
+
+            if (sysex.mask.length < 2) {
+                s += '........ ';
+            }
+
+            for (let k=0; k<sysex.mask.length; k++) {
+                let b = data[sysex.offset + k];
+                b = b & sysex.mask[k];
+                bytes[k] = b;
+                s += b.toString(2).padZero(8) + ' ';
+            }
+
+            let param_value = 0;
+            if (sysex.mask.length === 2) {
+                param_value = v16(data[sysex.offset], data[sysex.offset + 1], sysex.mask[0], sysex.mask[1])
+                s += ` ${param_value.toString().paddingLeft('   ')} `;
+            } else {
+                param_value = v8(data[sysex.offset], sysex.mask[0]);
+                s += ` ${param_value.toString().paddingLeft('   ')} `;
+            }
+
+            s += ' final value: ';
+
+            let final_value = 0;
+            if (controls[i].hasOwnProperty('map')) {
+                console.log('compute final value with transform function and raw_value=' + param_value);
+                final_value = controls[i].map(param_value);
+                console.log('final value', final_value);
+            } else {
+                final_value = param_value;
+            }
+
+            s += final_value.toString().paddingLeft('        ');
+
+            s += ` - ${controls[i].name}<br />`;
+        }
+
+        console.log('decodeSysEx end');
+
+        return s;
+    }
+
+//    function handleMessage(event) {
+//        if (event instanceof MIDIMessageEvent) {
+//            if (event.data[0] == SYSEX_START) {
+//                console.log('sysex message received');
+//                $("#data").empty()
+//                    .append(decodeSysEx(event.data, BS2.control))
+//                    .append(decodeSysEx(event.data, BS2.nrpn));
+//            }
+//        }
+//    }
+//
+//    function subscribeInputs(midiAccess) {
+//        var inputs = midiAccess.inputs.values();
+//        // loop over all available inputs
+//        for (var input = inputs.next(); input && !input.done; input = inputs.next()) {
+//            input.value.onmidimessage = handleMessage;
+//        }
+//    }
+
+    $(function () {
+//        navigator.requestMIDIAccess({ sysex: true }).then(onMIDISuccess, onMIDIFailure);
+//        function onMIDISuccess(midiAccess) {
+//            console.log("Got access to MIDI");
+//            midi = midiAccess;
+//            subscribeInputs(midi);
+//        }
+//        function onMIDIFailure(msg) {
+//            console.log("onMIDIFailure", msg);
+//        }
+
+
+
+    });
+
+</script>
+</body>
+</html>

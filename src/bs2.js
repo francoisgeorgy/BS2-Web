@@ -197,6 +197,12 @@ var BS2 = (function BassStationII() {
         return r;
     };
 
+    var doubleByteValue = function(msb, lsb) {
+        let v = msb << 1;
+        return lsb > 0 ? (v+1) : v;
+    };
+
+
     var meta = {
         //sysex_length: 154,
         patch_id: {
@@ -1415,19 +1421,13 @@ var BS2 = (function BassStationII() {
             let raw_value = 0;
             if (sysex.mask.length === 2) {
                 raw_value = v16(data[sysex.offset], data[sysex.offset + 1], sysex.mask[0], sysex.mask[1])
-                // s += ` ${param_value.toString().paddingLeft('   ')} `;
             } else {
                 raw_value = v8(data[sysex.offset], sysex.mask[0]);
-                // s += ` ${param_value.toString().paddingLeft('   ')} `;
             }
-
-            // final value:
 
             let final_value = 0;
             if (controls[i].hasOwnProperty('map')) {
-                // console.log('compute final value with transform function and raw_value=' + param_value);
                 final_value = controls[i].map(raw_value);
-                // console.log('final value', final_value);
             } else {
                 final_value = raw_value;
             }
@@ -1435,19 +1435,15 @@ var BS2 = (function BassStationII() {
             controls[i]['value'] = final_value;
         }
 
-    }; // decodeSys
+    };
 
     var decodeSysExMeta = function(data) {
         // meta.patch_id
         // meta.patch_name
         // meta.signature
-
         meta.patch_id['value'] = data[meta.patch_id.sysex.offset];
-
-        // console.log(data.slice(meta.patch_name.sysex.offset, meta.patch_name.sysex.offset + meta.patch_name.sysex.mask.length));
         let name = String.fromCharCode(data.slice(meta.patch_name.sysex.offset, meta.patch_name.sysex.offset + meta.patch_name.sysex.mask.length));
         meta.patch_name['value'] = name;
-        // console.log('decodeSysExMeta', name);
     };
 
     var setValuesFromSysex = function(data) {
@@ -1479,18 +1475,10 @@ var BS2 = (function BassStationII() {
         ENV_TRIGGERING,
         ARP_NOTES_MODE,
         ARP_OCTAVES,
-        setValuesFromSysex
+        setValuesFromSysex,
+        doubleByteValue
     };
 
     return publicAPI;
 
 })();
-
-/* TEST */
-/*
-console.log(BS2);                                               // object...
-console.log(BS2.control);                                       // array
-console.log(BS2.control_id.osc1_fine);                          // 26
-console.log(BS2.control[BS2.control_id.osc1_fine].sysex);       // object...
-console.log(BS2.control[BS2.control_id.osc1_fine].map(123));    // -4
-*/

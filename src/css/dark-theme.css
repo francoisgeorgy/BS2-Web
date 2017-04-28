@@ -45,6 +45,7 @@ select {
     color: #ffec03;
     background-color: #333;
     border-color: #707070;
+    border-radius: 4px;
 }
 
 .value {
@@ -61,4 +62,15 @@ select {
 
 .novation-blue {
     color: #009AD7;
+}
+
+.handle {
+    padding: 1px 3px;
+    background-color: #333;
+    border: 1px solid #707070;
+    border-radius: 4px;
+}
+
+.handle.on {
+    border-color: #ffec03;
 }

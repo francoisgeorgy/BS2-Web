@@ -1,11 +1,14 @@
 
+    function setConnectionStatus(status) {
+        $('#connection-status').text(status ? 'connected' : 'not connected');
+    }
+
     function setStatus(msg) {
         $('#status').removeClass("error").text(msg);
     }
 
     function setStatusError(msg) {
         $('#status').addClass("error").text(msg);
-
     }
 
     function hide(sel) {
@@ -16,21 +19,18 @@
         $(sel).css('visibility', 'visible');
     }
 
-    function setConnectionStatus(status) {
-        $('#connection-status').html(status ? 'connected' : 'not connected');
-    }
-
+    /**
+     * Update a control on screen from CC or NRPN value.
+     *
+     * @param type
+     * @param control
+     * @param value
+     */
     function dispatch(type, control, value) {
-        type = type.toLowerCase();
         //console.log(type, control, value, '#' + type + '-' + control);
+        type = type.toLowerCase();
         if ((type != 'cc') && (type != 'nrpn')) return; //TODO: signal an error
         $('#' + type + '-' + control).val(value).trigger('change');
-    }
-
-    //TODO: put into BS2 object
-    function doubleByteValue(msb, lsb) {
-        let v = msb << 1;
-        return lsb > 0 ? (v+1) : v;
     }
 
     var cc_expected = -1;
@@ -72,7 +72,7 @@
         if (cc_expected >= 0) {
             if (cc == cc_expected) {
                 value_lsb = msg[2];
-                let v = doubleByteValue(value_msb, value_lsb);
+                let v = BS2.doubleByteValue(value_msb, value_lsb);
                 let r;
                 if (BS2.control[cc_msb].hasOwnProperty('map')) {
                     r = BS2.control[cc_msb].map(v);
@@ -103,19 +103,26 @@
         }
     }
 
+    function updateBS2(control, value) {
+        console.log('updateBS2', control, value);
+    }
 
     function importFromFile() {
         alert('Sorry, this feature is not yet implemented.');
     }
+
     function exportToFile() {
         alert('Sorry, this feature is not yet implemented.');
     }
+
     function sendToBS2() {
         alert('Sorry, this feature is not yet implemented.');
     }
+
     function initBS2() {
         alert('Sorry, this feature is not yet implemented.');
     }
+
     function randomizeBS2() {
 
         function _randomize(controls, prefix) {
@@ -155,12 +162,12 @@
         $('#cmd-randomize').click(randomizeBS2);
     }
 
-    function setupDials() {
+    function setupControls() {
 
         const CURSOR = 12;
 
         $(".dial").knob({
-            // change : function (v) { console.log('change', v); },
+            change : function (v) { updateBS2(this, this.value) },
             // release : function (v) { console.log('release', v); },
             angleOffset: -135,
             angleArc: 270,
@@ -173,20 +180,28 @@
                 let c = controls[i];
                 if (typeof c == 'undefined') continue;
                 if (!c.hasOwnProperty('range')) continue;
-                let id = prefix + i;
-                // let min = c.range[0];
-                // let max = c.range[1];
                 if (c.range.length === 0) continue;     //TODO: SIGNAL AN ERROR
+                // let id = prefix + i;
                 let min = Math.min(...c.range);
                 let max = Math.max(...c.range);
                 let cursor = min < 0 ? CURSOR : false;
-                //if (c.hasOwnProperty('step')) continue;
                 let step = c.hasOwnProperty('step') ? c.step : 1;
-                // console.log('configure', prefix+i, min, max, step, cursor);
-                $(id).trigger('configure', { min: min, max: max, step: step, cursor: cursor });
+                let e = $(prefix + i);
+                e.trigger('configure', {min: min, max: max, step: step, cursor: cursor});
+                let default_value;
+                if ((min < 0) && (max > 0)) {
+                    default_value = 0;
+                } else if (min != 0) {
+                    default_value = min;
+                } else {
+                    default_value = 0;
+                }
                 if (min != 0) {
-                    //$(id).val(min).trigger('change');
-                    $(id).val(min).trigger('blur');
+                    e.val(default_value).trigger('blur');
+                }
+                // add onChange handler
+                if (!e.hasClass('dial')) {
+                    e.change(function (e){ updateBS2(controls[i], this.value) });
                 }
             }
         }
@@ -197,29 +212,20 @@
         $('#cc-' + BS2.control_id.osc1_coarse).trigger('configure', { format: v => v.toFixed(1) });
         $('#cc-' + BS2.control_id.osc2_coarse).trigger('configure', { format: v => v.toFixed(1) });
 
-    } // setupDials
+    } // setupControls
 
     /**
-     * Set value of the dials
+     * Set value of the controls (input and select)
      */
-    function updateDials() {
+    function updateControls() {
 
         for (let i=0; i < BS2.control.length; i++) {
             let c = BS2.control[i];
             if (typeof c === 'undefined') continue;
             if (!c.hasOwnProperty('value')) continue;
             let e = $('#cc-' + i);
-            if (e.is('select')) {
-                //e.val();
-                console.log(`${i} is a select`);
-            } else {
-                e.val(c.value).trigger('change');
-            }
-            // if (e.hasClass('dial')) {
-
-            // } else {
-            //     e.val(c.value);
-            // }
+            if (e.is('select')) continue;
+            e.val(c.value).trigger('change');
         }
 
         for (let i=0; i < BS2.nrpn.length; i++) {
@@ -227,16 +233,13 @@
             if (typeof c === 'undefined') continue;
             if (!c.hasOwnProperty('value')) continue;
             let e = $('#nrpn-' + i);
-            // if (e.hasClass('dial')) {
-                e.val(c.value).trigger('change');
-            // } else {
-            //     e.val(c.value);
-            // }
+            if (e.is('select')) continue;
+            e.val(c.value).trigger('change');
         }
 
-    } // updateDials()
+    } // updateControls()
 
-    function setupLists() {
+    function setupSelects() {
 
         $('#cc-80').append(BS2.SUB_WAVE_FORMS.map(o => { return $("<option>").val(o).text(o); }));
 
@@ -260,108 +263,57 @@
             $('#cc-119').append($("<option>").val(i).text(i));
         }
 
-        // osc1 waveform
-        $('#nrpn-72').change(function (e) {
-            if (this.value == 'pulse') {
-                show('#osc1-pw-controls');
-            } else {
-                hide('#osc1-pw-controls');
-            }
-        });
-        $('#nrpn-82').change(function (e) {
-            if (this.value == 'pulse') {
-                show('#osc2-pw-controls');
-            } else {
-                hide('#osc2-pw-controls');
-            }
-        });
+        $('#nrpn-72').change(function (e) { this.value == 'pulse' ? show('#osc1-pw-controls') : hide('#osc1-pw-controls'); });
+        $('#nrpn-82').change(function (e) { this.value == 'pulse' ? show('#osc2-pw-controls') : hide('#osc2-pw-controls'); });
 
-    } // setupLists
-
-    function updateLists() {
-    }
+    } // setupSelects
 
     function setupOnOffControl(control_id) {
         $(control_id + '-handle').click(function(){
             let v = $(control_id).val();
             $(control_id).val(v == 0 ? 1 : 0);
-            updateCustoms();
+            updateOnOffControl(control_id);
         });
     }
 
     function setupCustoms() {
 
-        $('#cc-110').removeClass("on").addClass("off").text("Osc 1-2 Sync OFF");
-        //$('#cc-110').removeClass("off").addClass("on").text("Osc 1-2 Sync ON");
-
-        // $('#nrpn-89').removeClass("on").addClass("off").text("Key-sync OFF");
-        // $('#nrpn-89').removeClass("off").addClass("on").text("Key-sync ON");
-
+        setupOnOffControl('#cc-110');
         setupOnOffControl('#nrpn-89');
         setupOnOffControl('#nrpn-93');
         setupOnOffControl('#cc-108');
         setupOnOffControl('#cc-109');
         setupOnOffControl('#nrpn-106');
 
-        // $('#nrpn-89-handle').click(function(){
-        //     let v = $('#nrpn-89').val();
-        //     $('#nrpn-89').val(v == 0 ? 1 : 0);
-        //     updateCustoms();
-        // });
-        //
-        // $('#nrpn-93-handle').click(function(){
-        //     let v = $('#nrpn-93').val();
-        //     $('#nrpn-93').val(v == 0 ? 1 : 0);
-        //     updateCustoms();
-        // });
-
-        // $('#nrpn-93').removeClass("on").addClass("off").text("OFF");
-        // $('#nrpn-93').removeClass("off").addClass("on").text("Key-sync ON");
-
         $('#osc1-pw-controls').css('visibility','hidden');
         $('#osc2-pw-controls').css('visibility','hidden');
     }
 
-    function updateOnOffControl(control_id, prefix_text) {
+    function updateOnOffControl(control_id) {   //}, prefix_text) {
         if ($(control_id).val() == 0) {
-            $(control_id + '-handle').removeClass("on").addClass("off").text(prefix_text + " OFF");
+            $(control_id + '-handle').removeClass("on").addClass("off");    //.text(prefix_text + " OFF");
         } else {
-            $(control_id + '-handle').removeClass("off").addClass("on").text(prefix_text + " ON ");
+            $(control_id + '-handle').removeClass("off").addClass("on");    //.text(prefix_text + " ON ");
         }
     }
 
     function updateCustoms() {
 
-        updateOnOffControl('#nrpn-89', "Key Sync");
-        updateOnOffControl('#nrpn-93', "Key Sync");
-        updateOnOffControl('#cc-108', "ARP");
-        updateOnOffControl('#cc-109', "Latch");
-        updateOnOffControl('#nrpn-106', "Retrig");
+        // updateOnOffControl('#cc-110', "Osc 1-2 Sync");
+        // updateOnOffControl('#nrpn-89', "Key Sync");
+        // updateOnOffControl('#nrpn-93', "Key Sync");
+        // updateOnOffControl('#cc-108', "ARP");
+        // updateOnOffControl('#cc-109', "Latch");
+        // updateOnOffControl('#nrpn-106', "Retrig");
+        updateOnOffControl('#cc-110');
+        updateOnOffControl('#nrpn-89');
+        updateOnOffControl('#nrpn-93');
+        updateOnOffControl('#cc-108');
+        updateOnOffControl('#cc-109');
+        updateOnOffControl('#nrpn-106');
 
-        // if ($('#nrpn-89').val() == 0) {
-        //     $('#nrpn-89-handle').removeClass("on").addClass("off").text("Key Sync OFF");
-        // } else {
-        //     $('#nrpn-89-handle').removeClass("off").addClass("on").text("Key Sync ON ");
-        // }
-        //
-        // if ($('#nrpn-93').val() == 0) {
-        //     $('#nrpn-93-handle').removeClass("on").addClass("off").text("Key Sync OFF");
-        // } else {
-        //     $('#nrpn-93-handle').removeClass("off").addClass("on").text("Key Sync ON ");
-        // }
-
-        //if (BS2.nrpn[BS2.nrpn_id.osc1_waveform].value == "pulse") {
-        if ($('#nrpn-72').val() == 'pulse') {
-            show('#osc1-pw-controls');
-        } else {
-            hide('#osc1-pw-controls');
-        }
-        // if (BS2.nrpn[BS2.nrpn_id.osc2_waveform].value == "pulse") {
-        if ($('#nrpn-82').val() == 'pulse') {
-            show('#osc2-pw-controls');
-        } else {
-            hide('#osc2-pw-controls');
-        }
+        $('#nrpn-72').val() == 'pulse' ? show('#osc1-pw-controls') : hide('#osc1-pw-controls');
+        $('#nrpn-82').val() == 'pulse' ? show('#osc2-pw-controls') : hide('#osc2-pw-controls');
     }
 
     function updateMeta() {
@@ -369,14 +321,14 @@
     }
 
     function setupUI() {
-        setupDials();
-        setupLists();
+        setupControls();
+        setupSelects();
         setupCustoms();
         setupCommands();
     }
 
     function updateUI() {
-        updateDials();
+        updateControls();
         updateLists();
         updateCustoms();
         updateMeta();
