@@ -19,8 +19,8 @@
             <span class="novation-blue">Bass Station II Web Interface</span><span id="patch" class="novation-blue">&nbsp;&nbsp;&#9830;&nbsp;&nbsp;Patch</span>
             <span id="patch-number" class="novation-blue">123</span>
             <span class="commands">
-                <button id="cmd-export" title="Export the current configuration in a file">export</button>
                 <button id="cmd-import" title="Import a configuration from a file (will not send to the BS2)">import</button>
+                <button id="cmd-export" title="Export the current configuration in a file">export</button>
                 <button id="cmd-send" title="Send all parameters to the connected Bass Stations II">send</button>
                 <button id="cmd-init" title="Set all parameters to their default value">init</button>
                 <button id="cmd-randomize" title="Set all parameters to a random value">random</button>
@@ -51,9 +51,11 @@
         <div id="lfo1">
             <h1>LFO 1</h1>
             <div class="space-after">
-                <!--<label>Wave:</label>-->
                 <select id="cc-88">
                 </select>
+            </div>
+            <div class="space-after" style="text-align: center">
+                <!--<label>Key-sync </label --><input id="nrpn-89" type="hidden" value="0" /><span id="nrpn-89-handle" class="handle value off">Key Sync OFF</span>
             </div>
             <div class="group">
                 <div class="control row">
@@ -69,12 +71,10 @@
             </div>
             <div class="group space-after">
                 <div class="control row">
-                    <!--<label>Sync:</label>-->
-                    <select>
-                        <option>speed</option>
-                        <option>sync</option>
+                    <select id="nrpn-88">   <!-- FN key "Speed/Sync LFO 1" -->
                     </select>
-                    <div class="value">sync val</div>
+                    <select id="nrpn-87">   <!-- Sync value -->
+                    </select>
                 </div>
             </div>
             <div class="group">
@@ -82,9 +82,6 @@
                     <input id="nrpn-86" class="dial" data-width="60" data-height="60" value="0" />
                     <label>Slew</label>
                 </div>
-            </div>
-            <div style="text-align: center">
-                <label id="nrpn-89" class="off">Key-sync OFF</label>
             </div>
         </div>
 
@@ -97,6 +94,10 @@
                 <!--<label>Wave:</label>-->
                 <select id="cc-89">
                 </select>
+            </div>
+            <div class="space-after" style="text-align: center">
+                <!--<label>Key-sync </label><span id="nrpn-93" class="value">OFF</span>-->
+                <!--<label>Key-sync </label --><input id="nrpn-93" type="hidden" value="0" /><span id="nrpn-93-handle" class="handle value off">Key Sync OFF</span>
             </div>
             <div class="group">
                 <div class="control row">
@@ -120,11 +121,10 @@
             </div>
             <div class="group space-after">
                 <div class="control row">
-                    <select>
-                        <option>speed</option>
-                        <option>sync</option>
+                    <select id="nrpn-92">   <!-- FN key "Speed/Sync LFO 2" -->
                     </select>
-                    <div class="value">sync val</div>
+                    <select id="nrpn-91">   <!-- Sync value -->
+                    </select>
                 </div>
             </div>
             <div class="group">
@@ -132,9 +132,6 @@
                     <input id="nrpn-90" class="dial" data-width="60" data-height="60" value="0" />
                     <label>Slew</label>
                 </div>
-            </div>
-            <div style="text-align: center">
-                <label id="nrpn-93" class="off">Key-sync OFF</label>
             </div>
         </div>
 
@@ -148,7 +145,7 @@
                     <div class="control double">
                         <select id="cc-70">
                         </select>
-                        <select id="nrpn-72">
+                        <select id="nrpn-72">   <!-- osc1 waveform -->
                         </select>
                     </div>
                 </div>
@@ -204,7 +201,7 @@
                     <div class="control double">
                         <select id="cc-75">
                         </select>
-                        <select id="nrpn-82">
+                        <select id="nrpn-82">   <!-- osc2 waveform -->
                         </select>
                     </div>
                 </div>
@@ -504,8 +501,8 @@
                 <div class="row">
                     <table>
                         <tr>
-                            <td align="right">
-                                <label id="cc-108" class="off">ARP OFF</label>
+                            <td align="right" width="60">
+                                <input id="cc-108" type="hidden" value="0" /><span id="cc-108-handle" class="handle value off">ARP OFF</span>
                             </td>
                             <td align="right" style="padding-left:20px">
                                 <label class="row">Rhythm</label>
@@ -516,8 +513,8 @@
                             </td>
                         </tr>
                         <tr>
-                            <td align="right">
-                                <label id="cc-109" class="off">Latch OFF</label>
+                            <td align="right" width="60">
+                                <input id="cc-109" type="hidden" value="0" /><span id="cc-109-handle" class="handle value off">Latch OFF</span>
                             </td>
                             <td align="right" style="padding-left:20px">
                                 <label class="row">Octaves</label>
@@ -528,8 +525,8 @@
                             </td>
                         </tr>
                         <tr>
-                            <td align="right">
-                                <label id="nrpn-106" class="off">Retrig OFF</label>
+                            <td align="right" width="60">
+                                <input id="nrpn-106" type="hidden" value="0" /><span id="nrpn-106-handle" class="handle value off">Retrig OFF</span>
                             </td>
                             <td align="right" style="padding-left:20px">
                                 <label>Note mode</label>

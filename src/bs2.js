@@ -857,7 +857,7 @@ var BS2 = (function BassStationII() {
             range: [1, 3],
             map: v => ENV_TRIGGERING[v],
             sysex: {
-                offset: 55,     //TODO: check
+                offset: 55,                     //TODO: check
                 mask: [0x06]
             }
         };
@@ -866,7 +866,7 @@ var BS2 = (function BassStationII() {
             msb: 0,
             range: [1, 3],
             map: v => ENV_TRIGGERING[v],
-            sysex: {        // TODO
+            sysex: {                            // TODO
                 // offset: 55,
                 // mask: [0x06]
             }
@@ -983,7 +983,7 @@ var BS2 = (function BassStationII() {
             }
         };
         // FN key "Speed/Sync LFO 2"
-        nrpn[nrpn_id.lfo2_speed_sync] = { // 0 (msb), 91 (lsb)
+        nrpn[nrpn_id.lfo2_speed_sync] = { // 0 (msb), 92 (lsb)
             name: "LFO2 Speed/Sync",
             range: [0, 1],
             msb: 0,
@@ -993,9 +993,9 @@ var BS2 = (function BassStationII() {
                 mask: [0x10]
             }
         };
-        nrpn[nrpn_id.lfo2_sync_value] = { // 91
+        nrpn[nrpn_id.lfo2_sync_value] = { // 0 (msb), 91 (lsb)
             name: "LFO2 Sync Value",
-            msb: -1,
+            msb: 0,                     //TODO check
             range: [0, 34],
             map: v => LFO_SYNC[v],
             sysex: {
@@ -1017,7 +1017,7 @@ var BS2 = (function BassStationII() {
         nrpn[nrpn_id.arp_seq_retrig] = { // 106
             name: "Arp Seq Retrig",
             range: [0,1],
-            msb: -1,
+            msb: -1,            //TODO check
             sysex: {
                 offset: 77,
                 mask: [0x20]
@@ -1047,10 +1047,10 @@ var BS2 = (function BassStationII() {
         "21+2/3", "20 beats", "18+2/3", "18 beats",
         "16 beats", "13+1/3", "12 beats", "10+2/3",
         "8 beats", "6 beats", "5+1/3", "4 beats",
-        "3 beats", "2+2/3", "2nd", "4th dotted",
-        "1+1/3", "4th", "8th dotted", "4th triplet",
-        "8th", "16th dotted", "8th triplet", "16th",
-        "16th triplet", "32nd", "32nd triplet"
+        "3 beats", "2+2/3", "2nd", "4th dot",
+        "1+1/3", "4th", "8th dot", "4th trip",
+        "8th", "16th dot", "8th trip", "16th",
+        "16th trip", "32nd", "32nd trip"
     ];
 
     var SUB_WAVE_FORMS = [
@@ -1070,7 +1070,7 @@ var BS2 = (function BassStationII() {
     ];
 
     var ENV_TRIGGERING = [
-        "", "single", "multi", "autoglide"  // 1, 2, 3
+        "INVALID", "single", "multi", "autoglide"  // 1, 2, 3
     ];
 
     var ARP_NOTES_MODE = [
@@ -1467,10 +1467,12 @@ var BS2 = (function BassStationII() {
         nrpn_id,
         control,
         nrpn,
+        SUB_WAVE_FORMS,
         OSC_RANGES,
         OSC_WAVE_FORMS,
         LFO_WAVE_FORMS,
-        SUB_WAVE_FORMS,
+        LFO_SPEED_SYNC,
+        LFO_SYNC,
         FILTER_SHAPES,
         FILTER_SLOPE,
         FILTER_TYPE,

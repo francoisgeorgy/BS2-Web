@@ -126,8 +126,12 @@
                 let e = $(prefix + i);
                 let min = Math.min(...c.range);
                 let max = Math.max(...c.range);
-                let v = Math.floor(Math.random() * (max - min)) + min;  //TODO: step
-                //console.log(e, min, max, v);
+                let v;
+                if ((min == 0) && (max == 1)) {
+                    v = Math.round(Math.random());
+                } else {
+                    v = Math.floor(Math.random() * (max - min)) + min;  //TODO: step
+                }
                 if (e.is('select')) {
                     //console.log(`${e} is a select`, e, e[0].options);
                     e[0].options[Math.floor(Math.random() * e[0].options.length)].selected = true
@@ -139,6 +143,8 @@
 
         _randomize(BS2.control, '#cc-');
         _randomize(BS2.nrpn, '#nrpn-');
+
+        updateCustoms();
     }
 
     function setupCommands() {
@@ -231,47 +237,127 @@
     } // updateDials()
 
     function setupLists() {
+
         $('#cc-80').append(BS2.SUB_WAVE_FORMS.map(o => { return $("<option>").val(o).text(o); }));
+
         $('#cc-88,#cc-89').append(BS2.LFO_WAVE_FORMS.map(o => { return $("<option>").val(o).text(o); }));
+        $('#nrpn-88,#nrpn-92').append(BS2.LFO_SPEED_SYNC.map(o => { return $("<option>").val(o).text(o); }));
+        $('#nrpn-87,#nrpn-91').append(BS2.LFO_SYNC.map(o => { return $("<option>").val(o).text(o); }));
+
         $('#cc-70,#cc-75').append(BS2.OSC_RANGES.map(o => { return $("<option>").val(o).text(o); }));
         $('#nrpn-72,#nrpn-82').append(BS2.OSC_WAVE_FORMS.map(o => { return $("<option>").val(o).text(o); }));
+
         $('#cc-83').append(BS2.FILTER_TYPE.map(o => { return $("<option>").val(o).text(o); }));
         $('#cc-106').append(BS2.FILTER_SLOPE.map(o => { return $("<option>").val(o).text(o); }));
         $('#cc-84').append(BS2.FILTER_SHAPES.map(o => { return $("<option>").val(o).text(o); }));
+
         $('#nrpn-73,#nrpn-105').append(BS2.ENV_TRIGGERING.map(o => { return $("<option>").val(o).text(o); }));
+
         $('#cc-111').append(BS2.ARP_OCTAVES.map(o => { return $("<option>").val(o).text(o); }));
         $('#cc-118').append(BS2.ARP_NOTES_MODE.map(o => { return $("<option>").val(o).text(o); }));
-        //$('#nrpn-72,#nrpn-82').change(updateCustoms);
 
         for (let i=1; i<33; i++) {
             $('#cc-119').append($("<option>").val(i).text(i));
         }
+
+        // osc1 waveform
+        $('#nrpn-72').change(function (e) {
+            if (this.value == 'pulse') {
+                show('#osc1-pw-controls');
+            } else {
+                hide('#osc1-pw-controls');
+            }
+        });
+        $('#nrpn-82').change(function (e) {
+            if (this.value == 'pulse') {
+                show('#osc2-pw-controls');
+            } else {
+                hide('#osc2-pw-controls');
+            }
+        });
 
     } // setupLists
 
     function updateLists() {
     }
 
+    function setupOnOffControl(control_id) {
+        $(control_id + '-handle').click(function(){
+            let v = $(control_id).val();
+            $(control_id).val(v == 0 ? 1 : 0);
+            updateCustoms();
+        });
+    }
+
     function setupCustoms() {
+
         $('#cc-110').removeClass("on").addClass("off").text("Osc 1-2 Sync OFF");
         //$('#cc-110').removeClass("off").addClass("on").text("Osc 1-2 Sync ON");
-        $('#nrpn-89').removeClass("on").addClass("off").text("Key-sync OFF");
+
+        // $('#nrpn-89').removeClass("on").addClass("off").text("Key-sync OFF");
         // $('#nrpn-89').removeClass("off").addClass("on").text("Key-sync ON");
-        $('#nrpn-93').removeClass("on").addClass("off").text("Key-sync OFF");
+
+        setupOnOffControl('#nrpn-89');
+        setupOnOffControl('#nrpn-93');
+        setupOnOffControl('#cc-108');
+        setupOnOffControl('#cc-109');
+        setupOnOffControl('#nrpn-106');
+
+        // $('#nrpn-89-handle').click(function(){
+        //     let v = $('#nrpn-89').val();
+        //     $('#nrpn-89').val(v == 0 ? 1 : 0);
+        //     updateCustoms();
+        // });
+        //
+        // $('#nrpn-93-handle').click(function(){
+        //     let v = $('#nrpn-93').val();
+        //     $('#nrpn-93').val(v == 0 ? 1 : 0);
+        //     updateCustoms();
+        // });
+
+        // $('#nrpn-93').removeClass("on").addClass("off").text("OFF");
         // $('#nrpn-93').removeClass("off").addClass("on").text("Key-sync ON");
 
         $('#osc1-pw-controls').css('visibility','hidden');
         $('#osc2-pw-controls').css('visibility','hidden');
     }
 
+    function updateOnOffControl(control_id, prefix_text) {
+        if ($(control_id).val() == 0) {
+            $(control_id + '-handle').removeClass("on").addClass("off").text(prefix_text + " OFF");
+        } else {
+            $(control_id + '-handle').removeClass("off").addClass("on").text(prefix_text + " ON ");
+        }
+    }
+
     function updateCustoms() {
-        //console.log('updateCustoms');
-        if (BS2.control[BS2.nrpn_id.osc1_waveform].value == "pulse") {
+
+        updateOnOffControl('#nrpn-89', "Key Sync");
+        updateOnOffControl('#nrpn-93', "Key Sync");
+        updateOnOffControl('#cc-108', "ARP");
+        updateOnOffControl('#cc-109', "Latch");
+        updateOnOffControl('#nrpn-106', "Retrig");
+
+        // if ($('#nrpn-89').val() == 0) {
+        //     $('#nrpn-89-handle').removeClass("on").addClass("off").text("Key Sync OFF");
+        // } else {
+        //     $('#nrpn-89-handle').removeClass("off").addClass("on").text("Key Sync ON ");
+        // }
+        //
+        // if ($('#nrpn-93').val() == 0) {
+        //     $('#nrpn-93-handle').removeClass("on").addClass("off").text("Key Sync OFF");
+        // } else {
+        //     $('#nrpn-93-handle').removeClass("off").addClass("on").text("Key Sync ON ");
+        // }
+
+        //if (BS2.nrpn[BS2.nrpn_id.osc1_waveform].value == "pulse") {
+        if ($('#nrpn-72').val() == 'pulse') {
             show('#osc1-pw-controls');
         } else {
             hide('#osc1-pw-controls');
         }
-        if (BS2.control[BS2.nrpn_id.osc2_waveform].value == "pulse") {
+        // if (BS2.nrpn[BS2.nrpn_id.osc2_waveform].value == "pulse") {
+        if ($('#nrpn-82').val() == 'pulse') {
             show('#osc2-pw-controls');
         } else {
             hide('#osc2-pw-controls');

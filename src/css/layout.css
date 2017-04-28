@@ -210,3 +210,8 @@ select {
 .dial {
     font-size: 0.8em!important;
 }
+
+span.handle {
+    cursor: pointer;
+    user-select: none;
+}

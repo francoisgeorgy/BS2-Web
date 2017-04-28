@@ -17,10 +17,12 @@
 </head>
 <body>
     <h2>BS2 - decode sysex</h2>
-    Import SysEx from file: <input type="file" id="file" placeholder="toto" />
+    Load SysEx from file: <input type="file" id="file" placeholder="toto" />
     <hr />
     <div id="data"></div>
+</body>
 <script>
+
     const SYSEX_START = 0xF0;
     const SYSEX_END = 0xF7;
 
@@ -31,16 +33,10 @@
         while (s.length < len) s += c;
         return s + this;
     };
-    /*
-    String.prototype.padSpace = function(len) {
-        var s = '';
-        while (s.length < len) s += ' ';
-        return s + this;
-    };
-    */
-    String.prototype.paddingLeft = function(paddingValue) {
-        return String(paddingValue + this).slice(-paddingValue.length);
-    };
+
+//    String.prototype.paddingLeft = function(paddingValue) {
+//        return String(paddingValue + this).slice(-paddingValue.length);
+//    };
 
     function v8(lsb, mask_lsb) {
         let r = getRightShift(mask_lsb);
@@ -80,29 +76,11 @@
         return c;
     }
 
-    /**
-     * returns a string
-     */
-    function rawSysEx(data) {
-        let s = '';
-        for (let i=0; i<data.length; i++) {
-            s += data[i].toString(16).padZero(2) + ' ';
-            if ((i+1) % 16 == 0) s += '<br />';
-        }
-        return s;
-    }
+    function decodeSysEx(data, controls, a) {
 
-    /**
-     * returns a string
-     */
-    function decodeSysEx(data, controls) {
-
-        console.log('decodeSysEx()');
-
-        var s = '';
-
-//        for (var prop in BS2.param) {
         for (let i=0; i < controls.length; i++) {
+
+            let s = '';
 
             if (typeof controls[i] == 'undefined') continue;
             if (!controls[i].hasOwnProperty('sysex')) continue;
@@ -110,7 +88,7 @@
             let sysex = controls[i].sysex;
             if (!sysex.hasOwnProperty('mask')) continue;
 
-            s += `offset: ${sysex.offset.toString(10).paddingLeft('   ')}  `;
+            s += `offset: ${sysex.offset.toString(10).padStart(3)}  `;
 
             s += 'mask: ';
 
@@ -140,13 +118,11 @@
             let param_value = 0;
             if (sysex.mask.length === 2) {
                 param_value = v16(data[sysex.offset], data[sysex.offset + 1], sysex.mask[0], sysex.mask[1])
-                s += ` ${param_value.toString().paddingLeft('   ')} `;
+                s += ` ${param_value.toString().padStart(3)} `;
             } else {
                 param_value = v8(data[sysex.offset], sysex.mask[0]);
-                s += ` ${param_value.toString().paddingLeft('   ')} `;
+                s += ` ${param_value.toString().padStart(3)} `;
             }
-
-            s += ' final value: ';
 
             let final_value = 0;
             if (controls[i].hasOwnProperty('map')) {
@@ -157,40 +133,57 @@
                 final_value = param_value;
             }
 
-            s += final_value.toString().paddingLeft('        ');
-
-            s += ` - ${controls[i].name}<br />`;
+            a.push({
+                name: controls[i].name,
+                value: final_value,
+                details: s
+            });
         }
-
-        console.log('decodeSysEx end');
-
-        return s;
+        //return a;
     }
 
-
-    function decodeSysExMeta(data) {
-        let s = '';
-        // meta.patch_id
-        // meta.patch_name
-        // meta.signature
-
+    function decodeSysExMeta(data, a) {
         let n = data[BS2.meta.patch_id.sysex.offset];
-//        s += `Patch number: ${n}<br />`;
-
-        //console.log('meta', BS2.meta.patch_name.sysex.offset, BS2.meta.patch_name.sysex.mask.length, data.slice(BS2.meta.patch_name.sysex.offset, BS2.meta.patch_name.sysex.offset + BS2.meta.patch_name.sysex.mask.length));
         let name = String.fromCharCode(...data.slice(BS2.meta.patch_name.sysex.offset, BS2.meta.patch_name.sysex.offset + BS2.meta.patch_name.sysex.mask.length));
-        //console.log('decodeSysExMeta', name);
-        //BS2.meta.patch_name['value'] = name;
-        s += `Patch: [${n}] ${name}<br />`;
-        return s;
-    };
-
+        a.push({
+            name:'patch name',
+            value: `[${n}] ${name}`,
+            details: ''
+        });
+        //return a;
+    }
 
     function updateDisplay(data) {
-        $("#data").empty()
-            .append(decodeSysExMeta(data))
-            .append(decodeSysEx(data, BS2.control))
-            .append(decodeSysEx(data, BS2.nrpn));
+
+        $("#data").empty();
+
+        var lines = [];
+        decodeSysEx(data, BS2.control, lines);
+        decodeSysEx(data, BS2.nrpn, lines);
+
+        var patch = [];
+        decodeSysExMeta(data, patch);
+
+        $("#data").append('Patch: ');
+        $("#data").append(patch[0].value.toString());
+        $("#data").append('<br />');
+
+        lines.sort(function(a, b) {
+            const nameA = a.name.toUpperCase();
+            const nameB = b.name.toUpperCase();
+            if (nameA < nameB) return -1;
+            if (nameA > nameB) return 1;
+            return 0;
+        });
+
+        for (let i=0; i<lines.length; i++) {
+            $("#data").append(lines[i].name.padEnd(30));
+            $("#data").append('= ');
+            $("#data").append(lines[i].value.toString().padEnd(12));
+            $("#data").append(' | ');
+            $("#data").append(lines[i].details);
+            $("#data").append('<br />');
+        }
     }
 
     function handleMessage(event) {
@@ -231,18 +224,10 @@
                 reader.onload = function (e) {
                     let view   = new Uint8Array(e.target.result);
                     for (let i=0; i<view.length; i++) {
-                        //console.log(i, view[i]);
                         data.push(view[i]);
                         if (view[i] == SYSEX_END) break;
                     }
-                    //console.log('data', data);
-
                     updateDisplay(data);
-//                    $("#data").empty()
-//                        .append(decodeSysExMeta(data))
-//                        .append(decodeSysEx(data, BS2.control))
-//                        .append(decodeSysEx(data, BS2.nrpn));
-
                 };
                 reader.readAsArrayBuffer(f);
             }
@@ -252,5 +237,4 @@
     });
 
 </script>
-</body>
 </html>
