@@ -107,16 +107,32 @@ var BS2 = (function BassStationII() {
         return v < 128 ? (v - 127) : (v - 128);
     };
 
+    var _127_reverse = function(v) {
+        return v < 0 ? (v + 127) : (v + 128);
+    };
+
     var _100 = function(v) {
         return v < 128 ? (v - 127) : (v - 128);
+    };
+
+    var _100_reverse = function(v) {
+        return v < 0 ? (v + 127) : (v + 128);
     };
 
     var _63 = function(v) {
         return v < 64 ? (v - 63) : (v - 64);
     };
 
+    var _63_reverse = function(v) {
+        return v < 0 ? (v + 63) : (v + 64);
+    };
+
     var _12 = function(v) {
         return COARSE_VALUES[v] / 10;
+    };
+
+    var _12_reverse = function(v) {
+        return COARSE_VALUES.indexOf(Math.round(v * 10));
     };
 
     var _waveform = function(v) {    // todo: check if this is a good idea
@@ -131,6 +147,17 @@ var BS2 = (function BassStationII() {
         let out_min = 5;
         let in_max = 127;
         let in_min = 0;
+        return Math.round(((v - in_min) / (in_max - in_min)) * (out_max - out_min) + out_min - 0.4);
+    };
+
+    // 0..127 to 5..95
+    var _5_95_reverse = function(v) {
+        //console.log(v * 2 * 91.0 / 256 + 5 -0.4);
+        // return Math.round(v * 2 * 91.0 / 256 + 5 -0.4);
+        let out_max = 127;
+        let out_min = 0;
+        let in_max = 95;
+        let in_min = 5;
         return Math.round(((v - in_min) / (in_max - in_min)) * (out_max - out_min) + out_min - 0.4);
     };
 
@@ -249,6 +276,7 @@ var BS2 = (function BassStationII() {
             lsb: 58,
             range: [-100,100],
             map: _100,
+            map_r: _100_reverse,
             sysex: {
                 offset: 22,
                 mask: [0x03, 0x7E]
@@ -271,6 +299,7 @@ var BS2 = (function BassStationII() {
             range: [-12, 12],
             step: 0.1,
             map: _12,
+            map_r: _12_reverse,
             sysex: {
                 offset: 21,
                 mask: [0x03, 0x7C]
@@ -281,6 +310,7 @@ var BS2 = (function BassStationII() {
             lsb: -1,
             range: [-63,63],
             map: _63,
+            map_r: _63_reverse,
             sysex: {
                 offset: 98,
                 mask: [0x1F, 0x60]
@@ -291,6 +321,7 @@ var BS2 = (function BassStationII() {
             lsb: 60,
             range: [-127,127],
             map: _127,
+            map_r: _127_reverse,
             sysex: {
                 offset: 90,
                 mask: [0x3F, 0x60]
@@ -301,6 +332,7 @@ var BS2 = (function BassStationII() {
             lsb: -1,
             range: [-63,63],
             map: _63,
+            map_r: _63_reverse,
             sysex: {
                 offset: 101,
                 mask: [0x01, 0x7C]
@@ -321,6 +353,7 @@ var BS2 = (function BassStationII() {
             lsb: -1,
             range: [5,95],
             map: _5_95,
+            map_r: _5_95_reverse,
             sysex: {
                 offset: 19,
                 mask: [0x0F, 0x70]
@@ -331,6 +364,7 @@ var BS2 = (function BassStationII() {
             lsb: 61,
             range: [-100,100],
             map: _100,
+            map_r: _100_reverse,
             sysex: {
                 offset: 28,
                 mask: [0x0F, 0x78]
@@ -352,6 +386,7 @@ var BS2 = (function BassStationII() {
             range: [-12, 12],
             step: 0.1,
             map: _12,
+            map_r: _12_reverse,
             sysex: {
                 offset: 27,
                 mask: [0x1F, 0x70]
@@ -362,6 +397,7 @@ var BS2 = (function BassStationII() {
             lsb: -1,
             range: [-63, 63],
             map: _63,
+            map_r: _63_reverse,
             sysex: {
                 offset: 99,
                 mask: [0x0F, 0x70]
@@ -372,6 +408,7 @@ var BS2 = (function BassStationII() {
             range: [-127,127],
             lsb: 63,
             mod: _127,
+            map_r: _127_reverse,
             sysex: {
                 offset: 91,
                 mask: [0x1F, 0x70]
@@ -382,6 +419,7 @@ var BS2 = (function BassStationII() {
             lsb: -1,
             range: [-63,63],
             map: _63,
+            map_r: _63_reverse,
             sysex: {
                 offset: 102,
                 mask: [0x01, 0x7E]
@@ -401,6 +439,7 @@ var BS2 = (function BassStationII() {
             lsb: -1,
             range: [5,95],
             map: _5_95,
+            map_r: _5_95_reverse,
             sysex: {
                 offset: 25,
                 mask: [0x1F, 0x40]
@@ -421,6 +460,7 @@ var BS2 = (function BassStationII() {
             range: [-2, -1],
             lsb: -1,
             map: v => v - 2,
+            map_r: v => v + 2,
             sysex: {
                 offset: 37,
                 mask: [0x08]
@@ -533,6 +573,7 @@ var BS2 = (function BassStationII() {
             lsb: -1,
             range: [-63, 63],
             map: _63,
+            map_r: _63_reverse,
             sysex: {
                 offset: 105,
                 mask: [0x3F, 0x40]
@@ -543,6 +584,7 @@ var BS2 = (function BassStationII() {
             range: [-127, 127],
             lsb: 49,
             map: _127,
+            map_r: _127_reverse,
             sysex: {
                 offset: 97,
                 mask: [0x3F, 0x40]
@@ -884,6 +926,7 @@ var BS2 = (function BassStationII() {
             range: [-63, 63],
             msb: 0,
             map: _63,
+            map_r: _63_reverse,
             sysex: {
                 offset: 83,
                 mask: [0x0F, 0x70]
@@ -903,6 +946,7 @@ var BS2 = (function BassStationII() {
             msb: 0,
             range: [-63, 63],
             map: _63,
+            map_r: _63_reverse,
             sysex: {
                 offset: 85,
                 mask: [0x03, 0x7C]
@@ -913,6 +957,7 @@ var BS2 = (function BassStationII() {
             range: [-63, 63],
             msb: 0,
             map: _63,
+            map_r: _63_reverse,
             sysex: {
                 offset: 86,
                 mask: [0x01, 0x7E]
@@ -923,6 +968,7 @@ var BS2 = (function BassStationII() {
             range: [-63, 63],
             msb: 0,
             map: _63,
+            map_r: _63_reverse,
             sysex: {
                 offset: 88,
                 mask: [0x7F]
@@ -1456,6 +1502,42 @@ var BS2 = (function BassStationII() {
         return true;
     };
 
+    /**
+     * Returns an array of "midi messages" to send to update control to value
+     * @param control
+     * @param value
+     */
+    var getMidiMessagesFor = function(control_type, control_number, value) {
+        let a = [];
+        let c;
+        if (control_type === 'cc') {
+            c = control[control_number];
+        } else if (control_type === 'nrpn') {
+            c = nrpn[control_number];
+        }
+        let bin;
+        if (c.hasOwnProperty('map_r')) {
+            bin = c.map_r(value);
+        } else {
+            bin = value;
+        }
+        // let lsb;
+        // let msb = -1;
+        if (bin < 128) {    // one or two bytes?
+            // lsb = bin;
+            a.push([control_number, bin]);
+        } else {
+            let msb = bin >>> 1;
+            let lsb = bin % 2 === 0 ? 0 : 64;
+
+            a.push([control_number, msb]);
+            a.push([c.lsb, lsb]);
+        }
+        // console.log(`bin=${bin}, bin=${bin.toString(2)}, msb=${msb.toString(2)}, lsb=${lsb.toString(2)}`, a);
+        console.log(`bin=${bin}`, a);
+        return a;
+    };
+
     defineControls();
     defineNRPNs();
 
@@ -1478,7 +1560,8 @@ var BS2 = (function BassStationII() {
         ARP_NOTES_MODE,
         ARP_OCTAVES,
         setValuesFromSysex,
-        doubleByteValue
+        doubleByteValue,
+        getMidiMessagesFor
     };
 
     return publicAPI;

@@ -105,10 +105,20 @@
 
     function updateBS2(control, value) {
         console.log('updateBS2', control, value);
-        let [control_type, control_number] = control.split('-')
+        let [control_type, control_number] = control.replace('#', '').split('-')
         console.log('updateBS2', control_type, control_number);
         if (control_type === 'cc') {
-            midi_output.sendControlChange(parseInt(control_number, 10), value);
+            console.log(`send ${control_number} ${value}`);
+
+            let a = BS2.getMidiMessagesFor('cc', control_number, value);
+            for (let i=0; i<a.length; i++) {
+                console.log(`send CC ${a[i][0]} ${a[i][1]}`);
+                midi_output.sendControlChange(parseInt(a[i][0], 10), a[i][1]);
+            }
+            //
+        } else if (control_type === 'nrpn') {
+            //console.log(`send NRPN ${BS2.nrpn[control_number].msb, control_number} ${value}`);
+            midi_output.setNonRegisteredParameter([BS2.nrpn[control_number].msb, control_number], value);//[0, 10]);
         }
     }
 
@@ -206,7 +216,7 @@
                 }
                 // add onChange handler
                 if (!e.hasClass('dial')) {
-                    e.change(function (e){ updateBS2(controls[i], this.value) });
+                    e.change(function (e){ updateBS2(prefix + i, this.value) });
                 }
             }
         }
@@ -246,23 +256,23 @@
 
     function setupSelects() {
 
-        $('#cc-80').append(BS2.SUB_WAVE_FORMS.map(o => { return $("<option>").val(o).text(o); }));
+        $('#cc-80').append(BS2.SUB_WAVE_FORMS.map((o,i) => { return $("<option>").val(i).text(o); }));
 
-        $('#cc-88,#cc-89').append(BS2.LFO_WAVE_FORMS.map(o => { return $("<option>").val(o).text(o); }));
-        $('#nrpn-88,#nrpn-92').append(BS2.LFO_SPEED_SYNC.map(o => { return $("<option>").val(o).text(o); }));
-        $('#nrpn-87,#nrpn-91').append(BS2.LFO_SYNC.map(o => { return $("<option>").val(o).text(o); }));
+        $('#cc-88,#cc-89').append(BS2.LFO_WAVE_FORMS.map((o,i) => { return $("<option>").val(i).text(o); }));
+        $('#nrpn-88,#nrpn-92').append(BS2.LFO_SPEED_SYNC.map((o,i) => { return $("<option>").val(i).text(o); }));
+        $('#nrpn-87,#nrpn-91').append(BS2.LFO_SYNC.map((o,i) => { return $("<option>").val(i).text(o); }));
 
-        $('#cc-70,#cc-75').append(BS2.OSC_RANGES.map(o => { return $("<option>").val(o).text(o); }));
-        $('#nrpn-72,#nrpn-82').append(BS2.OSC_WAVE_FORMS.map(o => { return $("<option>").val(o).text(o); }));
+        $('#cc-70,#cc-75').append(BS2.OSC_RANGES.map((o,i) => { return $("<option>").val(i).text(o); }));
+        $('#nrpn-72,#nrpn-82').append(BS2.OSC_WAVE_FORMS.map((o,i) => { return $("<option>").val(i).text(o); }));
 
-        $('#cc-83').append(BS2.FILTER_TYPE.map(o => { return $("<option>").val(o).text(o); }));
-        $('#cc-106').append(BS2.FILTER_SLOPE.map(o => { return $("<option>").val(o).text(o); }));
-        $('#cc-84').append(BS2.FILTER_SHAPES.map(o => { return $("<option>").val(o).text(o); }));
+        $('#cc-83').append(BS2.FILTER_TYPE.map((o,i) => { return $("<option>").val(i).text(o); }));
+        $('#cc-106').append(BS2.FILTER_SLOPE.map((o,i) => { return $("<option>").val(i).text(o); }));
+        $('#cc-84').append(BS2.FILTER_SHAPES.map((o,i) => { return $("<option>").val(i).text(o); }));
 
-        $('#nrpn-73,#nrpn-105').append(BS2.ENV_TRIGGERING.map(o => { return $("<option>").val(o).text(o); }));
+        $('#nrpn-73,#nrpn-105').append(BS2.ENV_TRIGGERING.map((o,i) => { return $("<option>").val(i).text(o); }));
 
-        $('#cc-111').append(BS2.ARP_OCTAVES.map(o => { return $("<option>").val(o).text(o); }));
-        $('#cc-118').append(BS2.ARP_NOTES_MODE.map(o => { return $("<option>").val(o).text(o); }));
+        $('#cc-111').append(BS2.ARP_OCTAVES.map((o,i) => { return $("<option>").val(i).text(o); }));
+        $('#cc-118').append(BS2.ARP_NOTES_MODE.map((o,i) => { return $("<option>").val(i).text(o); }));
 
         for (let i=0; i<32; i++) {
             $('#cc-119').append($("<option>").val(i).text(i+1));
@@ -270,6 +280,8 @@
 
         $('#nrpn-72').change(function (e) { this.value == 'pulse' ? show('#osc1-pw-controls') : hide('#osc1-pw-controls'); });
         $('#nrpn-82').change(function (e) { this.value == 'pulse' ? show('#osc2-pw-controls') : hide('#osc2-pw-controls'); });
+
+        // $('select').change(function (e) { console.log(this.value)});
 
     } // setupSelects
 
@@ -303,17 +315,18 @@
         } else {
             $(control_id + '-handle').removeClass("off").addClass("on");    //.text(prefix_text + " ON ");
         }
+        updateBS2(control_id.replace('#', ''), $(control_id).val());
     }
 
     function updateCustoms() {
 
-        // updateOnOffControl('#cc-110', "Osc 1-2 Sync");
+        // updateOnOffControl('#cc-110', "");
         // updateOnOffControl('#nrpn-89', "Key Sync");
         // updateOnOffControl('#nrpn-93', "Key Sync");
         // updateOnOffControl('#cc-108', "ARP");
         // updateOnOffControl('#cc-109', "Latch");
         // updateOnOffControl('#nrpn-106', "Retrig");
-        updateOnOffControl('#cc-110');
+        updateOnOffControl('#cc-110');  // Osc 1-2 Sync
         updateOnOffControl('#nrpn-89');
         updateOnOffControl('#nrpn-93');
         updateOnOffControl('#cc-108');
@@ -337,7 +350,7 @@
 
     function updateUI() {
         updateControls();
-        updateLists();
+        // updateLists();
         updateCustoms();
         updateMeta();
     }
@@ -364,7 +377,6 @@
                 WebMidi.outputs.map(i => console.log("output: " + i.name));
 
                 var input = WebMidi.getInputByName("Bass Station II");
-                midi_output = WebMidi.getOutputByName("Bass Station II");
 
                 if (input) {
 
@@ -395,6 +407,16 @@
                     setStatusError("Bass Station II not found.")
                     setConnectionStatus(false);
 
+                }
+
+                midi_output = WebMidi.getOutputByName("Bass Station II");
+                if (midi_output) {
+                    console.log('output OK');
+
+                    // midi_output.setNonRegisteredParameter([BS2.nrpn[89].msb, 89], 0);
+
+                } else {
+                    console.error('unbale to connect output');
                 }
 
                 //WebMidi.addListener("connected", e => logWebMidiEvent(e));
