@@ -56,14 +56,15 @@
         } else {
             if (nrpn) {
                 value = msg[2];
-                let v = value;
-                let r;
-                if (BS2.nrpn[cc_lsb].hasOwnProperty('map')) {
-                    r = BS2.nrpn[cc_lsb].map(v);
-                } else {
-                    r = v;
-                }
-                dispatch('NRPN', cc_lsb, r);
+                //let v = value;
+                // let r;
+                // if (BS2.nrpn[cc_lsb].hasOwnProperty('map')) {
+                //     r = BS2.nrpn[cc_lsb].map(v);
+                // } else {
+                //     r = v;
+                // }
+                // dispatch('NRPN', cc_lsb, r);
+                dispatch('NRPN', cc_lsb, value);
                 nrpn = false;
                 return;
             }
@@ -73,13 +74,14 @@
             if (cc == cc_expected) {
                 value_lsb = msg[2];
                 let v = BS2.doubleByteValue(value_msb, value_lsb);
-                let r;
-                if (BS2.control[cc_msb].hasOwnProperty('map')) {
-                    r = BS2.control[cc_msb].map(v);
-                } else {
-                    r = v;
-                }
-                dispatch('CC', cc_msb, r);
+                // let r;
+                // if (BS2.control[cc_msb].hasOwnProperty('map')) {
+                //     r = BS2.control[cc_msb].map(v);
+                // } else {
+                //     r = v;
+                // }
+                // dispatch('CC', cc_msb, r);
+                dispatch('CC', cc_msb, v);
                 cc_expected = -1;
             } else {
                 cc_msb = cc;
@@ -88,13 +90,14 @@
 
             if (BS2.control[cc].lsb == -1) {
                 let v = msg[2];
-                let r;
-                if (BS2.control[cc].hasOwnProperty('map')) {
-                    r = BS2.control[cc].map(v);
-                } else {
-                    r = v;
-                }
-                dispatch('CC', cc, r);
+                // let r;
+                // if (BS2.control[cc].hasOwnProperty('map')) {
+                //     r = BS2.control[cc].map(v);
+                // } else {
+                //     r = v;
+                // }
+                // dispatch('CC', cc, r);
+                dispatch('CC', cc, v);
             } else {
                 cc_expected = BS2.control[cc].lsb;
                 cc_msb = cc;
@@ -104,6 +107,9 @@
     }
 
     function updateBS2(control, value) {
+
+        return;
+
         console.log('updateBS2', control, value);
         let [control_type, control_number] = control.replace('#', '').split('-')
         console.log('updateBS2', control_type, control_number);
@@ -182,8 +188,8 @@
         const CURSOR = 12;
 
         $(".dial").knob({
-            change : function (v) { /*console.log(this, this.cv, v, this.i[0].id);*/ updateBS2(this.i[0].id, Math.round(v)) },  //TODO: why is v not an integer is step==1?
-            release : function (v) { console.log('release', this, v); },
+            // change : function (v) { /*console.log(this, this.cv, v, this.i[0].id);*/ updateBS2(this.i[0].id, Math.round(v)) },  //TODO: why is v not an integer is step==1?
+            // release : function (v) { console.log('release', this, v); },
             angleOffset: -135,
             angleArc: 270,
             bgColor: "#606060",
@@ -193,25 +199,51 @@
         function _setup(controls, prefix) {
             for (let i=0; i < controls.length; i++) {
                 let c = controls[i];
-                if (typeof c == 'undefined') continue;
+                if (typeof c === 'undefined') continue;
                 if (!c.hasOwnProperty('range')) continue;
                 if (c.range.length === 0) continue;     //TODO: SIGNAL AN ERROR
+
+                console.log(c);
+
                 // let id = prefix + i;
-                let min = Math.min(...c.range);
-                let max = Math.max(...c.range);
+                let min = Math.min(...c.range); // used to determine cursor
+                // let max = Math.max(...c.range); // used to determine cursor
                 let cursor = min < 0 ? CURSOR : false;
-                let step = c.hasOwnProperty('step') ? c.step : 1;
+                // let cursor = CURSOR;
+                // let step = c.hasOwnProperty('step') ? c.step : 1;
+
+                let max;
+                if (c.hasOwnProperty('lsb') && (c.lsb > 0)) {     // one or two bytes value?
+                    max = 255;
+                } else if (c.hasOwnProperty('msb') && (c.msb > 0)) {
+                    max = 255;
+                } else {
+                    max = 127;
+                }
+
+                console.log(prefix + i, 0, max);
+
                 let e = $(prefix + i);
-                e.trigger('configure', {min: min, max: max, step: step, cursor: cursor});
+                e.trigger('configure', {    //FIXME: check that e is a knob
+                    // min: min,
+                    // max: max,
+                    // step: step,
+                    min: 0,
+                    max: max,
+                    step: 1,
+                    cursor: cursor,
+                    format: v => {console.log('format', prefix+i, v, c.human(v), c);return c.human(v);}
+                });
                 let default_value;
                 if ((min < 0) && (max > 0)) {
-                    default_value = 0;
+                    default_value = max >>> 1;
                 } else if (min != 0) {
                     default_value = min;
                 } else {
                     default_value = 0;
                 }
-                if (min != 0) {
+                // if (min != 0) {
+                if (default_value != 0) {
                     e.val(default_value).trigger('blur');
                 }
                 // add onChange handler
@@ -224,8 +256,8 @@
         _setup(BS2.control, '#cc-');
         _setup(BS2.nrpn, '#nrpn-');
 
-        $('#cc-' + BS2.control_id.osc1_coarse).trigger('configure', { format: v => v.toFixed(1) });
-        $('#cc-' + BS2.control_id.osc2_coarse).trigger('configure', { format: v => v.toFixed(1) });
+        // $('#cc-' + BS2.control_id.osc1_coarse).trigger('configure', { format: v => v.toFixed(1) });
+        // $('#cc-' + BS2.control_id.osc2_coarse).trigger('configure', { format: v => v.toFixed(1) });
 
     } // setupControls
 
