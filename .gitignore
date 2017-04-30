@@ -60,5 +60,6 @@ typings/
 
 # dotenv environment variables file
 .env
+.idea/
 .idea
 BS2-Web.iml
