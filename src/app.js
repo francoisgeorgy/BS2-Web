@@ -235,8 +235,9 @@
                     max: max,
                     step: 1,
                     cursor: cursor,
-                    format: function (v) { return v*10; }
-                    //format: v => {console.log('format', prefix+i, v, c.human(v), c);return c.human(v);}
+                    format: v => {console.log('format', prefix+i, v, c.human(v), c);return c.human(v);}
+                    // format: function (v) { return v; }
+                    //parse: function(v) { return parseInt(v); }
                 });
                 let default_value;
                 if ((min < 0) && (max > 0)) {

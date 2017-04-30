@@ -107,33 +107,33 @@ var BS2 = (function BassStationII() {
         return v < 128 ? (v - 127) : (v - 128);
     };
 
-    var _127_reverse = function(v) {
-        return v < 0 ? (v + 127) : (v + 128);
-    };
+    // var _127_reverse = function(v) {
+    //     return v < 0 ? (v + 127) : (v + 128);
+    // };
 
     var _100 = function(v) {
         return v < 128 ? (v - 127) : (v - 128);
     };
 
-    var _100_reverse = function(v) {
-        return v < 0 ? (v + 127) : (v + 128);
-    };
+    // var _100_reverse = function(v) {
+    //     return v < 0 ? (v + 127) : (v + 128);
+    // };
 
     var _63 = function(v) {
         return v < 64 ? (v - 63) : (v - 64);
     };
 
-    var _63_reverse = function(v) {
-        return v < 0 ? (v + 63) : (v + 64);
-    };
+    // var _63_reverse = function(v) {
+    //     return v < 0 ? (v + 63) : (v + 64);
+    // };
 
     var _12 = function(v) {
         return COARSE_VALUES[v] / 10;
     };
 
-    var _12_reverse = function(v) {
-        return COARSE_VALUES.indexOf(Math.round(v * 10));
-    };
+    // var _12_reverse = function(v) {
+    //     return COARSE_VALUES.indexOf(Math.round(v * 10));
+    // };
 
     var _waveform = function(v) {    // todo: check if this is a good idea
         return this.labels.waveform.v;
@@ -151,15 +151,15 @@ var BS2 = (function BassStationII() {
     };
 
     // 0..127 to 5..95
-    var _5_95_reverse = function(v) {
-        //console.log(v * 2 * 91.0 / 256 + 5 -0.4);
-        // return Math.round(v * 2 * 91.0 / 256 + 5 -0.4);
-        let out_max = 127;
-        let out_min = 0;
-        let in_max = 95;
-        let in_min = 5;
-        return Math.round(((v - in_min) / (in_max - in_min)) * (out_max - out_min) + out_min - 0.4);
-    };
+    // var _5_95_reverse = function(v) {
+    //     //console.log(v * 2 * 91.0 / 256 + 5 -0.4);
+    //     // return Math.round(v * 2 * 91.0 / 256 + 5 -0.4);
+    //     let out_max = 127;
+    //     let out_min = 0;
+    //     let in_max = 95;
+    //     let in_min = 5;
+    //     return Math.round(((v - in_min) / (in_max - in_min)) * (out_max - out_min) + out_min - 0.4);
+    // };
 
     // 0..127 to -90..90            //FIXME: value 63 must gives 0
     var _90_90 = function(v) {
@@ -274,10 +274,10 @@ var BS2 = (function BassStationII() {
         control[control_id.osc1_fine] = { // 26 (msb), 58 (lsb)
             name: "Osc1 Fine",
             lsb: 58,
-            range: [-100,100],
+            range: [-100,100],          // TODO: rename range to human_range or hrange
             // human: _100,
             // //map_r: _100_reverse,
-            human: _100,
+            human: _100,                // TODO: define a "byte range" 0..200 ? name it CC_range ? or raw_range ?
             sysex: {
                 offset: 22,
                 mask: [0x03, 0x7E]
