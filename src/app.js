@@ -183,6 +183,9 @@
         $('#cmd-randomize').click(randomizeBS2);
     }
 
+    /**
+     *
+     */
     function setupControls() {
 
         const CURSOR = 12;
@@ -203,7 +206,7 @@
                 if (!c.hasOwnProperty('range')) continue;
                 if (c.range.length === 0) continue;     //TODO: SIGNAL AN ERROR
 
-                console.log(c);
+                //console.log(c);
 
                 // let id = prefix + i;
                 let min = Math.min(...c.range); // used to determine cursor
@@ -221,7 +224,7 @@
                     max = 127;
                 }
 
-                console.log(prefix + i, 0, max);
+                console.log('_setup', prefix + i, 0, max);
 
                 let e = $(prefix + i);
                 e.trigger('configure', {    //FIXME: check that e is a knob
@@ -232,7 +235,8 @@
                     max: max,
                     step: 1,
                     cursor: cursor,
-                    format: v => {console.log('format', prefix+i, v, c.human(v), c);return c.human(v);}
+                    format: function (v) { return v*10; }
+                    //format: v => {console.log('format', prefix+i, v, c.human(v), c);return c.human(v);}
                 });
                 let default_value;
                 if ((min < 0) && (max > 0)) {
@@ -244,6 +248,7 @@
                 }
                 // if (min != 0) {
                 if (default_value != 0) {
+                    console.log('set default', prefix + i, default_value);
                     e.val(default_value).trigger('blur');
                 }
                 // add onChange handler
