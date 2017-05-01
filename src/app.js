@@ -116,15 +116,16 @@
         if (control_type === 'cc') {
             console.log(`send ${control_number} ${value}`);
 
-            let a = BS2.getMidiMessagesFor('cc', control_number, value);
+            let a = BS2.getMidiMessagesForControl('cc', control_number, value);
             for (let i=0; i<a.length; i++) {
-                console.log(`send CC ${a[i][0]} ${a[i][1]}`);
+                // console.log(`send CC ${a[i][0]} ${a[i][1]}`);
                 midi_output.sendControlChange(parseInt(a[i][0], 10), a[i][1]);
             }
             //
         } else if (control_type === 'nrpn') {
             //console.log(`send NRPN ${BS2.nrpn[control_number].msb, control_number} ${value}`);
-            midi_output.setNonRegisteredParameter([BS2.nrpn[control_number].msb, control_number], value);//[0, 10]);
+            // midi_output.setNonRegisteredParameter([BS2.nrpn[control_number].msb, control_number], value);//[0, 10]);
+            midi_output.setNonRegisteredParameter([0, control_number], value);  // for the BS2, the NRPN MSB is always 0
         }
     }
 
@@ -152,8 +153,10 @@
                 if (typeof c === 'undefined') continue;
                 if (c.range.length === 0) continue;
                 let e = $(prefix + i);
-                let min = Math.min(...c.range);
-                let max = Math.max(...c.range);
+                // let min = Math.min(...c.range);
+                // let max = Math.max(...c.range);
+                let min = 0;
+                let max = c.max_raw;
                 let v;
                 if ((min == 0) && (max == 1)) {
                     v = Math.round(Math.random());
@@ -235,7 +238,8 @@
                     max: max,
                     step: 1,
                     cursor: cursor,
-                    format: v => {console.log('format', prefix+i, v, c.human(v), c);return c.human(v);}
+                    // format: v => {console.log('format', prefix+i, v, c.human(v), c);return c.human(v);}
+                    format: v => c.human(v)
                     // format: function (v) { return v; }
                     //parse: function(v) { return parseInt(v); }
                 });
@@ -261,11 +265,13 @@
 
         _setup(BS2.control, '#cc-');
         _setup(BS2.nrpn, '#nrpn-');
+        // BS2.applyToAllControls(_setup);
 
         // $('#cc-' + BS2.control_id.osc1_coarse).trigger('configure', { format: v => v.toFixed(1) });
         // $('#cc-' + BS2.control_id.osc2_coarse).trigger('configure', { format: v => v.toFixed(1) });
 
     } // setupControls
+
 
     /**
      * Set value of the controls (input and select)

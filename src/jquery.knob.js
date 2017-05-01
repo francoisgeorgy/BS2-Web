@@ -100,7 +100,9 @@
                     // Config
                     min: this.$.data('min') !== undefined ? this.$.data('min') : 0,
                     max: this.$.data('max') !== undefined ? this.$.data('max') : 100,
+
                     stopper: true,
+
                     readOnly: this.$.data('readonly') || (this.$.attr('readonly') === 'readonly'),
 
                     // UI
@@ -133,7 +135,7 @@
                         return v;
                     },
                     parse: function (v) {
-                        console.log(`parse ${v}`);
+                        // console.log(`parse ${v}`);
                         return parseFloat(v);
                     }
                 }, this.o
@@ -251,6 +253,10 @@
                 .bind("configure", cf)
                 .parent()
                 .bind("configure", cf);
+
+
+            this.$.attr('readonly', 'readonly');    //CHANGE: make input field read-only
+
 
             // finalize init
             this._listen()
@@ -513,6 +519,7 @@
      * k.Dial
      */
     k.Dial = function () {
+
         k.o.call(this);
 
         this.startAngle = null;
@@ -536,8 +543,8 @@
             if (null != v) {
 
                 // reverse format
-                console.log(`reverse format ${v}`, this);
-                v = this.o.parse(v);                        // FIXME: do not use parse()
+                // console.log(`reverse format ${v}`, this);
+                // v = this.o.parse(v);                        // FIXME: do not use parse()
 
                 if (triggerRelease !== false
                     && v != this.v
@@ -594,9 +601,10 @@
             var s = this, mwTimerStop,
                 mwTimerRelease,
                 mw = function (e) {
+
                     e.preventDefault();
 
-                    console.log(`wheel parse ${s.$.val()}`, s.v, s.cv, s);
+                    // console.log(`wheel parse ${s.$.val()}`, s.v, s.cv, s);
 
                     var ori = e.originalEvent,
                         deltaX = ori.detail || ori.wheelDeltaX,
