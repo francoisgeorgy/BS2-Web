@@ -109,14 +109,24 @@ main > div {
     grid-row: 7;
 }
 #arpeggiator {
-    grid-column: 1 / span 9;
+    grid-column: 1 / span 6;
     grid-row: 8;
+}
+#midi {
+    grid-column: 7 / span 3;
+    grid-row: 8;
+    /*max-height: none;*/
 }
 #status {
     grid-column: 1 / span 9;
     grid-row: 9;
 }
 
+
+#midi-messages {
+    max-height:100%;
+    overflow-y: scroll;
+}
 
 #status {
     font-size: 0.9em;

@@ -905,7 +905,7 @@ var BS2 = (function BassStationII() {
             } else {
                 obj.range = [0, 1];
             }
-            console.log('final', obj);
+            // console.log('final', obj);
         });
 
     } // defineControls()
@@ -1126,13 +1126,8 @@ var BS2 = (function BassStationII() {
             }
             if (!obj.hasOwnProperty('range')) {
                 obj.range = obj.on_off ? [0, 1] : [0, obj.max_raw];
-            // } else {
-            //     obj.on_off = false;
-            //     if (!obj.hasOwnProperty('range')) {
-            //         obj.range = [0, obj.max_raw];
-            //     }
             }
-            console.log('final nrpn', obj);
+            // console.log('final nrpn', obj);
         });
 
     } // defineNRPNs()

@@ -19,6 +19,14 @@
         $(sel).css('visibility', 'visible');
     }
 
+    function logOutgoingMidiMessage(type, control, value) {
+        $('#midi-messages').append(`${type.toUpperCase()} ${control} ${value}<br />`);
+    }
+
+    function logIncomingMidiMessage(msg) {
+
+    }
+
     /**
      * Update a control on screen from CC or NRPN value.
      *
@@ -40,30 +48,26 @@
     var value_lsb = 0;    // lsb to compute value
     var nrpn = false;
 
+    /**
+     * Handle all control change messages received
+     * @param e
+     */
     function handleCC(e) {
 
         let msg = e.data;   // Uint8Array
         let cc = msg[1];
         let value = -1;
 
-        if (cc == WebMidi.MIDI_CONTROL_CHANGE_MESSAGES['nonregisteredparameterfine']) {   // 99
+        if (cc === WebMidi.MIDI_CONTROL_CHANGE_MESSAGES['nonregisteredparameterfine']) {   // 99
             cc_msb = msg[2];
             nrpn = true;
             return;
-        } else if (cc == WebMidi.MIDI_CONTROL_CHANGE_MESSAGES['nonregisteredparametercoarse']) {  // 98
+        } else if (cc === WebMidi.MIDI_CONTROL_CHANGE_MESSAGES['nonregisteredparametercoarse']) {  // 98
             cc_lsb = msg[2];
             return;
         } else {
             if (nrpn) {
                 value = msg[2];
-                //let v = value;
-                // let r;
-                // if (BS2.nrpn[cc_lsb].hasOwnProperty('map')) {
-                //     r = BS2.nrpn[cc_lsb].map(v);
-                // } else {
-                //     r = v;
-                // }
-                // dispatch('NRPN', cc_lsb, r);
                 dispatch('NRPN', cc_lsb, value);
                 nrpn = false;
                 return;
@@ -71,32 +75,17 @@
         }
 
         if (cc_expected >= 0) {
-            if (cc == cc_expected) {
+            if (cc === cc_expected) {
                 value_lsb = msg[2];
                 let v = BS2.doubleByteValue(value_msb, value_lsb);
-                // let r;
-                // if (BS2.control[cc_msb].hasOwnProperty('map')) {
-                //     r = BS2.control[cc_msb].map(v);
-                // } else {
-                //     r = v;
-                // }
-                // dispatch('CC', cc_msb, r);
                 dispatch('CC', cc_msb, v);
                 cc_expected = -1;
             } else {
                 cc_msb = cc;
             }
         } else {
-
-            if (BS2.control[cc].lsb == -1) {
+            if (BS2.control[cc].lsb === -1) {
                 let v = msg[2];
-                // let r;
-                // if (BS2.control[cc].hasOwnProperty('map')) {
-                //     r = BS2.control[cc].map(v);
-                // } else {
-                //     r = v;
-                // }
-                // dispatch('CC', cc, r);
                 dispatch('CC', cc, v);
             } else {
                 cc_expected = BS2.control[cc].lsb;
@@ -126,7 +115,8 @@
             let a = BS2.getMidiMessagesForControl(control_number, value);
             for (let i=0; i<a.length; i++) {
                 // console.log(`send CC ${a[i][0]} ${a[i][1]}`);
-                if (midi_output) midi_output.sendControlChange(parseInt(a[i][0], 10), a[i][1]);
+                // logOutgoingMidiMessage('cc', a[i][0], a[i][1]);
+                if (midi_output) midi_output.sendControlChange(a[i][0], a[i][1]);
             }
             //
         } else if (control_type === 'nrpn') {
@@ -156,26 +146,27 @@
 
         function _randomize(controls, prefix) {
             for (let i=0; i < controls.length; i++) {
-                let c = controls[i];
-                if (typeof c === 'undefined') continue;
-                if (c.range.length === 0) continue;
+
                 let e = $(prefix + i);
-                // let min = Math.min(...c.range);
-                // let max = Math.max(...c.range);
-                let min = 0;
-                let max = c.max_raw;
-                let v;
-                if ((min == 0) && (max == 1)) {
-                    v = Math.round(Math.random());
-                } else {
-                    v = Math.floor(Math.random() * (max - min)) + min;  //TODO: step
-                }
+
                 if (e.is('select')) {
                     //console.log(`${e} is a select`, e, e[0].options);
                     e[0].options[Math.floor(Math.random() * e[0].options.length)].selected = true
-                } else {
-                    e.val(v).trigger('change');
+                    continue;
                 }
+
+                let c = controls[i];
+                if (typeof c === 'undefined') continue;
+
+                let v;
+                if (c.on_off) {
+                    v = Math.round(Math.random());
+                } else {
+                    let min = 0;
+                    v = Math.floor(Math.random() * (c.max_raw - min)) + min;  //TODO: step
+                }
+
+                e.val(v).trigger('change');
             }
         }
 
@@ -216,17 +207,11 @@
                 let c = controls[i];
                 if (typeof c === 'undefined') continue;
 
-                // if (!c.hasOwnProperty('range')) continue;
-                // if (c.range.length === 0) continue;     //TODO: SIGNAL AN ERROR
-
                 let default_value = 0;
 
                 let e = $(prefix + i);
                 if (e.hasClass('dial')) {
 
-                    //console.log(c);
-
-                    // let id = prefix + i;
                     console.log(c);
                     let range_min = Math.min(...c.range); // used to determine cursor
                     // let max = Math.max(...c.range); // used to determine cursor
@@ -234,50 +219,24 @@
                     // let cursor = CURSOR;
                     // let step = c.hasOwnProperty('step') ? c.step : 1;
 
-                    // let max;
-                    // if (c.hasOwnProperty('lsb') && (c.lsb > 0)) {     // one or two bytes value?
-                    //     max = 255;
-                    // } else if (c.hasOwnProperty('msb') && (c.msb > 0)) {
-                    //     max = 255;
-                    // } else {
-                    //     max = 127;
-                    // }
                     if (range_min < 0) {    // e.g.: -127..127 or -63..63
                         default_value = c.max_raw >>> 1;    // div by 2
-                        // } else if (range_min != 0) {
-                        //     default_value = range_min;
                     }
 
                     console.log('_setup', prefix + i, 0, c.max_raw);
 
                     e.trigger('configure', {    //FIXME: check that e is a knob
-                        // min: min,
-                        // max: max,
-                        // step: step,
                         min: 0,
-                        // max: max,
                         max: c.max_raw,
                         step: 1,
                         cursor: cursor,
                         // format: v => {console.log('format', prefix+i, v, c.human(v), c);return c.human(v);}
                         format: v => c.human(v)
-                        // format: function (v) { return v; }
                         //parse: function(v) { return parseInt(v); }
                     });
 
-
                 } // dial
 
-                // let default_value;
-                // if ((range_min < 0) && (max > 0)) {
-                // if (range_min < 0) {    // e.g.: -127..127 or -63..63
-                //     default_value = c.max >>> 1;    // div by 2
-                // // } else if (range_min != 0) {
-                // //     default_value = range_min;
-                // } else {
-                //     default_value = 0;
-                // }
-                // if (min != 0) {
                 if (default_value != 0) {
                     console.log('set default', prefix + i, default_value);
                     e.val(default_value).trigger('blur');
@@ -291,10 +250,6 @@
 
         _setup(BS2.control, '#cc-');
         _setup(BS2.nrpn, '#nrpn-');
-        // BS2.applyToAllControls(_setup);
-
-        // $('#cc-' + BS2.control_id.osc1_coarse).trigger('configure', { format: v => v.toFixed(1) });
-        // $('#cc-' + BS2.control_id.osc2_coarse).trigger('configure', { format: v => v.toFixed(1) });
 
     } // setupControls
 
@@ -390,12 +345,6 @@
 
     function updateCustoms() {
 
-        // updateOnOffControl('#cc-110', "");
-        // updateOnOffControl('#nrpn-89', "Key Sync");
-        // updateOnOffControl('#nrpn-93', "Key Sync");
-        // updateOnOffControl('#cc-108', "ARP");
-        // updateOnOffControl('#cc-109', "Latch");
-        // updateOnOffControl('#nrpn-106', "Retrig");
         updateOnOffControl('#cc-110');  // Osc 1-2 Sync
         updateOnOffControl('#nrpn-89');
         updateOnOffControl('#nrpn-93');
@@ -451,8 +400,6 @@
                 if (input) {
 
                     input.on('controlchange', "all", function(e) {
-                        //console.log("CC: ", e);
-                        //                    log(midiEventForHuman(e));
                         handleCC(e);
                     });
 
