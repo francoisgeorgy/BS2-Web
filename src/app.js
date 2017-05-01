@@ -106,26 +106,33 @@
         }
     }
 
-    function updateBS2(control, value) {
+    /**
+     * Note: jQuery Knob transmits the value as a float
+     * @param control
+     * @param value_float
+     */
+    function updateBS2(control, value_float) {
 
-        return;
+        //TODO: check that midi_output is defined
 
-        console.log('updateBS2', control, value);
-        let [control_type, control_number] = control.replace('#', '').split('-')
-        console.log('updateBS2', control_type, control_number);
+        // console.log('updateBS2', control, value);
+        let value = Math.round(value_float);
+        let [control_type, control_number] = control.replace('#', '').split('-');
+        control_number = parseInt(control_number);
+        console.log('updateBS2', control_type, control_number, value_float, value);
         if (control_type === 'cc') {
             console.log(`send ${control_number} ${value}`);
 
-            let a = BS2.getMidiMessagesForControl('cc', control_number, value);
+            let a = BS2.getMidiMessagesForControl(control_number, value);
             for (let i=0; i<a.length; i++) {
                 // console.log(`send CC ${a[i][0]} ${a[i][1]}`);
-                midi_output.sendControlChange(parseInt(a[i][0], 10), a[i][1]);
+                if (midi_output) midi_output.sendControlChange(parseInt(a[i][0], 10), a[i][1]);
             }
             //
         } else if (control_type === 'nrpn') {
             //console.log(`send NRPN ${BS2.nrpn[control_number].msb, control_number} ${value}`);
             // midi_output.setNonRegisteredParameter([BS2.nrpn[control_number].msb, control_number], value);//[0, 10]);
-            midi_output.setNonRegisteredParameter([0, control_number], value);  // for the BS2, the NRPN MSB is always 0
+            if (midi_output) midi_output.setNonRegisteredParameter([0, control_number], value);  // for the BS2, the NRPN MSB is always 0
         }
     }
 
@@ -195,6 +202,7 @@
 
         $(".dial").knob({
             // change : function (v) { /*console.log(this, this.cv, v, this.i[0].id);*/ updateBS2(this.i[0].id, Math.round(v)) },  //TODO: why is v not an integer is step==1?
+            change : function (v) { updateBS2(this.i[0].id, v) },
             // release : function (v) { console.log('release', this, v); },
             angleOffset: -135,
             angleArc: 270,
@@ -204,53 +212,71 @@
 
         function _setup(controls, prefix) {
             for (let i=0; i < controls.length; i++) {
+
                 let c = controls[i];
                 if (typeof c === 'undefined') continue;
-                if (!c.hasOwnProperty('range')) continue;
-                if (c.range.length === 0) continue;     //TODO: SIGNAL AN ERROR
 
-                //console.log(c);
+                // if (!c.hasOwnProperty('range')) continue;
+                // if (c.range.length === 0) continue;     //TODO: SIGNAL AN ERROR
 
-                // let id = prefix + i;
-                let min = Math.min(...c.range); // used to determine cursor
-                // let max = Math.max(...c.range); // used to determine cursor
-                let cursor = min < 0 ? CURSOR : false;
-                // let cursor = CURSOR;
-                // let step = c.hasOwnProperty('step') ? c.step : 1;
-
-                let max;
-                if (c.hasOwnProperty('lsb') && (c.lsb > 0)) {     // one or two bytes value?
-                    max = 255;
-                } else if (c.hasOwnProperty('msb') && (c.msb > 0)) {
-                    max = 255;
-                } else {
-                    max = 127;
-                }
-
-                console.log('_setup', prefix + i, 0, max);
+                let default_value = 0;
 
                 let e = $(prefix + i);
-                e.trigger('configure', {    //FIXME: check that e is a knob
-                    // min: min,
-                    // max: max,
-                    // step: step,
-                    min: 0,
-                    max: max,
-                    step: 1,
-                    cursor: cursor,
-                    // format: v => {console.log('format', prefix+i, v, c.human(v), c);return c.human(v);}
-                    format: v => c.human(v)
-                    // format: function (v) { return v; }
-                    //parse: function(v) { return parseInt(v); }
-                });
-                let default_value;
-                if ((min < 0) && (max > 0)) {
-                    default_value = max >>> 1;
-                } else if (min != 0) {
-                    default_value = min;
-                } else {
-                    default_value = 0;
-                }
+                if (e.hasClass('dial')) {
+
+                    //console.log(c);
+
+                    // let id = prefix + i;
+                    console.log(c);
+                    let range_min = Math.min(...c.range); // used to determine cursor
+                    // let max = Math.max(...c.range); // used to determine cursor
+                    let cursor = range_min < 0 ? CURSOR : false;
+                    // let cursor = CURSOR;
+                    // let step = c.hasOwnProperty('step') ? c.step : 1;
+
+                    // let max;
+                    // if (c.hasOwnProperty('lsb') && (c.lsb > 0)) {     // one or two bytes value?
+                    //     max = 255;
+                    // } else if (c.hasOwnProperty('msb') && (c.msb > 0)) {
+                    //     max = 255;
+                    // } else {
+                    //     max = 127;
+                    // }
+                    if (range_min < 0) {    // e.g.: -127..127 or -63..63
+                        default_value = c.max_raw >>> 1;    // div by 2
+                        // } else if (range_min != 0) {
+                        //     default_value = range_min;
+                    }
+
+                    console.log('_setup', prefix + i, 0, c.max_raw);
+
+                    e.trigger('configure', {    //FIXME: check that e is a knob
+                        // min: min,
+                        // max: max,
+                        // step: step,
+                        min: 0,
+                        // max: max,
+                        max: c.max_raw,
+                        step: 1,
+                        cursor: cursor,
+                        // format: v => {console.log('format', prefix+i, v, c.human(v), c);return c.human(v);}
+                        format: v => c.human(v)
+                        // format: function (v) { return v; }
+                        //parse: function(v) { return parseInt(v); }
+                    });
+
+
+                } // dial
+
+                // let default_value;
+                // if ((range_min < 0) && (max > 0)) {
+                // if (range_min < 0) {    // e.g.: -127..127 or -63..63
+                //     default_value = c.max >>> 1;    // div by 2
+                // // } else if (range_min != 0) {
+                // //     default_value = range_min;
+                // } else {
+                //     default_value = 0;
+                // }
                 // if (min != 0) {
                 if (default_value != 0) {
                     console.log('set default', prefix + i, default_value);
@@ -322,8 +348,8 @@
             $('#cc-119').append($("<option>").val(i).text(i+1));
         }
 
-        $('#nrpn-72').change(function (e) { this.value == 'pulse' ? show('#osc1-pw-controls') : hide('#osc1-pw-controls'); });
-        $('#nrpn-82').change(function (e) { this.value == 'pulse' ? show('#osc2-pw-controls') : hide('#osc2-pw-controls'); });
+        $('#nrpn-72').change(function (e) { this.value == BS2.OSC_WAVE_FORMS.indexOf('pulse') ? show('#osc1-pw-controls') : hide('#osc1-pw-controls'); });
+        $('#nrpn-82').change(function (e) { this.value == BS2.OSC_WAVE_FORMS.indexOf('pulse') ? show('#osc2-pw-controls') : hide('#osc2-pw-controls'); });
 
         // $('select').change(function (e) { console.log(this.value)});
 
@@ -377,8 +403,8 @@
         updateOnOffControl('#cc-109');
         updateOnOffControl('#nrpn-106');
 
-        $('#nrpn-72').val() == 'pulse' ? show('#osc1-pw-controls') : hide('#osc1-pw-controls');
-        $('#nrpn-82').val() == 'pulse' ? show('#osc2-pw-controls') : hide('#osc2-pw-controls');
+        $('#nrpn-72').val() == BS2.OSC_WAVE_FORMS.indexOf('pulse') ? show('#osc1-pw-controls') : hide('#osc1-pw-controls');
+        $('#nrpn-82').val() == BS2.OSC_WAVE_FORMS.indexOf('pulse') ? show('#osc2-pw-controls') : hide('#osc2-pw-controls');
     }
 
     function updateMeta() {
