@@ -537,7 +537,7 @@
 
                 // reverse format
                 console.log(`reverse format ${v}`, this);
-                v = this.o.parse(v);                        FIXME: do not use parse()
+                v = this.o.parse(v);                        // FIXME: do not use parse()
 
                 if (triggerRelease !== false
                     && v != this.v
@@ -596,12 +596,12 @@
                 mw = function (e) {
                     e.preventDefault();
 
-                    console.log(`wheel parse ${s.$.val()}`, s.$, s);
+                    console.log(`wheel parse ${s.$.val()}`, s.v, s.cv, s);
 
                     var ori = e.originalEvent,
                         deltaX = ori.detail || ori.wheelDeltaX,
                         deltaY = ori.detail || ori.wheelDeltaY,
-                        v = s._validate(s.cv)                       // use internal current value
+                        v = s._validate(s.cv)                       // use internal, not yet commited, value
                         //v = s._validate(s.o.parse(s.$.val()))
                             + (
                                 deltaX > 0 || deltaY > 0
@@ -800,8 +800,8 @@
 
             if (this.o.bgColor !== "none") {
                 c.beginPath();
-                    c.strokeStyle = this.o.bgColor;
-                    c.arc(this.xy, this.xy, this.radius, this.endAngle - 0.00001, this.startAngle + 0.00001, true);
+                c.strokeStyle = this.o.bgColor;
+                c.arc(this.xy, this.xy, this.radius, this.endAngle - 0.00001, this.startAngle + 0.00001, true);
                 c.stroke();
             }
 
