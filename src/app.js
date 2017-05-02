@@ -20,11 +20,11 @@
     }
 
     function logOutgoingMidiMessage(type, control, value) {
-        $('#midi-messages').append(`${type.toUpperCase()} ${control} ${value}<br />`);
+        $('#midi-messages-out').prepend(`${type.toUpperCase()} ${control} ${value}<br />`);
     }
 
-    function logIncomingMidiMessage(msg) {
-
+    function logIncomingMidiMessage(type, control, value) {
+        $('#midi-messages-in').prepend(`${type.toUpperCase()} ${control} ${value}<br />`);
     }
 
     /**
@@ -57,6 +57,8 @@
         let msg = e.data;   // Uint8Array
         let cc = msg[1];
         let value = -1;
+
+        logIncomingMidiMessage('CC', cc, msg[2]);
 
         if (cc === WebMidi.MIDI_CONTROL_CHANGE_MESSAGES['nonregisteredparameterfine']) {   // 99
             cc_msb = msg[2];
@@ -108,20 +110,23 @@
         let value = Math.round(value_float);
         let [control_type, control_number] = control.replace('#', '').split('-');
         control_number = parseInt(control_number);
-        console.log('updateBS2', control_type, control_number, value_float, value);
+        console.log('updateBS2updateBS2', control_type, control_number, value_float, value);
         if (control_type === 'cc') {
-            console.log(`send ${control_number} ${value}`);
+            //console.log(`send ${control_number} ${value}`);
 
             let a = BS2.getMidiMessagesForControl(control_number, value);
             for (let i=0; i<a.length; i++) {
                 // console.log(`send CC ${a[i][0]} ${a[i][1]}`);
-                // logOutgoingMidiMessage('cc', a[i][0], a[i][1]);
+                logOutgoingMidiMessage('cc', a[i][0], a[i][1]);
                 if (midi_output) midi_output.sendControlChange(a[i][0], a[i][1]);
             }
             //
         } else if (control_type === 'nrpn') {
             //console.log(`send NRPN ${BS2.nrpn[control_number].msb, control_number} ${value}`);
             // midi_output.setNonRegisteredParameter([BS2.nrpn[control_number].msb, control_number], value);//[0, 10]);
+
+            logOutgoingMidiMessage('nrpn', control_number, value);
+
             if (midi_output) midi_output.setNonRegisteredParameter([0, control_number], value);  // for the BS2, the NRPN MSB is always 0
         }
     }
@@ -241,6 +246,7 @@
                     console.log('set default', prefix + i, default_value);
                     e.val(default_value).trigger('blur');
                 }
+
                 // add onChange handler
                 if (!e.hasClass('dial')) {
                     e.change(function (e){ updateBS2(prefix + i, this.value) });
@@ -340,7 +346,7 @@
         } else {
             $(control_id + '-handle').removeClass("off").addClass("on");    //.text(prefix_text + " ON ");
         }
-        updateBS2(control_id.replace('#', ''), $(control_id).val());
+        //updateBS2(control_id.replace('#', ''), $(control_id).val());
     }
 
     function updateCustoms() {

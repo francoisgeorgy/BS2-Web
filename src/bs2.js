@@ -1562,7 +1562,7 @@ var BS2 = (function BassStationII() {
      * @param value is raw value (0..127 or 0..255)
      */
     var getMidiMessagesForControl = function(control_number, value) {
-        console.log('getMidiMessagesForControl', control_number, value);
+        // console.log('getMidiMessagesForControl', control_number, value);
         let CC = [];
         let c = control[control_number];
         if (c.lsb < 0) {
@@ -1571,7 +1571,7 @@ var BS2 = (function BassStationII() {
             CC.push([control_number, value >>> 1]);       // we discard the lsb
             CC.push([c.lsb, value % 2 === 0 ? 0 : 64]);   // that we put in the second CC message
         }
-        console.table(CC);
+        // console.table(CC);
         return CC;
     };
 
