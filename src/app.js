@@ -110,7 +110,7 @@
         let value = Math.round(value_float);
         let [control_type, control_number] = control.replace('#', '').split('-');
         control_number = parseInt(control_number);
-        console.log('updateBS2updateBS2', control_type, control_number, value_float, value);
+        console.log('updateBS2', control_type, control_number, value_float, value);
         if (control_type === 'cc') {
             //console.log(`send ${control_number} ${value}`);
 
@@ -408,7 +408,80 @@
         updateMeta();
     }
 
+
+    var midi_input = null;
     var midi_output = null;
+    // const device = "Bass Stations II";
+    const device_in = "MidiMock OUT";
+    const device_out = "MidiMock IN";
+
+    /**
+     *
+     * @param info
+     */
+    function deviceConnect(info) {
+        console.log(info);
+        if ((info.name !== device_in) && (info.name !== device_out)) {
+            // console.log(`connect event ignored for device ${info.name}`);
+            return;
+        }
+        if (info.hasOwnProperty('input') && info.input && (info.name === device_in)) {
+            if (!midi_input) {
+
+                midi_input = info.input;
+
+                setStatus(`${device_in} connected.`);
+                setConnectionStatus(true);
+
+                midi_input
+                    .on('controlchange', "all", function(e) {   //FIXME: do not use "all" channel
+                        handleCC(e);
+                    })
+                    .on('sysex', "all", function(e) {           //FIXME: do not use "all" channel
+                        //console.log("SysEx: ", e);
+                        if (BS2.setValuesFromSysex(e.data)) {
+                            // console.log(BS2.control);
+                            // console.log(BS2.nrpn);
+                            updateUI();
+                            setStatus("UI updated from SysEx.");
+                        } else {
+                            setStatusError("Unable to set value from SysEx.")
+                        }
+                    });
+
+            }
+        }
+        if (info.hasOwnProperty('output') && info.output && (info.name === device_out)) {
+            if (!midi_output) {
+
+                midi_output = info.output;
+
+                // setStatus(`${device} connected.`)
+                // setConnectionStatus(true);
+            }
+        }
+    }
+
+    /**
+     *
+     * @param info
+     */
+    function deviceDisconnect(info) {
+        console.log(info);
+        if ((info.name !== device_in) && (info.name !== device_out)) {
+            // console.log(`disconnect event ignored for device ${info.name}`);
+            return;
+        }
+        if (info.name === device_in) {
+            midi_input = null;
+            setStatus(`${device_in} has been disconnected.`)
+            setConnectionStatus(false);
+        }
+        if (info.name === device_out) {
+            midi_output = null;
+        }
+    }
+
 
     $(function () {
 
@@ -426,10 +499,14 @@
 
                 setStatus("WebMidi enabled.");
 
+                WebMidi.addListener("connected", e => deviceConnect(e));
+                WebMidi.addListener("disconnected", e => deviceDisconnect(e));
+
+            /*
                 WebMidi.inputs.map(i => console.log("input: " + i.name));
                 WebMidi.outputs.map(i => console.log("output: " + i.name));
 
-                var input = WebMidi.getInputByName("Bass Station II");
+                var input = WebMidi.getInputByName(device);
 
                 if (input) {
 
@@ -455,7 +532,7 @@
 
                 } else {
 
-                    setStatusError("Bass Station II not found.")
+                    setStatusError(`${device} not found.`)
                     setConnectionStatus(false);
 
                 }
@@ -469,9 +546,7 @@
                 } else {
                     console.error('unbale to connect output');
                 }
-
-                //WebMidi.addListener("connected", e => logWebMidiEvent(e));
-                //WebMidi.addListener("disconnected", e => logWebMidiEvent(e));
+            */
 
             }
 
