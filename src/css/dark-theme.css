@@ -12,6 +12,10 @@ main > div {
     /*color: #fff;*/
 }
 
+*:focus {
+    outline: none;
+}
+
 .head {
     color: #666;
 }

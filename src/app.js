@@ -147,6 +147,9 @@
         alert('Sorry, this feature is not yet implemented.');
     }
 
+    /**
+     *
+     */
     function randomizeBS2() {
 
         function _randomize(controls, prefix) {
@@ -155,7 +158,6 @@
                 let e = $(prefix + i);
 
                 if (e.is('select')) {
-                    //console.log(`${e} is a select`, e, e[0].options);
                     e[0].options[Math.floor(Math.random() * e[0].options.length)].selected = true
                     continue;
                 }
@@ -181,6 +183,9 @@
         updateCustoms();
     }
 
+    /**
+     *
+     */
     function setupCommands() {
         $('#cmd-export').click(exportToFile);
         $('#cmd-import').click(importFromFile);
@@ -192,7 +197,7 @@
     /**
      *
      */
-    function setupControls() {
+    function setupDials() {
 
         const CURSOR = 12;
 
@@ -212,12 +217,16 @@
                 let c = controls[i];
                 if (typeof c === 'undefined') continue;
 
-                let default_value = 0;
+                // let default_value = 0;
 
                 let e = $(prefix + i);
-                if (e.hasClass('dial')) {
+                // if (e.hasClass('dial')) {
+                if (!e.hasClass('dial')) continue;
 
-                    console.log(c);
+                    // console.log(c);
+
+                    let default_value = 0;
+
                     let range_min = Math.min(...c.range); // used to determine cursor
                     // let max = Math.max(...c.range); // used to determine cursor
                     let cursor = range_min < 0 ? CURSOR : false;
@@ -230,34 +239,30 @@
 
                     console.log('_setup', prefix + i, 0, c.max_raw);
 
-                    e.trigger('configure', {    //FIXME: check that e is a knob
+                    e.trigger('configure', {
                         min: 0,
                         max: c.max_raw,
                         step: 1,
                         cursor: cursor,
-                        // format: v => {console.log('format', prefix+i, v, c.human(v), c);return c.human(v);}
                         format: v => c.human(v)
                         //parse: function(v) { return parseInt(v); }
                     });
 
-                } // dial
+                    if (default_value !== 0) {
+                        // console.log('set default', prefix + i, default_value);
+                        e.val(default_value).trigger('blur');
+                    }
 
-                if (default_value != 0) {
-                    console.log('set default', prefix + i, default_value);
-                    e.val(default_value).trigger('blur');
-                }
+                // } // dial
 
-                // add onChange handler
-                if (!e.hasClass('dial')) {
-                    e.change(function (e){ updateBS2(prefix + i, this.value) });
-                }
+
             }
         }
 
         _setup(BS2.control, '#cc-');
         _setup(BS2.nrpn, '#nrpn-');
 
-    } // setupControls
+    } // setupDials
 
 
     /**
@@ -285,6 +290,9 @@
 
     } // updateControls()
 
+    /**
+     *
+     */
     function setupSelects() {
 
         $('#cc-80').append(BS2.SUB_WAVE_FORMS.map((o,i) => { return $("<option>").val(i).text(o); }));
@@ -309,17 +317,18 @@
             $('#cc-119').append($("<option>").val(i).text(i+1));
         }
 
+        $('select').change(function (){ updateBS2(this.id, this.value) });
+
         $('#nrpn-72').change(function (e) { this.value == BS2.OSC_WAVE_FORMS.indexOf('pulse') ? show('#osc1-pw-controls') : hide('#osc1-pw-controls'); });
         $('#nrpn-82').change(function (e) { this.value == BS2.OSC_WAVE_FORMS.indexOf('pulse') ? show('#osc2-pw-controls') : hide('#osc2-pw-controls'); });
 
-        // $('select').change(function (e) { console.log(this.value)});
-
     } // setupSelects
 
+    /**
+     *
+     * @param control_id
+     */
     function setupOnOffControl(control_id) {
-        $(control_id).change(function() {
-            updateOnOffControl(control_id);
-        });
         $(control_id + '-handle').click(function(){
             let v = $(control_id).val();
             $(control_id).val(v == 0 ? 1 : 0);
@@ -327,6 +336,9 @@
         });
     }
 
+    /**
+     *
+     */
     function setupCustoms() {
 
         setupOnOffControl('#cc-110');
@@ -340,15 +352,22 @@
         $('#osc2-pw-controls').css('visibility','hidden');
     }
 
+    /**
+     *
+     * @param control_id
+     */
     function updateOnOffControl(control_id) {   //}, prefix_text) {
         if ($(control_id).val() == 0) {
             $(control_id + '-handle').removeClass("on").addClass("off");    //.text(prefix_text + " OFF");
         } else {
             $(control_id + '-handle').removeClass("off").addClass("on");    //.text(prefix_text + " ON ");
         }
-        //updateBS2(control_id.replace('#', ''), $(control_id).val());
+        updateBS2(control_id.replace('#', ''), $(control_id).val());
     }
 
+    /**
+     *
+     */
     function updateCustoms() {
 
         updateOnOffControl('#cc-110');  // Osc 1-2 Sync
@@ -362,17 +381,26 @@
         $('#nrpn-82').val() == BS2.OSC_WAVE_FORMS.indexOf('pulse') ? show('#osc2-pw-controls') : hide('#osc2-pw-controls');
     }
 
+    /**
+     *
+     */
     function updateMeta() {
         $('#patch-number').text(BS2.meta.patch_id.value);
     }
 
+    /**
+     *
+     */
     function setupUI() {
-        setupControls();
+        setupDials();
         setupSelects();
         setupCustoms();
         setupCommands();
     }
 
+    /**
+     *
+     */
     function updateUI() {
         updateControls();
         // updateLists();
