@@ -1,6 +1,26 @@
 
-    function setConnectionStatus(status) {
-        $('#connection-status').text(status ? 'connected' : 'not connected');
+    function toggleOnOff(selector, bool) {
+        if (bool) {
+            $(selector).removeClass("off").addClass("on");
+        } else {
+            $(selector).removeClass("on").addClass("off");
+        }
+    }
+
+    // function setConnectionStatus(status) {
+    //     $('#connection-status').text(status ? 'connected' : 'not connected');
+    // }
+
+    function setMidiStatus(status) {
+        toggleOnOff('#midi-status', status);
+    }
+
+    function setMidiInStatus(status) {
+        toggleOnOff('#midi-in-status', status);
+    }
+
+    function setMidiOutStatus(status) {
+        toggleOnOff('#midi-out-status', status);
     }
 
     function setStatus(msg) {
@@ -143,8 +163,45 @@
         alert('Sorry, this feature is not yet implemented.');
     }
 
-    function initBS2() {
-        alert('Sorry, this feature is not yet implemented.');
+    /**
+     *
+     */
+    function initBS2(sendToBS2 = true) {
+
+        function _init(controls, prefix) {
+            for (let i=0; i < controls.length; i++) {
+
+                let e = $(prefix + i);
+
+                if (e.is('select')) {
+                    e[0].options[0].selected = true;
+                    continue;
+                }
+
+                let c = controls[i];
+                if (typeof c === 'undefined') continue;
+
+                let default_value = 0;
+                let range_min = Math.min(...c.range); // used to determine cursor
+                if (range_min < 0) {    // e.g.: -127..127 or -63..63
+                    default_value = c.max_raw >>> 1;    // div by 2
+                }
+
+                //e.val(default_value).trigger(sendToBS2 ? 'change' : 'blur');
+                e.val(default_value).trigger('blur');
+
+                if (sendToBS2) updateBS2(prefix + i, default_value);
+
+            }
+        }
+
+        _init(BS2.control, '#cc-');
+        _init(BS2.nrpn, '#nrpn-');
+
+        updateCustoms(sendToBS2);
+
+        if (sendToBS2) setStatus(`${BS2.name} initialized`);
+
     }
 
     /**
@@ -181,6 +238,8 @@
         _randomize(BS2.nrpn, '#nrpn-');
 
         updateCustoms();
+
+        if (sendToBS2) setStatus(`${BS2.name} randomized`);
     }
 
     /**
@@ -193,7 +252,37 @@
         $('#cmd-init').click(initBS2);
         $('#cmd-randomize').click(randomizeBS2);
     }
+/*
+    function initControl() {
 
+        function _init(controls, prefix) {
+            for (let i=0; i < controls.length; i++) {
+
+                let e = $(prefix + i);
+
+                if (e.is('select')) {
+                    e[0].options[0].selected = true;
+                    continue;
+                }
+
+                let c = controls[i];
+                if (typeof c === 'undefined') continue;
+
+
+                let default_value = 0;
+                let range_min = Math.min(...c.range); // used to determine cursor
+                if (range_min < 0) {    // e.g.: -127..127 or -63..63
+                    default_value = c.max_raw >>> 1;    // div by 2
+                }
+                e.val(default_value).trigger('change');
+            }
+        }
+
+        _init(BS2.control, '#cc-');
+        _init(BS2.nrpn, '#nrpn-');
+
+    }
+*/
     /**
      *
      */
@@ -212,50 +301,24 @@
         });
 
         function _setup(controls, prefix) {
+
             for (let i=0; i < controls.length; i++) {
 
                 let c = controls[i];
                 if (typeof c === 'undefined') continue;
 
-                // let default_value = 0;
-
                 let e = $(prefix + i);
-                // if (e.hasClass('dial')) {
+
                 if (!e.hasClass('dial')) continue;
 
-                    // console.log(c);
-
-                    let default_value = 0;
-
-                    let range_min = Math.min(...c.range); // used to determine cursor
-                    // let max = Math.max(...c.range); // used to determine cursor
-                    let cursor = range_min < 0 ? CURSOR : false;
-                    // let cursor = CURSOR;
-                    // let step = c.hasOwnProperty('step') ? c.step : 1;
-
-                    if (range_min < 0) {    // e.g.: -127..127 or -63..63
-                        default_value = c.max_raw >>> 1;    // div by 2
-                    }
-
-                    console.log('_setup', prefix + i, 0, c.max_raw);
-
-                    e.trigger('configure', {
-                        min: 0,
-                        max: c.max_raw,
-                        step: 1,
-                        cursor: cursor,
-                        format: v => c.human(v)
-                        //parse: function(v) { return parseInt(v); }
-                    });
-
-                    if (default_value !== 0) {
-                        // console.log('set default', prefix + i, default_value);
-                        e.val(default_value).trigger('blur');
-                    }
-
-                // } // dial
-
-
+                e.trigger('configure', {
+                    min: 0,
+                    max: c.max_raw,
+                    step: 1,
+                    cursor: Math.min(...c.range) < 0 ? CURSOR : false,
+                    format: v => c.human(v)
+                    //parse: function(v) { return parseInt(v); }
+                });
             }
         }
 
@@ -356,26 +419,22 @@
      *
      * @param control_id
      */
-    function updateOnOffControl(control_id) {   //}, prefix_text) {
-        if ($(control_id).val() == 0) {
-            $(control_id + '-handle').removeClass("on").addClass("off");    //.text(prefix_text + " OFF");
-        } else {
-            $(control_id + '-handle').removeClass("off").addClass("on");    //.text(prefix_text + " ON ");
-        }
-        updateBS2(control_id.replace('#', ''), $(control_id).val());
+    function updateOnOffControl(control_id, sendToBS2 = true) {   //}, prefix_text) {
+        toggleOnOff(control_id + '-handle', $(control_id).val() != 0);
+        if (sendToBS2) updateBS2(control_id, $(control_id).val());
     }
 
     /**
      *
      */
-    function updateCustoms() {
+    function updateCustoms(sendToBS2 = true) {
 
-        updateOnOffControl('#cc-110');  // Osc 1-2 Sync
-        updateOnOffControl('#nrpn-89');
-        updateOnOffControl('#nrpn-93');
-        updateOnOffControl('#cc-108');
-        updateOnOffControl('#cc-109');
-        updateOnOffControl('#nrpn-106');
+        updateOnOffControl('#cc-110', sendToBS2);  // Osc 1-2 Sync
+        updateOnOffControl('#nrpn-89', sendToBS2);
+        updateOnOffControl('#nrpn-93', sendToBS2);
+        updateOnOffControl('#cc-108', sendToBS2);
+        updateOnOffControl('#cc-109', sendToBS2);
+        updateOnOffControl('#nrpn-106', sendToBS2);
 
         $('#nrpn-72').val() == BS2.OSC_WAVE_FORMS.indexOf('pulse') ? show('#osc1-pw-controls') : hide('#osc1-pw-controls');
         $('#nrpn-82').val() == BS2.OSC_WAVE_FORMS.indexOf('pulse') ? show('#osc2-pw-controls') : hide('#osc2-pw-controls');
@@ -396,6 +455,7 @@
         setupSelects();
         setupCustoms();
         setupCommands();
+        initBS2(false);     // init UI without sending any CC to the BS2
     }
 
     /**
@@ -412,8 +472,8 @@
     var midi_input = null;
     var midi_output = null;
     // const device = "Bass Stations II";
-    const device_in = "MidiMock OUT";
-    const device_out = "MidiMock IN";
+    // const device_in = "MidiMock OUT";
+    // const device_out = "MidiMock IN";
 
     /**
      *
@@ -421,17 +481,17 @@
      */
     function deviceConnect(info) {
         console.log(info);
-        if ((info.name !== device_in) && (info.name !== device_out)) {
+        if ((info.name !== BS2.name_device_in) && (info.name !== BS2.name_device_out)) {
             // console.log(`connect event ignored for device ${info.name}`);
             return;
         }
-        if (info.hasOwnProperty('input') && info.input && (info.name === device_in)) {
+        if (info.hasOwnProperty('input') && info.input && (info.name === BS2.name_device_in)) {
             if (!midi_input) {
 
                 midi_input = info.input;
 
-                setStatus(`${device_in} connected.`);
-                setConnectionStatus(true);
+                setStatus(`${BS2.name_device_in} connected.`);
+                setMidiInStatus(true);
 
                 midi_input
                     .on('controlchange', "all", function(e) {   //FIXME: do not use "all" channel
@@ -451,13 +511,13 @@
 
             }
         }
-        if (info.hasOwnProperty('output') && info.output && (info.name === device_out)) {
+        if (info.hasOwnProperty('output') && info.output && (info.name === BS2.name_device_out)) {
             if (!midi_output) {
 
                 midi_output = info.output;
 
                 // setStatus(`${device} connected.`)
-                // setConnectionStatus(true);
+                setMidiOutStatus(true);
             }
         }
     }
@@ -468,17 +528,19 @@
      */
     function deviceDisconnect(info) {
         console.log(info);
-        if ((info.name !== device_in) && (info.name !== device_out)) {
+        if ((info.name !== BS2.name_device_in) && (info.name !== BS2.name_device_out)) {
             // console.log(`disconnect event ignored for device ${info.name}`);
             return;
         }
-        if (info.name === device_in) {
+        if (info.name === BS2.name_device_in) {
             midi_input = null;
-            setStatus(`${device_in} has been disconnected.`)
-            setConnectionStatus(false);
+            setStatus(`${BS2.name_device_in} has been disconnected.`)
+            // setConnectionStatus(false);
+            setMidiInStatus(false);
         }
-        if (info.name === device_out) {
+        if (info.name === BS2.name_device_out) {
             midi_output = null;
+            setMidiOutStatus(false);
         }
     }
 
@@ -487,17 +549,22 @@
 
         setupUI();
         setStatus("Waiting for MIDI interface...");
+        setMidiStatus(false);
+        setMidiInStatus(false);
+        setMidiOutStatus(false);
 
         WebMidi.enable(function (err) {
 
             console.log('webmidi err', err);
 
             if (err) {
+
                 setStatusError("ERROR: WebMidi could not be enabled.");
-                setConnectionStatus(false);
+
             } else {
 
                 setStatus("WebMidi enabled.");
+                setMidiStatus(true);
 
                 WebMidi.addListener("connected", e => deviceConnect(e));
                 WebMidi.addListener("disconnected", e => deviceDisconnect(e));

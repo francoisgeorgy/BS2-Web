@@ -16,6 +16,11 @@ main > div {
     outline: none;
 }
 
+/*#midi-status,*/
+/*#midi-in-status,*/
+/*#midi-out-status {*/
+/*}*/
+
 .head {
     color: #666;
 }
@@ -23,10 +28,11 @@ main > div {
 .commands {
     /*color: #C0C040;*/
 }
-
+/*
 #connection-status {
     color: #C0C040;
 }
+*/
 
 .error {
     color: #ff2222;
@@ -78,7 +84,6 @@ select {
 .handle.on {
     border-color: #ffec03;
 }
-
 
 ::-webkit-scrollbar {
     width: 12px;

@@ -1584,6 +1584,9 @@ var BS2 = (function BassStationII() {
     defineNRPNs();
 
     var publicAPI = {
+        name: "Bass Stations II",
+        name_device_in: "Bass Stations II IN",
+        name_device_out: "Bass Stations II OUT",
         meta,
         control_id,
         nrpn_id,

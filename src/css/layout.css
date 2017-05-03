@@ -123,15 +123,23 @@ main > div {
 }
 
 
-#midi-messages-in,
-#midi-messages-out {
+.midi-messages {
     float: left;
     margin-right: 20px;
-    padding: 0 10px 0 0;
+    /*padding: 0 10px 0 0;*/
     font-size: 0.7em;
     color: #aaa;
-    max-height:100px;
-    overflow-y: scroll!important;
+    width:80px;
+    height: 90px;
+    /*max-height: 1fr;*/
+    /*overflow-y: scroll!important;*/
+}
+
+#midi-messages-in,
+#midi-messages-out {
+    margin-top: 4px;
+    max-height: 80px;
+    overflow-y: scroll;
 }
 
 #status {
@@ -156,12 +164,20 @@ main > div {
     margin-top: 3px;
 }
 
+/*
 #connection-status {
+    float: right;
+    margin-right: 5px;
+}
+*/
+
+#midi-status,
+#midi-in-status,
+#midi-out-status {
     float: right;
     margin-right: 5px;
     /*font-size: 0.8em;*/
 }
-
 
 div.control {
     /*float: left;*/

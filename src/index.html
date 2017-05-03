@@ -25,7 +25,9 @@
                 <button id="cmd-init" title="Set all parameters to their default value">init</button>
                 <button id="cmd-randomize" title="Set all parameters to a random value">random</button>
             </span>
-            <div id="connection-status"></div>
+            <div id="midi-out-status">OUT</div>
+            <div id="midi-in-status">IN</div>
+            <div id="midi-status">midi</div>
         </div>
 
         <!--
@@ -34,7 +36,6 @@
         <div id="sub">
             <h1>Sub</h1>
             <div>
-                <!--<label>Wave:</label>-->
                 <select id="cc-80">
                 </select>
                 <label style="margin-left:10px">Octave:</label>
@@ -576,9 +577,15 @@
           -- MIDI MESSAGES
           -->
         <div id="midi">
-            <div id="midi-messages-in">
+            <div class="midi-messages">
+                in
+                <div id="midi-messages-in">
+                </div>
             </div>
-            <div id="midi-messages-out">
+            <div class="midi-messages">
+                out
+                <div id="midi-messages-out">
+                </div>
             </div>
         </div>
 
