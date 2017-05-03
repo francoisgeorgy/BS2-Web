@@ -55,10 +55,11 @@
      * @param value
      */
     function dispatch(type, control, value) {
-        //console.log(type, control, value, '#' + type + '-' + control);
+        console.log('dispatch', type, control, value, '#' + type + '-' + control);
         type = type.toLowerCase();
         if ((type != 'cc') && (type != 'nrpn')) return; //TODO: signal an error
-        $('#' + type + '-' + control).val(value).trigger('change');
+        console.log('dispatch ' + '#' + type + '-' + control + ' = ' + value);
+        $('#' + type + '-' + control).val(value);   //.trigger('change'); IMPORTANT: the change event must not be fired
     }
 
     var cc_expected = -1;
@@ -77,6 +78,8 @@
         let msg = e.data;   // Uint8Array
         let cc = msg[1];
         let value = -1;
+
+        console.log('receive CC', cc, msg[2]);
 
         logIncomingMidiMessage('CC', cc, msg[2]);
 
@@ -130,7 +133,9 @@
         let value = Math.round(value_float);
         let [control_type, control_number] = control.replace('#', '').split('-');
         control_number = parseInt(control_number);
+
         console.log('updateBS2', control_type, control_number, value_float, value);
+
         if (control_type === 'cc') {
             //console.log(`send ${control_number} ${value}`);
 
@@ -164,6 +169,17 @@
     }
 
     /**
+     * Send all values to BS2
+     */
+    function sendAll() {
+        setStatus(`Sending all values to ${BS2.name} ...`);
+
+
+
+        setStatus(`${BS2.name} updated.`);
+    }
+
+    /**
      *
      */
     function initBS2(sendToBS2 = true) {
@@ -171,15 +187,18 @@
         function _init(controls, prefix) {
             for (let i=0; i < controls.length; i++) {
 
+                let c = controls[i];
+                if (typeof c === 'undefined') continue;
+
                 let e = $(prefix + i);
 
                 if (e.is('select')) {
                     e[0].options[0].selected = true;
+
+                    if (sendToBS2) updateBS2(prefix + i, e[0].options[0]);
+
                     continue;
                 }
-
-                let c = controls[i];
-                if (typeof c === 'undefined') continue;
 
                 let default_value = 0;
                 let range_min = Math.min(...c.range); // used to determine cursor
@@ -190,7 +209,7 @@
                 //e.val(default_value).trigger(sendToBS2 ? 'change' : 'blur');
                 e.val(default_value).trigger('blur');
 
-                if (sendToBS2) updateBS2(prefix + i, default_value);
+                //if (sendToBS2) updateBS2(prefix + i, default_value);
 
             }
         }
@@ -198,7 +217,9 @@
         _init(BS2.control, '#cc-');
         _init(BS2.nrpn, '#nrpn-');
 
-        updateCustoms(sendToBS2);
+        updateCustoms(false);
+
+        // if (sendToBS2) ...  //TODO
 
         if (sendToBS2) setStatus(`${BS2.name} initialized`);
 
@@ -209,18 +230,30 @@
      */
     function randomizeBS2() {
 
+        //FIXME: send all CC to BS2 _at the end_. First, update the UI.
+
         function _randomize(controls, prefix) {
+
             for (let i=0; i < controls.length; i++) {
-
-                let e = $(prefix + i);
-
-                if (e.is('select')) {
-                    e[0].options[Math.floor(Math.random() * e[0].options.length)].selected = true
-                    continue;
-                }
 
                 let c = controls[i];
                 if (typeof c === 'undefined') continue;
+
+                let e = $(prefix + i);
+
+                //console.log(`randomize ${prefix + i}`);
+
+
+                if (e.is('select')) {
+
+                    // console.log(`randomize select ${prefix + i} = option`);
+
+                    e[0].options[Math.floor(Math.random() * e[0].options.length)].selected = true;
+
+                    //if (sendToBS2) updateBS2(prefix + i, e.val());
+
+                    continue;
+                }
 
                 let v;
                 if (c.on_off) {
@@ -230,16 +263,22 @@
                     v = Math.floor(Math.random() * (c.max_raw - min)) + min;  //TODO: step
                 }
 
-                e.val(v).trigger('change');
+                console.log(`randomize ${prefix + i} = ${v}`);
+
+                // e.val(v).trigger('change');
+                e.val(v).trigger('blur');
+
+                //if (sendToBS2) updateBS2(prefix + i, v);
+
             }
         }
 
         _randomize(BS2.control, '#cc-');
         _randomize(BS2.nrpn, '#nrpn-');
 
-        updateCustoms();
+        updateCustoms(false); // TODO: send CC to BS2 afterward
 
-        if (sendToBS2) setStatus(`${BS2.name} randomized`);
+        //if (sendToBS2) setStatus(`${BS2.name} randomized`);
     }
 
     /**
@@ -364,7 +403,13 @@
         $('#nrpn-88,#nrpn-92').append(BS2.LFO_SPEED_SYNC.map((o,i) => { return $("<option>").val(i).text(o); }));
         $('#nrpn-87,#nrpn-91').append(BS2.LFO_SYNC.map((o,i) => { return $("<option>").val(i).text(o); }));
 
-        $('#cc-70,#cc-75').append(BS2.OSC_RANGES.map((o,i) => { return $("<option>").val(i).text(o); }));
+
+        $('#cc-81').append(Object.entries(BS2.SUB_OCTAVE).map((o,i) => {return $("<option>").val(o[0]).text(o[1]); }));
+
+        //$('#cc-70,#cc-75').append(BS2.OSC_RANGES.map((o,i) => {return $("<option>").val(i).text(o); }));
+        $('#cc-70,#cc-75').append(Object.entries(BS2.OSC_RANGES).map((o,i) => {return $("<option>").val(o[0]).text(o[1]); }));
+
+
         $('#nrpn-72,#nrpn-82').append(BS2.OSC_WAVE_FORMS.map((o,i) => { return $("<option>").val(i).text(o); }));
 
         $('#cc-83').append(BS2.FILTER_TYPE.map((o,i) => { return $("<option>").val(i).text(o); }));
@@ -482,7 +527,7 @@
     function deviceConnect(info) {
         console.log(info);
         if ((info.name !== BS2.name_device_in) && (info.name !== BS2.name_device_out)) {
-            // console.log(`connect event ignored for device ${info.name}`);
+            console.log(`connect event ignored for device ${info.name}`);
             return;
         }
         if (info.hasOwnProperty('input') && info.input && (info.name === BS2.name_device_in)) {
@@ -529,7 +574,7 @@
     function deviceDisconnect(info) {
         console.log(info);
         if ((info.name !== BS2.name_device_in) && (info.name !== BS2.name_device_out)) {
-            // console.log(`disconnect event ignored for device ${info.name}`);
+            console.log(`disconnect event ignored for device ${info.name}`);
             return;
         }
         if (info.name === BS2.name_device_in) {
@@ -569,11 +614,13 @@
                 WebMidi.addListener("connected", e => deviceConnect(e));
                 WebMidi.addListener("disconnected", e => deviceDisconnect(e));
 
-            /*
+
                 WebMidi.inputs.map(i => console.log("input: " + i.name));
                 WebMidi.outputs.map(i => console.log("output: " + i.name));
 
-                var input = WebMidi.getInputByName(device);
+                //-------------
+
+                var input = WebMidi.getInputByName("Bass Station II");
 
                 if (input) {
 
@@ -593,14 +640,14 @@
                         }
                     });
 
-                    setConnectionStatus(true);
+                    setMidiInStatus(true);
 
                     setStatus("Send a SysDump from your BS2 to initialize the on-screen controls.");
 
                 } else {
 
-                    setStatusError(`${device} not found.`)
-                    setConnectionStatus(false);
+                    setStatusError(`bs2 not found.`)
+                    setMidiInStatus(true);
 
                 }
 
@@ -608,12 +655,15 @@
                 if (midi_output) {
                     console.log('output OK');
 
+                    setMidiOutStatus(true);
+
                     // midi_output.setNonRegisteredParameter([BS2.nrpn[89].msb, 89], 0);
 
                 } else {
-                    console.error('unbale to connect output');
+                    console.error('unable to connect output');
                 }
-            */
+
+                //----------------
 
             }
 

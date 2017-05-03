@@ -449,10 +449,11 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.sub_osc_oct] = { // 81
             name: "Sub Osc Oct",
-            range: [-2, -1],
-            choice: [0, 1],
-            human: v => v - 2,
+            range: [-2, -1],    // 62 --> -2, 63 --> -1
+            // choice: [0, 1],
+            // human: v => v - 2,
             //map_r: v => v + 2,
+            human: v => v - 64,
             sysex: {
                 offset: 37,
                 mask: [0x08]
@@ -1132,9 +1133,21 @@ var BS2 = (function BassStationII() {
 
     } // defineNRPNs()
 
-    var OSC_RANGES = [
-        "16'", "8'", "4'", "2'"
-    ];
+    // var OSC_RANGES = [
+    //     "16'", "8'", "4'", "2'"
+    // ];
+
+    // var obj = { foo: 'bar', baz: 42 };
+    // console.log(Object.entries(obj)); // [ ['foo', 'bar'], ['baz', 42] ]
+
+    // Object.entries(OSC_RANGES).map((o,i) => {console.log(o,i)}));
+
+    var OSC_RANGES = {
+        63: "16'",
+        64: "8'",
+        65: "4'",
+        66: "2'"
+    };
 
     var OSC_WAVE_FORMS = [
         "sin", "triangle", "saw", "pulse"
@@ -1163,6 +1176,11 @@ var BS2 = (function BassStationII() {
     var SUB_WAVE_FORMS = [
         "sin", "pulse", "square"
     ];
+
+    var SUB_OCTAVE = {
+        63: -1,
+        62: -2
+    };
 
     var FILTER_SHAPES = [
         "LP", "BP", "HP"
@@ -1585,14 +1603,15 @@ var BS2 = (function BassStationII() {
 
     var publicAPI = {
         name: "Bass Stations II",
-        name_device_in: "Bass Stations II IN",
-        name_device_out: "Bass Stations II OUT",
+        name_device_in: "Bass Station II",
+        name_device_out: "Bass Station II",
         meta,
         control_id,
         nrpn_id,
         control,
         nrpn,
         SUB_WAVE_FORMS,
+        SUB_OCTAVE,
         OSC_RANGES,
         OSC_WAVE_FORMS,
         LFO_WAVE_FORMS,
