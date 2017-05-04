@@ -240,11 +240,7 @@
                     default_value = c.max_raw >>> 1;    // div by 2
                 }
 
-                //e.val(default_value).trigger(sendToBS2 ? 'change' : 'blur');
                 e.val(default_value).trigger('blur');
-
-                //if (sendToBS2) updateBS2(prefix + i, default_value);
-
             }
         }
 
