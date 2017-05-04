@@ -64,7 +64,6 @@ var BS2 = (function BassStationII() {
         arp_note_mode: 118,
         arp_octaves: 111,
         mod: 1,
-        mod_wheel_filter_freq: 99,
         sustain: 64,
         osc_pitch_bend_range: 107,
         osc_1_2_sync: 110,
@@ -81,8 +80,9 @@ var BS2 = (function BassStationII() {
         amp_env_triggering: 73,
         mod_env_triggering: 105,
 
-        mod_wheel_lfo2_filter_freq: 71,
+        mod_wheel_filter_freq: 94,          // FN key "Mod Wheel Filter Freq"
         mod_wheel_lfo1_osc_pitch: 70,
+        mod_wheel_lfo2_filter_freq: 71,
         mod_wheel_osc2_pitch: 78,
 
         aftertouch_filter_freq: 74,
@@ -299,7 +299,7 @@ var BS2 = (function BassStationII() {
             lsb: 59,
             range: [-12, 12],
             // step: 0.1,
-            human: v => _12(v).toFixed(1) ,
+            human: v => _12(v).toFixed(1),
             //map_r: _12_reverse,
             sysex: {
                 offset: 21,
@@ -381,8 +381,8 @@ var BS2 = (function BassStationII() {
             name: "Osc2 Coarse",
             lsb: 62,
             range: [-12, 12],
-            step: 0.1,
-            human: _12,
+            //step: 0.1,
+            human: v => _12(v).toFixed(1),
             //map_r: _12_reverse,
             sysex: {
                 offset: 27,
@@ -816,15 +816,6 @@ var BS2 = (function BassStationII() {
             }
         };
         */
-        control[control_id.mod_wheel_filter_freq] = { // 99
-            name: "Mod Wheel Filter Freq",
-            range: [-64,63],
-            human: v => v,
-            sysex: {
-                offset: 82,
-                mask: [0x1F, 0x60]
-            }
-        };
         control[control_id.sustain] = { // 64
             name: "Sustain",
             range: [0, 127],
@@ -902,6 +893,12 @@ var BS2 = (function BassStationII() {
             if (!obj.hasOwnProperty('max_raw')) {
                 obj.max_raw = max_raw;
             }
+            if (!obj.hasOwnProperty('init_value')) {
+                obj.init_value = 0;
+            }
+            if (!obj.hasOwnProperty('raw_value')) {
+                obj.raw_value = obj.init_value;
+            }
             if (!obj.hasOwnProperty('on_off')) {
                 obj.on_off = false;
                 if (!obj.hasOwnProperty('range')) {
@@ -956,10 +953,20 @@ var BS2 = (function BassStationII() {
                 mask: [0x0C]
             }
         };
+    // MOD WHEEL
+        nrpn[nrpn_id.mod_wheel_filter_freq] = { // 94
+            name: "Mod Wheel Filter Freq",
+            range: [-64,63],
+            human: _63, // TODO: make _64_63 because on the BS2 the values are -64..+63 (same for all mod wheel FN keys)
+            sysex: {
+                offset: 82,
+                mask: [0x1F, 0x60]
+            }
+        };
         nrpn[nrpn_id.mod_wheel_lfo1_osc_pitch] = { // 0 (msb), 70 (lsb)
             name: "Mod Wheel LFO1 to Osc Pitch",
             range: [-63, 63],
-            human: _63,
+            human: _63,  // TODO: make _64_63 because on the BS2 the values are -64..+63 (same for all mod wheel FN keys)
             //map_r: _63_reverse,
             sysex: {
                 offset: 83,
@@ -969,7 +976,7 @@ var BS2 = (function BassStationII() {
         nrpn[nrpn_id.mod_wheel_lfo2_filter_freq] = { // 0 (msb), 71 (lsb)
             name: "Mod Wheel LFO2 to Filter Freq",
             range: [-63, 63],
-            human: _63,  // check
+            human: _63,  // TODO: make _64_63 because on the BS2 the values are -64..+63 (same for all mod wheel FN keys)
             sysex: {
                 offset: 84,
                 mask: [0x07, 0x78]
@@ -978,13 +985,13 @@ var BS2 = (function BassStationII() {
         nrpn[nrpn_id.mod_wheel_osc2_pitch] = { // 0 (msb), 78 (lsb)
             name: "Mod Wheel Osc2 Pitch",
             range: [-63, 63],
-            human: _63,
-            //map_r: _63_reverse,
+            human: _63, // TODO: make _64_63 because on the BS2 the values are -64..+63 (same for all mod wheel FN keys)
             sysex: {
                 offset: 85,
                 mask: [0x03, 0x7C]
             }
         };
+    // AFTERTOUCH
         nrpn[nrpn_id.aftertouch_filter_freq] = { // 0 (msb), 74 (lsb)
             name: "Aftertouch Filter Freq",
             range: [-63, 63],
@@ -996,7 +1003,7 @@ var BS2 = (function BassStationII() {
             }
         };
         nrpn[nrpn_id.aftertouch_lfo1_to_osc_pitch] = { // 0 (msb), 75 (lsb)
-            name: "Aftertouch LFO1 to Osc Pitch",
+            name: "Aftertouch LFO1 to Osc 1+2 Pitch",
             range: [-63, 63],
             human: _63,
             //map_r: _63_reverse,
@@ -1125,6 +1132,12 @@ var BS2 = (function BassStationII() {
             }
             if (!obj.hasOwnProperty('max_raw')) {
                 obj.max_raw = max_raw;
+            }
+            if (!obj.hasOwnProperty('init_value')) {
+                obj.init_value = 0;
+            }
+            if (!obj.hasOwnProperty('raw_value')) {
+                obj.raw_value = obj.init_value;
             }
             if (!obj.hasOwnProperty('on_off')) {
                 obj.on_off = false;

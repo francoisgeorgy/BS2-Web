@@ -98,16 +98,26 @@
     /**
      * Update a control on screen from CC or NRPN value.
      *
-     * @param type
-     * @param control
+     * @param control_type
+     * @param control_number
      * @param value
      */
-    function dispatch(type, control, value) {
-        console.log('dispatch', type, control, value, '#' + type + '-' + control);
-        type = type.toLowerCase();
-        if ((type != 'cc') && (type != 'nrpn')) return; //TODO: signal an error
-        console.log('dispatch ' + '#' + type + '-' + control + ' = ' + value);
-        $('#' + type + '-' + control).val(value);   //.trigger('change'); IMPORTANT: the change event must not be fired
+    function dispatch(control_type, control_number, value) {
+        console.log('dispatch', control_type, control_number, value, '#' + control_type + '-' + control_number);
+        control_type = control_type.toLowerCase();
+        if ((control_type != 'cc') && (control_type != 'nrpn')) return; //TODO: signal an error
+        console.log('dispatch ' + '#' + control_type + '-' + control_number + ' = ' + value);
+
+        // the "blur" event will force a redraw of the dial. Do not send the "change" event as this will ping-pong between BS2 and this application.
+        $('#' + control_type + '-' + control_number).val(value).trigger('blur');
+
+        if (control_type === 'cc' && (control_number === 102 || control_number === 103 || control_number === 104 || control_number === 105)) {
+            drawADSR(getADSREnv('cc-102', 'cc-103', 'cc-104', 'cc-105'), "mod-ADSR");
+        }
+        if (control_type === 'cc' && (control_number === 90 || control_number === 91 || control_number === 92 || control_number === 93)) {
+            drawADSR(getADSREnv('cc-90', 'cc-91', 'cc-92', 'cc-93'), "amp-ADSR");
+        }
+
     }
 
     var cc_expected = -1;
@@ -157,13 +167,17 @@
                 cc_msb = cc;
             }
         } else {
-            if (BS2.control[cc].lsb === -1) {
-                let v = msg[2];
-                dispatch('CC', cc, v);
+            if (BS2.control[cc]) {
+                if (BS2.control[cc].lsb === -1) {
+                    let v = msg[2];
+                    dispatch('CC', cc, v);
+                } else {
+                    cc_expected = BS2.control[cc].lsb;
+                    cc_msb = cc;
+                    value_msb = msg[2];
+                }
             } else {
-                cc_expected = BS2.control[cc].lsb;
-                cc_msb = cc;
-                value_msb = msg[2];
+                console.warn(`unsupported CC: ${cc}`)
             }
         }
     }
@@ -177,9 +191,11 @@
 
         //TODO: check that midi_output is defined
 
-        // console.log('updateBS2', control, value);
+        console.log('updateBS2', control, value_float);
+
         let value = Math.round(value_float);
         let [control_type, control_number] = control.replace('#', '').split('-');
+
         control_number = parseInt(control_number);
 
         if (control_type === 'cc' && (control_number === 102 || control_number === 103 || control_number === 104 || control_number === 105)) {
@@ -241,7 +257,9 @@
         function _send(controls, prefix) {
             for (let i=0; i < controls.length; i++) {
                 if (typeof controls[i] === 'undefined') continue;
-                if (sendToBS2) updateBS2(prefix + i, parseInt($(prefix + i).val()));
+                console.log($(prefix + i), controls[i]);
+                //if (sendToBS2) updateBS2(prefix + i, parseInt($(prefix + i).val()));
+                if (sendToBS2) updateBS2(prefix + i, controls[i].raw_value);
             }
         }
 
@@ -339,15 +357,10 @@
 
                 //console.log(`randomize ${prefix + i}`);
 
-
                 if (e.is('select')) {
-
                     // console.log(`randomize select ${prefix + i} = option`);
-
                     e[0].options[Math.floor(Math.random() * e[0].options.length)].selected = true;
-
                     //if (sendToBS2) updateBS2(prefix + i, e.val());
-
                     continue;
                 }
 
@@ -359,7 +372,11 @@
                     v = Math.floor(Math.random() * (c.max_raw - min)) + min;  //TODO: step
                 }
 
-                console.log(`randomize ${prefix + i} = ${v}`);
+                console.log(`randomize ${prefix + i}=${v} with c.max_raw=${c.max_raw}`);
+
+
+                c.raw_value = v;
+
 
                 // e.val(v).trigger('change');
                 e.val(v).trigger('blur');
@@ -443,6 +460,8 @@
 
                 if (!e.hasClass('dial')) continue;
 
+                console.log(`setup ${prefix}${i} max=${c.max_raw}`);
+
                 e.trigger('configure', {
                     min: 0,
                     max: c.max_raw,
@@ -465,12 +484,16 @@
      */
     function updateControls() {
 
+        //FIXME: use c.raw_value
+
+/*
         for (let i=0; i < BS2.control.length; i++) {
             let c = BS2.control[i];
             if (typeof c === 'undefined') continue;
             if (!c.hasOwnProperty('value')) continue;
             let e = $('#cc-' + i);
             if (e.is('select')) continue;
+            console.log(`trigger change on cc-${i}`);
             e.val(c.value).trigger('change');
         }
 
@@ -480,9 +503,10 @@
             if (!c.hasOwnProperty('value')) continue;
             let e = $('#nrpn-' + i);
             if (e.is('select')) continue;
+            console.log(`trigger change on nrpn-${i}`);
             e.val(c.value).trigger('change');
         }
-
+*/
     } // updateControls()
 
     /**
