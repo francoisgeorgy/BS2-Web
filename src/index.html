@@ -34,7 +34,7 @@
           -- SUB OSCILLATOR
           -->
         <div id="sub">
-            <h1>Sub</h1>
+            <h1 class="reset-handler">Sub</h1>
             <div>
                 <label>Octave:</label>
                 <select id="cc-81">
@@ -48,7 +48,7 @@
           -- LFO 1
           -->
         <div id="lfo1">
-            <h1>LFO 1</h1>
+            <h1 class="reset-handler">LFO 1</h1>
             <div class="space-after">
                 <select id="cc-88">
                 </select>
@@ -69,7 +69,7 @@
                 </div>
             </div>
             <div class="group space-after">
-                <div class="control row">
+                <div class="control " style="margin-right:0">
                     <select id="nrpn-88">   <!-- FN key "Speed/Sync LFO 1" -->
                     </select>
                     <select id="nrpn-87">   <!-- Sync value -->
@@ -88,7 +88,7 @@
           -- LFO 2
           -->
         <div id="lfo2">
-            <h1>LFO 2</h1>
+            <h1 class="reset-handler">LFO 2</h1>
             <div class="space-after">
                 <!--<label>Wave:</label>-->
                 <select id="cc-89">
@@ -129,7 +129,7 @@
           -- OSCILLATOR 1
           -->
         <div id="osc1">
-            <h1>Osc 1</h1>
+            <h1 class="reset-handler">Osc 1</h1>
             <div>
                 <div class="group left space-after">
                     <div class="control double">
@@ -185,7 +185,10 @@
           -- OSCILLATOR 2
           -->
         <div id="osc2">
-            <h1>Osc 2</h1>
+            <div class="subhead">
+                <input id="cc-110" type="hidden" value="0" /><span id="cc-110-handle" class="handle value off">1-2 Sync</span>
+            </div>
+            <h1 class="reset-handler">Osc 2</h1>
             <div>
                 <div class="group left space-after">
                     <div class="control double">
@@ -233,9 +236,9 @@
                         </div>
                     </div>
                 </div>
-                <div style="text-align: center">
-                    <input id="cc-110" type="hidden" value="0" /><span id="cc-110-handle" class="handle value off">Osc 1-2 Sync</span>
-                </div>
+                <!--<div style="text-align: center">-->
+                    <!--<input id="cc-110" type="hidden" value="0" /><span id="cc-110-handle" class="handle value off">Osc 1-2 Sync</span>-->
+                <!--</div>-->
             </div>
         </div>
 
@@ -243,7 +246,7 @@
           -- MIXER
           -->
         <div id="mixer">
-            <h1>Mixer</h1>
+            <h1 class="reset-handler">Mixer</h1>
             <div class="group left space-after">
                 <div class="control">&nbsp;</div>
             </div>
@@ -282,7 +285,7 @@
           -- FILTER
           -->
         <div id="filter">
-            <h1>Filter</h1>
+            <h1 class="reset-handler">Filter</h1>
             <div>
                 <div class="group space-after">
                     <select id="cc-83">
@@ -323,7 +326,7 @@
           -- EFFECTS
           -->
         <div id="effects">
-            <h1>Effects</h1>
+            <h1 class="reset-handler">Effects</h1>
             <div class="group left space-after">
                 <div class="control">&nbsp;</div>
             </div>
@@ -345,17 +348,12 @@
           -- MOD ENVELOPE
           -->
         <div id="mod-env">
-            <div>
-                <div class="subhead">
-                    <label>Triggering:</label>
-                    <select id="nrpn-105">
-                    </select>
-                    <!--<label id="mod-env-osc1" class="off">Osc1</label>-->
-                    <!--<label id="mod-env-osc2" class="off">Osc2</label>-->
-                    <!--<label id="mod-env-filter" class="off">Filter</label>-->
-                </div>
-                <h1>Mod Env</h1>
+            <div class="subhead">
+                <label>Triggering:</label>
+                <select id="nrpn-105">
+                </select>
             </div>
+            <h1 class="reset-handler">Mod Env</h1>
             <div class="group space-after">
                 <div class="control row">
                     <input id="cc-102" class="dial" data-width="60" data-height="60" value="0" />
@@ -383,14 +381,12 @@
           -- AMP ENVELOPE
           -->
         <div id="amp-env">
-            <div>
-                <div class="subhead">
-                    <label>Triggering:</label>
-                    <select id="nrpn-73">
-                    </select>
-                </div>
-                <h1>Amp Env</h1>
+            <div class="subhead">
+                <label>Triggering:</label>
+                <select id="nrpn-73">
+                </select>
             </div>
+            <h1 class="reset-handler">Amp Env</h1>
             <div class="group space-after">
                 <div class="control row">
                     <input id="cc-90" class="dial" data-width="60" data-height="60" value="0"/>
@@ -415,9 +411,17 @@
         </div>
 
         <!--
-          -- NOT USED YET
+          -- VCA
           -->
-        <div id="avail01">
+        <div id="vca">
+            <h1 class="reset-handler">VCA</h1>
+            <!--<div class="group left space-after">-->
+                <!--<div class="control">&nbsp;</div>-->
+            <!--</div>-->
+            <div class="control row">
+                <input id="cc-95" class="dial" data-width="60" data-height="60" value="0" />
+                <label>VCA Limiter</label>
+            </div>
         </div>
 
         <!--
@@ -426,7 +430,7 @@
         <div id="wheels">
             <!--<h1 style="float:left;margin-right:10px">Wheels</h1>-->
             <!--<div class="group" style="margin-top:10px">-->
-            <h1>Wheels</h1>
+            <h1 class="reset-handler">Wheels</h1>
             <div class="group">
                 <div class="control row">
                     <input id="nrpn-70" class="dial" data-width="60" data-height="60" value="0"/>
@@ -440,7 +444,14 @@
                     <input id="nrpn-78" class="dial" data-width="60" data-height="60" value="0"/>
                     <label>Osc 2 Pitch</label>
                 </div>
-            </div>
+                <div class="control row space-left">
+                    <input id="cc-99" class="dial" data-width="60" data-height="60" value="0"/>
+                    <label>Filter Freq</label>
+                </div>
+                <div class="control row space-left">
+                    <input id="cc-107" class="dial" data-width="60" data-height="60" value="0"/>
+                    <label>Osc Pitch Bend</label>
+                </div>
             </div>
         </div>
 
@@ -448,17 +459,17 @@
           -- KEYBOARD
           -->
         <div id="keyboard">
-            <h1>Keyboard</h1>
+            <h1 class="reset-handler">Keyboard</h1>
             <div class="group">
                 <div class="control row">
                     <input id="cc-64" class="dial" data-width="60" data-height="60" value="0"/>
                     <label>Sustain</label>
                 </div>
-                <div class="control row">
+                <div class="control row" style="margin-right:0">
                     <input id="cc-5" class="dial" data-width="60" data-height="60" value="0"/>
                     <label>Glide</label>
                 </div>
-                <div class="spacer">
+                <div class="large-spacer">
                     &nbsp;
                 </div>
                 <div class="row" style="margin-top:-20px">
@@ -481,6 +492,22 @@
                         <!--</div>-->
                     </fieldset>
                 </div>
+                <div class="large-spacer">
+                    &nbsp;
+                </div>
+                <div class="row" style="margin-top:-20px">
+                    <fieldset style="padding:10px 0 0 0;border:0;border-top:1px solid #707070;margin: -5px 0 0;color:#707070">
+                        <legend style=" margin:0 auto;">Velocity</legend>
+                        <div class="control row">
+                            <input id="cc-112" class="dial" data-width="60" data-height="60" value="0"/>
+                            <label>Amp Env</label>
+                        </div>
+                        <div class="control row">
+                            <input id="cc-113" class="dial" data-width="60" data-height="60" value="0"/>
+                            <label>Mod Env</label>
+                        </div>
+                    </fieldset>
+                </div>
             </div>
         </div>
 
@@ -488,7 +515,7 @@
           -- ARPEGGIATOR
           -->
         <div id="arpeggiator">
-            <h1 style="float:left;margin-right:10px">ARP</h1>
+            <h1 class="reset-handler" style="float:left;margin-right:10px">ARP</h1>
             <div class="group" style="margin-top:10px">
 
                 <div class="row">
@@ -531,6 +558,11 @@
                         </tr>
                     </table>
                 </div>
+                <div class="control row large-space-left">
+                    <input id="cc-116" class="dial" data-width="60" data-height="60" value="0"/>
+                    <label>Swing</label>
+                </div>
+
 
                 <!--
                 <div class="row">
@@ -560,10 +592,6 @@
                         <select id="cc-118">
                         </select>
                     </div>
-                </div>
-                <div class="control row">
-                    <input id="cc-116" class="dial" data-width="60" data-height="60" value="0"/>
-                    <label>Swing</label>
                 </div>
                 -->
 

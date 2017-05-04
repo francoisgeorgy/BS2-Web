@@ -777,23 +777,39 @@
         };
 
         this.arc = function (v) {
-          var sa, ea;
-          v = this.angle(v);
-          if (this.o.flip) {
-              sa = this.endAngle + 0.00001;
-              ea = sa - v - 0.00001;
-          } else {
-              sa = this.startAngle - 0.00001;
-              ea = sa + v + 0.00001;
-          }
-          this.o.cursor
-              && (sa = ea - this.cursorExt)
-              && (ea = ea + this.cursorExt);
 
-          return {
-              s: sa,
-              e: ea,
-              d: this.o.flip && !this.o.cursor
+            var sa, ea;
+            v = this.angle(v);
+
+            if (this.o.flip) {
+                sa = this.endAngle + 0.00001;
+                ea = sa - v - 0.00001;
+            } else {
+                sa = this.startAngle - 0.00001;
+                ea = sa + v + 0.00001;
+            }
+            // this.o.cursor
+            //     && (sa = ea - this.cursorExt)
+            //     && (ea = ea + this.cursorExt);
+
+
+            let ccw = this.o.flip && !this.o.cursor;
+            let color = '#ffec03';  // FIXME: make it configurable
+
+            if (this.o.cursor) {
+                sa = 1.5 * Math.PI;
+                if (ea < 1.5*Math.PI) {
+                    ccw = true;
+                    color = '#ccbb00';
+                }
+            }
+
+            return {
+              s: sa,    // start angle, in radians (0 is at the 3 o'clock position of the arc's circle)
+              e: ea,    // end angle
+              // d: this.o.flip && !this.o.cursor  // ccw
+              d: ccw,
+                c: color
           };
         };
 
@@ -823,8 +839,9 @@
             }
 
             c.beginPath();
-            c.strokeStyle = r ? this.o.fgColor : this.fgColor ;
-            c.arc(this.xy, this.xy, this.radius, a.s, a.e, a.d);
+            //c.strokeStyle = r ? this.o.fgColor : this.fgColor ;
+            c.strokeStyle = r ? a.c : this.fgColor ;
+            c.arc(this.xy, this.xy, this.radius, a.s, a.e, a.d);    // x, y, radius, start-angle, end-angle, ccw
             c.stroke();
         };
 

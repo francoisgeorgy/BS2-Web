@@ -266,10 +266,12 @@ var BS2 = (function BassStationII() {
     var nrpn = new Array(127);
 
     function defineControls() {
+        /*
         control[control_id.patch_volume] = { // 7 Not found in SysEx data & does not send any CC or NRPN
             name: "Patch Volume",
             range: []
         };
+        */
         control[control_id.osc1_fine] = { // 26 (msb), 58 (lsb)
             name: "Osc1 Fine",
             lsb: 58,
@@ -804,6 +806,7 @@ var BS2 = (function BassStationII() {
                 mask: [0x1C]
             }
         };
+        /*
         control[control_id.mod] = { // 1
             name: "Mod",
             range: [0, 127],
@@ -812,6 +815,7 @@ var BS2 = (function BassStationII() {
                 // not in the sysex data sent by the BS2
             }
         };
+        */
         control[control_id.mod_wheel_filter_freq] = { // 99
             name: "Mod Wheel Filter Freq",
             range: [-64,63],
@@ -830,8 +834,8 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.osc_pitch_bend_range] = { // 107
             name: "Osc Pitch Bend Range",
-            range: [-12,12],
-            human: v => v,
+            range: [-24, 24],       // TODO
+            human: v => v,          // TODO
             sysex: {
                 offset: 16,
                 mask: [0x7F]        // to check
@@ -849,7 +853,7 @@ var BS2 = (function BassStationII() {
         control[control_id.velocity_amp_env] = { // 112
             name: "Velocity Amp Env",
             range: [-63, 63],
-            human: v => v,
+            human: _63,
             sysex: {
                 offset: 49,
                 mask: [0x3F]
@@ -858,7 +862,7 @@ var BS2 = (function BassStationII() {
         control[control_id.velocity_mod_env] = { // 113
             name: "Velocity Mod Env",
             range: [-63, 63],
-            human: v => v,
+            human: _63,
             sysex: {
                 offset: 56,
                 mask: [0x7E]
@@ -1160,7 +1164,7 @@ var BS2 = (function BassStationII() {
     var LFO_SPEED_SYNC = [
         "speed", "sync"
     ];
-
+    /*
     var LFO_SYNC = [
         "64 beats", "48 beats", "42 beats", "36 beats",
         "32 beats", "30 beats", "28 beats", "24 beats",
@@ -1171,6 +1175,18 @@ var BS2 = (function BassStationII() {
         "1+1/3", "4th", "8th dot", "4th trip",
         "8th", "16th dot", "8th trip", "16th",
         "16th trip", "32nd", "32nd trip"
+    ];
+    */
+    var LFO_SYNC = [
+        "64", "48", "42", "36",
+        "32", "30", "28", "24",
+        "21+2/3", "20", "18+2/3", "18",
+        "16", "13+1/3", "12", "10+2/3",
+        "8", "6", "5+1/3", "4",
+        "3", "2+2/3", "1/2", "1/4 &bull;",
+        "1+1/3", "1/4", "1/8 &bull;", "1/4 tr",
+        "1/8", "1/16 &bull;", "1/8 tr", "1/16",
+        "1/16 tr", "1/32", "1/32 tr"
     ];
 
     var SUB_WAVE_FORMS = [

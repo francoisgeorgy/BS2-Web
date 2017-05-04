@@ -165,7 +165,7 @@
     }
 
     function sendToBS2() {
-        alert('Sorry, this feature is not yet implemented.');
+        sendAll();
     }
 
     /**
@@ -174,10 +174,43 @@
     function sendAll() {
         setStatus(`Sending all values to ${BS2.name} ...`);
 
+        function _send(controls, prefix) {
+            for (let i=0; i < controls.length; i++) {
+                if (typeof controls[i] === 'undefined') continue;
+                if (sendToBS2) updateBS2(prefix + i, parseInt($(prefix + i).val()));
+            }
+        }
 
+        _send(BS2.control, '#cc-');
+        _send(BS2.nrpn, '#nrpn-');
 
         setStatus(`${BS2.name} updated.`);
     }
+
+
+    function getDefaultValue(id) {
+
+        let e = $(id);
+        if (e.is('select')) return e[0].options[0];
+
+        let [control_type, control_number] = id.replace('#', '').split('-');
+        let c;
+        if (control_type == 'cc') {
+            c = BS2.control[control_number];
+        } else if (control_type == 'nrpn') {
+            c = BS2.nrpn[control_number];
+        } else {
+            // ERROR
+            return 0;
+        }
+        let default_value = 0;
+        let range_min = Math.min(...c.range); // used to determine cursor
+        if (range_min < 0) {    // e.g.: -127..127 or -63..63
+            default_value = c.max_raw >>> 1;    // div by 2
+        }
+        return default_value;
+    }
+
 
     /**
      *
@@ -195,7 +228,7 @@
                 if (e.is('select')) {
                     e[0].options[0].selected = true;
 
-                    if (sendToBS2) updateBS2(prefix + i, e[0].options[0]);
+                    // if (sendToBS2) updateBS2(prefix + i, e[0].options[0]);
 
                     continue;
                 }
@@ -219,9 +252,12 @@
 
         updateCustoms(false);
 
-        // if (sendToBS2) ...  //TODO
+        //if (sendToBS2) setStatus(`${BS2.name} initialized`);
+        if (sendToBS2) setStatus(`init done`);
 
-        if (sendToBS2) setStatus(`${BS2.name} initialized`);
+        if (sendToBS2) sendAll();
+
+        //if (sendToBS2) setStatus(`${BS2.name} initialized`);
 
     }
 
@@ -279,6 +315,30 @@
         updateCustoms(false); // TODO: send CC to BS2 afterward
 
         //if (sendToBS2) setStatus(`${BS2.name} randomized`);
+        if (sendToBS2) setStatus(`randomize done`);
+
+        if (sendToBS2) sendAll();
+
+    }
+
+    function resetGroup(e) {
+        //console.log(e, $(e.target).parent());
+        $(e.target).parent().find('[id^=cc-],[id^=nrpn-]').each(function(){
+            console.log(this.id);
+            let id = this.id;
+            if (id.endsWith('-handle')) return;
+
+            let e = $('#'+id);
+            if (e.is('select')) {
+                e[0].options[0].selected = true;
+                return;
+            }
+
+            let v = getDefaultValue(id);
+            console.log(`${id}=${v}`);
+            e.val(getDefaultValue('#'+id)).trigger('blur');
+        });
+        updateCustoms(false);
     }
 
     /**
@@ -291,37 +351,8 @@
         $('#cmd-init').click(initBS2);
         $('#cmd-randomize').click(randomizeBS2);
     }
-/*
-    function initControl() {
-
-        function _init(controls, prefix) {
-            for (let i=0; i < controls.length; i++) {
-
-                let e = $(prefix + i);
-
-                if (e.is('select')) {
-                    e[0].options[0].selected = true;
-                    continue;
-                }
-
-                let c = controls[i];
-                if (typeof c === 'undefined') continue;
 
 
-                let default_value = 0;
-                let range_min = Math.min(...c.range); // used to determine cursor
-                if (range_min < 0) {    // e.g.: -127..127 or -63..63
-                    default_value = c.max_raw >>> 1;    // div by 2
-                }
-                e.val(default_value).trigger('change');
-            }
-        }
-
-        _init(BS2.control, '#cc-');
-        _init(BS2.nrpn, '#nrpn-');
-
-    }
-*/
     /**
      *
      */
@@ -337,6 +368,7 @@
             angleArc: 270,
             bgColor: "#606060",
             fgColor: "#ffec03"
+
         });
 
         function _setup(controls, prefix) {
@@ -401,7 +433,7 @@
 
         $('#cc-88,#cc-89').append(BS2.LFO_WAVE_FORMS.map((o,i) => { return $("<option>").val(i).text(o); }));
         $('#nrpn-88,#nrpn-92').append(BS2.LFO_SPEED_SYNC.map((o,i) => { return $("<option>").val(i).text(o); }));
-        $('#nrpn-87,#nrpn-91').append(BS2.LFO_SYNC.map((o,i) => { return $("<option>").val(i).text(o); }));
+        $('#nrpn-87,#nrpn-91').append(BS2.LFO_SYNC.map((o,i) => { return $("<option>").val(i).html(o); }));
 
 
         $('#cc-81').append(Object.entries(BS2.SUB_OCTAVE).map((o,i) => {return $("<option>").val(o[0]).text(o[1]); }));
@@ -429,6 +461,10 @@
 
         $('#nrpn-72').change(function (e) { this.value == BS2.OSC_WAVE_FORMS.indexOf('pulse') ? show('#osc1-pw-controls') : hide('#osc1-pw-controls'); });
         $('#nrpn-82').change(function (e) { this.value == BS2.OSC_WAVE_FORMS.indexOf('pulse') ? show('#osc2-pw-controls') : hide('#osc2-pw-controls'); });
+
+        // LFO: "sync" drop down is displayed only when speed/sync is set to sync
+        $('#nrpn-88').change(function (e) { this.value == BS2.LFO_SPEED_SYNC.indexOf('sync') ? show('#nrpn-87') : hide('#nrpn-87'); });
+        $('#nrpn-92').change(function (e) { this.value == BS2.LFO_SPEED_SYNC.indexOf('sync') ? show('#nrpn-91') : hide('#nrpn-91'); });
 
     } // setupSelects
 
@@ -483,6 +519,11 @@
 
         $('#nrpn-72').val() == BS2.OSC_WAVE_FORMS.indexOf('pulse') ? show('#osc1-pw-controls') : hide('#osc1-pw-controls');
         $('#nrpn-82').val() == BS2.OSC_WAVE_FORMS.indexOf('pulse') ? show('#osc2-pw-controls') : hide('#osc2-pw-controls');
+
+        // LFO: "sync" drop down is displayed only when speed/sync is set to sync
+        $('#nrpn-88').val() == BS2.LFO_SPEED_SYNC.indexOf('sync') ? show('#nrpn-87') : hide('#nrpn-87');
+        $('#nrpn-92').val() == BS2.LFO_SPEED_SYNC.indexOf('sync') ? show('#nrpn-91') : hide('#nrpn-91');
+
     }
 
     /**
@@ -501,6 +542,7 @@
         setupCustoms();
         setupCommands();
         initBS2(false);     // init UI without sending any CC to the BS2
+        $('h1.reset-handler').click(resetGroup);
     }
 
     /**
@@ -513,12 +555,44 @@
         updateMeta();
     }
 
-
+    /**
+     *
+     * @type {null}
+     */
     var midi_input = null;
     var midi_output = null;
-    // const device = "Bass Stations II";
-    // const device_in = "MidiMock OUT";
-    // const device_out = "MidiMock IN";
+
+    /**
+     *
+     * @param input
+     */
+    function connectInput(input) {
+        midi_input = input;
+        midi_input
+            .on('controlchange', "all", function(e) {   //FIXME: do not use "all" channel
+                handleCC(e);
+            })
+            .on('sysex', "all", function(e) {           //FIXME: do not use "all" channel
+                if (BS2.setValuesFromSysex(e.data)) {
+                    updateUI();
+                    setStatus("UI updated from SysEx.");
+                } else {
+                    setStatusError("Unable to set value from SysEx.")
+                }
+            });
+        setStatus(`"${input.name}" input connected.`)
+        setMidiInStatus(true);
+    }
+
+    /**
+     *
+     * @param output
+     */
+    function connectOutput(output) {
+        midi_output = output;
+        setStatus(`"${output.name}" output connected.`)
+        setMidiOutStatus(true);
+    }
 
     /**
      *
@@ -527,43 +601,13 @@
     function deviceConnect(info) {
         console.log(info);
         if ((info.name !== BS2.name_device_in) && (info.name !== BS2.name_device_out)) {
-            console.log(`connect event ignored for device ${info.name}`);
             return;
         }
         if (info.hasOwnProperty('input') && info.input && (info.name === BS2.name_device_in)) {
-            if (!midi_input) {
-
-                midi_input = info.input;
-
-                setStatus(`${BS2.name_device_in} connected.`);
-                setMidiInStatus(true);
-
-                midi_input
-                    .on('controlchange', "all", function(e) {   //FIXME: do not use "all" channel
-                        handleCC(e);
-                    })
-                    .on('sysex', "all", function(e) {           //FIXME: do not use "all" channel
-                        //console.log("SysEx: ", e);
-                        if (BS2.setValuesFromSysex(e.data)) {
-                            // console.log(BS2.control);
-                            // console.log(BS2.nrpn);
-                            updateUI();
-                            setStatus("UI updated from SysEx.");
-                        } else {
-                            setStatusError("Unable to set value from SysEx.")
-                        }
-                    });
-
-            }
+            if (!midi_input) connectInput(info.input);
         }
         if (info.hasOwnProperty('output') && info.output && (info.name === BS2.name_device_out)) {
-            if (!midi_output) {
-
-                midi_output = info.output;
-
-                // setStatus(`${device} connected.`)
-                setMidiOutStatus(true);
-            }
+            if (!midi_output) connectOutput(info.output);
         }
     }
 
@@ -589,14 +633,16 @@
         }
     }
 
-
+    /**
+     *
+     */
     $(function () {
 
         setupUI();
-        setStatus("Waiting for MIDI interface...");
         setMidiStatus(false);
         setMidiInStatus(false);
         setMidiOutStatus(false);
+        setStatus("Waiting for MIDI interface...");
 
         WebMidi.enable(function (err) {
 
@@ -614,56 +660,24 @@
                 WebMidi.addListener("connected", e => deviceConnect(e));
                 WebMidi.addListener("disconnected", e => deviceDisconnect(e));
 
+                // WebMidi.inputs.map(i => console.log("input: " + i.name));
+                // WebMidi.outputs.map(i => console.log("output: " + i.name));
 
-                WebMidi.inputs.map(i => console.log("input: " + i.name));
-                WebMidi.outputs.map(i => console.log("output: " + i.name));
-
-                //-------------
-
-                var input = WebMidi.getInputByName("Bass Station II");
-
+                let input = WebMidi.getInputByName(BS2.name_device_in);
                 if (input) {
-
-                    input.on('controlchange', "all", function(e) {
-                        handleCC(e);
-                    });
-
-                    input.on('sysex', "all", function(e) {
-                        console.log("SysEx: ", e);
-                        if (BS2.setValuesFromSysex(e.data)) {
-                            console.log(BS2.control);
-                            console.log(BS2.nrpn);
-                            updateUI();
-                            setStatus("UI updated from SysEx.");
-                        } else {
-                            setStatusError("Unable to set value from SysEx.")
-                        }
-                    });
-
-                    setMidiInStatus(true);
-
-                    setStatus("Send a SysDump from your BS2 to initialize the on-screen controls.");
-
+                    connectInput(input);
                 } else {
-
-                    setStatusError(`bs2 not found.`)
-                    setMidiInStatus(true);
-
+                    setStatusError(`"${BS2.name_device_in}" input not found.`)
+                    setMidiInStatus(false);
                 }
 
-                midi_output = WebMidi.getOutputByName("Bass Station II");
-                if (midi_output) {
-                    console.log('output OK');
-
-                    setMidiOutStatus(true);
-
-                    // midi_output.setNonRegisteredParameter([BS2.nrpn[89].msb, 89], 0);
-
+                let output = WebMidi.getOutputByName(BS2.name_device_out);
+                if (output) {
+                    connectOutput(output);
                 } else {
-                    console.error('unable to connect output');
+                    setStatusError(`"${BS2.name_device_in}" output not found.`)
+                    setMidiOutStatus(false);
                 }
-
-                //----------------
 
             }
 
