@@ -223,12 +223,20 @@ div.control > label {
     width: 30px;
 }
 
+.space-left {
+    margin-left: 10px;
+}
+.large-space-left {
+    margin-left: 30px;
+}
+
 .control.space-left {
     margin-left: 10px;
 }
 .control.large-space-left {
     margin-left: 30px;
 }
+
 .space-after {
     margin-bottom: 15px;
 }
@@ -259,3 +267,6 @@ select {
     user-select: none;
 }
 
+.lightbox {
+    display: none;
+}

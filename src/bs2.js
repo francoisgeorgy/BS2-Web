@@ -1574,12 +1574,24 @@ var BS2 = (function BassStationII() {
     };
 
     var decodeSysExMeta = function(data) {
+        console.log('decodeSysExMeta', data);
         // meta.patch_id
         // meta.patch_name
         // meta.signature
         meta.patch_id['value'] = data[meta.patch_id.sysex.offset];
-        let name = String.fromCharCode(data.slice(meta.patch_name.sysex.offset, meta.patch_name.sysex.offset + meta.patch_name.sysex.mask.length));
+        console.log(`decodeSysExMeta, id=${meta.patch_id['value']}`);
+        let name = String.fromCharCode(...data.slice(meta.patch_name.sysex.offset, meta.patch_name.sysex.offset + meta.patch_name.sysex.mask.length));
         meta.patch_name['value'] = name;
+
+        // let name = String.fromCharCode(...data.slice(BS2.meta.patch_name.sysex.offset, BS2.meta.patch_name.sysex.offset + BS2.meta.patch_name.sysex.mask.length));
+        // a.push({
+        //     name:'patch name',
+        //     value: `[${n}] ${name}`,
+        //     details: ''
+        // });
+
+
+        console.log(`decodeSysExMeta, name=${name}`);
     };
 
     var setValuesFromSysex = function(data) {

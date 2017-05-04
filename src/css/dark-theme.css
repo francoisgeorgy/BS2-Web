@@ -38,12 +38,13 @@ main > div {
     color: #ff2222;
 }
 
-.control {
+.control,
+label,
+legend {
     color: #aaa;
 }
-label {
-     color: #aaa;
- }
+
+
 
 button {
     background-color: #666;
@@ -99,3 +100,7 @@ select {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
 }
 
+.lightbox {
+    background-color: #fff;
+    color: #000;
+}

@@ -219,6 +219,14 @@
         alert('Sorry, this feature is not yet implemented.');
     }
 
+    function record() {
+        alert('Sorry, this feature is not yet implemented.');
+    }
+
+    function play() {
+        alert('Sorry, this feature is not yet implemented.');
+    }
+
     function sendToBS2() {
         sendAll();
     }
@@ -398,10 +406,12 @@
      */
     function setupCommands() {
         $('#cmd-export').click(exportToFile);
-        $('#cmd-import').click(importFromFile);
+        // $('#cmd-import').click(importFromFile);
         $('#cmd-send').click(sendToBS2);
         $('#cmd-init').click(initBS2);
         $('#cmd-randomize').click(randomizeBS2);
+        $('#cmd-record').click(record);
+        $('#cmd-play').click(play);
     }
 
 
@@ -585,7 +595,7 @@
      *
      */
     function updateMeta() {
-        $('#patch-number').text(BS2.meta.patch_id.value);
+        $('#patch-number').text(BS2.meta.patch_id.value + ': ' + BS2.meta.patch_name['value']);
     }
 
     function getADSREnv(id_A, id_D, id_S, id_R) {
@@ -746,6 +756,42 @@
                     setStatusError(`"${BS2.name_device_in}" output not found.`)
                     setMidiOutStatus(false);
                 }
+
+
+                $('#patch-file').change(readFile);
+
+                function readFile() {
+
+                    // const SYSEX_START = 0xF0;
+                    const SYSEX_END = 0xF7;
+
+                    let data = [];
+                    let f = this.files[0];
+                    console.log(`read file`, f);
+
+                    if (f) {
+                        let reader = new FileReader();
+                        reader.onload = function (e) {
+                            let view   = new Uint8Array(e.target.result);
+                            for (let i=0; i<view.length; i++) {
+                                data.push(view[i]);
+                                if (view[i] == SYSEX_END) break;
+                            }
+                            //updateDisplay(data);
+                            if (BS2.setValuesFromSysex(data)) {
+                                console.log('file read OK', BS2.meta.patch_name['value'], BS2);
+                                $.featherlight.close();
+                                updateUI();
+                            } else {
+                                console.log('unable to set value from file');
+                            }
+                        };
+                        reader.readAsArrayBuffer(f);
+                    }
+
+                }
+
+
 
             }
 
