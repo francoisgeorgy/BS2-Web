@@ -48,6 +48,54 @@
     }
 
     /**
+     *
+     * @param env
+     * @param container_id
+     */
+    function drawADSR(env, container_id) {
+
+        // console.log('drawADSR', env, container_id);
+
+        let canvas = document.getElementById(container_id);
+        let ctx = canvas.getContext("2d");
+
+        const width = canvas.width;
+        const height = canvas.height;
+
+        const width_A = 0.25;
+        const width_D = 0.25;
+        const width_R = 0.25;
+
+        // start position
+        let x = 0;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.beginPath();
+        ctx.moveTo(0, height); // start at lower left corner
+
+        // Attack
+        x += env.attack * width_A * width;
+        ctx.lineTo(x, 0);
+
+        // Decay
+        x += env.decay * width_D * width;
+        ctx.lineTo(x, height - env.sustain * height);
+
+        // Sustain
+        x = width - (env.release * width_R * width);
+        ctx.lineTo(x, height - env.sustain * height);
+
+        // Release
+        ctx.lineTo(width, height);
+
+        // stroke
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "#ffec03";
+        ctx.stroke();
+        ctx.closePath();
+    }
+
+
+    /**
      * Update a control on screen from CC or NRPN value.
      *
      * @param type
@@ -133,6 +181,13 @@
         let value = Math.round(value_float);
         let [control_type, control_number] = control.replace('#', '').split('-');
         control_number = parseInt(control_number);
+
+        if (control_type === 'cc' && (control_number === 102 || control_number === 103 || control_number === 104 || control_number === 105)) {
+            drawADSR(getADSREnv('cc-102', 'cc-103', 'cc-104', 'cc-105'), "mod-ADSR");
+        }
+        if (control_type === 'cc' && (control_number === 90 || control_number === 91 || control_number === 92 || control_number === 93)) {
+            drawADSR(getADSREnv('cc-90', 'cc-91', 'cc-92', 'cc-93'), "amp-ADSR");
+        }
 
         console.log('updateBS2', control_type, control_number, value_float, value);
 
@@ -490,6 +545,7 @@
 
         $('#osc1-pw-controls').css('visibility','hidden');
         $('#osc2-pw-controls').css('visibility','hidden');
+
     }
 
     /**
@@ -520,6 +576,9 @@
         $('#nrpn-88').val() == BS2.LFO_SPEED_SYNC.indexOf('sync') ? show('#nrpn-87') : hide('#nrpn-87');
         $('#nrpn-92').val() == BS2.LFO_SPEED_SYNC.indexOf('sync') ? show('#nrpn-91') : hide('#nrpn-91');
 
+        drawADSR(getADSREnv('cc-102', 'cc-103', 'cc-104', 'cc-105'), "mod-ADSR");
+        drawADSR(getADSREnv('cc-90', 'cc-91', 'cc-92', 'cc-93'), "amp-ADSR");
+
     }
 
     /**
@@ -527,6 +586,15 @@
      */
     function updateMeta() {
         $('#patch-number').text(BS2.meta.patch_id.value);
+    }
+
+    function getADSREnv(id_A, id_D, id_S, id_R) {
+        return {
+            attack: $('#' + id_A).val() / 127,
+            decay: $('#' + id_D).val() / 127,
+            sustain: $('#' + id_S).val() / 127,
+            release: $('#' + id_R).val() / 127
+        };
     }
 
     /**
@@ -539,6 +607,10 @@
         setupCommands();
         initBS2(false);     // init UI without sending any CC to the BS2
         $('h1.reset-handler').click(resetGroup);
+
+        drawADSR(getADSREnv('cc-102', 'cc-103', 'cc-104', 'cc-105'), "mod-ADSR");
+        drawADSR(getADSREnv('cc-90', 'cc-91', 'cc-92', 'cc-93'), "amp-ADSR");
+
     }
 
     /**

@@ -164,6 +164,10 @@ main > div {
     margin-top: 3px;
 }
 
+.adsr {
+    display: block;
+}
+
 /*
 #connection-status {
     float: right;
