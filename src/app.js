@@ -172,6 +172,7 @@
      * Send all values to BS2
      */
     function sendAll() {
+
         setStatus(`Sending all values to ${BS2.name} ...`);
 
         function _send(controls, prefix) {
@@ -368,7 +369,6 @@
             angleArc: 270,
             bgColor: "#606060",
             fgColor: "#ffec03"
-
         });
 
         function _setup(controls, prefix) {

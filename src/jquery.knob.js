@@ -794,13 +794,13 @@
 
 
             let ccw = this.o.flip && !this.o.cursor;
-            let color = '#ffec03';  // FIXME: make it configurable
+            let color = '#ffea00';  // FIXME: make it configurable
 
             if (this.o.cursor) {
                 sa = 1.5 * Math.PI;
                 if (ea < 1.5*Math.PI) {
                     ccw = true;
-                    color = '#ccbb00';
+                    color = '#ccbb00';  // FIXME: make it configurable
                 }
             }
 
