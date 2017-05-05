@@ -6,9 +6,9 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Condensed:400,700" rel="stylesheet">
     <link rel="stylesheet" media="all" href="css/layout.css" />
     <link rel="stylesheet" media="all" href="css/dark-theme.css" />
-    <link rel="stylesheet" href="lib/featherlight.min.css" />
+    <link rel="stylesheet" href="lib/lity.min.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="lib/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="lib/lity.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="lib/webmidi.min.js"></script>
     <script src="jquery.knob.js"></script>
     <script src="bs2.js"></script>
@@ -17,10 +17,11 @@
 <body>
     <main>
         <div class="head">
-            <span class="novation-blue">Bass Station II Web Interface</span><span id="patch" class="novation-blue">&nbsp;&nbsp;&#9830;&nbsp;&nbsp;Patch</span>
+            <span class="novation-blue">Bass Station II Web Interface</span><span id="patch" class="novation-blue">&nbsp;&nbsp;&bull;&nbsp;&nbsp;Patch</span>
             <span id="patch-number" class="novation-blue">-</span>
             <span class="commands">
-                <button id="cmd-import" data-featherlight="#import-dialog" title="Import a configuration from a file (will not send to the BS2)">import</button>
+                <button id="cmd-save" title="Save the current configuration in the browser local storage">save</button>
+                <button id="cmd-import" title="Import a configuration from a file (will not send to the BS2)">import</button>
                 <button id="cmd-export" title="Export the current configuration in a file">export</button>
                 <button id="cmd-send" title="Send all parameters to the connected Bass Stations II">send</button>
                 <button id="cmd-init" title="Set all parameters to their default value">init</button>
@@ -628,13 +629,15 @@
     </main>
     <footer></footer>
 
-    <div id="import-dialog" class="lightbox">
+    <div id="import-dialog" style="overflow:auto;background:#FDFDF6;color:#000;padding:20px;min-width:400px;max-width:90%;border-radius:6px"  class="lity-hide">
         <h1>Patch import</h1>
         <div id="import-dialog-instructions">
             Select a file containing a BS2 patch (sysex data).
         </div>
-        <div>
+        <div style="margin:10px 0;">
             <input type="file" id="patch-file" placeholder="patch file" />
+        </div>
+        <div id="import-dialog-error" style="margin:10px 0;color:red">
         </div>
     </div>
 

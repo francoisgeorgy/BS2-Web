@@ -22,7 +22,8 @@ var BS2 = (function BassStationII() {
         osc2_coarse: 30,
         osc2_mod_env_depth: 76,
         osc2_lfo1_depth: 31,
-        osc2_env2_pw_mod: 77,
+        //osc2_env2_pw_mod: 77,
+        osc2_mod_env_pw_mod: 77,
         osc2_lfo2_pw_mod: 78,
         osc2_manual_pw: 79,
         sub_osc_oct: 81,
@@ -237,6 +238,7 @@ var BS2 = (function BassStationII() {
         //sysex_length: 154,
         patch_id: {
             name: 'Patch Number',
+            value: '-',
             sysex: {
                 offset: 8,
                 range: [0, 127],
@@ -245,6 +247,7 @@ var BS2 = (function BassStationII() {
         },
         patch_name: {
             name: 'Patch Name',
+            value: '-',
             sysex: {
                 offset: 137,
                 range: [0, 0x7F],
@@ -416,8 +419,8 @@ var BS2 = (function BassStationII() {
                 mask: [0x1F, 0x70]
             }
         };
-        control[control_id.osc2_env2_pw_mod] = { // 77
-            name: "Osc2 Env2 PW Mod",
+        control[control_id.osc2_mod_env_pw_mod] = { // 77
+            name: "Osc2 Mod Env PW Mod",
             range: [-63,63],
             human: _63,
             //map_r: _63_reverse,
@@ -840,8 +843,9 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.osc_pitch_bend_range] = { // 107
             name: "Osc Pitch Bend Range",
-            range: [-24, 24],       // TODO
+            range: [-24, 24],       // TODO doc says 1..12
             human: v => v,          // TODO
+            // init_value: 12,
             sysex: {
                 offset: 16,
                 mask: [0x7F]        // to check
@@ -1638,25 +1642,15 @@ var BS2 = (function BassStationII() {
 
     };
 
+    /**
+     *
+     * @param data
+     */
     var decodeSysExMeta = function(data) {
         console.log('BS2.decodeSysExMeta', data);
-        // meta.patch_id
-        // meta.patch_name
-        // meta.signature
         meta.patch_id['value'] = data[meta.patch_id.sysex.offset];
-        console.log(`decodeSysExMeta, id=${meta.patch_id['value']}`);
-        let name = String.fromCharCode(...data.slice(meta.patch_name.sysex.offset, meta.patch_name.sysex.offset + meta.patch_name.sysex.mask.length));
-        meta.patch_name['value'] = name;
-
-        // let name = String.fromCharCode(...data.slice(BS2.meta.patch_name.sysex.offset, BS2.meta.patch_name.sysex.offset + BS2.meta.patch_name.sysex.mask.length));
-        // a.push({
-        //     name:'patch name',
-        //     value: `[${n}] ${name}`,
-        //     details: ''
-        // });
-
-
-        console.log(`decodeSysExMeta, name=${name}`);
+        meta.patch_name['value'] = String.fromCharCode(...data.slice(meta.patch_name.sysex.offset, meta.patch_name.sysex.offset + meta.patch_name.sysex.mask.length));
+        console.log(`decodeSysExMeta, id=${meta.patch_id.value}, name=${meta.patch_name.value}`);
     };
 
     /**
@@ -1741,6 +1735,12 @@ var BS2 = (function BassStationII() {
         return true;
     };
 
+    /*
+    var getValuesAsSysex = function() {
+        //TODO: export as sysex data
+    };
+    */
+
     /**
      * Only for CC, not for NRPN
      *
@@ -1765,22 +1765,8 @@ var BS2 = (function BassStationII() {
         return CC;
     };
 
-    // var applyToAllControls = function(f) {
-    //     control.forEach(f);
-    //     nrpn.forEach(f);
-    // };
-
     defineControls();
     defineNRPNs();
-
-
-    /* DEBUG TEST */
-
-    // for (let n=0; n<10; n++) {
-    //     let c =
-    // }
-
-    /*------------*/
 
     var publicAPI = {
         name: "Bass Stations II",
@@ -1810,8 +1796,7 @@ var BS2 = (function BassStationII() {
         getADSREnv,
         setValuesFromSysex,
         doubleByteValue,
-        getMidiMessagesForNormalCC  //,
-        // applyToAllControls
+        getMidiMessagesForNormalCC
     };
 
     return publicAPI;

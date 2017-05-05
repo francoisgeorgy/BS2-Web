@@ -243,24 +243,6 @@
 
     }
 
-    /*
-    function importFromFile() {
-        alert('Sorry, this feature is not yet implemented.');
-    }
-    */
-
-    function exportToFile() {
-        alert('Sorry, this feature is not yet implemented.');
-    }
-
-    function record() {
-        alert('Sorry, this feature is not yet implemented.');
-    }
-
-    function play() {
-        alert('Sorry, this feature is not yet implemented.');
-    }
-
     /**
      * Send all values to BS2
      */
@@ -401,8 +383,9 @@
      *
      */
     function setupCommands() {
+        $('#cmd-save').click(saveInLocalStorage);
         $('#cmd-export').click(exportToFile);
-        // $('#cmd-import').click(importFromFile);
+        $('#cmd-import').click(importFromFile);
         $('#cmd-send').click(sendAllValues);
         $('#cmd-init').click(init);
         $('#cmd-randomize').click(randomizeBS2);
@@ -610,7 +593,7 @@
      *
      */
     function updateMeta() {
-        $('#patch-number').text(BS2.meta.patch_id.value + ': ' + BS2.meta.patch_name['value']);
+        $('#patch-number').text(BS2.meta.patch_id.value + ': ' + BS2.meta.patch_name.value);
     }
 
     function getADSREnv(id_A, id_D, id_S, id_R) {
@@ -646,6 +629,48 @@
         updateControls();
         updateCustoms();
         updateMeta();
+    }
+
+    function saveInLocalStorage() {
+        alert('Sorry, this feature is not yet implemented.');
+    }
+
+    var lightbox = null;
+
+    function importFromFile() {
+        //alert('Sorry, this feature is not yet implemented.');
+        $('#import-dialog-error').empty();
+        $('#patch-file').val('');
+        lightbox = lity('#import-dialog');
+    }
+
+    function exportToFile() {
+        //alert('Sorry, this feature is not yet implemented.');
+
+        //TODO: export as sysex
+
+        var data = JSON.stringify(BS2);
+
+        var element = document.createElement('a');
+        //element.setAttribute('href', 'data:application/octet-stream,' + encodeURIComponent(data));
+        element.setAttribute('href', 'data:application/json,' + encodeURIComponent(data));
+        element.setAttribute('download', 'bs2-patch.json');
+
+        element.style.display = 'none';
+        document.body.appendChild(element);
+
+        element.click();
+
+        document.body.removeChild(element);
+
+    }
+
+    function record() {
+        alert('Sorry, this feature is not yet implemented.');
+    }
+
+    function play() {
+        alert('Sorry, this feature is not yet implemented.');
     }
 
     /**
@@ -792,14 +817,13 @@
                                 data.push(view[i]);
                                 if (view[i] == SYSEX_END) break;
                             }
-                            //updateDisplay(data);
                             if (BS2.setValuesFromSysex(data)) {
-                                console.log('file read OK', BS2.meta.patch_name['value'], BS2);
-                                $.featherlight.close();
+                                console.log('file read OK', BS2.meta.patch_name['value']);
+                                if (lightbox) lightbox.close();
                                 updateUI();
                             } else {
                                 console.log('unable to set value from file');
-                                // $('#import-dialog-instructions').text('The file is invalid.');   //FIXME
+                                $('#import-dialog-error').show().text('The file is invalid.');
                             }
                         };
                         reader.readAsArrayBuffer(f);
