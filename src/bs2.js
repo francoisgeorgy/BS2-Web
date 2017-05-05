@@ -263,7 +263,9 @@ var BS2 = (function BassStationII() {
     };
 
     var control = new Array(127);
+    control.cc_type = 'cc';
     var nrpn = new Array(127);
+    nrpn.cc_type = 'nrpn';
 
     function defineControls() {
         /*
@@ -288,6 +290,8 @@ var BS2 = (function BassStationII() {
             name: "Osc1 Range",
             range: [63, 66],
             human: v => OSC_RANGES[v - 63],
+            //init_value: OSC_RANGES.indexOf("8'"),
+            init_value: 64,
             sysex: {
                 control: control_id.osc1_range,
                 offset: 20,
@@ -372,6 +376,8 @@ var BS2 = (function BassStationII() {
             name: "Osc2 Range",
             range: [63,66],
             human: v => OSC_RANGES[v - 63],
+            // init_value: OSC_RANGES.indexOf("8'"),
+            init_value: 64,
             sysex: {
                 offset: 26,
                 mask: [0x1F, 0x60]
@@ -444,6 +450,7 @@ var BS2 = (function BassStationII() {
             range: [0, 2],
             choice: true,
             human: v => { return SUB_WAVE_FORMS[v % SUB_WAVE_FORMS.length] },
+            init_value: 0,
             sysex: {
                 offset: 36,
                 mask: [0x30]
@@ -456,6 +463,7 @@ var BS2 = (function BassStationII() {
             // human: v => v - 2,
             //map_r: v => v + 2,
             human: v => v - 64,
+            init_value: 63,
             sysex: {
                 offset: 37,
                 mask: [0x08]
@@ -466,6 +474,7 @@ var BS2 = (function BassStationII() {
             range: [0,255],
             lsb: 52,
             human: v => v,
+            init_value: 255,
             sysex: {
                 offset: 37,
                 mask: [0x07, 0x7C]
@@ -536,6 +545,7 @@ var BS2 = (function BassStationII() {
             // range: [0, 1],
             choice: [0, 1],
             human: v => FILTER_SLOPE[v],
+            init_value: 1,
             sysex: {
                 offset: 48,
                 mask: [0x08]
@@ -556,6 +566,7 @@ var BS2 = (function BassStationII() {
             range: [0,255],
             lsb: 48,
             human: v => v,
+            init_value: 255,
             sysex: {
                 offset: 44,
                 mask: [0x0F, 0x78]
@@ -624,6 +635,7 @@ var BS2 = (function BassStationII() {
             range: [0,255],
             lsb: 50,
             human: v => v,
+            init_value: 75,
             sysex: {
                 offset: 66,
                 mask: [0x3F, 0x60]
@@ -653,6 +665,7 @@ var BS2 = (function BassStationII() {
             range: [0,255],
             lsb: 51,
             human: v => v,
+            init_value: 52,
             sysex: {
                 offset: 73,
                 mask: [0x7F, 0x40]
@@ -689,6 +702,7 @@ var BS2 = (function BassStationII() {
             name: "Amp Env Sustain",
             range: [0,127],
             human: v => v,
+            init_value: 127,
             sysex: {
                 offset: 52,
                 mask: [0x07, 0x78]
@@ -725,6 +739,7 @@ var BS2 = (function BassStationII() {
             name: "Mod Env Sustain",
             range: [0,127],
             human: v => v,
+            init_value: 127,
             sysex: {
                 offset: 59,
                 mask: [0x0F, 0x70]
@@ -872,6 +887,7 @@ var BS2 = (function BassStationII() {
             name: "Arp Swing",
             range: [3,97],
             human: v => v,
+            init_value: 50,
             sysex: {
                 offset: 81,
                 mask: [0x3F]
@@ -880,6 +896,9 @@ var BS2 = (function BassStationII() {
 
         // add the missing default properties
         control.forEach(function(obj) {
+            // console.log(obj);
+            obj.cc_number = control.indexOf(obj);   // is also the msb
+            obj.cc_type = 'cc';
             if (!obj.hasOwnProperty('choice')) {
                 obj.choice = false;
             }
@@ -893,9 +912,6 @@ var BS2 = (function BassStationII() {
             if (!obj.hasOwnProperty('max_raw')) {
                 obj.max_raw = max_raw;
             }
-            if (!obj.hasOwnProperty('init_value')) {
-                obj.init_value = 0;
-            }
             if (!obj.hasOwnProperty('raw_value')) {
                 obj.raw_value = obj.init_value;
             }
@@ -907,8 +923,16 @@ var BS2 = (function BassStationII() {
             } else {
                 obj.range = [0, 1];
             }
-            // console.log('final', obj);
+            if (!obj.hasOwnProperty('init_value')) {
+                if ((Math.min(...obj.range) < 0) && (Math.max(...obj.range) > 0)) {
+                    obj.init_value = obj.max_raw >>> 1; // very simple rule: we take max/2 as default value
+                } else {
+                    obj.init_value = Math.min(...obj.range);
+                }
+            }
         });
+
+        // console.log(control);
 
     } // defineControls()
 
@@ -918,6 +942,7 @@ var BS2 = (function BassStationII() {
             // range: [1, 3],
             choice: [0,1,2],
             human: v => { return OSC_WAVE_FORMS[v % OSC_WAVE_FORMS.length] },
+            init_value: 2,
             sysex: {
                 offset: 19,
                 mask: [0x60]
@@ -928,6 +953,7 @@ var BS2 = (function BassStationII() {
             // range: [1, 3],
             choice: [0,1,2],
             human: v => { return OSC_WAVE_FORMS[v % OSC_WAVE_FORMS.length] },
+            init_value: 2,
             sysex: {
                 offset: 24,
                 mask: [0x03]
@@ -968,6 +994,7 @@ var BS2 = (function BassStationII() {
             range: [-63, 63],
             human: _63,  // TODO: make _64_63 because on the BS2 the values are -64..+63 (same for all mod wheel FN keys)
             //map_r: _63_reverse,
+            init_value: 10,
             sysex: {
                 offset: 83,
                 mask: [0x0F, 0x70]
@@ -997,6 +1024,7 @@ var BS2 = (function BassStationII() {
             range: [-63, 63],
             human: _63,
             //map_r: _63_reverse,
+            init_value: 10,
             sysex: {
                 offset: 86,
                 mask: [0x01, 0x7E]
@@ -1027,6 +1055,7 @@ var BS2 = (function BassStationII() {
             name: "LFO1 Key Sync",
             on_off: true,
             human: v => v,
+            init_value: 0,
             sysex: {
                 offset: 69,
                 mask: [0x10]
@@ -1071,6 +1100,7 @@ var BS2 = (function BassStationII() {
             // range: [0, 1],
             on_off: true,
             human: v => v,
+            init_value: 1,
             sysex: {
                 offset: 76,
                 mask: [0x20]
@@ -1112,6 +1142,7 @@ var BS2 = (function BassStationII() {
             name: "Arp Seq Retrig",
             on_off: true,
             human: v => v,
+            init_value: 1,
             sysex: {
                 offset: 77,
                 mask: [0x20]
@@ -1120,6 +1151,8 @@ var BS2 = (function BassStationII() {
 
         // add the missing default properties
         nrpn.forEach(function(obj) {
+            obj.cc_number = nrpn.indexOf(obj);   // is also the lsb
+            obj.cc_type = 'nrpn';
             if (!obj.hasOwnProperty('choice')) {
                 obj.choice = false;
             }
@@ -1133,9 +1166,6 @@ var BS2 = (function BassStationII() {
             if (!obj.hasOwnProperty('max_raw')) {
                 obj.max_raw = max_raw;
             }
-            if (!obj.hasOwnProperty('init_value')) {
-                obj.init_value = 0;
-            }
             if (!obj.hasOwnProperty('raw_value')) {
                 obj.raw_value = obj.init_value;
             }
@@ -1145,7 +1175,14 @@ var BS2 = (function BassStationII() {
             if (!obj.hasOwnProperty('range')) {
                 obj.range = obj.on_off ? [0, 1] : [0, obj.max_raw];
             }
-            // console.log('final nrpn', obj);
+            if (!obj.hasOwnProperty('init_value')) {
+                if ((Math.min(...obj.range) < 0) && (Math.max(...obj.range) > 0)) {
+                    obj.init_value = obj.max_raw >>> 1; // very simple rule: we take max/2 as default value
+                } else {
+                    obj.init_value = Math.min(...obj.range);
+                }
+            }
+            // console.log('BS2.final nrpn', obj);
         });
 
     } // defineNRPNs()
@@ -1532,6 +1569,26 @@ var BS2 = (function BassStationII() {
         return a + b;
     }
 
+    var getADSREnv = function(name) {
+        switch(name) {
+            case 'amp':
+                return {
+                    attack: control[control_id.amp_env_attack].raw_value / 127,
+                    decay: control[control_id.amp_env_decay].raw_value / 127,
+                    sustain: control[control_id.amp_env_sustain].raw_value / 127,
+                    release: control[control_id.amp_env_release].raw_value / 127
+                };
+            case 'mod':
+                return {
+                    attack: control[control_id.mod_env_attack].raw_value / 127,
+                    decay: control[control_id.mod_env_decay].raw_value / 127,
+                    sustain: control[control_id.mod_env_sustain].raw_value / 127,
+                    release: control[control_id.mod_env_release].raw_value / 127
+                };
+        }
+        return {};
+    }
+
     var validateSysEx = function(data) {
         if (data.length != 154) return false;
         let offset = meta.signature.sysex.offset;
@@ -1574,12 +1631,7 @@ var BS2 = (function BassStationII() {
             }
 
             let final_value = 0;
-            // if (controls[i].hasOwnProperty('map')) {
-                // final_value = controls[i].map(raw_value);
-                final_value = controls[i].human(raw_value);
-            // } else {
-            //     final_value = raw_value;
-            // }
+            final_value = controls[i].human(raw_value);
             controls[i]['raw_value'] = raw_value;
             controls[i]['value'] = final_value;
         }
@@ -1587,7 +1639,7 @@ var BS2 = (function BassStationII() {
     };
 
     var decodeSysExMeta = function(data) {
-        console.log('decodeSysExMeta', data);
+        console.log('BS2.decodeSysExMeta', data);
         // meta.patch_id
         // meta.patch_name
         // meta.signature
@@ -1607,6 +1659,80 @@ var BS2 = (function BassStationII() {
         console.log(`decodeSysExMeta, name=${name}`);
     };
 
+    /**
+     *
+     * @param control_type
+     * @param control_number
+     * @returns {number}
+     */
+    var getControlValue = function(ctrl) {
+        return 'raw_value' in ctrl ? ctrl.raw_value : 0;
+        // let c;
+        // if (control.cc_type === 'cc') {
+        //     c = control;
+        // } else if (control.cc_type === 'nrpn') {
+        //     c = nrpn;
+        // } else {
+        //     return 0;
+        // }
+        // if (c[control_number]) {
+        //     return 'value' in c[control_number] ? c[control_number].raw_value : 0;
+        // } else {
+        //     return 0;
+        // }
+    };
+
+    /**
+     * setControlValue(control_object, value)
+     * setControlValue(control_type, control_number, value)
+     * return the updated control object
+     */
+    var setControlValue = function() {
+        console.log('BS2.setControlValue', ...arguments);
+        let c;
+        if (arguments.length===2) {
+            let value = arguments[1];
+            c = arguments[0];
+            c.raw_value = typeof value === 'number' ? value : parseInt(value);
+        } else if (arguments.length===3) {
+            let ca; // controls array
+            if (arguments[0] === 'cc') {
+                ca = control;
+            } else if (arguments[0] === 'nrpn') {
+                ca = nrpn;
+            } else {
+                console.error("setControlValue: invalid control_type", arguments);
+                return null;
+            }
+            if (ca[arguments[1]]) {
+                c = ca[arguments[1]];
+                let value = arguments[2];
+                c.raw_value = typeof value === 'number' ? value : parseInt(value);
+            } else {
+                console.error("setControlValue: unknown number", arguments);
+                return null;
+            }
+        } else {
+            console.error("setControlValue: invalid arguments", arguments);
+            return null;
+        }
+        return c;
+    };
+
+    var init = function() {
+
+        function _init(controls) {
+            for (let i=0; i < controls.length; i++) {
+                let c = controls[i];
+                if (typeof c === 'undefined') continue;
+                c.raw_value = c.init_value;
+            }
+        }
+
+        _init(control);
+        _init(nrpn);
+    };
+
     var setValuesFromSysex = function(data) {
         if (!validateSysEx(data)) return false;
         decodeSysExMeta(data);
@@ -1616,19 +1742,24 @@ var BS2 = (function BassStationII() {
     };
 
     /**
+     * Only for CC, not for NRPN
+     *
      * Returns an array of "midi messages" to send to update control to value
      * @param control
      * @param value is raw value (0..127 or 0..255)
      */
-    var getMidiMessagesForControl = function(control_number, value) {
-        // console.log('getMidiMessagesForControl', control_number, value);
+    var getMidiMessagesForNormalCC = function(ctrl) {
+        // console.log('BS2.getMidiMessagesForControl', control_number, value);
+        if (ctrl.cc_type != 'cc') return [];
         let CC = [];
-        let c = control[control_number];
-        if (c.lsb < 0) {
-            CC.push([control_number, value]);
+        // let c = control.cc_number;
+        // if (typeof c === 'undefined') return CC;
+        let value = getControlValue(ctrl);
+        if (ctrl.lsb < 0) {
+            CC.push([ctrl.cc_number, value]);
         } else {
-            CC.push([control_number, value >>> 1]);       // we discard the lsb
-            CC.push([c.lsb, value % 2 === 0 ? 0 : 64]);   // that we put in the second CC message
+            CC.push([ctrl.cc_number, value >>> 1]);       // we discard the lsb
+            CC.push([ctrl.lsb, value % 2 === 0 ? 0 : 64]);   // that we put in the second CC message
         }
         // console.table(CC);
         return CC;
@@ -1641,6 +1772,15 @@ var BS2 = (function BassStationII() {
 
     defineControls();
     defineNRPNs();
+
+
+    /* DEBUG TEST */
+
+    // for (let n=0; n<10; n++) {
+    //     let c =
+    // }
+
+    /*------------*/
 
     var publicAPI = {
         name: "Bass Stations II",
@@ -1664,9 +1804,13 @@ var BS2 = (function BassStationII() {
         ENV_TRIGGERING,
         ARP_NOTES_MODE,
         ARP_OCTAVES,
+        init,
+        getControlValue,
+        setControlValue,
+        getADSREnv,
         setValuesFromSysex,
         doubleByteValue,
-        getMidiMessagesForControl  //,
+        getMidiMessagesForNormalCC  //,
         // applyToAllControls
     };
 

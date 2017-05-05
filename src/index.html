@@ -20,7 +20,7 @@
             <span class="novation-blue">Bass Station II Web Interface</span><span id="patch" class="novation-blue">&nbsp;&nbsp;&#9830;&nbsp;&nbsp;Patch</span>
             <span id="patch-number" class="novation-blue">-</span>
             <span class="commands">
-                <button id="cmd-import" data-featherlight="#mylightbox" title="Import a configuration from a file (will not send to the BS2)">import</button>
+                <button id="cmd-import" data-featherlight="#import-dialog" title="Import a configuration from a file (will not send to the BS2)">import</button>
                 <button id="cmd-export" title="Export the current configuration in a file">export</button>
                 <button id="cmd-send" title="Send all parameters to the connected Bass Stations II">send</button>
                 <button id="cmd-init" title="Set all parameters to their default value">init</button>
@@ -628,8 +628,11 @@
     </main>
     <footer></footer>
 
-    <div id="mylightbox" class="lightbox">
+    <div id="import-dialog" class="lightbox">
         <h1>Patch import</h1>
+        <div id="import-dialog-instructions">
+            Select a file containing a BS2 patch (sysex data).
+        </div>
         <div>
             <input type="file" id="patch-file" placeholder="patch file" />
         </div>

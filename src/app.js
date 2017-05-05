@@ -1,5 +1,6 @@
 
     function toggleOnOff(selector, bool) {
+        // console.log(`toggleOnOff(${selector}, ${bool})`);
         if (bool) {
             $(selector).removeClass("off").addClass("on");
         } else {
@@ -96,28 +97,35 @@
 
 
     /**
-     * Update a control on screen from CC or NRPN value.
+     * Update BS2 and associated on-screen control from CC or NRPN value.
      *
      * @param control_type
      * @param control_number
      * @param value
      */
     function dispatch(control_type, control_number, value) {
+
         console.log('dispatch', control_type, control_number, value, '#' + control_type + '-' + control_number);
         control_type = control_type.toLowerCase();
+
         if ((control_type != 'cc') && (control_type != 'nrpn')) return; //TODO: signal an error
+
         console.log('dispatch ' + '#' + control_type + '-' + control_number + ' = ' + value);
+
+        BS2.setControlValue(control_type, control_number, value);
 
         // the "blur" event will force a redraw of the dial. Do not send the "change" event as this will ping-pong between BS2 and this application.
         $('#' + control_type + '-' + control_number).val(value).trigger('blur');
 
-        if (control_type === 'cc' && (control_number === 102 || control_number === 103 || control_number === 104 || control_number === 105)) {
-            drawADSR(getADSREnv('cc-102', 'cc-103', 'cc-104', 'cc-105'), "mod-ADSR");
+        if (control_type === 'cc') {
+            if ([102, 103, 104, 105].includes(control_number)) {
+                // drawADSR(getADSREnv('cc-102', 'cc-103', 'cc-104', 'cc-105'), "mod-ADSR");
+                drawADSR(BS2.getADSREnv('mod'), 'mod-ADSR');
+            } else if ([90, 91, 92, 93].includes(control_number)) {
+                // drawADSR(getADSREnv('cc-90', 'cc-91', 'cc-92', 'cc-93'), "amp-ADSR");
+                drawADSR(BS2.getADSREnv('amp'), 'amp-ADSR');
+            }
         }
-        if (control_type === 'cc' && (control_number === 90 || control_number === 91 || control_number === 92 || control_number === 93)) {
-            drawADSR(getADSREnv('cc-90', 'cc-91', 'cc-92', 'cc-93'), "amp-ADSR");
-        }
-
     }
 
     var cc_expected = -1;
@@ -151,7 +159,7 @@
         } else {
             if (nrpn) {
                 value = msg[2];
-                dispatch('NRPN', cc_lsb, value);
+                dispatch('nrpn', cc_lsb, value);
                 nrpn = false;
                 return;
             }
@@ -161,7 +169,7 @@
             if (cc === cc_expected) {
                 value_lsb = msg[2];
                 let v = BS2.doubleByteValue(value_msb, value_lsb);
-                dispatch('CC', cc_msb, v);
+                dispatch('cc', cc_msb, v);
                 cc_expected = -1;
             } else {
                 cc_msb = cc;
@@ -170,7 +178,7 @@
             if (BS2.control[cc]) {
                 if (BS2.control[cc].lsb === -1) {
                     let v = msg[2];
-                    dispatch('CC', cc, v);
+                    dispatch('cc', cc, v);
                 } else {
                     cc_expected = BS2.control[cc].lsb;
                     cc_msb = cc;
@@ -187,49 +195,59 @@
      * @param control
      * @param value_float
      */
-    function updateBS2(control, value_float) {
+    function updateBS2(control_type, control_number, value_float) {
 
-        //TODO: check that midi_output is defined
-
-        console.log('updateBS2', control, value_float);
+        // console.log('updateBS2', control, value_float);
 
         let value = Math.round(value_float);
-        let [control_type, control_number] = control.replace('#', '').split('-');
-
-        control_number = parseInt(control_number);
-
-        if (control_type === 'cc' && (control_number === 102 || control_number === 103 || control_number === 104 || control_number === 105)) {
-            drawADSR(getADSREnv('cc-102', 'cc-103', 'cc-104', 'cc-105'), "mod-ADSR");
-        }
-        if (control_type === 'cc' && (control_number === 90 || control_number === 91 || control_number === 92 || control_number === 93)) {
-            drawADSR(getADSREnv('cc-90', 'cc-91', 'cc-92', 'cc-93'), "amp-ADSR");
-        }
 
         console.log('updateBS2', control_type, control_number, value_float, value);
 
-        if (control_type === 'cc') {
-            //console.log(`send ${control_number} ${value}`);
+        let control = BS2.setControlValue(control_type, control_number, value);
 
-            let a = BS2.getMidiMessagesForControl(control_number, value);
+        if (control_type === 'cc') {
+            if ([102, 103, 104, 105].includes(control_number)) {
+                // drawADSR(getADSREnv('cc-102', 'cc-103', 'cc-104', 'cc-105'), "mod-ADSR");
+                drawADSR(BS2.getADSREnv('mod'), 'mod-ADSR');
+            } else if ([90, 91, 92, 93].includes(control_number)) {
+                // drawADSR(getADSREnv('cc-90', 'cc-91', 'cc-92', 'cc-93'), "amp-ADSR");
+                drawADSR(BS2.getADSREnv('amp'), 'amp-ADSR');
+            }
+        }
+
+        sendSingleValue(control);
+    }
+
+    /**
+     *
+     * @param control_type
+     * @param control_number
+     */
+    function sendSingleValue(control) {
+
+        // console.log(`sendSingleValue()`, control);
+
+        if (control.cc_type === 'cc') {
+            let a = BS2.getMidiMessagesForNormalCC(control);
             for (let i=0; i<a.length; i++) {
-                // console.log(`send CC ${a[i][0]} ${a[i][1]}`);
+                console.log(`send CC ${a[i][0]} ${a[i][1]} (${control.name})`);
                 logOutgoingMidiMessage('cc', a[i][0], a[i][1]);
                 if (midi_output) midi_output.sendControlChange(a[i][0], a[i][1]);
             }
-            //
-        } else if (control_type === 'nrpn') {
-            //console.log(`send NRPN ${BS2.nrpn[control_number].msb, control_number} ${value}`);
-            // midi_output.setNonRegisteredParameter([BS2.nrpn[control_number].msb, control_number], value);//[0, 10]);
-
-            logOutgoingMidiMessage('nrpn', control_number, value);
-
-            if (midi_output) midi_output.setNonRegisteredParameter([0, control_number], value);  // for the BS2, the NRPN MSB is always 0
+        } else if (control.cc_type === 'nrpn') {
+            let value = BS2.getControlValue(control);
+            console.log(`send NRPN ${control.cc_number} ${value} (${control.name})`);
+            logOutgoingMidiMessage('nrpn', control.cc_number, value);
+            if (midi_output) midi_output.setNonRegisteredParameter([0, control.cc_number], value);  // for the BS2, the NRPN MSB is always 0
         }
+
     }
 
+    /*
     function importFromFile() {
         alert('Sorry, this feature is not yet implemented.');
     }
+    */
 
     function exportToFile() {
         alert('Sorry, this feature is not yet implemented.');
@@ -243,39 +261,40 @@
         alert('Sorry, this feature is not yet implemented.');
     }
 
-    function sendToBS2() {
-        sendAll();
-    }
-
     /**
      * Send all values to BS2
      */
-    function sendAll() {
+    function sendAllValues() {
+
+        console.groupCollapsed(`sendAllValues()`);
 
         setStatus(`Sending all values to ${BS2.name} ...`);
 
-        function _send(controls, prefix) {
+        function _send(controls) {
             for (let i=0; i < controls.length; i++) {
                 if (typeof controls[i] === 'undefined') continue;
-                console.log($(prefix + i), controls[i]);
+                //console.log($(prefix + i), controls[i]);
                 //if (sendToBS2) updateBS2(prefix + i, parseInt($(prefix + i).val()));
-                if (sendToBS2) updateBS2(prefix + i, controls[i].raw_value);
+                // updateBS2(prefix + i, controls[i].raw_value);
+                sendSingleValue(controls[i]);
             }
         }
 
-        _send(BS2.control, '#cc-');
-        _send(BS2.nrpn, '#nrpn-');
+        _send(BS2.control);
+        _send(BS2.nrpn);
 
         setStatus(`${BS2.name} updated.`);
+
+        console.groupEnd();
     }
 
-
-    function getDefaultValue(id) {
-
-        let e = $(id);
-        if (e.is('select')) return e[0].options[0];
-
-        let [control_type, control_number] = id.replace('#', '').split('-');
+    /**
+     *
+     * @param dom_id ID of the HTML element
+     * @returns {*}
+     */
+    function getDefaultValue(dom_id) {
+        let [control_type, control_number] = dom_id.replace('#', '').split('-');
         let c;
         if (control_type == 'cc') {
             c = BS2.control[control_number];
@@ -285,75 +304,43 @@
             // ERROR
             return 0;
         }
-        let default_value = 0;
-        let range_min = Math.min(...c.range); // used to determine cursor
-        if (range_min < 0) {    // e.g.: -127..127 or -63..63
-            default_value = c.max_raw >>> 1;    // div by 2
-        }
-        return default_value;
+        //FIXME: check that c exists
+        return c.init_value;
     }
-
 
     /**
      *
      */
-    function initBS2(sendToBS2 = true) {
+    function init(sendToBS2 = true) {
 
-        function _init(controls, prefix) {
-            for (let i=0; i < controls.length; i++) {
+        console.log(`init(${sendToBS2})`);
 
-                let c = controls[i];
-                if (typeof c === 'undefined') continue;
+        BS2.init();
 
-                let e = $(prefix + i);
-
-                if (e.is('select')) {
-                    e[0].options[0].selected = true;
-
-                    // if (sendToBS2) updateBS2(prefix + i, e[0].options[0]);
-
-                    continue;
-                }
-
-                let default_value = 0;
-                let range_min = Math.min(...c.range); // used to determine cursor
-                if (range_min < 0) {    // e.g.: -127..127 or -63..63
-                    default_value = c.max_raw >>> 1;    // div by 2
-                }
-
-                e.val(default_value).trigger('blur');
-            }
-        }
-
-        _init(BS2.control, '#cc-');
-        _init(BS2.nrpn, '#nrpn-');
-
-        updateCustoms(false);
+        updateUI();
 
         //if (sendToBS2) setStatus(`${BS2.name} initialized`);
         if (sendToBS2) setStatus(`init done`);
 
-        if (sendToBS2) sendAll();
-
-        //if (sendToBS2) setStatus(`${BS2.name} initialized`);
+        if (sendToBS2) sendAllValues();
 
     }
 
     /**
      *
      */
-    function randomizeBS2() {
+    function randomizeBS2(sendToBS2 = true) {
 
         //FIXME: send all CC to BS2 _at the end_. First, update the UI.
 
-        function _randomize(controls, prefix) {
+        function _randomize(controls) {
 
             for (let i=0; i < controls.length; i++) {
 
                 let c = controls[i];
                 if (typeof c === 'undefined') continue;
 
-                let e = $(prefix + i);
+                let e = $(`#${c.cc_type}-${i}`);
 
                 //console.log(`randomize ${prefix + i}`);
 
@@ -372,50 +359,42 @@
                     v = Math.floor(Math.random() * (c.max_raw - min)) + min;  //TODO: step
                 }
 
-                console.log(`randomize ${prefix + i}=${v} with c.max_raw=${c.max_raw}`);
-
-
+                console.log(`randomize #${c.cc_type}-${i}=${v} with c.max_raw=${c.max_raw}, v=${v}`);
                 c.raw_value = v;
 
-
-                // e.val(v).trigger('change');
-                e.val(v).trigger('blur');
-
-                //if (sendToBS2) updateBS2(prefix + i, v);
-
+                // // e.val(v).trigger('change');
+                // e.val(v).trigger('blur');
+                // //if (sendToBS2) updateBS2(prefix + i, v);
             }
         }
 
-        _randomize(BS2.control, '#cc-');
-        _randomize(BS2.nrpn, '#nrpn-');
+        console.groupCollapsed(`randomizeBS2(${sendToBS2})`);
 
-        updateCustoms(false); // TODO: send CC to BS2 afterward
+        _randomize(BS2.control);
+        _randomize(BS2.nrpn);
+
+        console.groupEnd();
+
+        updateUI();
+        // updateCustoms(false); // TODO: send CC to BS2 afterward
 
         //if (sendToBS2) setStatus(`${BS2.name} randomized`);
         if (sendToBS2) setStatus(`randomize done`);
 
-        if (sendToBS2) sendAll();
+        if (sendToBS2) sendAllValues();
 
     }
 
     function resetGroup(e) {
-        //console.log(e, $(e.target).parent());
         $(e.target).parent().find('[id^=cc-],[id^=nrpn-]').each(function(){
-            console.log(this.id);
-            let id = this.id;
-            if (id.endsWith('-handle')) return;
-
-            let e = $('#'+id);
-            if (e.is('select')) {
-                e[0].options[0].selected = true;
-                return;
-            }
-
-            let v = getDefaultValue(id);
-            console.log(`${id}=${v}`);
-            e.val(getDefaultValue('#'+id)).trigger('blur');
+            let dom_id = this.id;
+            if (dom_id.endsWith('-handle')) return;
+            let v = getDefaultValue(dom_id);
+            $(`#${dom_id}`).val(v).trigger('blur');
+            updateBS2(...dom_id.split('-'), v);
         });
         updateCustoms(false);
+        //updateUI();
     }
 
     /**
@@ -424,13 +403,12 @@
     function setupCommands() {
         $('#cmd-export').click(exportToFile);
         // $('#cmd-import').click(importFromFile);
-        $('#cmd-send').click(sendToBS2);
-        $('#cmd-init').click(initBS2);
+        $('#cmd-send').click(sendAllValues);
+        $('#cmd-init').click(init);
         $('#cmd-randomize').click(randomizeBS2);
         $('#cmd-record').click(record);
         $('#cmd-play').click(play);
     }
-
 
     /**
      *
@@ -440,8 +418,11 @@
         const CURSOR = 12;
 
         $(".dial").knob({
-            // change : function (v) { /*console.log(this, this.cv, v, this.i[0].id);*/ updateBS2(this.i[0].id, Math.round(v)) },  //TODO: why is v not an integer is step==1?
-            change : function (v) { updateBS2(this.i[0].id, v) },
+            /*
+            change : function (v) {
+                updateBS2(this.i[0].id, v)
+            },
+            */
             // release : function (v) { console.log('release', this, v); },
             angleOffset: -135,
             angleArc: 270,
@@ -449,64 +430,68 @@
             fgColor: "#ffec03"
         });
 
-        function _setup(controls, prefix) {
+        function _setup(controls) {
 
             for (let i=0; i < controls.length; i++) {
 
                 let c = controls[i];
                 if (typeof c === 'undefined') continue;
 
-                let e = $(prefix + i);
+                let e = $(`#${c.cc_type}-${i}`);
 
                 if (!e.hasClass('dial')) continue;
 
-                console.log(`setup ${prefix}${i} max=${c.max_raw}`);
+                console.log(`configure #${c.cc_type}-${i}: max=${c.max_raw}`);
 
                 e.trigger('configure', {
                     min: 0,
                     max: c.max_raw,
                     step: 1,
                     cursor: Math.min(...c.range) < 0 ? CURSOR : false,
-                    format: v => c.human(v)
+                    format: v => c.human(v),
+                    change : function (v) {
+                        //updateBS2(this.i[0].id, v)
+                        updateBS2(c.cc_type, i, v);
+                        //console.log('yo', i, c.cc_type, this);
+                    },
                     //parse: function(v) { return parseInt(v); }
                 });
             }
         }
 
-        _setup(BS2.control, '#cc-');
-        _setup(BS2.nrpn, '#nrpn-');
+        console.groupCollapsed('setupDials');
+
+        _setup(BS2.control);
+        _setup(BS2.nrpn);
+
+        console.groupEnd();
 
     } // setupDials
 
-
     /**
-     * Set value of the controls (input and select)
+     * Set value of the controls (input and select) from the BS2 values
      */
     function updateControls() {
 
         //FIXME: use c.raw_value
 
-/*
-        for (let i=0; i < BS2.control.length; i++) {
-            let c = BS2.control[i];
-            if (typeof c === 'undefined') continue;
-            if (!c.hasOwnProperty('value')) continue;
-            let e = $('#cc-' + i);
-            if (e.is('select')) continue;
-            console.log(`trigger change on cc-${i}`);
-            e.val(c.value).trigger('change');
+        console.groupCollapsed('updateControls()');
+
+        function _updateControls(controls) {
+            for (let i=0; i < controls.length; i++) {
+                if (typeof controls[i] === 'undefined') continue;
+                let e = $(`#${controls[i].cc_type}-${i}`);
+                // if (e.is('select')) continue;
+                let v = BS2.getControlValue(controls[i]);
+                e.val(BS2.getControlValue(controls[i])).trigger('blur');  //TODO: change or blur?
+            }
         }
 
-        for (let i=0; i < BS2.nrpn.length; i++) {
-            let c = BS2.nrpn[i];
-            if (typeof c === 'undefined') continue;
-            if (!c.hasOwnProperty('value')) continue;
-            let e = $('#nrpn-' + i);
-            if (e.is('select')) continue;
-            console.log(`trigger change on nrpn-${i}`);
-            e.val(c.value).trigger('change');
-        }
-*/
+        _updateControls(BS2.control);
+        _updateControls(BS2.nrpn);
+
+        console.groupEnd();
+
     } // updateControls()
 
     /**
@@ -520,12 +505,10 @@
         $('#nrpn-88,#nrpn-92').append(BS2.LFO_SPEED_SYNC.map((o,i) => { return $("<option>").val(i).text(o); }));
         $('#nrpn-87,#nrpn-91').append(BS2.LFO_SYNC.map((o,i) => { return $("<option>").val(i).html(o); }));
 
-
         $('#cc-81').append(Object.entries(BS2.SUB_OCTAVE).map((o,i) => {return $("<option>").val(o[0]).text(o[1]); }));
 
         //$('#cc-70,#cc-75').append(BS2.OSC_RANGES.map((o,i) => {return $("<option>").val(i).text(o); }));
         $('#cc-70,#cc-75').append(Object.entries(BS2.OSC_RANGES).map((o,i) => {return $("<option>").val(o[0]).text(o[1]); }));
-
 
         $('#nrpn-72,#nrpn-82').append(BS2.OSC_WAVE_FORMS.map((o,i) => { return $("<option>").val(i).text(o); }));
 
@@ -542,7 +525,7 @@
             $('#cc-119').append($("<option>").val(i).text(i+1));
         }
 
-        $('select').change(function (){ updateBS2(this.id, this.value) });
+        $('select').change(function (){ updateBS2(...this.id.split('-'), this.value) });
 
         $('#nrpn-72').change(function (e) { this.value == BS2.OSC_WAVE_FORMS.indexOf('pulse') ? show('#osc1-pw-controls') : hide('#osc1-pw-controls'); });
         $('#nrpn-82').change(function (e) { this.value == BS2.OSC_WAVE_FORMS.indexOf('pulse') ? show('#osc2-pw-controls') : hide('#osc2-pw-controls'); });
@@ -555,13 +538,14 @@
 
     /**
      *
-     * @param control_id
+     * @param dom_id
      */
-    function setupOnOffControl(control_id) {
-        $(control_id + '-handle').click(function(){
-            let v = $(control_id).val();
-            $(control_id).val(v == 0 ? 1 : 0);
-            updateOnOffControl(control_id);
+    function setupOnOffControl(dom_id) {
+        $(`#${dom_id}-handle`).click(function() {
+            let v = $(`#${dom_id}`).val();
+            $(`#${dom_id}`).val(v == 0 ? 1 : 0);
+            console.log('on_off click handler', dom_id, v, $(`#${dom_id}`).val());
+            updateOnOffControl(dom_id);
         });
     }
 
@@ -570,12 +554,12 @@
      */
     function setupCustoms() {
 
-        setupOnOffControl('#cc-110');
-        setupOnOffControl('#nrpn-89');
-        setupOnOffControl('#nrpn-93');
-        setupOnOffControl('#cc-108');
-        setupOnOffControl('#cc-109');
-        setupOnOffControl('#nrpn-106');
+        setupOnOffControl('cc-110');
+        setupOnOffControl('nrpn-89');
+        setupOnOffControl('nrpn-93');
+        setupOnOffControl('cc-108');
+        setupOnOffControl('cc-109');
+        setupOnOffControl('nrpn-106');
 
         $('#osc1-pw-controls').css('visibility','hidden');
         $('#osc2-pw-controls').css('visibility','hidden');
@@ -584,24 +568,29 @@
 
     /**
      *
-     * @param control_id
+     * @param dom_id
+     * @param sendToBS2
      */
-    function updateOnOffControl(control_id, sendToBS2 = true) {   //}, prefix_text) {
-        toggleOnOff(control_id + '-handle', $(control_id).val() != 0);
-        if (sendToBS2) updateBS2(control_id, $(control_id).val());
+    function updateOnOffControl(dom_id, sendToBS2 = true) {   //}, prefix_text) {
+        let e = $('#' + dom_id);
+        // console.log(`updateOnOffControl(${dom_id}, ${sendToBS2})`, e.val());
+        toggleOnOff('#' + dom_id + '-handle', e.val() != 0);
+        if (sendToBS2) updateBS2(...dom_id.split('-'), e.val());
     }
 
     /**
      *
      */
-    function updateCustoms(sendToBS2 = true) {
+    function updateCustoms(sendToBS2 = false) {
 
-        updateOnOffControl('#cc-110', sendToBS2);  // Osc 1-2 Sync
-        updateOnOffControl('#nrpn-89', sendToBS2);
-        updateOnOffControl('#nrpn-93', sendToBS2);
-        updateOnOffControl('#cc-108', sendToBS2);
-        updateOnOffControl('#cc-109', sendToBS2);
-        updateOnOffControl('#nrpn-106', sendToBS2);
+        console.log(`updateCustoms(${sendToBS2})`);
+
+        updateOnOffControl('cc-110', sendToBS2);  // Osc 1-2 Sync
+        updateOnOffControl('nrpn-89', sendToBS2);
+        updateOnOffControl('nrpn-93', sendToBS2);
+        updateOnOffControl('cc-108', sendToBS2);
+        updateOnOffControl('cc-109', sendToBS2);
+        updateOnOffControl('nrpn-106', sendToBS2);
 
         $('#nrpn-72').val() == BS2.OSC_WAVE_FORMS.indexOf('pulse') ? show('#osc1-pw-controls') : hide('#osc1-pw-controls');
         $('#nrpn-82').val() == BS2.OSC_WAVE_FORMS.indexOf('pulse') ? show('#osc2-pw-controls') : hide('#osc2-pw-controls');
@@ -610,8 +599,10 @@
         $('#nrpn-88').val() == BS2.LFO_SPEED_SYNC.indexOf('sync') ? show('#nrpn-87') : hide('#nrpn-87');
         $('#nrpn-92').val() == BS2.LFO_SPEED_SYNC.indexOf('sync') ? show('#nrpn-91') : hide('#nrpn-91');
 
-        drawADSR(getADSREnv('cc-102', 'cc-103', 'cc-104', 'cc-105'), "mod-ADSR");
-        drawADSR(getADSREnv('cc-90', 'cc-91', 'cc-92', 'cc-93'), "amp-ADSR");
+        // drawADSR(getADSREnv('cc-102', 'cc-103', 'cc-104', 'cc-105'), "mod-ADSR");
+        // drawADSR(getADSREnv('cc-90', 'cc-91', 'cc-92', 'cc-93'), "amp-ADSR");
+        drawADSR(BS2.getADSREnv('mod'), 'mod-ADSR');
+        drawADSR(BS2.getADSREnv('amp'), 'amp-ADSR');
 
     }
 
@@ -639,12 +630,13 @@
         setupSelects();
         setupCustoms();
         setupCommands();
-        initBS2(false);     // init UI without sending any CC to the BS2
+        init(false);     // init UI without sending any CC to the BS2
         $('h1.reset-handler').click(resetGroup);
 
-        drawADSR(getADSREnv('cc-102', 'cc-103', 'cc-104', 'cc-105'), "mod-ADSR");
-        drawADSR(getADSREnv('cc-90', 'cc-91', 'cc-92', 'cc-93'), "amp-ADSR");
-
+        // drawADSR(getADSREnv('cc-102', 'cc-103', 'cc-104', 'cc-105'), "mod-ADSR");
+        // drawADSR(getADSREnv('cc-90', 'cc-91', 'cc-92', 'cc-93'), "amp-ADSR");
+        drawADSR(BS2.getADSREnv('mod'), 'mod-ADSR');
+        drawADSR(BS2.getADSREnv('amp'), 'amp-ADSR');
     }
 
     /**
@@ -652,7 +644,6 @@
      */
     function updateUI() {
         updateControls();
-        // updateLists();
         updateCustoms();
         updateMeta();
     }
@@ -808,6 +799,7 @@
                                 updateUI();
                             } else {
                                 console.log('unable to set value from file');
+                                // $('#import-dialog-instructions').text('The file is invalid.');   //FIXME
                             }
                         };
                         reader.readAsArrayBuffer(f);
