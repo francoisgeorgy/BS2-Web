@@ -697,6 +697,11 @@
         alert('Sorry, this feature is not yet implemented.');
     }
 
+    function grab() {
+        // F0 00 20 29 00 33 00 40  F7
+
+    }
+
     /**
      *
      * @type {null}

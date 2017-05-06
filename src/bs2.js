@@ -454,7 +454,7 @@ var BS2 = (function BassStationII() {
             name: "Sub Osc Wave",
             range: [0, 2],
             cc_range: [0, 2],
-            choice: true,
+            // choice: true,
             human: v => { return SUB_WAVE_FORMS[v % SUB_WAVE_FORMS.length] },
             init_value: 0,
             sysex: {
@@ -466,7 +466,7 @@ var BS2 = (function BassStationII() {
             name: "Sub Osc Oct",
             range: [-2, -1],    // 62 --> -2, 63 --> -1
             cc_range: [62, 63],
-            // choice: [0, 1],
+            // // choice: [0, 1],
             // human: v => v - 2,
             //map_r: v => v + 2,
             human: v => v - 64,
@@ -540,7 +540,7 @@ var BS2 = (function BassStationII() {
         control[control_id.filter_type] = { // 83
             name: "Filter Type",
             // range: [0, 1],
-            choice: [0, 1],
+            // choice: [0, 1],
             cc_range: [0, 1],
             human: v => FILTER_TYPE[v],
             sysex: {
@@ -551,7 +551,7 @@ var BS2 = (function BassStationII() {
         control[control_id.filter_slope] = { // 106
             name: "Filter Slope",
             // range: [0, 1],
-            choice: [0, 1],
+            // choice: [0, 1],
             cc_range: [0, 1],
             human: v => FILTER_SLOPE[v],
             init_value: 1,
@@ -563,7 +563,7 @@ var BS2 = (function BassStationII() {
         control[control_id.filter_shape] = { // 84
             name: "Filter Shape",
             // range: [0, 1],
-            //choice: [0, 1],
+            //// choice: [0, 1],
             cc_range: [0, 2],
             human: v => FILTER_SHAPES[v],
             sysex: {
@@ -633,7 +633,7 @@ var BS2 = (function BassStationII() {
         control[control_id.lfo1_wave] = { // 88
             name: "LFO1 Wave",
             // range: [0, 3],
-            choice: [0, 3],
+            // choice: [0, 3],
             cc_range: [0, 3],
             human: v => LFO_WAVE_FORMS[v],
             sysex: {
@@ -664,7 +664,7 @@ var BS2 = (function BassStationII() {
         control[control_id.lfo2_wave] = { // 89
             name: "LFO2 Wave",
             // range: [0, 3],
-            choice: [0, 3],
+            // choice: [0, 3],
             cc_range: [0, 3],
             human: v => LFO_WAVE_FORMS[v],
             sysex: {
@@ -808,7 +808,7 @@ var BS2 = (function BassStationII() {
         control[control_id.arp_rhythm] = { // 119
             name: "Arp Rhythm",
             // range: [1, 32],
-            choice: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32],
+            // choice: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32],
             cc_range: [1, 32],
             human: v => v,
             sysex: {
@@ -819,7 +819,7 @@ var BS2 = (function BassStationII() {
         control[control_id.arp_note_mode] = { // 118
             name: "Arp Note Mode",
             // range: [0, 7],
-            choice: [0,1,2,3,4,5,6,7],
+            // choice: [0,1,2,3,4,5,6,7],
             cc_range: [0, 7],
             human: v => ARP_NOTES_MODE[v],
             sysex: {
@@ -830,7 +830,7 @@ var BS2 = (function BassStationII() {
         control[control_id.arp_octaves] = { // 111
             name: "Arp Octaves",
             // range: [1, 4],
-            choice: [1,2,3,4],
+            // choice: [1,2,3,4],
             cc_range: [1, 4],
             human: v => v,
             sysex: {
@@ -919,9 +919,9 @@ var BS2 = (function BassStationII() {
             // console.log(obj);
             obj.cc_number = control.indexOf(obj);   // is also the msb
             obj.cc_type = 'cc';
-            if (!obj.hasOwnProperty('choice')) {
-                obj.choice = false;
-            }
+            // if (!obj.hasOwnProperty('choice')) {
+            //     obj.choice = false;
+            // }
             let max_raw;
             if (!obj.hasOwnProperty('lsb')) {
                 obj.lsb = -1;
@@ -969,7 +969,7 @@ var BS2 = (function BassStationII() {
         nrpn[nrpn_id.osc1_waveform] = { // 0 (msb), 72 (lsb)
             name: "Osc1 Waveform",
             // range: [1, 3],
-            choice: [0,1,2,3],
+            // choice: [0,1,2,3],
             cc_range: [0, 3],
             human: v => { return OSC_WAVE_FORMS[v % OSC_WAVE_FORMS.length] },
             init_value: 2,
@@ -981,7 +981,7 @@ var BS2 = (function BassStationII() {
         nrpn[nrpn_id.osc2_waveform] = { // 0 (msb), 82 (lsb)
             name: "Osc2 Waveform",
             // range: [1, 3],
-            choice: [0,1,2,3],
+            // choice: [0,1,2,3],
             cc_range: [0, 3],
             human: v => { return OSC_WAVE_FORMS[v % OSC_WAVE_FORMS.length] },
             init_value: 2,
@@ -993,7 +993,7 @@ var BS2 = (function BassStationII() {
         nrpn[nrpn_id.amp_env_triggering] = { // 0 (msb), 73 (lsb)
             name: "Amp Env Triggering",
             // range: [0, 2],
-            choice: [0,1,2],
+            // choice: [0,1,2],
             cc_range: [0, 2],
             human: v => ENV_TRIGGERING[v],
             sysex: {
@@ -1004,7 +1004,7 @@ var BS2 = (function BassStationII() {
         nrpn[nrpn_id.mod_env_triggering] = { // 0 (msb), 105 (lsb)
             name: "Mod Env Triggering",
             // range: [0, 2],
-            choice: [0,1,2],
+            // choice: [0,1,2],
             cc_range: [0, 2],
             human: v => ENV_TRIGGERING[v],
             sysex: {
@@ -1099,7 +1099,7 @@ var BS2 = (function BassStationII() {
         nrpn[nrpn_id.lfo1_speed_sync] = { // 0 (msb), 88 (lsb)
             name: "LFO1 Speed/Sync",
             // range: [0, 1],
-            choice: [0,1],
+            // choice: [0,1],
             cc_range: [0, 1],
             human: v => LFO_SPEED_SYNC[v],
             sysex: {
@@ -1111,7 +1111,7 @@ var BS2 = (function BassStationII() {
             name: "LFO1 Sync Value",
             msb: -1,
             // range: [0, 34],
-            choice: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34],
+            // choice: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34],
             cc_range: [0, 34],
             human: v => LFO_SYNC[v],
             sysex: {
@@ -1147,7 +1147,7 @@ var BS2 = (function BassStationII() {
         nrpn[nrpn_id.lfo2_speed_sync] = { // 0 (msb), 92 (lsb)
             name: "LFO2 Speed/Sync",
             // range: [0, 1],
-            choice: [0,1],
+            // choice: [0,1],
             cc_range: [0, 1],
             human: v => LFO_SPEED_SYNC[v],
             sysex: {
@@ -1158,7 +1158,7 @@ var BS2 = (function BassStationII() {
         nrpn[nrpn_id.lfo2_sync_value] = { // 0 (msb), 91 (lsb)
             name: "LFO2 Sync Value",
             // range: [0, 34],
-            choice: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34],
+            // choice: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34],
             cc_range: [0, 34],
             human: v => LFO_SYNC[v],
             sysex: {
@@ -1193,9 +1193,9 @@ var BS2 = (function BassStationII() {
         nrpn.forEach(function(obj) {
             obj.cc_number = nrpn.indexOf(obj);   // is also the lsb
             obj.cc_type = 'nrpn';
-            if (!obj.hasOwnProperty('choice')) {
-                obj.choice = false;
-            }
+            // if (!obj.hasOwnProperty('choice')) {
+            //     obj.choice = false;
+            // }
             let max_raw;
             if (obj.hasOwnProperty('msb')) {
                 max_raw = 255;
@@ -1633,15 +1633,25 @@ var BS2 = (function BassStationII() {
     }
 
     var validateSysEx = function(data) {
-        if (data.length != 154) return false;
+
+        const SYSEX_START = 0xF0;
+        const SYSEX_END = 0xF7;
+
+        if (data[0] !== SYSEX_START) return false;
+
+        //if (data.length != 154) return false;
         let offset = meta.signature.sysex.offset;
         for (let i=0; i < meta.signature.sysex.value.length; i++) {
-            if (data[offset + i] != meta.signature.sysex.value[i]) {
+            if (data[offset + i] !== meta.signature.sysex.value[i]) {
                 console.log(`invalid sysex at offset ${offset + i}`, data[offset + i]);
                 return false;
             }
         }
-        return true;
+        let last_byte = 0;
+        for (let i=0; i<data.length; i++) {
+            last_byte = data[i];
+        }
+        return last_byte === SYSEX_END;
     };
 
     /**
