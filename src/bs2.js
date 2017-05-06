@@ -292,6 +292,7 @@ var BS2 = (function BassStationII() {
         control[control_id.osc1_range] = { // 70
             name: "Osc1 Range",
             range: [63, 66],
+            cc_range: [63, 66],
             human: v => OSC_RANGES[v - 63],
             //init_value: OSC_RANGES.indexOf("8'"),
             init_value: 64,
@@ -377,7 +378,8 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.osc2_range] = { // 75
             name: "Osc2 Range",
-            range: [63,66],
+            range: [63, 66],
+            cc_range: [63, 66],
             human: v => OSC_RANGES[v - 63],
             // init_value: OSC_RANGES.indexOf("8'"),
             init_value: 64,
@@ -451,6 +453,7 @@ var BS2 = (function BassStationII() {
         control[control_id.sub_osc_wave] = { // 80
             name: "Sub Osc Wave",
             range: [0, 2],
+            cc_range: [0, 2],
             choice: true,
             human: v => { return SUB_WAVE_FORMS[v % SUB_WAVE_FORMS.length] },
             init_value: 0,
@@ -462,6 +465,7 @@ var BS2 = (function BassStationII() {
         control[control_id.sub_osc_oct] = { // 81
             name: "Sub Osc Oct",
             range: [-2, -1],    // 62 --> -2, 63 --> -1
+            cc_range: [62, 63],
             // choice: [0, 1],
             // human: v => v - 2,
             //map_r: v => v + 2,
@@ -537,6 +541,7 @@ var BS2 = (function BassStationII() {
             name: "Filter Type",
             // range: [0, 1],
             choice: [0, 1],
+            cc_range: [0, 1],
             human: v => FILTER_TYPE[v],
             sysex: {
                 offset: 48,
@@ -547,6 +552,7 @@ var BS2 = (function BassStationII() {
             name: "Filter Slope",
             // range: [0, 1],
             choice: [0, 1],
+            cc_range: [0, 1],
             human: v => FILTER_SLOPE[v],
             init_value: 1,
             sysex: {
@@ -557,7 +563,8 @@ var BS2 = (function BassStationII() {
         control[control_id.filter_shape] = { // 84
             name: "Filter Shape",
             // range: [0, 1],
-            choice: [0, 1],
+            //choice: [0, 1],
+            cc_range: [0, 2],
             human: v => FILTER_SHAPES[v],
             sysex: {
                 offset: 48,
@@ -627,6 +634,7 @@ var BS2 = (function BassStationII() {
             name: "LFO1 Wave",
             // range: [0, 3],
             choice: [0, 3],
+            cc_range: [0, 3],
             human: v => LFO_WAVE_FORMS[v],
             sysex: {
                 offset: 63,
@@ -657,6 +665,7 @@ var BS2 = (function BassStationII() {
             name: "LFO2 Wave",
             // range: [0, 3],
             choice: [0, 3],
+            cc_range: [0, 3],
             human: v => LFO_WAVE_FORMS[v],
             sysex: {
                 offset: 70,
@@ -778,6 +787,7 @@ var BS2 = (function BassStationII() {
         control[control_id.arp_on] = { // 108
             name: "Arp On",
             // range: [0,1],
+            cc_range: [0, 1],
             on_off: true,
             human: v => v,
             sysex: {
@@ -788,6 +798,7 @@ var BS2 = (function BassStationII() {
         control[control_id.arp_latch] = { // 109
             name: "Arp Latch",
             on_off: true,
+            cc_range: [0, 1],
             human: v => v,
             sysex: {
                 offset: 77,
@@ -798,6 +809,7 @@ var BS2 = (function BassStationII() {
             name: "Arp Rhythm",
             // range: [1, 32],
             choice: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32],
+            cc_range: [1, 32],
             human: v => v,
             sysex: {
                 offset: 80,
@@ -808,6 +820,7 @@ var BS2 = (function BassStationII() {
             name: "Arp Note Mode",
             // range: [0, 7],
             choice: [0,1,2,3,4,5,6,7],
+            cc_range: [0, 7],
             human: v => ARP_NOTES_MODE[v],
             sysex: {
                 offset: 79,
@@ -818,6 +831,7 @@ var BS2 = (function BassStationII() {
             name: "Arp Octaves",
             // range: [1, 4],
             choice: [1,2,3,4],
+            cc_range: [1, 4],
             human: v => v,
             sysex: {
                 offset: 78,
@@ -854,6 +868,7 @@ var BS2 = (function BassStationII() {
         control[control_id.osc_1_2_sync] = { // 110
             name: "Osc 1 2 Sync",
             on_off: true,
+            cc_range: [0, 1],
             human: v => v,
             sysex: {
                 offset: 18,
@@ -882,6 +897,7 @@ var BS2 = (function BassStationII() {
             name: "VCA Limit",
             range: [0, 127],
             human: v => v,
+            randomize: 20,  // when randomizing, set this value instead of a random value
             sysex: {
                 offset: 108,
                 mask: [0x07, 0x78]
@@ -919,13 +935,22 @@ var BS2 = (function BassStationII() {
             if (!obj.hasOwnProperty('raw_value')) {
                 obj.raw_value = obj.init_value;
             }
+            // if (!obj.hasOwnProperty('on_off')) {
+            //     obj.on_off = false;
+            //     if (!obj.hasOwnProperty('range')) {
+            //         obj.range = [0, obj.max_raw];
+            //     }
+            // } else {
+            //     obj.range = [0, 1];
+            // }
             if (!obj.hasOwnProperty('on_off')) {
                 obj.on_off = false;
-                if (!obj.hasOwnProperty('range')) {
-                    obj.range = [0, obj.max_raw];
-                }
-            } else {
-                obj.range = [0, 1];
+            }
+            if (!obj.hasOwnProperty('range')) {
+                obj.range = obj.on_off ? [0, 1] : [0, obj.max_raw];
+            }
+            if (!obj.hasOwnProperty('cc_range')) {
+                obj.cc_range = [0, obj.max_raw];
             }
             if (!obj.hasOwnProperty('init_value')) {
                 if ((Math.min(...obj.range) < 0) && (Math.max(...obj.range) > 0)) {
@@ -944,7 +969,8 @@ var BS2 = (function BassStationII() {
         nrpn[nrpn_id.osc1_waveform] = { // 0 (msb), 72 (lsb)
             name: "Osc1 Waveform",
             // range: [1, 3],
-            choice: [0,1,2],
+            choice: [0,1,2,3],
+            cc_range: [0, 3],
             human: v => { return OSC_WAVE_FORMS[v % OSC_WAVE_FORMS.length] },
             init_value: 2,
             sysex: {
@@ -955,7 +981,8 @@ var BS2 = (function BassStationII() {
         nrpn[nrpn_id.osc2_waveform] = { // 0 (msb), 82 (lsb)
             name: "Osc2 Waveform",
             // range: [1, 3],
-            choice: [0,1,2],
+            choice: [0,1,2,3],
+            cc_range: [0, 3],
             human: v => { return OSC_WAVE_FORMS[v % OSC_WAVE_FORMS.length] },
             init_value: 2,
             sysex: {
@@ -967,6 +994,7 @@ var BS2 = (function BassStationII() {
             name: "Amp Env Triggering",
             // range: [0, 2],
             choice: [0,1,2],
+            cc_range: [0, 2],
             human: v => ENV_TRIGGERING[v],
             sysex: {
                 offset: 55,
@@ -977,6 +1005,7 @@ var BS2 = (function BassStationII() {
             name: "Mod Env Triggering",
             // range: [0, 2],
             choice: [0,1,2],
+            cc_range: [0, 2],
             human: v => ENV_TRIGGERING[v],
             sysex: {
                 offset: 62,
@@ -1058,6 +1087,7 @@ var BS2 = (function BassStationII() {
         nrpn[nrpn_id.lfo1_key_sync] = { // 0 (msb), 89 (lsb)
             name: "LFO1 Key Sync",
             on_off: true,
+            cc_range: [0, 1],
             human: v => v,
             init_value: 0,
             sysex: {
@@ -1070,6 +1100,7 @@ var BS2 = (function BassStationII() {
             name: "LFO1 Speed/Sync",
             // range: [0, 1],
             choice: [0,1],
+            cc_range: [0, 1],
             human: v => LFO_SPEED_SYNC[v],
             sysex: {
                 offset: 69,
@@ -1081,6 +1112,7 @@ var BS2 = (function BassStationII() {
             msb: -1,
             // range: [0, 34],
             choice: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34],
+            cc_range: [0, 34],
             human: v => LFO_SYNC[v],
             sysex: {
                 offset: 67,
@@ -1103,6 +1135,7 @@ var BS2 = (function BassStationII() {
             name: "LFO2 Key Sync",
             // range: [0, 1],
             on_off: true,
+            cc_range: [0, 1],
             human: v => v,
             init_value: 1,
             sysex: {
@@ -1115,6 +1148,7 @@ var BS2 = (function BassStationII() {
             name: "LFO2 Speed/Sync",
             // range: [0, 1],
             choice: [0,1],
+            cc_range: [0, 1],
             human: v => LFO_SPEED_SYNC[v],
             sysex: {
                 offset: 76,
@@ -1125,6 +1159,7 @@ var BS2 = (function BassStationII() {
             name: "LFO2 Sync Value",
             // range: [0, 34],
             choice: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34],
+            cc_range: [0, 34],
             human: v => LFO_SYNC[v],
             sysex: {
                 offset: 74,
@@ -1145,6 +1180,7 @@ var BS2 = (function BassStationII() {
         nrpn[nrpn_id.arp_seq_retrig] = { // 106
             name: "Arp Seq Retrig",
             on_off: true,
+            cc_range: [0, 1],
             human: v => v,
             init_value: 1,
             sysex: {
@@ -1178,6 +1214,9 @@ var BS2 = (function BassStationII() {
             }
             if (!obj.hasOwnProperty('range')) {
                 obj.range = obj.on_off ? [0, 1] : [0, obj.max_raw];
+            }
+            if (!obj.hasOwnProperty('cc_range')) {
+                obj.cc_range = [0, obj.max_raw];
             }
             if (!obj.hasOwnProperty('init_value')) {
                 if ((Math.min(...obj.range) < 0) && (Math.max(...obj.range) > 0)) {
@@ -1660,6 +1699,7 @@ var BS2 = (function BassStationII() {
      * @returns {number}
      */
     var getControlValue = function(ctrl) {
+        // console.log(ctrl);
         return 'raw_value' in ctrl ? ctrl.raw_value : 0;
         // let c;
         // if (control.cc_type === 'cc') {

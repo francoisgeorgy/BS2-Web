@@ -40,6 +40,14 @@
         $(sel).css('visibility', 'visible');
     }
 
+    function disable(sel) {
+        $(sel).addClass('disabled');
+    }
+
+    function enable(sel) {
+        $(sel).removeClass('disabled');
+    }
+
     function logOutgoingMidiMessage(type, control, value) {
         $('#midi-messages-out').prepend(`${type.toUpperCase()} ${control} ${value}<br />`);
     }
@@ -117,6 +125,8 @@
         // the "blur" event will force a redraw of the dial. Do not send the "change" event as this will ping-pong between BS2 and this application.
         $('#' + control_type + '-' + control_number).val(value).trigger('blur');
 
+        updateCustoms(false);   //TODO: pass the current CC number and in updateCustoms() only update controls linked to this CC number
+        /*
         if (control_type === 'cc') {
             if ([102, 103, 104, 105].includes(control_number)) {
                 // drawADSR(getADSREnv('cc-102', 'cc-103', 'cc-104', 'cc-105'), "mod-ADSR");
@@ -126,7 +136,9 @@
                 drawADSR(BS2.getADSREnv('amp'), 'amp-ADSR');
             }
         }
+        */
     }
+
 
     var cc_expected = -1;
     var cc_msb = -1;
@@ -232,13 +244,13 @@
             for (let i=0; i<a.length; i++) {
                 console.log(`send CC ${a[i][0]} ${a[i][1]} (${control.name})`);
                 logOutgoingMidiMessage('cc', a[i][0], a[i][1]);
-                if (midi_output) midi_output.sendControlChange(a[i][0], a[i][1]);
+                if (midi_output) midi_output.sendControlChange(a[i][0], a[i][1], midi_channel);
             }
         } else if (control.cc_type === 'nrpn') {
             let value = BS2.getControlValue(control);
             console.log(`send NRPN ${control.cc_number} ${value} (${control.name})`);
             logOutgoingMidiMessage('nrpn', control.cc_number, value);
-            if (midi_output) midi_output.setNonRegisteredParameter([0, control.cc_number], value);  // for the BS2, the NRPN MSB is always 0
+            if (midi_output) midi_output.setNonRegisteredParameter([0, control.cc_number], value, midi_channel);  // for the BS2, the NRPN MSB is always 0
         }
 
     }
@@ -322,6 +334,7 @@
                 let c = controls[i];
                 if (typeof c === 'undefined') continue;
 
+                /*
                 let e = $(`#${c.cc_type}-${i}`);
 
                 //console.log(`randomize ${prefix + i}`);
@@ -332,13 +345,19 @@
                     //if (sendToBS2) updateBS2(prefix + i, e.val());
                     continue;
                 }
+                */
 
                 let v;
-                if (c.on_off) {
-                    v = Math.round(Math.random());
+                if (c.hasOwnProperty('randomize')) {
+                    v = c.randomize;
                 } else {
-                    let min = 0;
-                    v = Math.floor(Math.random() * (c.max_raw - min)) + min;  //TODO: step
+                    if (c.on_off) {
+                        v = Math.round(Math.random());
+                    } else {
+                        let min = Math.min(...c.cc_range);
+                        v = Math.floor(Math.random() * (Math.max(...c.cc_range) - min)) + min;  //TODO: step
+                        //v = Math.floor(Math.random() * (c.max_raw - min)) + min;  //TODO: step
+                    }
                 }
 
                 console.log(`randomize #${c.cc_type}-${i}=${v} with c.max_raw=${c.max_raw}, v=${v}`);
@@ -464,8 +483,13 @@
             for (let i=0; i < controls.length; i++) {
                 if (typeof controls[i] === 'undefined') continue;
                 let e = $(`#${controls[i].cc_type}-${i}`);
-                // if (e.is('select')) continue;
+
                 let v = BS2.getControlValue(controls[i]);
+
+                if (e.is('select')) {
+                    console.log(`update select #${controls[i].cc_type}-${i}`, e.val(), v);
+                }
+
                 e.val(BS2.getControlValue(controls[i])).trigger('blur');  //TODO: change or blur?
             }
         }
@@ -510,12 +534,12 @@
 
         $('select').change(function (){ updateBS2(...this.id.split('-'), this.value) });
 
-        $('#nrpn-72').change(function (e) { this.value == BS2.OSC_WAVE_FORMS.indexOf('pulse') ? show('#osc1-pw-controls') : hide('#osc1-pw-controls'); });
-        $('#nrpn-82').change(function (e) { this.value == BS2.OSC_WAVE_FORMS.indexOf('pulse') ? show('#osc2-pw-controls') : hide('#osc2-pw-controls'); });
+        $('#nrpn-72').change(function (e) { this.value == BS2.OSC_WAVE_FORMS.indexOf('pulse') ? enable('#osc1-pw-controls') : disable('#osc1-pw-controls'); });
+        $('#nrpn-82').change(function (e) { this.value == BS2.OSC_WAVE_FORMS.indexOf('pulse') ? enable('#osc2-pw-controls') : disable('#osc2-pw-controls'); });
 
         // LFO: "sync" drop down is displayed only when speed/sync is set to sync
-        $('#nrpn-88').change(function (e) { this.value == BS2.LFO_SPEED_SYNC.indexOf('sync') ? show('#nrpn-87') : hide('#nrpn-87'); });
-        $('#nrpn-92').change(function (e) { this.value == BS2.LFO_SPEED_SYNC.indexOf('sync') ? show('#nrpn-91') : hide('#nrpn-91'); });
+        $('#nrpn-88').change(function (e) { this.value == BS2.LFO_SPEED_SYNC.indexOf('sync') ? enable('#nrpn-87') : disable('#nrpn-87'); });
+        $('#nrpn-92').change(function (e) { this.value == BS2.LFO_SPEED_SYNC.indexOf('sync') ? enable('#nrpn-91') : disable('#nrpn-91'); });
 
     } // setupSelects
 
@@ -534,6 +558,18 @@
 
     /**
      *
+     * @param dom_id
+     * @param sendToBS2
+     */
+    function updateOnOffControl(dom_id, sendToBS2 = true) {   //}, prefix_text) {
+        let e = $('#' + dom_id);
+        // console.log(`updateOnOffControl(${dom_id}, ${sendToBS2})`, e.val());
+        toggleOnOff('#' + dom_id + '-handle', e.val() != 0);
+        if (sendToBS2) updateBS2(...dom_id.split('-'), e.val());
+    }
+
+    /**
+     *
      */
     function setupCustoms() {
 
@@ -544,21 +580,9 @@
         setupOnOffControl('cc-109');
         setupOnOffControl('nrpn-106');
 
-        $('#osc1-pw-controls').css('visibility','hidden');
-        $('#osc2-pw-controls').css('visibility','hidden');
+        // $('#osc1-pw-controls').css('visibility','hidden');
+        // $('#osc2-pw-controls').css('visibility','hidden');
 
-    }
-
-    /**
-     *
-     * @param dom_id
-     * @param sendToBS2
-     */
-    function updateOnOffControl(dom_id, sendToBS2 = true) {   //}, prefix_text) {
-        let e = $('#' + dom_id);
-        // console.log(`updateOnOffControl(${dom_id}, ${sendToBS2})`, e.val());
-        toggleOnOff('#' + dom_id + '-handle', e.val() != 0);
-        if (sendToBS2) updateBS2(...dom_id.split('-'), e.val());
     }
 
     /**
@@ -575,12 +599,12 @@
         updateOnOffControl('cc-109', sendToBS2);
         updateOnOffControl('nrpn-106', sendToBS2);
 
-        $('#nrpn-72').val() == BS2.OSC_WAVE_FORMS.indexOf('pulse') ? show('#osc1-pw-controls') : hide('#osc1-pw-controls');
-        $('#nrpn-82').val() == BS2.OSC_WAVE_FORMS.indexOf('pulse') ? show('#osc2-pw-controls') : hide('#osc2-pw-controls');
+        $('#nrpn-72').val() == BS2.OSC_WAVE_FORMS.indexOf('pulse') ? enable('#osc1-pw-controls') : disable('#osc1-pw-controls');
+        $('#nrpn-82').val() == BS2.OSC_WAVE_FORMS.indexOf('pulse') ? enable('#osc2-pw-controls') : disable('#osc2-pw-controls');
 
         // LFO: "sync" drop down is displayed only when speed/sync is set to sync
-        $('#nrpn-88').val() == BS2.LFO_SPEED_SYNC.indexOf('sync') ? show('#nrpn-87') : hide('#nrpn-87');
-        $('#nrpn-92').val() == BS2.LFO_SPEED_SYNC.indexOf('sync') ? show('#nrpn-91') : hide('#nrpn-91');
+        $('#nrpn-88').val() == BS2.LFO_SPEED_SYNC.indexOf('sync') ? enable('#nrpn-87') : disable('#nrpn-87');
+        $('#nrpn-92').val() == BS2.LFO_SPEED_SYNC.indexOf('sync') ? enable('#nrpn-91') : disable('#nrpn-91');
 
         // drawADSR(getADSREnv('cc-102', 'cc-103', 'cc-104', 'cc-105'), "mod-ADSR");
         // drawADSR(getADSREnv('cc-90', 'cc-91', 'cc-92', 'cc-93'), "amp-ADSR");
@@ -680,6 +704,8 @@
     var midi_input = null;
     var midi_output = null;
 
+    var midi_channel = 1;
+
     /**
      *
      * @param input
@@ -687,10 +713,10 @@
     function connectInput(input) {
         midi_input = input;
         midi_input
-            .on('controlchange', "all", function(e) {   //FIXME: do not use "all" channel
+            .on('controlchange', midi_channel, function(e) {
                 handleCC(e);
             })
-            .on('sysex', "all", function(e) {           //FIXME: do not use "all" channel
+            .on('sysex', midi_channel, function(e) {
                 if (BS2.setValuesFromSysex(e.data)) {
                     updateUI();
                     setStatus("UI updated from SysEx.");
@@ -764,9 +790,9 @@
 
         WebMidi.enable(function (err) {
 
-            console.log('webmidi err', err);
-
             if (err) {
+
+                console.log('webmidi err', err);
 
                 setStatusError("ERROR: WebMidi could not be enabled.");
 
@@ -775,11 +801,11 @@
                 setStatus("WebMidi enabled.");
                 setMidiStatus(true);
 
-                WebMidi.addListener("connected", e => deviceConnect(e));
-                WebMidi.addListener("disconnected", e => deviceDisconnect(e));
-
                 // WebMidi.inputs.map(i => console.log("input: " + i.name));
                 // WebMidi.outputs.map(i => console.log("output: " + i.name));
+
+                WebMidi.addListener("connected", e => deviceConnect(e));
+                WebMidi.addListener("disconnected", e => deviceDisconnect(e));
 
                 let input = WebMidi.getInputByName(BS2.name_device_in);
                 if (input) {
