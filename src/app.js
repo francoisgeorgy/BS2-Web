@@ -242,13 +242,13 @@
         if (control.cc_type === 'cc') {
             let a = BS2.getMidiMessagesForNormalCC(control);
             for (let i=0; i<a.length; i++) {
-                console.log(`send CC ${a[i][0]} ${a[i][1]} (${control.name})`);
+                console.log(`send CC ${a[i][0]} ${a[i][1]} (${control.name}) on channel ${midi_channel}`);
                 logOutgoingMidiMessage('cc', a[i][0], a[i][1]);
                 if (midi_output) midi_output.sendControlChange(a[i][0], a[i][1], midi_channel);
             }
         } else if (control.cc_type === 'nrpn') {
             let value = BS2.getControlValue(control);
-            console.log(`send NRPN ${control.cc_number} ${value} (${control.name})`);
+            console.log(`send NRPN ${control.cc_number} ${value} (${control.name}) on channel ${midi_channel}`);
             logOutgoingMidiMessage('nrpn', control.cc_number, value);
             if (midi_output) midi_output.setNonRegisteredParameter([0, control.cc_number], value, midi_channel);  // for the BS2, the NRPN MSB is always 0
         }
@@ -716,6 +716,7 @@
      * @param input
      */
     function connectInput(input) {
+        console.log('connect input', input);
         midi_input = input;
         midi_input
             .on('controlchange', midi_channel, function(e) {
@@ -738,6 +739,7 @@
      * @param output
      */
     function connectOutput(output) {
+        console.log('connect output', output);
         midi_output = output;
         setStatus(`"${output.name}" output connected.`)
         setMidiOutStatus(true);
@@ -806,8 +808,8 @@
                 setStatus("WebMidi enabled.");
                 setMidiStatus(true);
 
-                // WebMidi.inputs.map(i => console.log("input: " + i.name));
-                // WebMidi.outputs.map(i => console.log("output: " + i.name));
+                WebMidi.inputs.map(i => console.log("input: ", i));
+                WebMidi.outputs.map(i => console.log("output: ", i));
 
                 WebMidi.addListener("connected", e => deviceConnect(e));
                 WebMidi.addListener("disconnected", e => deviceDisconnect(e));

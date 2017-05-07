@@ -13,6 +13,12 @@
             font-size: 10pt;
             white-space: pre;
         }
+        .diff {
+            background-color: lightsalmon;
+        }
+        .prev {
+            color: #aaa;
+        }
     </style>
 </head>
 <body>
@@ -27,6 +33,8 @@
     const SYSEX_END = 0xF7;
 
     var midi = null;  // global MIDIAccess object
+
+    var prev_data = null;
 
     String.prototype.padZero = function (len, c) {
         var s = '', c = c || '0', len = (len || 2) - this.length;
@@ -82,7 +90,7 @@
 
             let s = '';
 
-            if (typeof controls[i] == 'undefined') continue;
+            if (typeof controls[i] === 'undefined') continue;
             if (!controls[i].hasOwnProperty('sysex')) continue;
 
             let sysex = controls[i].sysex;
@@ -115,23 +123,35 @@
                 s += b.toString(2).padZero(8) + ' ';
             }
 
-            let param_value = 0;
+            let raw_value = 0;
             if (sysex.mask.length === 2) {
-                param_value = v16(data[sysex.offset], data[sysex.offset + 1], sysex.mask[0], sysex.mask[1])
-                s += ` ${param_value.toString().padStart(3)} `;
+                raw_value = v16(data[sysex.offset], data[sysex.offset + 1], sysex.mask[0], sysex.mask[1])
             } else {
-                param_value = v8(data[sysex.offset], sysex.mask[0]);
-                s += ` ${param_value.toString().padStart(3)} `;
+                raw_value = v8(data[sysex.offset], sysex.mask[0]);
             }
 
-            let final_value = 0;
-            if (controls[i].hasOwnProperty('map')) {
-                console.log('compute final value with transform function and raw_value=' + param_value);
-                final_value = controls[i].map(param_value);
-                console.log('final value', final_value);
+            if (sysex.hasOwnProperty('f')) {
+                console.log('compute final param_value with sysex f function and param_value=' + raw_value);
+                raw_value = sysex.f(raw_value);
             } else {
-                final_value = param_value;
+                let m = Math.min(...controls[i].cc_range);
+                console.log(`final value ${i} correction with m=${m}`, raw_value, raw_value+m);
+                if (m > 0) raw_value = raw_value + m;
             }
+            console.log(`param_value ${i}`, raw_value);
+
+            s += ` ${raw_value.toString().padStart(3)} `;
+
+            let final_value = 0;
+
+            final_value = controls[i].human(raw_value);
+//            if (controls[i].hasOwnProperty('human')) {
+//                console.log('compute final value with transform function and raw_value=' + param_value);
+//                final_value = controls[i].map(param_value);
+                console.log(`final value for ${i}`, final_value);
+//            } else {
+//                final_value = param_value;
+////            }param_value
 
             a.push({
                 name: controls[i].name,
@@ -161,8 +181,15 @@
         decodeSysEx(data, BS2.control, lines);
         decodeSysEx(data, BS2.nrpn, lines);
 
+        var prev_lines = [];
+        decodeSysEx(prev_data, BS2.control, prev_lines);
+        decodeSysEx(prev_data, BS2.nrpn, prev_lines);
+
         var patch = [];
         decodeSysExMeta(data, patch);
+
+        var prev_patch = [];
+        decodeSysExMeta(prev_data, prev_patch);
 
         $("#data").append('Patch: ');
         $("#data").append(patch[0].value.toString());
@@ -176,13 +203,66 @@
             return 0;
         });
 
+        prev_lines.sort(function(a, b) {
+            const nameA = a.name.toUpperCase();
+            const nameB = b.name.toUpperCase();
+            if (nameA < nameB) return -1;
+            if (nameA > nameB) return 1;
+            return 0;
+        });
+
         for (let i=0; i<lines.length; i++) {
-            $("#data").append(lines[i].name.padEnd(30));
-            $("#data").append('= ');
-            $("#data").append(lines[i].value.toString().padEnd(12));
-            $("#data").append(' | ');
-            $("#data").append(lines[i].details);
-            $("#data").append('<br />');
+
+//            console.log(lines[i]);
+//            console.log(prev_lines[i]);
+
+            let diff_start = '';
+            let diff_end = '';
+
+            let diff = false;
+            if (lines[i].details !== prev_lines[i].details) {
+                diff = true;
+                diff_start = '<span class="diff">';
+                diff_end = '</span>';
+            } else {
+                diff_start = '';
+                diff_end = '';
+            }
+
+            if (diff) {
+                console.log('show prev line');
+                let p = '<span class="prev">'
+                    + prev_lines[i].name.padEnd(30)
+                    + '= '
+                    + prev_lines[i].value.toString().padEnd(12)
+                    + ' | '
+                    + prev_lines[i].details
+                    + '</span>'
+                    + '<br />';
+                $("#data").append(p);
+            }
+
+            console.log(lines[i]);
+            let s = diff_start
+                    + lines[i].name.padEnd(30)
+                    + '= '
+                    + lines[i].value.toString().padEnd(12)
+                    + ' | '
+                    + lines[i].details + diff_end
+                    + '<br />';
+            $("#data").append(s);
+
+
+//            $("#data").append(diff_start);
+//            $("#data").append('X ');
+//            $("#data").append(diff_start + lines[i].name.padEnd(30));
+//            $("#data").append('= ');
+//            $("#data").append(lines[i].value.toString().padEnd(12));
+//            $("#data").append(' | ');
+//            $("#data").append(lines[i].details + diff_end);
+//            $("#data").append(diff_end);
+
+//            $("#data").append('<br />');
         }
     }
 
@@ -190,7 +270,9 @@
         if (event instanceof MIDIMessageEvent) {
             if (event.data[0] == SYSEX_START) {
                 console.log('sysex message received');
+                if (prev_data === null) prev_data = event.data;
                 updateDisplay(event.data);
+                prev_data = event.data;
             }
         }
     }
@@ -227,7 +309,9 @@
                         data.push(view[i]);
                         if (view[i] == SYSEX_END) break;
                     }
+                    if (prev_data === null) prev_data = data;
                     updateDisplay(data);
+                    prev_data = data;
                 };
                 reader.readAsArrayBuffer(f);
             }

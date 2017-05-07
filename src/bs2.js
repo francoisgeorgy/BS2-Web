@@ -124,6 +124,10 @@ var BS2 = (function BassStationII() {
         return v < 64 ? (v - 63) : (v - 64);
     };
 
+    var _64 = function(v) {
+        return v - 64;
+    };
+
     // var _63_reverse = function(v) {
     //     return v < 0 ? (v + 63) : (v + 64);
     // };
@@ -297,7 +301,7 @@ var BS2 = (function BassStationII() {
             //init_value: OSC_RANGES.indexOf("8'"),
             init_value: 64,
             sysex: {
-                control: control_id.osc1_range,
+                // control: control_id.osc1_range1_range,
                 offset: 20,
                 mask: [0x07, 0x78]
             }
@@ -473,7 +477,8 @@ var BS2 = (function BassStationII() {
             init_value: 63,
             sysex: {
                 offset: 37,
-                mask: [0x08]
+                mask: [0x08],        // 0b00001000 = -1, 0b00000000 = -2
+                f: v => v === 0 ? 62 : 63
             }
         };
         control[control_id.mixer_osc_1_level] = { // 20 (msb), 52 (lsb)
@@ -878,19 +883,21 @@ var BS2 = (function BassStationII() {
         control[control_id.velocity_amp_env] = { // 112
             name: "Velocity Amp Env",
             range: [-63, 63],
-            human: _63,
+            cc_range: [1, 127],
+            human: _64,
             sysex: {
                 offset: 49,
-                mask: [0x3F]
+                mask: [0x3F, 0x40]
             }
         };
         control[control_id.velocity_mod_env] = { // 113
             name: "Velocity Mod Env",
             range: [-63, 63],
-            human: _63,
+            cc_range: [1, 127],
+            human: _64,
             sysex: {
                 offset: 56,
-                mask: [0x7E]
+                mask: [0x7F]
             }
         };
         control[control_id.vca_limit] = { // 95
@@ -905,7 +912,8 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.arp_swing] = { // 116
             name: "Arp Swing",
-            range: [3,97],
+            range: [3, 97],  // 0x03..0x61   0b00000011..0b01100001
+            cc_range: [3, 97],
             human: v => v,
             init_value: 50,
             sysex: {
@@ -1682,6 +1690,21 @@ var BS2 = (function BassStationII() {
             } else {
                 raw_value = v8(data[sysex.offset], sysex.mask[0]);
             }
+
+            if (sysex.hasOwnProperty('f')) {
+                // console.log('compute final param_value with sysex f function and param_value=' + param_value);
+                raw_value = sysex.f(raw_value);
+            } else {
+                let m = Math.min(...controls[i].cc_range);
+                // console.log(`final value ${i} correction with m=${m}`, param_value, param_value+m);
+                if (m > 0) raw_value = raw_value + m;
+            }
+
+            // if (sysex.hasOwnProperty('f')) {
+            //     //console.log('compute final value with sysex f function and raw_value=' + param_value);
+            //     raw_value = sysex.f(raw_value);
+            //     //console.log('final value', final_value);
+            // }
 
             let final_value = 0;
             final_value = controls[i].human(raw_value);
