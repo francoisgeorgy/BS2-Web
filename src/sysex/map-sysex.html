@@ -6,7 +6,7 @@
     <meta name="description" content="Novation Bass Station II SysEx Map">
     <meta name="author" content="francois.georgy@gmail.com">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="../bs2.js?kc=1223434"></script>
+    <script src="../bs2.js"></script>
     <style>
         #data {
             font-family: Courier New, Courier, monospace;
@@ -71,7 +71,7 @@
                 // 2: colorize according to the masks defined in BS2 sysex info
                 for (let i=0; i < controls.length; i++) {
 
-                    if (typeof controls[i] == 'undefined') continue;
+                    if (typeof controls[i] === 'undefined') continue;
                     if (!controls[i].hasOwnProperty('sysex')) continue;
 
                     let sysex = controls[i].sysex;
@@ -88,7 +88,7 @@
 
                     // we will display the description of the parameter:
                     let range = '';
-                    if (controls[i].range.length == 2) {
+                    if (controls[i].range.length === 2) {
                         range = `, ${controls[i].range[0]}..${controls[i].range[1]}`;
                     }
                     let descr = $("<div>").text(`${controls[i].name}, ${bit_sets} bits${range}`).html();
@@ -96,7 +96,10 @@
                     // colorize the bits set:
                     for (let k=0; k<masks.length; k++) {
                         for (let b=1; b<=8; b++) {  // testing each bits
-                            if ((masks[k] & (1<<(b-1))) != 0) {
+                            if ((masks[k] & (1<<(b-1))) !== 0) {
+
+//                                console.log(`i=${i} offset=${sysex.offset} k=${k}`, bin);
+
                                 // bit is set in mask
                                 bin[sysex.offset + k][8-b] = `<span style="color:#000;background-color:${color}" title="${descr}">1</span>`;
                             }
@@ -105,12 +108,16 @@
                 }
             }
 
+//            console.log(data);
+
             // 1: get a array of arrays of chars representing the binary values of the data.
             //    This will allow us to handle (colorize) each bit individually.
-            let bin = [];
+            var bin = [];
             for (let i=0; i < data.byteLength; i++) {
                 bin.push(b(data[i]).split(''));
             }
+
+//            console.log(bin);
 
             colorize(BS2.control);
             colorize(BS2.nrpn);
@@ -162,7 +169,9 @@
 
         $(function () {
             
-            let data = new Uint8Array(BS2.meta.sysex_length);
+            var data = new Uint8Array(154);
+
+//            console.log(BS2.meta.sysex_length, data, BS2);
 
             validateAndInitData(BS2.control, data);
             validateAndInitData(BS2.nrpn, data);

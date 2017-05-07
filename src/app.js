@@ -721,7 +721,8 @@
         midi_input
             .on('controlchange', midi_channel, function(e) {
                 handleCC(e);
-            })
+            });
+        /*
             .on('sysex', midi_channel, function(e) {
                 if (BS2.setValuesFromSysex(e.data)) {
                     updateUI();
@@ -730,6 +731,7 @@
                     setStatusError("Unable to set value from SysEx.")
                 }
             });
+            */
         setStatus(`"${input.name}" input connected.`)
         setMidiInStatus(true);
     }
@@ -853,7 +855,10 @@
                             if (BS2.setValuesFromSysex(data)) {
                                 console.log('file read OK', BS2.meta.patch_name['value']);
                                 if (lightbox) lightbox.close();
+
                                 updateUI();
+                                sendAllValues();
+
                             } else {
                                 console.log('unable to set value from file');
                                 $('#import-dialog-error').show().text('The file is invalid.');

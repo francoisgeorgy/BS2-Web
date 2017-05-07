@@ -22,7 +22,6 @@ var BS2 = (function BassStationII() {
         osc2_coarse: 30,
         osc2_mod_env_depth: 76,
         osc2_lfo1_depth: 31,
-        //osc2_env2_pw_mod: 77,
         osc2_mod_env_pw_mod: 77,
         osc2_lfo2_pw_mod: 78,
         osc2_manual_pw: 79,
@@ -297,13 +296,14 @@ var BS2 = (function BassStationII() {
             name: "Osc1 Range",
             range: [63, 66],
             cc_range: [63, 66],
-            human: v => OSC_RANGES[v - 63],
+            human: v => OSC_RANGES[v], // v is cc raw_value
             //init_value: OSC_RANGES.indexOf("8'"),
             init_value: 64,
             sysex: {
                 // control: control_id.osc1_range1_range,
                 offset: 20,
                 mask: [0x07, 0x78]
+                //f: v => v + 63
             }
         };
         control[control_id.osc1_coarse] = { // 27 (msb), 59 (lsb)
@@ -384,7 +384,7 @@ var BS2 = (function BassStationII() {
             name: "Osc2 Range",
             range: [63, 66],
             cc_range: [63, 66],
-            human: v => OSC_RANGES[v - 63],
+            human: v => OSC_RANGES[v], // v is cc raw_value
             // init_value: OSC_RANGES.indexOf("8'"),
             init_value: 64,
             sysex: {
@@ -451,7 +451,7 @@ var BS2 = (function BassStationII() {
             //map_r: _5_95_reverse,
             sysex: {
                 offset: 25,
-                mask: [0x1F, 0x40]
+                mask: [0x3F, 0x40]  // verified OK
             }
         };
         control[control_id.sub_osc_wave] = { // 80
@@ -918,7 +918,7 @@ var BS2 = (function BassStationII() {
             init_value: 50,
             sysex: {
                 offset: 81,
-                mask: [0x3F]
+                mask: [0x3F, 0x40]
             }
         };
 
@@ -1112,7 +1112,7 @@ var BS2 = (function BassStationII() {
             human: v => LFO_SPEED_SYNC[v],
             sysex: {
                 offset: 69,
-                mask: [0x10]
+                mask: [0x08]
             }
         };
         nrpn[nrpn_id.lfo1_sync_value] = { // 87
@@ -1668,6 +1668,8 @@ var BS2 = (function BassStationII() {
      */
     var decodeSysExControls = function(data, controls) {
 
+        console.group('decodeSysExControls');
+
         for (let i=0; i < controls.length; i++) {
 
             if (typeof controls[i] === 'undefined') continue;
@@ -1691,26 +1693,28 @@ var BS2 = (function BassStationII() {
                 raw_value = v8(data[sysex.offset], sysex.mask[0]);
             }
 
+            console.log(`${i} raw_value=${raw_value}`);
+
             if (sysex.hasOwnProperty('f')) {
-                // console.log('compute final param_value with sysex f function and param_value=' + param_value);
                 raw_value = sysex.f(raw_value);
-            } else {
-                let m = Math.min(...controls[i].cc_range);
-                // console.log(`final value ${i} correction with m=${m}`, param_value, param_value+m);
-                if (m > 0) raw_value = raw_value + m;
+                console.log('${i} sysex.f(raw_value) =' + raw_value);
+            // } else {
+            //     let m = Math.min(...controls[i].cc_range);
+            //     console.log(`${i} raw value correction with m=${m}`, raw_value, raw_value + m);
+            //     if (m > 0) raw_value = raw_value + m;
             }
 
-            // if (sysex.hasOwnProperty('f')) {
-            //     //console.log('compute final value with sysex f function and raw_value=' + param_value);
-            //     raw_value = sysex.f(raw_value);
-            //     //console.log('final value', final_value);
-            // }
 
             let final_value = 0;
             final_value = controls[i].human(raw_value);
+
+            console.log(`${i} finale_value(${raw_value}) = ${final_value}`);
+
             controls[i]['raw_value'] = raw_value;
             controls[i]['value'] = final_value;
         }
+
+        console.groupEnd();
 
     };
 

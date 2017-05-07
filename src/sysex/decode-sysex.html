@@ -130,15 +130,20 @@
                 raw_value = v8(data[sysex.offset], sysex.mask[0]);
             }
 
+            console.log(`${i} raw_value = ${raw_value}`);
+
             if (sysex.hasOwnProperty('f')) {
-                console.log('compute final param_value with sysex f function and param_value=' + raw_value);
+
                 raw_value = sysex.f(raw_value);
-            } else {
-                let m = Math.min(...controls[i].cc_range);
-                console.log(`final value ${i} correction with m=${m}`, raw_value, raw_value+m);
-                if (m > 0) raw_value = raw_value + m;
+
+                console.log(`${i} f(raw_value) = ${raw_value}`);
+
+//            } else {
+//                let m = Math.min(...controls[i].cc_range);
+//                console.log(`{i} final value ${i} correction with m=${m}`, raw_value, raw_value+m);
+//                if (m > 0) raw_value = raw_value + m;
             }
-            console.log(`param_value ${i}`, raw_value);
+            console.log(`${i} raw_value = ${raw_value}`);
 
             s += ` ${raw_value.toString().padStart(3)} `;
 
@@ -148,7 +153,7 @@
 //            if (controls[i].hasOwnProperty('human')) {
 //                console.log('compute final value with transform function and raw_value=' + param_value);
 //                final_value = controls[i].map(param_value);
-                console.log(`final value for ${i}`, final_value);
+                console.log(`${i} final value = ${final_value}`);
 //            } else {
 //                final_value = param_value;
 ////            }param_value
