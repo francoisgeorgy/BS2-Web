@@ -108,3 +108,7 @@ select {
 div.disabled > * {
     opacity: 0.4;
 }
+
+select.disabled {
+    opacity: 0.4;
+}

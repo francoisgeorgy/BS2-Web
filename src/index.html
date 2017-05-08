@@ -20,14 +20,37 @@
             <span class="novation-blue">Bass Station II Web Interface</span><span id="patch" class="novation-blue">&nbsp;&nbsp;&bull;&nbsp;&nbsp;Patch</span>
             <span id="patch-number" class="novation-blue">-</span>
             <span class="commands">
-                <button id="cmd-save" title="Save the current configuration in the browser local storage">save</button>
-                <button id="cmd-import" title="Import a configuration from a file (will not send to the BS2)">import</button>
-                <button id="cmd-export" title="Export the current configuration in a file">export</button>
-                <button id="cmd-send" title="Send all parameters to the connected Bass Stations II">send</button>
+                <button id="cmd-sync" title="Sync with the BS2 by asking it to send a sysex dump of its current patch">sync</button>
                 <button id="cmd-init" title="Set all parameters to their default value">init</button>
                 <button id="cmd-randomize" title="Set all parameters to a random value">random</button>
+                <!--<button id="cmd-save" title="Save the current configuration in the browser local storage">save</button>-->
+                <button id="cmd-import" class="large-space-left" title="Import a configuration from a file (will not send to the BS2)">import</button>
+                <button id="cmd-export" title="Export the current configuration in a file">export</button>
+                <button id="cmd-send" title="Send all parameters to the connected Bass Stations II">send</button>
                 <button id="cmd-record" class="large-space-left" title="Record all MIDI messages sent and received">record</button>
                 <button id="cmd-play" title="Play previously recorded messages.">play</button>
+            </span>
+            <span class="commands">
+                <label>MIDI channel:</label>
+                <select id="midi-channel">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                    <option value="13">13</option>
+                    <option value="14">14</option>
+                    <option value="15">15</option>
+                    <option value="16">16</option>
+                    <option value="all">All</option>
+                </select>
             </span>
             <div id="midi-out-status">OUT</div>
             <div id="midi-in-status">IN</div>
@@ -41,9 +64,9 @@
             <h1 class="reset-handler">Sub</h1>
             <div>
                 <label>Octave:</label>
-                <select id="cc-81">
+                <select id="cc-81" class="cc">
                 </select>
-                <select id="cc-80" style="margin-left:10px">
+                <select id="cc-80" class="cc" style="margin-left:10px">
                 </select>
             </div>
         </div>
@@ -54,7 +77,7 @@
         <div id="lfo1">
             <h1 class="reset-handler">LFO 1</h1>
             <div class="space-after">
-                <select id="cc-88">
+                <select id="cc-88" class="cc">
                 </select>
             </div>
             <div class="space-after" style="text-align: center">
@@ -74,9 +97,9 @@
             </div>
             <div class="group space-after">
                 <div class="control " style="margin-right:0">
-                    <select id="nrpn-88">   <!-- FN key "Speed/Sync LFO 1" -->
+                    <select id="nrpn-88" class="cc">   <!-- FN key "Speed/Sync LFO 1" -->
                     </select>
-                    <select id="nrpn-87">   <!-- Sync value -->
+                    <select id="nrpn-87" class="cc">   <!-- Sync value -->
                     </select>
                 </div>
             </div>
@@ -95,7 +118,7 @@
             <h1 class="reset-handler">LFO 2</h1>
             <div class="space-after">
                 <!--<label>Wave:</label>-->
-                <select id="cc-89">
+                <select id="cc-89" class="cc">
                 </select>
             </div>
             <div class="space-after" style="text-align: center">
@@ -115,9 +138,9 @@
             </div>
             <div class="group space-after">
                 <div class="control row">
-                    <select id="nrpn-92">   <!-- FN key "Speed/Sync LFO 2" -->
+                    <select id="nrpn-92" class="cc">   <!-- FN key "Speed/Sync LFO 2" -->
                     </select>
-                    <select id="nrpn-91">   <!-- Sync value -->
+                    <select id="nrpn-91" class="cc">   <!-- Sync value -->
                     </select>
                 </div>
             </div>
@@ -137,9 +160,9 @@
             <div>
                 <div class="group left space-after">
                     <div class="control double">
-                        <select id="cc-70">
+                        <select id="cc-70" class="cc">
                         </select>
-                        <select id="nrpn-72">   <!-- osc1 waveform -->
+                        <select id="nrpn-72" class="cc">   <!-- osc1 waveform -->
                         </select>
                     </div>
                 </div>
@@ -196,9 +219,9 @@
             <div>
                 <div class="group left space-after">
                     <div class="control double">
-                        <select id="cc-75">
+                        <select id="cc-75" class="cc">
                         </select>
-                        <select id="nrpn-82">   <!-- osc2 waveform -->
+                        <select id="nrpn-82" class="cc">   <!-- osc2 waveform -->
                         </select>
                     </div>
                 </div>
@@ -292,11 +315,11 @@
             <h1 class="reset-handler">Filter</h1>
             <div>
                 <div class="group space-after">
-                    <select id="cc-83">
+                    <select id="cc-83" class="cc">
                     </select>
-                    <select id="cc-106">
+                    <select id="cc-106" class="cc">
                     </select>
-                    <select id="cc-84">
+                    <select id="cc-84" class="cc">
                     </select>
                 </div>
                 <div class="group space-after">
@@ -354,7 +377,7 @@
         <div id="mod-env">
             <div class="subhead">
                 <label>Triggering:</label>
-                <select id="nrpn-105">
+                <select id="nrpn-105" class="cc">
                 </select>
             </div>
             <h1 class="reset-handler">Mod Env</h1>
@@ -387,7 +410,7 @@
         <div id="amp-env">
             <div class="subhead">
                 <label>Triggering:</label>
-                <select id="nrpn-73">
+                <select id="nrpn-73" class="cc">
                 </select>
             </div>
             <h1 class="reset-handler">Amp Env</h1>
@@ -532,7 +555,7 @@
                                 <label class="row">Rhythm</label>
                             </td>
                             <td>
-                                <select id="cc-119">
+                                <select id="cc-119" class="cc">
                                 </select>
                             </td>
                         </tr>
@@ -544,7 +567,7 @@
                                 <label class="row">Octaves</label>
                             </td>
                             <td>
-                                <select id="cc-111">
+                                <select id="cc-111" class="cc">
                                 </select>
                             </td>
                         </tr>
@@ -556,7 +579,7 @@
                                 <label>Note mode</label>
                             </td>
                             <td>
-                                <select id="cc-118">
+                                <select id="cc-118" class="cc">
                                 </select>
                             </td>
                         </tr>
@@ -566,38 +589,6 @@
                     <input id="cc-116" class="dial" data-width="60" data-height="60" value="0"/>
                     <label>Swing</label>
                 </div>
-
-
-                <!--
-                <div class="row">
-                    <div style="text-align: center">
-                        <label id="cc-108" class="off">ARP OFF</label>
-                    </div>
-                    <div style="text-align: center">
-                        <label id="cc-109" class="off">Latch OFF</label>
-                    </div>
-                    <div style="text-align: center">
-                        <label id="nrpn-106" class="off">Retrig OFF</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div>
-                        <label class="row">Rhythm</label>
-                        <select id="cc-119">
-                        </select>
-                    </div>
-                    <div>
-                        <label class="row">Octaves</label>
-                        <select id="cc-111">
-                        </select>
-                    </div>
-                    <div>
-                        <label>Note mode</label>
-                        <select id="cc-118">
-                        </select>
-                    </div>
-                </div>
-                -->
 
             </div>
         </div>

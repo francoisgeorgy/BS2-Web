@@ -126,17 +126,6 @@
         $('#' + control_type + '-' + control_number).val(value).trigger('blur');
 
         updateCustoms(false);   //TODO: pass the current CC number and in updateCustoms() only update controls linked to this CC number
-        /*
-        if (control_type === 'cc') {
-            if ([102, 103, 104, 105].includes(control_number)) {
-                // drawADSR(getADSREnv('cc-102', 'cc-103', 'cc-104', 'cc-105'), "mod-ADSR");
-                drawADSR(BS2.getADSREnv('mod'), 'mod-ADSR');
-            } else if ([90, 91, 92, 93].includes(control_number)) {
-                // drawADSR(getADSREnv('cc-90', 'cc-91', 'cc-92', 'cc-93'), "amp-ADSR");
-                drawADSR(BS2.getADSREnv('amp'), 'amp-ADSR');
-            }
-        }
-        */
     }
 
 
@@ -203,11 +192,12 @@
     }
 
     /**
+     * Send a update (CC) to the connected device
      * Note: jQuery Knob transmits the value as a float
      * @param control
      * @param value_float
      */
-    function updateBS2(control_type, control_number, value_float) {
+    function sendToDevice(control_type, control_number, value_float) {
 
         // console.log('updateBS2', control, value_float);
 
@@ -219,10 +209,8 @@
 
         if (control_type === 'cc') {
             if ([102, 103, 104, 105].includes(control_number)) {
-                // drawADSR(getADSREnv('cc-102', 'cc-103', 'cc-104', 'cc-105'), "mod-ADSR");
                 drawADSR(BS2.getADSREnv('mod'), 'mod-ADSR');
             } else if ([90, 91, 92, 93].includes(control_number)) {
-                // drawADSR(getADSREnv('cc-90', 'cc-91', 'cc-92', 'cc-93'), "amp-ADSR");
                 drawADSR(BS2.getADSREnv('amp'), 'amp-ADSR');
             }
         }
@@ -256,20 +244,17 @@
     }
 
     /**
-     * Send all values to BS2
+     * Send all values to the connected device
      */
-    function sendAllValues() {
+    function updateDevice() {
 
-        console.groupCollapsed(`sendAllValues()`);
+        console.groupCollapsed(`updateDevice()`);
 
         setStatus(`Sending all values to ${BS2.name} ...`);
 
         function _send(controls) {
             for (let i=0; i < controls.length; i++) {
                 if (typeof controls[i] === 'undefined') continue;
-                //console.log($(prefix + i), controls[i]);
-                //if (sendToBS2) updateBS2(prefix + i, parseInt($(prefix + i).val()));
-                // updateBS2(prefix + i, controls[i].raw_value);
                 sendSingleValue(controls[i]);
             }
         }
@@ -305,27 +290,24 @@
     /**
      *
      */
-    function init(sendToBS2 = true) {
+    function init(sendUpdate = true) {
 
-        console.log(`init(${sendToBS2})`);
+        console.log(`init(${sendUpdate})`);
 
         BS2.init();
 
         updateUI();
 
-        //if (sendToBS2) setStatus(`${BS2.name} initialized`);
-        if (sendToBS2) setStatus(`init done`);
+        setStatus(`init done`);
 
-        if (sendToBS2) sendAllValues();
+        if (sendUpdate) updateDevice();
 
     }
 
     /**
      *
      */
-    function randomizeBS2(sendToBS2 = true) {
-
-        //FIXME: send all CC to BS2 _at the end_. First, update the UI.
+    function randomizeBS2(sendUpdate = true) {
 
         function _randomize(controls) {
 
@@ -334,42 +316,24 @@
                 let c = controls[i];
                 if (typeof c === 'undefined') continue;
 
-                /*
-                let e = $(`#${c.cc_type}-${i}`);
-
-                //console.log(`randomize ${prefix + i}`);
-
-                if (e.is('select')) {
-                    // console.log(`randomize select ${prefix + i} = option`);
-                    e[0].options[Math.floor(Math.random() * e[0].options.length)].selected = true;
-                    //if (sendToBS2) updateBS2(prefix + i, e.val());
-                    continue;
-                }
-                */
-
                 let v;
                 if (c.hasOwnProperty('randomize')) {
                     v = c.randomize;
                 } else {
                     if (c.on_off) {
                         v = Math.round(Math.random());
+                        console.log(`randomize #${c.cc_type}-${i}=${v} with 0|1 value = ${v}`);
                     } else {
                         let min = Math.min(...c.cc_range);
-                        v = Math.floor(Math.random() * (Math.max(...c.cc_range) - min)) + min;  //TODO: step
-                        //v = Math.floor(Math.random() * (c.max_raw - min)) + min;  //TODO: step
+                        v = Math.round(Math.random() * (Math.max(...c.cc_range) - min)) + min;  //TODO: step
+                        console.log(`randomize #${c.cc_type}-${i}=${v} with min=${min} c.max_raw=${Math.max(...c.cc_range)}, v=${v}`);
                     }
                 }
-
-                console.log(`randomize #${c.cc_type}-${i}=${v} with c.max_raw=${c.max_raw}, v=${v}`);
                 c.raw_value = v;
-
-                // // e.val(v).trigger('change');
-                // e.val(v).trigger('blur');
-                // //if (sendToBS2) updateBS2(prefix + i, v);
             }
         }
 
-        console.groupCollapsed(`randomizeBS2(${sendToBS2})`);
+        console.groupCollapsed(`randomizeBS2(${sendUpdate})`);
 
         _randomize(BS2.control);
         _randomize(BS2.nrpn);
@@ -377,12 +341,10 @@
         console.groupEnd();
 
         updateUI();
-        // updateCustoms(false); // TODO: send CC to BS2 afterward
 
-        //if (sendToBS2) setStatus(`${BS2.name} randomized`);
-        if (sendToBS2) setStatus(`randomize done`);
+        setStatus(`randomize done`);
 
-        if (sendToBS2) sendAllValues();
+        if (sendUpdate) updateDevice();
 
     }
 
@@ -392,7 +354,7 @@
             if (dom_id.endsWith('-handle')) return;
             let v = getDefaultValue(dom_id);
             $(`#${dom_id}`).val(v).trigger('blur');
-            updateBS2(...dom_id.split('-'), v);
+            sendToDevice(...dom_id.split('-'), v);
         });
         updateCustoms(false);
         //updateUI();
@@ -401,15 +363,34 @@
     /**
      *
      */
+    function syncUIwithBS2() {
+        // ask the BS2 to send us its current patch:
+        requestSysExDump(); //FIXME: what if the mdi_input is not yet ready?
+    }
+
+    /**
+     *
+     */
+    function setMidiChannel() {
+        console.log(`set midi channel to ${this.value}`);
+        midi_channel = this.value;
+    }
+
+    /**
+     *
+     */
     function setupCommands() {
-        $('#cmd-save').click(saveInLocalStorage);
+        $('#cmd-sync').click(syncUIwithBS2);
+        // $('#cmd-save').click(saveInLocalStorage);
         $('#cmd-export').click(exportToFile);
         $('#cmd-import').click(importFromFile);
-        $('#cmd-send').click(sendAllValues);
+        $('#cmd-send').click(updateDevice);
         $('#cmd-init').click(init);
         $('#cmd-randomize').click(randomizeBS2);
         $('#cmd-record').click(record);
         $('#cmd-play').click(play);
+        $('#midi-channel').change(setMidiChannel);
+        $('#patch-file').change(readFile);
     }
 
     /**
@@ -420,11 +401,6 @@
         const CURSOR = 12;
 
         $(".dial").knob({
-            /*
-            change : function (v) {
-                updateBS2(this.i[0].id, v)
-            },
-            */
             // release : function (v) { console.log('release', this, v); },
             angleOffset: -135,
             angleArc: 270,
@@ -452,9 +428,7 @@
                     cursor: Math.min(...c.range) < 0 ? CURSOR : false,
                     format: v => c.human(v),
                     change : function (v) {
-                        //updateBS2(this.i[0].id, v)
-                        updateBS2(c.cc_type, i, v);
-                        //console.log('yo', i, c.cc_type, this);
+                        sendToDevice(c.cc_type, i, v);
                     },
                     //parse: function(v) { return parseInt(v); }
                 });
@@ -486,8 +460,8 @@
 
                 let v = BS2.getControlValue(controls[i]);
 
-                if (e.is('select')) {
-                    console.log(`update select #${controls[i].cc_type}-${i}`, e.val(), v);
+                if (e.is('select.cc')) {
+                    console.log(`update select.cc #${controls[i].cc_type}-${i}`, e.val(), v);
                 }
 
                 e.val(BS2.getControlValue(controls[i])).trigger('blur');  //TODO: change or blur?
@@ -532,14 +506,16 @@
             $('#cc-119').append($("<option>").val(i).text(i+1));
         }
 
-        $('select').change(function (){ updateBS2(...this.id.split('-'), this.value) });
+        $('select.cc').change(function (){ sendToDevice(...this.id.split('-'), this.value) });
 
+        // Osc: PS controls are only displayed when wave form is pulse
         $('#nrpn-72').change(function (e) { this.value == BS2.OSC_WAVE_FORMS.indexOf('pulse') ? enable('#osc1-pw-controls') : disable('#osc1-pw-controls'); });
         $('#nrpn-82').change(function (e) { this.value == BS2.OSC_WAVE_FORMS.indexOf('pulse') ? enable('#osc2-pw-controls') : disable('#osc2-pw-controls'); });
 
         // LFO: "sync" drop down is displayed only when speed/sync is set to sync
         $('#nrpn-88').change(function (e) { this.value == BS2.LFO_SPEED_SYNC.indexOf('sync') ? enable('#nrpn-87') : disable('#nrpn-87'); });
         $('#nrpn-92').change(function (e) { this.value == BS2.LFO_SPEED_SYNC.indexOf('sync') ? enable('#nrpn-91') : disable('#nrpn-91'); });
+
 
     } // setupSelects
 
@@ -559,45 +535,39 @@
     /**
      *
      * @param dom_id
-     * @param sendToBS2
+     * @param sendUpdate
      */
-    function updateOnOffControl(dom_id, sendToBS2 = true) {   //}, prefix_text) {
+    function updateOnOffControl(dom_id, sendUpdate = true) {   //}, prefix_text) {
         let e = $('#' + dom_id);
-        // console.log(`updateOnOffControl(${dom_id}, ${sendToBS2})`, e.val());
         toggleOnOff('#' + dom_id + '-handle', e.val() != 0);
-        if (sendToBS2) updateBS2(...dom_id.split('-'), e.val());
+        if (sendUpdate) sendToDevice(...dom_id.split('-'), e.val());
     }
 
     /**
      *
      */
     function setupCustoms() {
-
         setupOnOffControl('cc-110');
         setupOnOffControl('nrpn-89');
         setupOnOffControl('nrpn-93');
         setupOnOffControl('cc-108');
         setupOnOffControl('cc-109');
         setupOnOffControl('nrpn-106');
-
-        // $('#osc1-pw-controls').css('visibility','hidden');
-        // $('#osc2-pw-controls').css('visibility','hidden');
-
     }
 
     /**
      *
      */
-    function updateCustoms(sendToBS2 = false) {
+    function updateCustoms(sendUpdate = false) {
 
-        console.log(`updateCustoms(${sendToBS2})`);
+        console.log(`updateCustoms(${sendUpdate})`);
 
-        updateOnOffControl('cc-110', sendToBS2);  // Osc 1-2 Sync
-        updateOnOffControl('nrpn-89', sendToBS2);
-        updateOnOffControl('nrpn-93', sendToBS2);
-        updateOnOffControl('cc-108', sendToBS2);
-        updateOnOffControl('cc-109', sendToBS2);
-        updateOnOffControl('nrpn-106', sendToBS2);
+        updateOnOffControl('cc-110', sendUpdate);  // Osc 1-2 Sync
+        updateOnOffControl('nrpn-89', sendUpdate);
+        updateOnOffControl('nrpn-93', sendUpdate);
+        updateOnOffControl('cc-108', sendUpdate);
+        updateOnOffControl('cc-109', sendUpdate);
+        updateOnOffControl('nrpn-106', sendUpdate);
 
         $('#nrpn-72').val() == BS2.OSC_WAVE_FORMS.indexOf('pulse') ? enable('#osc1-pw-controls') : disable('#osc1-pw-controls');
         $('#nrpn-82').val() == BS2.OSC_WAVE_FORMS.indexOf('pulse') ? enable('#osc2-pw-controls') : disable('#osc2-pw-controls');
@@ -606,8 +576,6 @@
         $('#nrpn-88').val() == BS2.LFO_SPEED_SYNC.indexOf('sync') ? enable('#nrpn-87') : disable('#nrpn-87');
         $('#nrpn-92').val() == BS2.LFO_SPEED_SYNC.indexOf('sync') ? enable('#nrpn-91') : disable('#nrpn-91');
 
-        // drawADSR(getADSREnv('cc-102', 'cc-103', 'cc-104', 'cc-105'), "mod-ADSR");
-        // drawADSR(getADSREnv('cc-90', 'cc-91', 'cc-92', 'cc-93'), "amp-ADSR");
         drawADSR(BS2.getADSREnv('mod'), 'mod-ADSR');
         drawADSR(BS2.getADSREnv('amp'), 'amp-ADSR');
 
@@ -618,15 +586,6 @@
      */
     function updateMeta() {
         $('#patch-number').text(BS2.meta.patch_id.value + ': ' + BS2.meta.patch_name.value);
-    }
-
-    function getADSREnv(id_A, id_D, id_S, id_R) {
-        return {
-            attack: $('#' + id_A).val() / 127,
-            decay: $('#' + id_D).val() / 127,
-            sustain: $('#' + id_S).val() / 127,
-            release: $('#' + id_R).val() / 127
-        };
     }
 
     /**
@@ -640,8 +599,6 @@
         init(false);     // init UI without sending any CC to the BS2
         $('h1.reset-handler').click(resetGroup);
 
-        // drawADSR(getADSREnv('cc-102', 'cc-103', 'cc-104', 'cc-105'), "mod-ADSR");
-        // drawADSR(getADSREnv('cc-90', 'cc-91', 'cc-92', 'cc-93'), "amp-ADSR");
         drawADSR(BS2.getADSREnv('mod'), 'mod-ADSR');
         drawADSR(BS2.getADSREnv('amp'), 'amp-ADSR');
     }
@@ -689,6 +646,40 @@
 
     }
 
+    function readFile() {
+
+        // const SYSEX_START = 0xF0;
+        const SYSEX_END = 0xF7;
+
+        let data = [];
+        let f = this.files[0];
+        console.log(`read file`, f);
+
+        if (f) {
+            let reader = new FileReader();
+            reader.onload = function (e) {
+                let view   = new Uint8Array(e.target.result);
+                for (let i=0; i<view.length; i++) {
+                    data.push(view[i]);
+                    if (view[i] == SYSEX_END) break;
+                }
+                if (BS2.setValuesFromSysex(data)) {
+                    console.log('file read OK', BS2.meta.patch_name['value']);
+                    if (lightbox) lightbox.close();
+
+                    updateUI();
+                    updateDevice();
+
+                } else {
+                    console.log('unable to set value from file');
+                    $('#import-dialog-error').show().text('The file is invalid.');
+                }
+            };
+            reader.readAsArrayBuffer(f);
+        }
+
+    }
+
     function record() {
         alert('Sorry, this feature is not yet implemented.');
     }
@@ -697,19 +688,22 @@
         alert('Sorry, this feature is not yet implemented.');
     }
 
-    function grab() {
+    /**
+     * Send a sysex to the BS2 asking for it to send back a sysex dump of its current patch.
+     */
+    function requestSysExDump() {
         // F0 00 20 29 00 33 00 40  F7
-
+        if (!midi_output) return;
+        //ignore_next_sysex = true;
+        midi_output.sendSysex(BS2.meta.signature.sysex.value, [0x00, 0x33, 0x00, 0x40]);
     }
 
-    /**
-     *
-     * @type {null}
-     */
+
+    //var device = BS2;
     var midi_input = null;
     var midi_output = null;
-
     var midi_channel = 1;
+    var ignore_next_sysex = false;
 
     /**
      *
@@ -721,9 +715,12 @@
         midi_input
             .on('controlchange', midi_channel, function(e) {
                 handleCC(e);
-            });
-        /*
+            })
             .on('sysex', midi_channel, function(e) {
+                if (ignore_next_sysex) {
+                    setStatus("SysEx ignored.");
+                    return;
+                }
                 if (BS2.setValuesFromSysex(e.data)) {
                     updateUI();
                     setStatus("UI updated from SysEx.");
@@ -731,7 +728,6 @@
                     setStatusError("Unable to set value from SysEx.")
                 }
             });
-            */
         setStatus(`"${input.name}" input connected.`)
         setMidiInStatus(true);
     }
@@ -745,6 +741,9 @@
         midi_output = output;
         setStatus(`"${output.name}" output connected.`)
         setMidiOutStatus(true);
+
+        // ask the BS2 to send us its current patch:
+        requestSysExDump(); //FIXME: what if the mdi_input is not yet ready?
     }
 
     /**
@@ -810,8 +809,8 @@
                 setStatus("WebMidi enabled.");
                 setMidiStatus(true);
 
-                WebMidi.inputs.map(i => console.log("input: ", i));
-                WebMidi.outputs.map(i => console.log("output: ", i));
+                // WebMidi.inputs.map(i => console.log("input: ", i));
+                // WebMidi.outputs.map(i => console.log("output: ", i));
 
                 WebMidi.addListener("connected", e => deviceConnect(e));
                 WebMidi.addListener("disconnected", e => deviceDisconnect(e));
@@ -832,44 +831,8 @@
                     setMidiOutStatus(false);
                 }
 
-
-                $('#patch-file').change(readFile);
-
-                function readFile() {
-
-                    // const SYSEX_START = 0xF0;
-                    const SYSEX_END = 0xF7;
-
-                    let data = [];
-                    let f = this.files[0];
-                    console.log(`read file`, f);
-
-                    if (f) {
-                        let reader = new FileReader();
-                        reader.onload = function (e) {
-                            let view   = new Uint8Array(e.target.result);
-                            for (let i=0; i<view.length; i++) {
-                                data.push(view[i]);
-                                if (view[i] == SYSEX_END) break;
-                            }
-                            if (BS2.setValuesFromSysex(data)) {
-                                console.log('file read OK', BS2.meta.patch_name['value']);
-                                if (lightbox) lightbox.close();
-
-                                updateUI();
-                                sendAllValues();
-
-                            } else {
-                                console.log('unable to set value from file');
-                                $('#import-dialog-error').show().text('The file is invalid.');
-                            }
-                        };
-                        reader.readAsArrayBuffer(f);
-                    }
-
-                }
-
-
+                // ask the BS2 to send us its current patch:
+                requestSysExDump(); //FIXME: what if the mdi_input is not yet ready?
 
             }
 
