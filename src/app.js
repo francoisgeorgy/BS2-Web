@@ -1,16 +1,11 @@
 
     function toggleOnOff(selector, bool) {
-        // console.log(`toggleOnOff(${selector}, ${bool})`);
         if (bool) {
             $(selector).removeClass("off").addClass("on");
         } else {
             $(selector).removeClass("on").addClass("off");
         }
     }
-
-    // function setConnectionStatus(status) {
-    //     $('#connection-status').text(status ? 'connected' : 'not connected');
-    // }
 
     function setMidiStatus(status) {
         toggleOnOff('#midi-status', status);
@@ -104,30 +99,9 @@
     }
 
 
-    /**
-     * Update BS2 and associated on-screen control from CC or NRPN value.
-     *
-     * @param control_type
-     * @param control_number
-     * @param value
-     */
-    function dispatch(control_type, control_number, value) {
 
-        console.log('dispatch', control_type, control_number, value, '#' + control_type + '-' + control_number);
-        control_type = control_type.toLowerCase();
-
-        if ((control_type != 'cc') && (control_type != 'nrpn')) return; //TODO: signal an error
-
-        console.log('dispatch ' + '#' + control_type + '-' + control_number + ' = ' + value);
-
-        BS2.setControlValue(control_type, control_number, value);
-
-        // the "blur" event will force a redraw of the dial. Do not send the "change" event as this will ping-pong between BS2 and this application.
-        $('#' + control_type + '-' + control_number).val(value).trigger('blur');
-
-        updateCustoms(false);   //TODO: pass the current CC number and in updateCustoms() only update controls linked to this CC number
-    }
-
+    //==================================================================================================================
+    // Midi messages handling
 
     var cc_expected = -1;
     var cc_msb = -1;
@@ -169,19 +143,19 @@
         if (cc_expected >= 0) {
             if (cc === cc_expected) {
                 value_lsb = msg[2];
-                let v = BS2.doubleByteValue(value_msb, value_lsb);
+                let v = DEVICE.doubleByteValue(value_msb, value_lsb);
                 dispatch('cc', cc_msb, v);
                 cc_expected = -1;
             } else {
                 cc_msb = cc;
             }
         } else {
-            if (BS2.control[cc]) {
-                if (BS2.control[cc].lsb === -1) {
+            if (DEVICE.control[cc]) {
+                if (DEVICE.control[cc].lsb === -1) {
                     let v = msg[2];
                     dispatch('cc', cc, v);
                 } else {
-                    cc_expected = BS2.control[cc].lsb;
+                    cc_expected = DEVICE.control[cc].lsb;
                     cc_msb = cc;
                     value_msb = msg[2];
                 }
@@ -190,6 +164,33 @@
             }
         }
     }
+
+    /**
+     * Update DEVICE and associated on-screen control from CC or NRPN value.
+     *
+     * @param control_type
+     * @param control_number
+     * @param value
+     */
+    function dispatch(control_type, control_number, value) {
+
+        console.log('dispatch', control_type, control_number, value, '#' + control_type + '-' + control_number);
+        control_type = control_type.toLowerCase();
+
+        if ((control_type != 'cc') && (control_type != 'nrpn')) return; //TODO: signal an error
+
+        // console.log('dispatch ' + '#' + control_type + '-' + control_number + ' = ' + value);
+
+        DEVICE.setControlValue(control_type, control_number, value);
+
+        // the "blur" event will force a redraw of the dial. Do not send the "change" event as this will ping-pong between BS2 and this application.
+        $('#' + control_type + '-' + control_number).val(value).trigger('blur');
+
+        // update the customs UI elements. Any input|select element has already been updated by the above instruction.
+        updateCustoms(false);   //TODO: pass the current CC number and in updateCustoms() only update controls linked to this CC number
+    }
+
+    //==================================================================================================================
 
     /**
      * Send a update (CC) to the connected device
@@ -219,13 +220,10 @@
     }
 
     /**
-     *
-     * @param control_type
-     * @param control_number
+     * Send a control value to the connected device.
+     * @param control
      */
     function sendSingleValue(control) {
-
-        // console.log(`sendSingleValue()`, control);
 
         if (control.cc_type === 'cc') {
             let a = DEVICE.getMidiMessagesForNormalCC(control);
@@ -246,9 +244,9 @@
     /**
      * Send all values to the connected device
      */
-    function updateDevice() {
+    function updateConnectedDevice() {
 
-        console.groupCollapsed(`updateDevice()`);
+        console.groupCollapsed(`updateConnectedDevice()`);
 
         setStatus(`Sending all values to ${DEVICE.name} ...`);
 
@@ -267,25 +265,7 @@
         console.groupEnd();
     }
 
-    /**
-     *
-     * @param dom_id ID of the HTML element
-     * @returns {*}
-     */
-    function getDefaultValue(dom_id) {
-        let [control_type, control_number] = dom_id.replace('#', '').split('-');
-        let c;
-        if (control_type == 'cc') {
-            c = DEVICE.control[control_number];
-        } else if (control_type == 'nrpn') {
-            c = DEVICE.nrpn[control_number];
-        } else {
-            // ERROR
-            return 0;
-        }
-        //FIXME: check that c exists
-        return c.init_value;
-    }
+    //==================================================================================================================
 
     /**
      *
@@ -300,8 +280,7 @@
 
         setStatus(`init done`);
 
-        if (sendUpdate) updateDevice();
-
+        if (sendUpdate) updateConnectedDevice();
     }
 
     /**
@@ -344,8 +323,31 @@
 
         setStatus(`randomize done`);
 
-        if (sendUpdate) updateDevice();
+        if (sendUpdate) updateConnectedDevice();
 
+    }
+
+    //==================================================================================================================
+    // Re-init (reset) only a group or related controls:
+
+    /**
+     *
+     * @param dom_id ID of the HTML element
+     * @returns {*}
+     */
+    function getDefaultValue(dom_id) {
+        let [control_type, control_number] = dom_id.replace('#', '').split('-');
+        let c;
+        if (control_type == 'cc') {
+            c = DEVICE.control[control_number];
+        } else if (control_type == 'nrpn') {
+            c = DEVICE.nrpn[control_number];
+        } else {
+            // ERROR
+            return 0;
+        }
+        //FIXME: check that c exists
+        return c.init_value;
     }
 
     function resetGroup(e) {
@@ -360,38 +362,38 @@
         //updateUI();
     }
 
-    /**
-     *
-     */
-    function syncUIwithBS2() {
-        // ask the BS2 to send us its current patch:
-        requestSysExDump(); //FIXME: what if the mdi_input is not yet ready?
-    }
+    //==================================================================================================================
 
     /**
-     *
+     * Set value of the controls (input and select) from the BS2 values
      */
-    function setMidiChannel() {
-        console.log(`set midi channel to ${this.value}`);
-        midi_channel = this.value;
-    }
+    function updateControls() {
 
-    /**
-     *
-     */
-    function setupCommands() {
-        $('#cmd-sync').click(syncUIwithBS2);
-        // $('#cmd-save').click(saveInLocalStorage);
-        $('#cmd-export').click(exportToFile);
-        $('#cmd-import').click(importFromFile);
-        $('#cmd-send').click(updateDevice);
-        $('#cmd-init').click(init);
-        $('#cmd-randomize').click(randomizeBS2);
-        $('#cmd-record').click(record);
-        $('#cmd-play').click(play);
-        $('#midi-channel').change(setMidiChannel);
-        $('#patch-file').change(readFile);
-    }
+        //FIXME: use c.raw_value
+
+        console.groupCollapsed('updateControls()');
+
+        function _updateControls(controls) {
+            for (let i=0; i < controls.length; i++) {
+                if (typeof controls[i] === 'undefined') continue;
+                let e = $(`#${controls[i].cc_type}-${i}`);
+
+                let v = DEVICE.getControlValue(controls[i]);
+
+                if (e.is('select.cc')) {
+                    console.log(`update select.cc #${controls[i].cc_type}-${i}`, e.val(), v);
+                }
+
+                e.val(DEVICE.getControlValue(controls[i])).trigger('blur');  //TODO: change or blur?
+            }
+        }
+
+        _updateControls(DEVICE.control);
+        _updateControls(DEVICE.nrpn);
+
+        console.groupEnd();
+
+    } // updateControls()
 
     /**
      *
@@ -445,37 +447,6 @@
     } // setupDials
 
     /**
-     * Set value of the controls (input and select) from the BS2 values
-     */
-    function updateControls() {
-
-        //FIXME: use c.raw_value
-
-        console.groupCollapsed('updateControls()');
-
-        function _updateControls(controls) {
-            for (let i=0; i < controls.length; i++) {
-                if (typeof controls[i] === 'undefined') continue;
-                let e = $(`#${controls[i].cc_type}-${i}`);
-
-                let v = DEVICE.getControlValue(controls[i]);
-
-                if (e.is('select.cc')) {
-                    console.log(`update select.cc #${controls[i].cc_type}-${i}`, e.val(), v);
-                }
-
-                e.val(DEVICE.getControlValue(controls[i])).trigger('blur');  //TODO: change or blur?
-            }
-        }
-
-        _updateControls(DEVICE.control);
-        _updateControls(DEVICE.nrpn);
-
-        console.groupEnd();
-
-    } // updateControls()
-
-    /**
      *
      */
     function setupSelects() {
@@ -516,19 +487,18 @@
         $('#nrpn-88').change(function (e) { this.value == DEVICE.LFO_SPEED_SYNC.indexOf('sync') ? enable('#nrpn-87') : disable('#nrpn-87'); });
         $('#nrpn-92').change(function (e) { this.value == DEVICE.LFO_SPEED_SYNC.indexOf('sync') ? enable('#nrpn-91') : disable('#nrpn-91'); });
 
-
     } // setupSelects
 
     /**
      *
      * @param dom_id
      */
-    function setupOnOffControl(dom_id) {
+    function setupSwitch(dom_id) {
         $(`#${dom_id}-handle`).click(function() {
             let v = $(`#${dom_id}`).val();
             $(`#${dom_id}`).val(v == 0 ? 1 : 0);
             console.log('on_off click handler', dom_id, v, $(`#${dom_id}`).val());
-            updateOnOffControl(dom_id);
+            updateSwitch(dom_id);
         });
     }
 
@@ -537,7 +507,7 @@
      * @param dom_id
      * @param sendUpdate
      */
-    function updateOnOffControl(dom_id, sendUpdate = true) {   //}, prefix_text) {
+    function updateSwitch(dom_id, sendUpdate = true) {   //}, prefix_text) {
         let e = $('#' + dom_id);
         toggleOnOff('#' + dom_id + '-handle', e.val() != 0);
         if (sendUpdate) sendToDevice(...dom_id.split('-'), e.val());
@@ -546,28 +516,28 @@
     /**
      *
      */
-    function setupCustoms() {
-        setupOnOffControl('cc-110');
-        setupOnOffControl('nrpn-89');
-        setupOnOffControl('nrpn-93');
-        setupOnOffControl('cc-108');
-        setupOnOffControl('cc-109');
-        setupOnOffControl('nrpn-106');
+    function setupSwitches() {
+        setupSwitch('cc-110');
+        setupSwitch('nrpn-89');
+        setupSwitch('nrpn-93');
+        setupSwitch('cc-108');
+        setupSwitch('cc-109');
+        setupSwitch('nrpn-106');
     }
 
     /**
-     *
+     * Update the "custom" or "linked" UI controls
      */
     function updateCustoms(sendUpdate = false) {
 
         console.log(`updateCustoms(${sendUpdate})`);
 
-        updateOnOffControl('cc-110', sendUpdate);  // Osc 1-2 Sync
-        updateOnOffControl('nrpn-89', sendUpdate);
-        updateOnOffControl('nrpn-93', sendUpdate);
-        updateOnOffControl('cc-108', sendUpdate);
-        updateOnOffControl('cc-109', sendUpdate);
-        updateOnOffControl('nrpn-106', sendUpdate);
+        updateSwitch('cc-110', sendUpdate);  // Osc 1-2 Sync
+        updateSwitch('nrpn-89', sendUpdate);
+        updateSwitch('nrpn-93', sendUpdate);
+        updateSwitch('cc-108', sendUpdate);
+        updateSwitch('cc-109', sendUpdate);
+        updateSwitch('nrpn-106', sendUpdate);
 
         $('#nrpn-72').val() == DEVICE.OSC_WAVE_FORMS.indexOf('pulse') ? enable('#osc1-pw-controls') : disable('#osc1-pw-controls');
         $('#nrpn-82').val() == DEVICE.OSC_WAVE_FORMS.indexOf('pulse') ? enable('#osc2-pw-controls') : disable('#osc2-pw-controls');
@@ -582,29 +552,14 @@
     }
 
     /**
-     *
+     * Update the patch number and patch name displayed in the header.
      */
     function updateMeta() {
         $('#patch-number').text(DEVICE.meta.patch_id.value + ': ' + DEVICE.meta.patch_name.value);
     }
 
     /**
-     *
-     */
-    function setupUI() {
-        setupDials();
-        setupSelects();
-        setupCustoms();
-        setupCommands();
-        init(false);     // init UI without sending any CC to the BS2
-        $('h1.reset-handler').click(resetGroup);
-
-        drawADSR(DEVICE.getADSREnv('mod'), 'mod-ADSR');
-        drawADSR(DEVICE.getADSREnv('amp'), 'amp-ADSR');
-    }
-
-    /**
-     *
+     * Update the UI from the DEVICE controls values.
      */
     function updateUI() {
         updateControls();
@@ -612,40 +567,38 @@
         updateMeta();
     }
 
-    function saveInLocalStorage() {
-        alert('Sorry, this feature is not yet implemented.');
+    /**
+     * Initial setup of the UI.
+     * Does a DEVICE.init() too, but only the virtual DEVICE; does not send any CC to the connected device.
+     */
+    function setupUI() {
+
+        setMidiStatus(false);
+        setMidiInStatus(false);
+        setMidiOutStatus(false);
+
+        setupDials();
+        setupSelects();
+        setupSwitches();
+        setupCommands();
+
+        init(false);    // init DEVICE then UI without sending any CC to the DEVICE
     }
+
+    //==================================================================================================================
+    // Patch file handling
 
     var lightbox = null;
 
     function importFromFile() {
-        //alert('Sorry, this feature is not yet implemented.');
         $('#import-dialog-error').empty();
         $('#patch-file').val('');
         lightbox = lity('#import-dialog');
     }
 
-    function exportToFile() {
-        //alert('Sorry, this feature is not yet implemented.');
-
-        //TODO: export as sysex
-
-        var data = JSON.stringify(BS2);
-
-        var element = document.createElement('a');
-        //element.setAttribute('href', 'data:application/octet-stream,' + encodeURIComponent(data));
-        element.setAttribute('href', 'data:application/json,' + encodeURIComponent(data));
-        element.setAttribute('download', 'bs2-patch.json');
-
-        element.style.display = 'none';
-        document.body.appendChild(element);
-
-        element.click();
-
-        document.body.removeChild(element);
-
-    }
-
+    /**
+     * Handler for the #patch-file file input element in #import-dialog
+     */
     function readFile() {
 
         // const SYSEX_START = 0xF0;
@@ -668,7 +621,7 @@
                     if (lightbox) lightbox.close();
 
                     updateUI();
-                    updateDevice();
+                    updateConnectedDevice();
 
                 } else {
                     console.log('unable to set value from file');
@@ -677,33 +630,105 @@
             };
             reader.readAsArrayBuffer(f);
         }
+    }
+
+    //==================================================================================================================
+    // UI main commands (buttons in header)
+
+    /**
+     * header's "export" button handler
+     */
+    function exportToFile() {
+
+        //TODO: export as sysex
+
+        var data = JSON.stringify(BS2);
+
+        var element = document.createElement('a');
+        //element.setAttribute('href', 'data:application/octet-stream,' + encodeURIComponent(data));
+        element.setAttribute('href', 'data:application/json,' + encodeURIComponent(data));
+        element.setAttribute('download', 'bs2-patch.json');
+
+        element.style.display = 'none';
+        document.body.appendChild(element);
+
+        element.click();
+
+        document.body.removeChild(element);
 
     }
 
+    /**
+     * header's "sync" button handler
+     */
+    function syncUIwithBS2() {
+        // ask the BS2 to send us its current patch:
+        requestSysExDump(); //FIXME: what if the mdi_input is not yet ready?
+    }
+
+    /**
+     * header's "save" button handler
+     */
+    function saveInLocalStorage() {
+        alert('Sorry, this feature is not yet implemented.');
+    }
+
+    /**
+     * header's "record" button handler
+     */
     function record() {
         alert('Sorry, this feature is not yet implemented.');
     }
 
+    /**
+     * header's "play" button handler
+     */
     function play() {
         alert('Sorry, this feature is not yet implemented.');
     }
 
     /**
+     * header's "midi channel" select handler
+     */
+    function setMidiChannel() {
+        console.log(`set midi channel to ${this.value}`);
+        midi_channel = this.value;
+    }
+
+    /**
+     *
+     */
+    function setupCommands() {
+        $('#cmd-sync').click(syncUIwithBS2);
+        // $('#cmd-save').click(saveInLocalStorage);
+        $('#cmd-export').click(exportToFile);
+        $('#cmd-import').click(importFromFile);
+        $('#cmd-send').click(updateConnectedDevice);
+        $('#cmd-init').click(init);
+        $('#cmd-randomize').click(randomizeBS2);
+        $('#cmd-record').click(record);
+        $('#cmd-play').click(play);
+        $('#midi-channel').change(setMidiChannel);
+        $('#patch-file').change(readFile);
+        $('h1.reset-handler').click(resetGroup);
+    }
+
+
+    //==================================================================================================================
+    // SysEx
+
+    /**
      * Send a sysex to the BS2 asking for it to send back a sysex dump of its current patch.
+     * F0 00 20 29 00 33 00 40  F7
      */
     function requestSysExDump() {
-        // F0 00 20 29 00 33 00 40  F7
         if (!midi_output) return;
         //ignore_next_sysex = true;
         midi_output.sendSysex(DEVICE.meta.signature.sysex.value, [0x00, 0x33, 0x00, 0x40]);
     }
 
-
-    const DEVICE = BS2;
-    var midi_input = null;
-    var midi_output = null;
-    var midi_channel = 1;
-    var ignore_next_sysex = false;
+    //==================================================================================================================
+    // WebMidi events handling
 
     /**
      *
@@ -741,9 +766,8 @@
         midi_output = output;
         setStatus(`"${output.name}" output connected.`)
         setMidiOutStatus(true);
-
         // ask the BS2 to send us its current patch:
-        requestSysExDump(); //FIXME: what if the mdi_input is not yet ready?
+        requestSysExDump(); //FIXME: what if the midi_input is not yet ready?
     }
 
     /**
@@ -751,7 +775,7 @@
      * @param info
      */
     function deviceConnect(info) {
-        console.log(info);
+        console.log('deviceConnect', info);
         if ((info.name !== DEVICE.name_device_in) && (info.name !== DEVICE.name_device_out)) {
             return;
         }
@@ -768,7 +792,7 @@
      * @param info
      */
     function deviceDisconnect(info) {
-        console.log(info);
+        console.log('deviceDisconnect', info);
         if ((info.name !== DEVICE.name_device_in) && (info.name !== DEVICE.name_device_out)) {
             console.log(`disconnect event ignored for device ${info.name}`);
             return;
@@ -776,7 +800,6 @@
         if (info.name === DEVICE.name_device_in) {
             midi_input = null;
             setStatus(`${DEVICE.name_device_in} has been disconnected.`)
-            // setConnectionStatus(false);
             setMidiInStatus(false);
         }
         if (info.name === DEVICE.name_device_out) {
@@ -785,15 +808,22 @@
         }
     }
 
+    //==================================================================================================================
+    // Main
+
+    const DEVICE = BS2;
+    var midi_input = null;
+    var midi_output = null;
+    var midi_channel = 1;
+    var ignore_next_sysex = false;
+
     /**
      *
      */
     $(function () {
 
         setupUI();
-        setMidiStatus(false);
-        setMidiInStatus(false);
-        setMidiOutStatus(false);
+
         setStatus("Waiting for MIDI interface...");
 
         WebMidi.enable(function (err) {
