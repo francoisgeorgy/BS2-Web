@@ -81,7 +81,12 @@
                 `${sysex.mask[0].toString(2).padZero(8)}         ` :
                 `${sysex.mask[0].toString(2).padZero(8)} ${sysex.mask[1].toString(2).padZero(8)}`;
 
-            let s = `| ${sysex.offset.toString(10).paddingLeft('      ')} | ${sysex.mask.length.toString(10).paddingLeft('     ')} | \`${h}\`    | \`${b}\` | ${bits.toString(10).paddingLeft('    ')} | ${sysex.name} |\n`;
+            let s = `| ${sysex.offset.toString(10).paddingLeft('      ')} ` +
+                    `| ${sysex.mask.length.toString(10).paddingLeft('     ')} ` +
+                    `| \`${h}\`    | \`${b}\` ` +
+                    `| ${bits.toString(10).paddingLeft('    ')} ` +
+                    `| ${sysex.name} |\n`;
+
             $('main').append(s);
         }
 
