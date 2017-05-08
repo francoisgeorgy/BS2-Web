@@ -51,8 +51,10 @@
         $('#midi-messages-in').prepend(`${type.toUpperCase()} ${control} ${value}<br />`);
     }
 
+    //==================================================================================================================
+
     /**
-     *
+     * Draw a read-only (illustrative) ADSR envelope.
      * @param env
      * @param container_id
      */
@@ -97,8 +99,6 @@
         ctx.stroke();
         ctx.closePath();
     }
-
-
 
     //==================================================================================================================
     // Midi messages handling
@@ -187,37 +187,11 @@
         $('#' + control_type + '-' + control_number).val(value).trigger('blur');
 
         // update the customs UI elements. Any input|select element has already been updated by the above instruction.
-        updateCustoms(false);   //TODO: pass the current CC number and in updateCustoms() only update controls linked to this CC number
+        updateCustoms(/*false*/);   //TODO: pass the current CC number and in updateCustoms() only update controls linked to this CC number
     }
 
     //==================================================================================================================
-
-    /**
-     * Send a update (CC) to the connected device
-     * Note: jQuery Knob transmits the value as a float
-     * @param control
-     * @param value_float
-     */
-    function sendToDevice(control_type, control_number, value_float) {
-
-        // console.log('updateBS2', control, value_float);
-
-        let value = Math.round(value_float);
-
-        console.log('updateBS2', control_type, control_number, value_float, value);
-
-        let control = DEVICE.setControlValue(control_type, control_number, value);
-
-        if (control_type === 'cc') {
-            if ([102, 103, 104, 105].includes(control_number)) {
-                drawADSR(DEVICE.getADSREnv('mod'), 'mod-ADSR');
-            } else if ([90, 91, 92, 93].includes(control_number)) {
-                drawADSR(DEVICE.getADSREnv('amp'), 'amp-ADSR');
-            }
-        }
-
-        sendSingleValue(control);
-    }
+    // Updating to the connected device
 
     /**
      * Send a control value to the connected device.
@@ -268,6 +242,47 @@
     //==================================================================================================================
 
     /**
+     * Update the virtual DEVICE and the connected device.
+     * Note: jQuery Knob transmits the value as a float
+     *
+     * Called by the onChange handlers of dials, switches and selects.
+     *
+     * @param control
+     * @param value_float
+     */
+    function updateDevice(control_type, control_number, value_float) {
+
+        // console.log('updateBS2', control, value_float);
+
+        let value = Math.round(value_float);
+
+        console.log('updateDevice', control_type, control_number, value_float, value);
+
+        let control = DEVICE.setControlValue(control_type, control_number, value);
+
+        sendSingleValue(control);
+    }
+
+    /**
+     * Handles (reacts to) a change made by the user in the UI.
+     */
+    function handleUIChange(control_type, control_number, value) {
+
+        updateDevice(control_type, control_number, value);
+
+        if (control_type === 'cc') {
+            if ([102, 103, 104, 105].includes(control_number)) {
+                drawADSR(DEVICE.getADSREnv('mod'), 'mod-ADSR');
+            } else if ([90, 91, 92, 93].includes(control_number)) {
+                drawADSR(DEVICE.getADSREnv('amp'), 'amp-ADSR');
+            }
+        }
+    }
+
+
+    //==================================================================================================================
+
+    /**
      *
      */
     function init(sendUpdate = true) {
@@ -286,7 +301,7 @@
     /**
      *
      */
-    function randomizeBS2(sendUpdate = true) {
+    function randomize() {
 
         function _randomize(controls) {
 
@@ -312,7 +327,7 @@
             }
         }
 
-        console.groupCollapsed(`randomizeBS2(${sendUpdate})`);
+        console.groupCollapsed(`randomize`);
 
         _randomize(DEVICE.control);
         _randomize(DEVICE.nrpn);
@@ -323,7 +338,7 @@
 
         setStatus(`randomize done`);
 
-        if (sendUpdate) updateConnectedDevice();
+        updateConnectedDevice();
 
     }
 
@@ -355,10 +370,14 @@
             let dom_id = this.id;
             if (dom_id.endsWith('-handle')) return;
             let v = getDefaultValue(dom_id);
+
+            // update the control
             $(`#${dom_id}`).val(v).trigger('blur');
-            sendToDevice(...dom_id.split('-'), v);
+
+            // update the connected device
+            handleUIChange(...dom_id.split('-'), v);
         });
-        updateCustoms(false);
+        updateCustoms(/*false*/);
         //updateUI();
     }
 
@@ -369,22 +388,19 @@
      */
     function updateControls() {
 
-        //FIXME: use c.raw_value
-
         console.groupCollapsed('updateControls()');
 
         function _updateControls(controls) {
             for (let i=0; i < controls.length; i++) {
                 if (typeof controls[i] === 'undefined') continue;
-                let e = $(`#${controls[i].cc_type}-${i}`);
+                //let e = $(`#${controls[i].cc_type}-${i}`);
 
-                let v = DEVICE.getControlValue(controls[i]);
+                //let v = DEVICE.getControlValue(controls[i]);
+                // if (e.is('select.cc')) {
+                //     console.log(`update select.cc #${controls[i].cc_type}-${i}`, e.val(), v);
+                // }
 
-                if (e.is('select.cc')) {
-                    console.log(`update select.cc #${controls[i].cc_type}-${i}`, e.val(), v);
-                }
-
-                e.val(DEVICE.getControlValue(controls[i])).trigger('blur');  //TODO: change or blur?
+                $(`#${controls[i].cc_type}-${i}`).val(DEVICE.getControlValue(controls[i])).trigger('blur');
             }
         }
 
@@ -430,7 +446,7 @@
                     cursor: Math.min(...c.range) < 0 ? CURSOR : false,
                     format: v => c.human(v),
                     change : function (v) {
-                        sendToDevice(c.cc_type, i, v);
+                        handleUIChange(c.cc_type, i, v);
                     },
                     //parse: function(v) { return parseInt(v); }
                 });
@@ -477,9 +493,9 @@
             $('#cc-119').append($("<option>").val(i).text(i+1));
         }
 
-        $('select.cc').change(function (){ sendToDevice(...this.id.split('-'), this.value) });
+        $('select.cc').change(function (){ handleUIChange(...this.id.split('-'), this.value) });
 
-        // Osc: PS controls are only displayed when wave form is pulse
+        // Osc 1+2: PS controls are only displayed when wave form is pulse
         $('#nrpn-72').change(function (e) { this.value == DEVICE.OSC_WAVE_FORMS.indexOf('pulse') ? enable('#osc1-pw-controls') : disable('#osc1-pw-controls'); });
         $('#nrpn-82').change(function (e) { this.value == DEVICE.OSC_WAVE_FORMS.indexOf('pulse') ? enable('#osc2-pw-controls') : disable('#osc2-pw-controls'); });
 
@@ -489,56 +505,46 @@
 
     } // setupSelects
 
-    /**
-     *
-     * @param dom_id
-     */
-    function setupSwitch(dom_id) {
-        $(`#${dom_id}-handle`).click(function() {
-            let v = $(`#${dom_id}`).val();
-            $(`#${dom_id}`).val(v == 0 ? 1 : 0);
-            console.log('on_off click handler', dom_id, v, $(`#${dom_id}`).val());
-            updateSwitch(dom_id);
-        });
-    }
 
     /**
-     *
+     * Update the visual of the switch after an action by the user or a change transmitted by the connected device.
      * @param dom_id
      * @param sendUpdate
      */
-    function updateSwitch(dom_id, sendUpdate = true) {   //}, prefix_text) {
-        let e = $('#' + dom_id);
-        toggleOnOff('#' + dom_id + '-handle', e.val() != 0);
-        if (sendUpdate) sendToDevice(...dom_id.split('-'), e.val());
+    function updateSwitch(dom_id /*, sendUpdate = true*/) {
+        let e = $('#' + dom_id);                                // get the hidden input field of this switch
+        toggleOnOff('#' + dom_id + '-handle', e.val() != 0);    // update the switch UI
+        /*if (sendUpdate)*/ handleUIChange(...dom_id.split('-'), e.val());  // update switch UI and the device too
     }
 
+    const SWITCHES = ['cc-110', 'nrpn-89', 'nrpn-93', 'cc-108', 'cc-109', 'nrpn-106'];
+
     /**
-     *
+     * Add the click handler to the switches represented by the ids array
+     * @param ids
      */
-    function setupSwitches() {
-        setupSwitch('cc-110');
-        setupSwitch('nrpn-89');
-        setupSwitch('nrpn-93');
-        setupSwitch('cc-108');
-        setupSwitch('cc-109');
-        setupSwitch('nrpn-106');
+    function setupSwitches(ids) {
+        for (let i=0; i<ids.length; i++) {
+            let dom_id = ids[i];
+            $(`#${dom_id}-handle`).click(function () {
+                let v = $(`#${dom_id}`).val();
+                $(`#${dom_id}`).val(v == 0 ? 1 : 0);
+                console.log('switch click handler', dom_id, v, $(`#${dom_id}`).val());
+                updateSwitch(dom_id);
+            });
+        }
     }
 
     /**
      * Update the "custom" or "linked" UI controls
      */
-    function updateCustoms(sendUpdate = false) {
+    function updateCustoms(/*sendUpdate = false*/) {
 
-        console.log(`updateCustoms(${sendUpdate})`);
+        console.log(`updateCustoms()`);
 
-        updateSwitch('cc-110', sendUpdate);  // Osc 1-2 Sync
-        updateSwitch('nrpn-89', sendUpdate);
-        updateSwitch('nrpn-93', sendUpdate);
-        updateSwitch('cc-108', sendUpdate);
-        updateSwitch('cc-109', sendUpdate);
-        updateSwitch('nrpn-106', sendUpdate);
+        updateSwitch.apply(null, SWITCHES);
 
+        // Osc 1+2: PS controls are only displayed when wave form is pulse
         $('#nrpn-72').val() == DEVICE.OSC_WAVE_FORMS.indexOf('pulse') ? enable('#osc1-pw-controls') : disable('#osc1-pw-controls');
         $('#nrpn-82').val() == DEVICE.OSC_WAVE_FORMS.indexOf('pulse') ? enable('#osc2-pw-controls') : disable('#osc2-pw-controls');
 
@@ -579,7 +585,7 @@
 
         setupDials();
         setupSelects();
-        setupSwitches();
+        setupSwitches(SWITCHES);
         setupCommands();
 
         init(false);    // init DEVICE then UI without sending any CC to the DEVICE
@@ -642,6 +648,27 @@
 
         //TODO: export as sysex
 
+        ignore_next_sysex = true;   // we want a sysex to get the data but we don't want to update the UI
+        requestSysExDump();
+
+        var element = document.createElement('a');
+        element.setAttribute('href', 'data:application/octet-stream,' + encodeURIComponent(last_sysex_data));
+        element.setAttribute('download', 'bs2-patch.syx');
+
+        element.style.display = 'none';
+        document.body.appendChild(element);
+
+        element.click();
+
+        document.body.removeChild(element);
+
+    }
+
+    /*
+    function exportToJSOONFile() {
+
+        //TODO: export as sysex
+
         var data = JSON.stringify(BS2);
 
         var element = document.createElement('a');
@@ -657,6 +684,7 @@
         document.body.removeChild(element);
 
     }
+    */
 
     /**
      * header's "sync" button handler
@@ -705,7 +733,7 @@
         $('#cmd-import').click(importFromFile);
         $('#cmd-send').click(updateConnectedDevice);
         $('#cmd-init').click(init);
-        $('#cmd-randomize').click(randomizeBS2);
+        $('#cmd-randomize').click(randomize);
         $('#cmd-record').click(record);
         $('#cmd-play').click(play);
         $('#midi-channel').change(setMidiChannel);
@@ -742,6 +770,7 @@
                 handleCC(e);
             })
             .on('sysex', midi_channel, function(e) {
+                last_sysex_data = e.data;   // we keep it here because we may use it as data for the "export" command
                 if (ignore_next_sysex) {
                     setStatus("SysEx ignored.");
                     return;
@@ -816,6 +845,7 @@
     var midi_output = null;
     var midi_channel = 1;
     var ignore_next_sysex = false;
+    var last_sysex_data = null;     // last sysex dump received
 
     /**
      *
