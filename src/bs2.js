@@ -254,7 +254,10 @@ var BS2 = (function BassStationII() {
             sysex: {
                 offset: 137,
                 range: [0, 0x7F],
-                mask: [0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F]
+                mask: [0x7F, 0x7F, 0x7F, 0x7F,
+                       0x7F, 0x7F, 0x7F, 0x7F,
+                       0x7F, 0x7F, 0x7F, 0x7F,
+                       0x7F, 0x7F, 0x7F, 0x7F]
             }
         },
         signature: {
@@ -280,13 +283,11 @@ var BS2 = (function BassStationII() {
             range: []
         };
         */
-        control[control_id.osc1_fine] = { // 26 (msb), 58 (lsb)
+        control[control_id.osc1_fine] = { // 26 (MSB), 58 (LSB)
             name: "Osc1 Fine",
             lsb: 58,
             range: [-100,100],          // TODO: rename range to human_range or hrange
-            // human: _100,
-            // //map_r: _100_reverse,
-            human: _100,                // TODO: define a "byte range" 0..200 ? name it CC_range ? or raw_range ?
+            human: _100,
             sysex: {
                 offset: 22,
                 mask: [0x03, 0x7E]
@@ -297,22 +298,17 @@ var BS2 = (function BassStationII() {
             range: [63, 66],
             cc_range: [63, 66],
             human: v => OSC_RANGES[v], // v is cc raw_value
-            //init_value: OSC_RANGES.indexOf("8'"),
             init_value: 64,
             sysex: {
-                // control: control_id.osc1_range1_range,
                 offset: 20,
                 mask: [0x07, 0x78]
-                //f: v => v + 63
             }
         };
-        control[control_id.osc1_coarse] = { // 27 (msb), 59 (lsb)
+        control[control_id.osc1_coarse] = { // 27 (MSB), 59 (LSB)
             name: "Osc1 Coarse",
             lsb: 59,
             range: [-12, 12],
-            // step: 0.1,
             human: v => _12(v).toFixed(1),
-            //map_r: _12_reverse,
             sysex: {
                 offset: 21,
                 mask: [0x03, 0x7C]
@@ -322,14 +318,12 @@ var BS2 = (function BassStationII() {
             name: "Osc1 Mod Env Depth",
             range: [-63,63],
             human: _63,
-            //map_r: _63_reverse,
-            // human: v => v,
             sysex: {
                 offset: 98,
                 mask: [0x1F, 0x60]
             }
         };
-        control[control_id.osc1_lfo1_depth] = { // 28 (msb), 60 (lsb)
+        control[control_id.osc1_lfo1_depth] = { // 28 (MSB), 60 (LSB)
             name: "Osc1 LFO1 Depth",
             lsb: 60,
             range: [-127,127],
@@ -363,18 +357,16 @@ var BS2 = (function BassStationII() {
             name: "Osc1 Manual PW",
             range: [5,95],
             human: _5_95,
-            //map_r: _5_95_reverse,
             sysex: {
                 offset: 19,
                 mask: [0x0F, 0x70]
             }
         };
-        control[control_id.osc2_fine] = { // 29 (msb), 61 (lsb)
+        control[control_id.osc2_fine] = { // 29 (MSB), 61 (LSB)
             name: "Osc2 Fine",
             lsb: 61,
             range: [-100,100],
             human: _100,
-            //map_r: _100_reverse,
             sysex: {
                 offset: 28,
                 mask: [0x0F, 0x78]
@@ -385,20 +377,17 @@ var BS2 = (function BassStationII() {
             range: [63, 66],
             cc_range: [63, 66],
             human: v => OSC_RANGES[v], // v is cc raw_value
-            // init_value: OSC_RANGES.indexOf("8'"),
             init_value: 64,
             sysex: {
                 offset: 26,
                 mask: [0x1F, 0x60]
             }
         };
-        control[control_id.osc2_coarse] = { // 30 (msb), 62 (lsb)
+        control[control_id.osc2_coarse] = { // 30 (MSB), 62 (LSB)
             name: "Osc2 Coarse",
             lsb: 62,
             range: [-12, 12],
-            //step: 0.1,
             human: v => _12(v).toFixed(1),
-            //map_r: _12_reverse,
             sysex: {
                 offset: 27,
                 mask: [0x1F, 0x70]
@@ -408,18 +397,16 @@ var BS2 = (function BassStationII() {
             name: "Osc2 Mod Env Depth",
             range: [-63, 63],
             human: _63,
-            //map_r: _63_reverse,
             sysex: {
                 offset: 99,
                 mask: [0x0F, 0x70]
             }
         };
-        control[control_id.osc2_lfo1_depth] = { // 31 (msb), 63 (lsb)
+        control[control_id.osc2_lfo1_depth] = { // 31 (MSB), 63 (LSB)
             name: "Osc2 LFO1 Depth",
             range: [-127,127],
             lsb: 63,
             human: _127,
-            //map_r: _127_reverse,
             sysex: {
                 offset: 91,
                 mask: [0x1F, 0x70]
@@ -448,7 +435,6 @@ var BS2 = (function BassStationII() {
             name: "Osc2 Manual PW",
             range: [5,95],
             human: _5_95,
-            //map_r: _5_95_reverse,
             sysex: {
                 offset: 25,
                 mask: [0x3F, 0x40]  // verified OK
@@ -458,7 +444,6 @@ var BS2 = (function BassStationII() {
             name: "Sub Osc Wave",
             range: [0, 2],
             cc_range: [0, 2],
-            // choice: true,
             human: v => { return SUB_WAVE_FORMS[v % SUB_WAVE_FORMS.length] },
             init_value: 0,
             sysex: {
@@ -470,9 +455,6 @@ var BS2 = (function BassStationII() {
             name: "Sub Osc Oct",
             range: [-2, -1],    // 62 --> -2, 63 --> -1
             cc_range: [62, 63],
-            // // choice: [0, 1],
-            // human: v => v - 2,
-            //map_r: v => v + 2,
             human: v => v - 64,
             init_value: 63,
             sysex: {
@@ -481,7 +463,7 @@ var BS2 = (function BassStationII() {
                 f: v => v === 0 ? 62 : 63
             }
         };
-        control[control_id.mixer_osc_1_level] = { // 20 (msb), 52 (lsb)
+        control[control_id.mixer_osc_1_level] = { // 20 (MSB), 52 (LSB)
             name: "Mixer Osc 1 Level",
             range: [0,255],
             lsb: 52,
@@ -492,7 +474,7 @@ var BS2 = (function BassStationII() {
                 mask: [0x07, 0x7C]
             }
         };
-        control[control_id.mixer_osc_2_level] = { // 21 (msb), 53 (lsb)
+        control[control_id.mixer_osc_2_level] = { // 21 (MSB), 53 (LSB)
             name: "Mixer Osc 2 Level",
             range: [0,255],
             lsb: 53,
@@ -502,7 +484,7 @@ var BS2 = (function BassStationII() {
                 mask: [0x03, 0x7E]
             }
         };
-        control[control_id.mixer_sub_osc_level] = { // 22 (msb), 54 (lsb)
+        control[control_id.mixer_sub_osc_level] = { // 22 (MSB), 54 (LSB)
             name: "Mixer Sub Osc Level",
             range: [0,255],
             lsb: 54,
@@ -512,7 +494,7 @@ var BS2 = (function BassStationII() {
                 mask: [0x01, 0x7F]
             }
         };
-        control[control_id.mixer_noise_level] = { // 23 (msb), 55 (lsb)
+        control[control_id.mixer_noise_level] = { // 23 (MSB), 55 (LSB)
             name: "Mixer Noise Level",
             range: [0,255],
             lsb: 55,
@@ -522,7 +504,7 @@ var BS2 = (function BassStationII() {
                 mask: [0x7F, 0x40]
             }
         };
-        control[control_id.mixer_ring_mod_level] = { // 24 (msb), 56 (lsb)
+        control[control_id.mixer_ring_mod_level] = { // 24 (MSB), 56 (LSB)
             name: "Mixer Ring Mod Level",
             range: [0,255],
             lsb: 56,
@@ -532,7 +514,7 @@ var BS2 = (function BassStationII() {
                 mask: [0x3F, 0x60]
             }
         };
-        control[control_id.mixer_external_signal_level] = { // 25 (msb), 57 (lsb)
+        control[control_id.mixer_external_signal_level] = { // 25 (MSB), 57 (LSB)
             name: "Mixer External Signal Level",
             range: [0,255],
             lsb: 57,
@@ -544,8 +526,6 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.filter_type] = { // 83
             name: "Filter Type",
-            // range: [0, 1],
-            // choice: [0, 1],
             cc_range: [0, 1],
             human: v => FILTER_TYPE[v],
             sysex: {
@@ -555,8 +535,6 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.filter_slope] = { // 106
             name: "Filter Slope",
-            // range: [0, 1],
-            // choice: [0, 1],
             cc_range: [0, 1],
             human: v => FILTER_SLOPE[v],
             init_value: 1,
@@ -567,8 +545,6 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.filter_shape] = { // 84
             name: "Filter Shape",
-            // range: [0, 1],
-            //// choice: [0, 1],
             cc_range: [0, 2],
             human: v => FILTER_SHAPES[v],
             sysex: {
@@ -576,7 +552,7 @@ var BS2 = (function BassStationII() {
                 mask: [0x03]
             }
         };
-        control[control_id.filter_frequency] = { // 16 (msb), 48 (lsb)
+        control[control_id.filter_frequency] = { // 16 (MSB), 48 (LSB)
             name: "Filter Frequency",
             range: [0,255],
             lsb: 48,
@@ -600,18 +576,16 @@ var BS2 = (function BassStationII() {
             name: "Filter Mod Env Depth",
             range: [-63, 63],
             human: _63,
-            //map_r: _63_reverse,
             sysex: {
                 offset: 105,
                 mask: [0x3F, 0x40]
             }
         };
-        control[control_id.filter_lfo2_depth] = { // 17 (msb), 49 (lsb)
+        control[control_id.filter_lfo2_depth] = { // 17 (MSB), 49 (LSB)
             name: "Filter LFO2 Depth",
             range: [-127, 127],
             lsb: 49,
             human: _127,
-            //map_r: _127_reverse,
             sysex: {
                 offset: 97,
                 mask: [0x3F, 0x40]
@@ -637,8 +611,6 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.lfo1_wave] = { // 88
             name: "LFO1 Wave",
-            // range: [0, 3],
-            // choice: [0, 3],
             cc_range: [0, 3],
             human: v => LFO_WAVE_FORMS[v],
             sysex: {
@@ -646,7 +618,7 @@ var BS2 = (function BassStationII() {
                 mask: [0x06]
             }
         };
-        control[control_id.lfo1_speed] = { // 18 (msb), 50 (lsb)
+        control[control_id.lfo1_speed] = { // 18 (MSB), 50 (LSB)
             name: "LFO1 Speed",
             range: [0,255],
             lsb: 50,
@@ -668,8 +640,6 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.lfo2_wave] = { // 89
             name: "LFO2 Wave",
-            // range: [0, 3],
-            // choice: [0, 3],
             cc_range: [0, 3],
             human: v => LFO_WAVE_FORMS[v],
             sysex: {
@@ -677,7 +647,7 @@ var BS2 = (function BassStationII() {
                 mask: [0x0C]
             }
         };
-        control[control_id.lfo2_speed] = { // 19 (msb), 51 (lsb)
+        control[control_id.lfo2_speed] = { // 19 (MSB), 51 (LSB)
             name: "LFO2 Speed",
             range: [0,255],
             lsb: 51,
@@ -791,7 +761,6 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.arp_on] = { // 108
             name: "Arp On",
-            // range: [0,1],
             cc_range: [0, 1],
             on_off: true,
             human: v => v,
@@ -812,8 +781,6 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.arp_rhythm] = { // 119
             name: "Arp Rhythm",
-            // range: [1, 32],
-            // choice: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32],
             cc_range: [1, 32],
             human: v => v,
             sysex: {
@@ -823,8 +790,6 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.arp_note_mode] = { // 118
             name: "Arp Note Mode",
-            // range: [0, 7],
-            // choice: [0,1,2,3,4,5,6,7],
             cc_range: [0, 7],
             human: v => ARP_NOTES_MODE[v],
             sysex: {
@@ -834,8 +799,6 @@ var BS2 = (function BassStationII() {
         };
         control[control_id.arp_octaves] = { // 111
             name: "Arp Octaves",
-            // range: [1, 4],
-            // choice: [1,2,3,4],
             cc_range: [1, 4],
             human: v => v,
             sysex: {
@@ -843,16 +806,6 @@ var BS2 = (function BassStationII() {
                 mask: [0x1C]
             }
         };
-        /*
-        control[control_id.mod] = { // 1
-            name: "Mod",
-            range: [0, 127],
-            human: v => v,
-            sysex: {
-                // not in the sysex data sent by the BS2
-            }
-        };
-        */
         control[control_id.sustain] = { // 64
             name: "Sustain",
             range: [0, 127],
@@ -924,12 +877,8 @@ var BS2 = (function BassStationII() {
 
         // add the missing default properties
         control.forEach(function(obj) {
-            // console.log(obj);
             obj.cc_number = control.indexOf(obj);   // is also the msb
             obj.cc_type = 'cc';
-            // if (!obj.hasOwnProperty('choice')) {
-            //     obj.choice = false;
-            // }
             let max_raw;
             if (!obj.hasOwnProperty('lsb')) {
                 obj.lsb = -1;
@@ -943,14 +892,6 @@ var BS2 = (function BassStationII() {
             if (!obj.hasOwnProperty('raw_value')) {
                 obj.raw_value = obj.init_value;
             }
-            // if (!obj.hasOwnProperty('on_off')) {
-            //     obj.on_off = false;
-            //     if (!obj.hasOwnProperty('range')) {
-            //         obj.range = [0, obj.max_raw];
-            //     }
-            // } else {
-            //     obj.range = [0, 1];
-            // }
             if (!obj.hasOwnProperty('on_off')) {
                 obj.on_off = false;
             }
@@ -968,16 +909,11 @@ var BS2 = (function BassStationII() {
                 }
             }
         });
-
-        // console.log(control);
-
     } // defineControls()
 
     function defineNRPNs() {
-        nrpn[nrpn_id.osc1_waveform] = { // 0 (msb), 72 (lsb)
+        nrpn[nrpn_id.osc1_waveform] = { // 0 (MSB), 72 (LSB)
             name: "Osc1 Waveform",
-            // range: [1, 3],
-            // choice: [0,1,2,3],
             cc_range: [0, 3],
             human: v => { return OSC_WAVE_FORMS[v % OSC_WAVE_FORMS.length] },
             init_value: 2,
@@ -986,10 +922,8 @@ var BS2 = (function BassStationII() {
                 mask: [0x60]
             }
         };
-        nrpn[nrpn_id.osc2_waveform] = { // 0 (msb), 82 (lsb)
+        nrpn[nrpn_id.osc2_waveform] = { // 0 (MSB), 82 (LSB)
             name: "Osc2 Waveform",
-            // range: [1, 3],
-            // choice: [0,1,2,3],
             cc_range: [0, 3],
             human: v => { return OSC_WAVE_FORMS[v % OSC_WAVE_FORMS.length] },
             init_value: 2,
@@ -998,10 +932,8 @@ var BS2 = (function BassStationII() {
                 mask: [0x03]
             }
         };
-        nrpn[nrpn_id.amp_env_triggering] = { // 0 (msb), 73 (lsb)
+        nrpn[nrpn_id.amp_env_triggering] = { // 0 (MSB), 73 (LSB)
             name: "Amp Env Triggering",
-            // range: [0, 2],
-            // choice: [0,1,2],
             cc_range: [0, 2],
             human: v => ENV_TRIGGERING[v],
             sysex: {
@@ -1009,7 +941,7 @@ var BS2 = (function BassStationII() {
                 mask: [0x06]
             }
         };
-        nrpn[nrpn_id.mod_env_triggering] = { // 0 (msb), 105 (lsb)
+        nrpn[nrpn_id.mod_env_triggering] = { // 0 (MSB), 105 (LSB)
             name: "Mod Env Triggering",
             // range: [0, 2],
             // choice: [0,1,2],
@@ -1030,18 +962,17 @@ var BS2 = (function BassStationII() {
                 mask: [0x1F, 0x60]
             }
         };
-        nrpn[nrpn_id.mod_wheel_lfo1_osc_pitch] = { // 0 (msb), 70 (lsb)
+        nrpn[nrpn_id.mod_wheel_lfo1_osc_pitch] = { // 0 (MSB), 70 (LSB)
             name: "Mod Wheel LFO1 to Osc Pitch",
             range: [-63, 63],
             human: _63,  // TODO: make _64_63 because on the BS2 the values are -64..+63 (same for all mod wheel FN keys)
-            //map_r: _63_reverse,
             init_value: 10,
             sysex: {
                 offset: 83,
                 mask: [0x0F, 0x70]
             }
         };
-        nrpn[nrpn_id.mod_wheel_lfo2_filter_freq] = { // 0 (msb), 71 (lsb)
+        nrpn[nrpn_id.mod_wheel_lfo2_filter_freq] = { // 0 (MSB), 71 (LSB)
             name: "Mod Wheel LFO2 to Filter Freq",
             range: [-63, 63],
             human: _63,  // TODO: make _64_63 because on the BS2 the values are -64..+63 (same for all mod wheel FN keys)
@@ -1050,7 +981,7 @@ var BS2 = (function BassStationII() {
                 mask: [0x07, 0x78]
             }
         };
-        nrpn[nrpn_id.mod_wheel_osc2_pitch] = { // 0 (msb), 78 (lsb)
+        nrpn[nrpn_id.mod_wheel_osc2_pitch] = { // 0 (MSB), 78 (LSB)
             name: "Mod Wheel Osc2 Pitch",
             range: [-63, 63],
             human: _63, // TODO: make _64_63 because on the BS2 the values are -64..+63 (same for all mod wheel FN keys)
@@ -1060,7 +991,7 @@ var BS2 = (function BassStationII() {
             }
         };
     // AFTERTOUCH
-        nrpn[nrpn_id.aftertouch_filter_freq] = { // 0 (msb), 74 (lsb)
+        nrpn[nrpn_id.aftertouch_filter_freq] = { // 0 (MSB), 74 (LSB)
             name: "Aftertouch Filter Freq",
             range: [-63, 63],
             human: _63,
@@ -1071,7 +1002,7 @@ var BS2 = (function BassStationII() {
                 mask: [0x01, 0x7E]
             }
         };
-        nrpn[nrpn_id.aftertouch_lfo1_to_osc_pitch] = { // 0 (msb), 75 (lsb)
+        nrpn[nrpn_id.aftertouch_lfo1_to_osc_pitch] = { // 0 (MSB), 75 (LSB)
             name: "Aftertouch LFO1 to Osc 1+2 Pitch",
             range: [-63, 63],
             human: _63,
@@ -1081,7 +1012,7 @@ var BS2 = (function BassStationII() {
                 mask: [0x7F]
             }
         };
-        nrpn[nrpn_id.aftertouch_lfo2_speed] = { // 0 (msb), 76 (lsb)
+        nrpn[nrpn_id.aftertouch_lfo2_speed] = { // 0 (MSB), 76 (LSB)
             name: "Aftertouch LFO2 Speed",
             range: [-63,63],
             human: _63,     // todo: check
@@ -1092,7 +1023,7 @@ var BS2 = (function BassStationII() {
         };
     // LFO 1
         // FN key "Key Sync LFO 1"
-        nrpn[nrpn_id.lfo1_key_sync] = { // 0 (msb), 89 (lsb)
+        nrpn[nrpn_id.lfo1_key_sync] = { // 0 (MSB), 89 (LSB)
             name: "LFO1 Key Sync",
             on_off: true,
             cc_range: [0, 1],
@@ -1104,7 +1035,7 @@ var BS2 = (function BassStationII() {
             }
         };
         // FN key "Speed/Sync LFO 1"
-        nrpn[nrpn_id.lfo1_speed_sync] = { // 0 (msb), 88 (lsb)
+        nrpn[nrpn_id.lfo1_speed_sync] = { // 0 (MSB), 88 (LSB)
             name: "LFO1 Speed/Sync",
             // range: [0, 1],
             // choice: [0,1],
@@ -1118,8 +1049,6 @@ var BS2 = (function BassStationII() {
         nrpn[nrpn_id.lfo1_sync_value] = { // 87
             name: "LFO1 Sync Value",
             msb: -1,
-            // range: [0, 34],
-            // choice: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34],
             cc_range: [0, 34],
             human: v => LFO_SYNC[v],
             sysex: {
@@ -1128,7 +1057,7 @@ var BS2 = (function BassStationII() {
             }
         };
         // FN key "Slew LFO 1"
-        nrpn[nrpn_id.lfo1_slew] = { // 0 (msb), 86 (lsb)
+        nrpn[nrpn_id.lfo1_slew] = { // 0 (MSB), 86 (LSB)
             name: "LFO1 Slew",
             range: [0, 127],
             human: v => v,
@@ -1139,7 +1068,7 @@ var BS2 = (function BassStationII() {
         };
     // LFO 2
         // FN key "Key Sync LFO 2"
-        nrpn[nrpn_id.lfo2_key_sync] = { // 0 (msb), 93 (lsb)
+        nrpn[nrpn_id.lfo2_key_sync] = { // 0 (MSB), 93 (LSB)
             name: "LFO2 Key Sync",
             // range: [0, 1],
             on_off: true,
@@ -1152,7 +1081,7 @@ var BS2 = (function BassStationII() {
             }
         };
         // FN key "Speed/Sync LFO 2"
-        nrpn[nrpn_id.lfo2_speed_sync] = { // 0 (msb), 92 (lsb)
+        nrpn[nrpn_id.lfo2_speed_sync] = { // 0 (MSB), 92 (LSB)
             name: "LFO2 Speed/Sync",
             // range: [0, 1],
             // choice: [0,1],
@@ -1163,10 +1092,8 @@ var BS2 = (function BassStationII() {
                 mask: [0x10]
             }
         };
-        nrpn[nrpn_id.lfo2_sync_value] = { // 0 (msb), 91 (lsb)
+        nrpn[nrpn_id.lfo2_sync_value] = { // 0 (MSB), 91 (LSB)
             name: "LFO2 Sync Value",
-            // range: [0, 34],
-            // choice: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34],
             cc_range: [0, 34],
             human: v => LFO_SYNC[v],
             sysex: {
@@ -1175,7 +1102,7 @@ var BS2 = (function BassStationII() {
             }
         };
         // FN Key "Slew LFO 2"
-        nrpn[nrpn_id.lfo2_slew] = { // 0 (msb), 90 (lsb)
+        nrpn[nrpn_id.lfo2_slew] = { // 0 (MSB), 90 (LSB)
             name: "LFO2 Slew",
             range: [0, 127],
             human: v => v,
@@ -1201,9 +1128,6 @@ var BS2 = (function BassStationII() {
         nrpn.forEach(function(obj) {
             obj.cc_number = nrpn.indexOf(obj);   // is also the lsb
             obj.cc_type = 'nrpn';
-            // if (!obj.hasOwnProperty('choice')) {
-            //     obj.choice = false;
-            // }
             let max_raw;
             if (obj.hasOwnProperty('msb')) {
                 max_raw = 255;
@@ -1233,19 +1157,9 @@ var BS2 = (function BassStationII() {
                     obj.init_value = Math.min(...obj.range);
                 }
             }
-            // console.log('BS2.final nrpn', obj);
         });
 
     } // defineNRPNs()
-
-    // var OSC_RANGES = [
-    //     "16'", "8'", "4'", "2'"
-    // ];
-
-    // var obj = { foo: 'bar', baz: 42 };
-    // console.log(Object.entries(obj)); // [ ['foo', 'bar'], ['baz', 42] ]
-
-    // Object.entries(OSC_RANGES).map((o,i) => {console.log(o,i)}));
 
     var OSC_RANGES = {
         63: "16'",
@@ -1318,6 +1232,7 @@ var BS2 = (function BassStationII() {
     var ARP_NOTES_MODE = [
         "up", "down", "up-down", "up-down 2", "played", "random", "play", "record"
     ];
+
     var ARP_OCTAVES = [
         1, 2, 3, 4
     ];
@@ -1606,12 +1521,26 @@ var BS2 = (function BassStationII() {
         return c;
     }
 
+    /**
+     *
+     * @param lsb
+     * @param mask_lsb
+     * @returns {number}
+     */
     function v8(lsb, mask_lsb) {
         let r = getRightShift(mask_lsb);
         let b = (lsb & mask_lsb) >> r;
         return b;
     }
 
+    /**
+     *
+     * @param msb
+     * @param lsb
+     * @param mask_msb
+     * @param mask_lsb
+     * @returns {number}
+     */
     function v16(msb, lsb, mask_msb, mask_lsb) {
         let r = getRightShift(mask_lsb);
         let s = getSetBits(mask_lsb);
@@ -1620,6 +1549,11 @@ var BS2 = (function BassStationII() {
         return a + b;
     }
 
+    /**
+     *
+     * @param name
+     * @returns {*}
+     */
     var getADSREnv = function(name) {
         switch(name) {
             case 'amp':
@@ -1638,8 +1572,13 @@ var BS2 = (function BassStationII() {
                 };
         }
         return {};
-    }
+    };
 
+    /**
+     *
+     * @param data
+     * @returns {boolean}
+     */
     var validateSysEx = function(data) {
 
         const SYSEX_START = 0xF0;
@@ -1698,12 +1637,7 @@ var BS2 = (function BassStationII() {
             if (sysex.hasOwnProperty('f')) {
                 raw_value = sysex.f(raw_value);
                 console.log('${i} sysex.f(raw_value) =' + raw_value);
-            // } else {
-            //     let m = Math.min(...controls[i].cc_range);
-            //     console.log(`${i} raw value correction with m=${m}`, raw_value, raw_value + m);
-            //     if (m > 0) raw_value = raw_value + m;
             }
-
 
             let final_value = 0;
             final_value = controls[i].human(raw_value);
@@ -1731,12 +1665,30 @@ var BS2 = (function BassStationII() {
 
     /**
      *
+     * @param data
+     * @returns {boolean}
+     */
+    var setValuesFromSysex = function(data) {
+        if (!validateSysEx(data)) return false;
+        decodeSysExMeta(data);
+        decodeSysExControls(data, control);
+        decodeSysExControls(data, nrpn);
+        return true;
+    };
+
+    /*
+     var getValuesAsSysex = function() {
+     //TODO: export as sysex data
+     };
+     */
+
+    /**
+     *
      * @param control_type
      * @param control_number
      * @returns {number}
      */
     var getControlValue = function(ctrl) {
-        // console.log(ctrl);
         return 'raw_value' in ctrl ? ctrl.raw_value : 0;
         // let c;
         // if (control.cc_type === 'cc') {
@@ -1790,6 +1742,9 @@ var BS2 = (function BassStationII() {
         return c;
     };
 
+    /**
+     *
+     */
     var init = function() {
 
         function _init(controls) {
@@ -1804,20 +1759,6 @@ var BS2 = (function BassStationII() {
         _init(nrpn);
     };
 
-    var setValuesFromSysex = function(data) {
-        if (!validateSysEx(data)) return false;
-        decodeSysExMeta(data);
-        decodeSysExControls(data, control);
-        decodeSysExControls(data, nrpn);
-        return true;
-    };
-
-    /*
-    var getValuesAsSysex = function() {
-        //TODO: export as sysex data
-    };
-    */
-
     /**
      * Only for CC, not for NRPN
      *
@@ -1829,16 +1770,13 @@ var BS2 = (function BassStationII() {
         // console.log('BS2.getMidiMessagesForControl', control_number, value);
         if (ctrl.cc_type != 'cc') return [];
         let CC = [];
-        // let c = control.cc_number;
-        // if (typeof c === 'undefined') return CC;
         let value = getControlValue(ctrl);
         if (ctrl.lsb < 0) {
             CC.push([ctrl.cc_number, value]);
         } else {
-            CC.push([ctrl.cc_number, value >>> 1]);       // we discard the lsb
+            CC.push([ctrl.cc_number, value >>> 1]);          // we discard the lsb
             CC.push([ctrl.lsb, value % 2 === 0 ? 0 : 64]);   // that we put in the second CC message
         }
-        // console.table(CC);
         return CC;
     };
 
@@ -1846,7 +1784,7 @@ var BS2 = (function BassStationII() {
     defineNRPNs();
 
     var publicAPI = {
-        name: "Bass Stations II",
+        name: "Bass Station II",
         name_device_in: "Bass Station II",
         name_device_out: "Bass Station II",
         meta,
