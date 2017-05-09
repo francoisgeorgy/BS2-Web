@@ -1,5 +1,4 @@
-# BS2-Web
-Novation Bass Station II Web interface
+# Novation Bass Station II Web interface
 
 # MIDI
 
@@ -70,4 +69,7 @@ Example: Osc 1 Waveform (Control 0:72)
     14:55:28.989	From Bass Station II	Control	1	98	72
     14:55:28.989	From Bass Station II	Control	1	6	1
 
+# Trademarks
 
+Novation is a registered trade mark of Focusrite Audio Engineering Limited.
+Bass Station II is a trade mark of Focusrite Audio Engineering Limited.
