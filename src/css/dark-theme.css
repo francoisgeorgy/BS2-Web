@@ -9,30 +9,26 @@ h1, h2 {
 
 main > div {
     background-color: #333;
-    /*color: #fff;*/
 }
+
+a {
+    text-decoration: none;
+}
+
+#credits-link {
+    color: #707070;
+    text-decoration: none;
+    font-size: 0.8em;
+}
+
 
 *:focus {
     outline: none;
 }
 
-/*#midi-status,*/
-/*#midi-in-status,*/
-/*#midi-out-status {*/
-/*}*/
-
-.head {
-    color: #666;
-}
-
 .commands {
     /*color: #C0C040;*/
 }
-/*
-#connection-status {
-    color: #C0C040;
-}
-*/
 
 .error {
     color: #ff2222;
@@ -44,10 +40,8 @@ legend {
     color: #aaa;
 }
 
-
-
 button {
-    background-color: #666;
+    background-color: #606060;
     border: 1px solid #999;
     color: #ccc;
 }

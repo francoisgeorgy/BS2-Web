@@ -593,32 +593,32 @@
             </div>
         </div>
 
-
         <!--
           -- MIDI MESSAGES
           -->
         <div id="midi">
             <div class="midi-messages">
-                in
+                midi in
                 <div id="midi-messages-in">
                 </div>
             </div>
             <div class="midi-messages">
-                out
+                midi out
                 <div id="midi-messages-out">
                 </div>
             </div>
         </div>
 
-
         <!--
           -- STATUS and MESSAGES
           -->
-        <div id="status">
+        <div id="status-bar">
+            <a href="#credits-dialog" id="credits-link" data-lity>credits</a>
+            <div id="status">
+            </div>
         </div>
 
     </main>
-    <footer></footer>
 
     <div id="import-dialog" style="overflow:auto;background:#FDFDF6;color:#000;padding:20px;min-width:400px;max-width:90%;border-radius:6px"  class="lity-hide">
         <h1>Patch import</h1>
@@ -630,6 +630,34 @@
         </div>
         <div id="import-dialog-error" style="margin:10px 0;color:red">
         </div>
+    </div>
+
+    <div id="credits-dialog" style="overflow:auto;background:#FDFDF6;color:#000;padding:20px;min-width:400px;max-width:800px;border-radius:6px"  class="lity-hide">
+        <a href="https://github.com/francoisgeorgy/BS2-Web">
+            <img style="position: absolute; top: 0; right: 0; border: 0;"
+                 src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67"
+                 alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
+        <div class="novation-blue" style="font-weight: bold">
+            Bass Station II Web Interface
+        </div>
+        <h1 style="margin-top:20px">Credits</h1>
+        <p>This application uses Open Source components. You can find the source code of their open source projects along with license information below.
+            I acknowledge and am grateful to these developers for their contributions to open source.</p>
+        <p>
+            <ul>
+                <li>WebMidi.js helps you tame the Web MIDI API. <a href="https://github.com/cotejp/webmidi" target="_blank">https://github.com/cotejp/webmidi</a></li>
+                <li>Nice, downward compatible, touchable, jQuery dial. <a href="https://github.com/aterrien/jQuery-Knob" target="_blank">https://github.com/aterrien/jQuery-Knob</a></li>
+                <li>Lity: Lightweight, accessible and responsive lightbox. <a href="http://sorgalla.com/lity/">http://sorgalla.com/lity/</a></li>
+                <li>jQuery is a fast, small, and feature-rich JavaScript library.. <a href="https://jquery.com/" target="_blank">https://jquery.com/</a></li>
+            </ul>
+        </p>
+        <p>
+            Bass Station II Web Interface is under <strong>GNU General Public License v3.0</strong>. <a href="https://github.com/francoisgeorgy/BS2-Web/blob/master/LICENSE" target="_blank" >View license</a>.
+        </p>
+        <p class="trademarks">
+            Novation is a registered trade mark of Focusrite Audio Engineering Limited.<br />
+            Bass Station II is a trade mark of Focusrite Audio Engineering Limited.
+        </p>
     </div>
 
 </body>
