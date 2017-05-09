@@ -72,4 +72,5 @@ Example: Osc 1 Waveform (Control 0:72)
 # Trademarks
 
 Novation is a registered trade mark of Focusrite Audio Engineering Limited.
+
 Bass Station II is a trade mark of Focusrite Audio Engineering Limited.
