@@ -426,7 +426,8 @@
             angleOffset: -135,
             angleArc: 270,
             bgColor: "#606060",
-            fgColor: "#ffec03"
+            fgColor: "#ffec03",
+            innerColor: "#272727"
         });
 
         function _setup(controls) {

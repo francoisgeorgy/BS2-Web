@@ -69,6 +69,7 @@
         this.t = 0; // touches index
         this.isInit = false;
         this.fgColor = null; // main color
+        this.innerColor = null; // main color
         this.pColor = null; // previous color
         this.dH = null; // draw hook
         this.cH = null; // change hook
@@ -117,6 +118,7 @@
                     displayInput: this.$.data('displayinput') == null || this.$.data('displayinput'),
                     displayPrevious: this.$.data('displayprevious'),
                     fgColor: this.$.data('fgcolor') || '#87CEEB',
+                    innerColor: this.$.data('innercolor') || 'transparent',
                     inputColor: this.$.data('inputcolor'),
                     font: this.$.data('font') || 'Arial',
                     fontWeight: this.$.data('font-weight') || 'bold',
@@ -821,6 +823,16 @@
 
             c.lineWidth = this.lineWidth;
             c.lineCap = this.lineCap;
+
+            if(this.o.innerColor != 'transparent'){
+                c.beginPath();
+                c.fillStyle = this.o.innerColor;     // '#272727'
+                //c.arc(this.xy,this.xy,this.radius,(this.o.angleArc==360) ? this.endAngle : this.endAngle - 0.0075,this.startAngle,true);
+                //c.lineTo(this.xy,this.xy);
+                c.arc(this.xy,this.xy,this.radius,0,Math.PI*2,true);
+                c.closePath();
+                c.fill();
+            }
 
             if (this.o.bgColor !== "none") {
                 c.beginPath();
