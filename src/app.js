@@ -1,3 +1,6 @@
+(function(){
+
+    console.log('Bass Station II Web Interface');
 
     function toggleOnOff(selector, bool) {
         if (bool) {
@@ -900,3 +903,4 @@
 
     });
 
+})(); // Call the anonymous function once, then throw it away!
