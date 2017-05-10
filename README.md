@@ -1,6 +1,18 @@
 # Novation Bass Station II Web interface
 
-# MIDI
+This web application requires a browser that support the [Web MIDI API](http://webaudio.github.io/web-midi-api/).
+
+Currently, only Chrome 43+ and Opera 44+ support this standard. This app will therefore _not_ works in Firefox, Safari or IE. 
+
+# How to use
+
+1. Open https://francoisgeorgy.github.io/BS2-Web/
+2. Allow the browser to use your MIDI devices
+3. If it's not already done, connect your Bass Station II to your computer
+4. On the top-right corner of the application, "midi", "IN" and "OUT" must ne ON (gold/yellow) 
+5. Move a dial or a slider on your Bass Station II, the corresponding control on-screen must move accordingly.
+
+# Bass Station II MIDI messages
 
 ## Messages
 
