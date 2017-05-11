@@ -1,6 +1,6 @@
 # Novation Bass Station II Web interface
 
-This web application requires a browser that support the [Web MIDI API](http://webaudio.github.io/web-midi-api/).
+This application requires a browser that support the [Web MIDI API](http://webaudio.github.io/web-midi-api/).
 
 Currently, only Chrome 43+ and Opera 44+ support this standard. This app will therefore _not_ works in Firefox, Safari or IE. 
 
@@ -9,14 +9,14 @@ Currently, only Chrome 43+ and Opera 44+ support this standard. This app will th
 1. Open https://francoisgeorgy.github.io/BS2-Web/
 2. Allow the browser to use your MIDI devices
 3. If it's not already done, connect your Bass Station II to your computer
-4. On the top-right corner of the application, "midi", "IN" and "OUT" must ne ON (gold/yellow) 
+4. On the top-right corner of the application, "midi", "IN" and "OUT" must be ON (gold/yellow) 
 5. Move a dial or a slider on your Bass Station II, the corresponding on-screen control must move accordingly.
 
 # Why this app?
 
-The Bass Station II is my first synthesizer. I just bought one a couple of month ago. For a beginner like me the number
+The Bass Station II is my first synthesizer. I bought one a couple of weeks ago. For a beginner like me the number
 of controls and parameters available is huge. I want to understand how some patches and sound are done. Quite a lot of 
-parameters are hidden behind "FN  Keys" and I  wanted to be able to change them in a more direct, visual way.
+parameters are hidden behind "FN  Keys" and I wanted to be able to change them in a more direct, visual way.
 The introduction of the Web MIDI API seemed just a perfect match for this kind of development. So, here is the result.
 
 # Bass Station II MIDI messages
@@ -29,10 +29,9 @@ Some parameters use two bytes to increase ethe value range from 0..127 to 0..255
 
 ## SysEx
 
-The application is able to receive and decode a SysEx dump of a Bass station II patch, either a dump directly sent by 
-the Bass Station II itself (see "FN-Key _Global: Dump_" in the user manual) or by loading a .syx patch file.
+The application is able to receive and decode SysEx dumps coming from the Bass Station II ("FN-Key _Global: Dump_") as well as .syx patch files.
 
-The SysEx dump format is not documented by Novation. I have tried to reverse-engineered it and you can find the result
+The SysEx dump format is not documented by Novation. I have reverse-engineered it and you can find the result
  in my other project [BS2-SysEx](https://github.com/francoisgeorgy/BS2-SysEx).
 
 ----
