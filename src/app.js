@@ -1,6 +1,8 @@
 (function(){
 
-    console.log('Bass Station II Web Interface');
+    const VERSION = '1.1.0';
+
+    console.log(`Bass Station II Web Interface ${VERSION}`);
 
     function toggleOnOff(selector, bool) {
         if (bool) {
@@ -426,7 +428,8 @@
             angleOffset: -135,
             angleArc: 270,
             bgColor: "#606060",
-            fgColor: "#ffec03",
+            //fgColor: "#ffec03",
+            fgColor: "#fff",
             innerColor: "#272727"
         });
 
@@ -583,6 +586,8 @@
      */
     function setupUI() {
 
+        $('span.version').text(VERSION);
+
         setMidiStatus(false);
         setMidiInStatus(false);
         setMidiOutStatus(false);
@@ -592,6 +597,8 @@
         setupSwitches(SWITCHES);
         setupCommands();
 
+        setupSettings();
+
         init(false);    // init DEVICE then UI without sending any CC to the DEVICE
     }
 
@@ -599,6 +606,13 @@
     // Patch file handling
 
     var lightbox = null;
+
+    function settingsDialog() {
+        $('#settings-dialog-error').empty();
+        // $('#patch-file').val('');
+        lightbox = lity('#settings-dialog');
+    }
+
 
     function importFromFile() {
         $('#import-dialog-error').empty();
@@ -645,15 +659,8 @@
     //==================================================================================================================
     // UI main commands (buttons in header)
 
-    /**
-     * header's "export" button handler
-     */
-    function exportToFile() {
-
-        //TODO: export as sysex
-
-        ignore_next_sysex = true;   // we want a sysex to get the data but we don't want to update the UI
-        requestSysExDump();
+    /*
+    function exportLastDumpToFile() {
 
         var element = document.createElement('a');
         element.setAttribute('href', 'data:application/octet-stream,' + encodeURIComponent(last_sysex_data));
@@ -665,6 +672,32 @@
         element.click();
 
         document.body.removeChild(element);
+    }
+    */
+
+    /**
+     * header's "export" button handler
+     */
+    function exportToFile() {
+
+        //TODO: export as sysex
+
+        ignore_next_sysex = true;   // we want a sysex to get the data but we don't want to update the UI
+        var sysex_received_callback = function (data) {
+
+            var element = document.createElement('a');
+            element.setAttribute('href', 'data:application/octet-stream,' + encodeURIComponent(data));
+            element.setAttribute('download', 'bs2-patch.syx');
+
+            element.style.display = 'none';
+            document.body.appendChild(element);
+
+            element.click();
+
+            document.body.removeChild(element);
+        };
+
+        requestSysExDump();
 
     }
 
@@ -738,13 +771,34 @@
         $('#cmd-send').click(updateConnectedDevice);
         $('#cmd-init').click(init);
         $('#cmd-randomize').click(randomize);
-        $('#cmd-record').click(record);
-        $('#cmd-play').click(play);
+        // $('#cmd-record').click(record);
+        // $('#cmd-play').click(play);
+        $('#cmd-settings').click(settingsDialog);
         $('#midi-channel').change(setMidiChannel);
         $('#patch-file').change(readFile);
         $('h1.reset-handler').click(resetGroup);
     }
 
+    //==================================================================================================================
+    // Settings
+
+    var settings = {
+        randomize: []
+    };
+
+    function setupSettings() {
+        $('input.chk-rnd').change(
+            function() {
+                console.log(this.value, this);
+                let checked = []
+                $("input[name='randomize-groups[]']:checked").each(function () {
+                    checked.push(this.value);
+                });
+                settings.randomize = checked;
+                console.log(settings);
+            }
+        );
+    }
 
     //==================================================================================================================
     // SysEx
@@ -775,6 +829,10 @@
             })
             .on('sysex', midi_channel, function(e) {
                 last_sysex_data = e.data;   // we keep it here because we may use it as data for the "export" command
+                if (sysex_received_callback) {
+                    sysex_received_callback(last_sysex_data);   // FIXME: not a very good solution
+                    sysex_received_callback = null;
+                }
                 if (ignore_next_sysex) {
                     setStatus("SysEx ignored.");
                     return;
@@ -849,6 +907,7 @@
     var midi_output = null;
     var midi_channel = 1;
     var ignore_next_sysex = false;
+    var sysex_received_callback = false;
     var last_sysex_data = null;     // last sysex dump received
 
     /**

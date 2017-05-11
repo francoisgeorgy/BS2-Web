@@ -251,3 +251,7 @@ select {
 .trademarks {
     font-size: 0.8em;
 }
+
+#randomize-settings td {
+    padding-right: 1em;
+}
