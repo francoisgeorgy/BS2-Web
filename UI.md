@@ -26,6 +26,7 @@ The UI will try to emphasize the signal flow (sound path). It is not important t
 - ~~JS Storage: https://github.com/julien-maurel/js-storage~~
 - Lity Lightbox: http://sorgalla.com/lity/
 - ~~Featherlight lightbox: http://noelboss.github.io/featherlight/~~
+- js-cookie: https://github.com/js-cookie/js-cookie
 
 ### jQuery Knob issues
 
