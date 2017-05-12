@@ -21,7 +21,7 @@
             <span class="novation-blue">Bass Station II Web Interface</span><span id="patch" class="novation-blue">&nbsp;&nbsp;&bull;&nbsp;&nbsp;Patch</span>
             <span id="patch-number" class="novation-blue">-</span>
             <span class="commands">
-                <button id="cmd-sync" title="Sync with the BS2 by asking it to send a sysex dump of its current patch">sync</button>
+                <button id="cmd-sync" title="Sync with the BS2 by asking it to send a sysex dump of its current patch">pull</button>
                 <button id="cmd-send" title="Send all parameters to the connected Bass Station II">send</button>
                 <button id="cmd-init" title="Set all parameters to their default value">init</button>
                 <button id="cmd-randomize" title="Set all parameters to a random value">randomize</button>
@@ -642,28 +642,28 @@
             <h3>Randomize:</h3>
             <table id="randomize-settings">
                 <tr>
-                    <td><input type="checkbox" class="chk-rnd" name="randomize-groups[]" value="sub" checked="checked" />Sub</td>
-                    <td><input type="checkbox" class="chk-rnd" name="randomize-groups[]" value="mixer" checked="checked" />Mixer</td>
-                    <td><input type="checkbox" class="chk-rnd" name="randomize-groups[]" value="wheels" />Wheels</td>
+                    <td><input type="checkbox" class="chk-rnd" name="sub" checked="checked" value="1" />Sub</td>
+                    <td><input type="checkbox" class="chk-rnd" name="mixer" checked="checked" value="1" />Mixer</td>
+                    <td><input type="checkbox" class="chk-rnd" name="wheels" value="1" />Wheels</td>
                 </tr>
                 <tr>
-                    <td><input type="checkbox" class="chk-rnd" name="randomize-groups[]" value="lfo1" checked="checked" />LFO 1</td>
-                    <td><input type="checkbox" class="chk-rnd" name="randomize-groups[]" value="filter" checked="checked" />Filter</td>
-                    <td><input type="checkbox" class="chk-rnd" name="randomize-groups[]" value="keyboard" />Keyboard</td>
+                    <td><input type="checkbox" class="chk-rnd" name="lfo1" checked="checked" value="1" />LFO 1</td>
+                    <td><input type="checkbox" class="chk-rnd" name="filter" checked="checked" value="1" />Filter</td>
+                    <td><input type="checkbox" class="chk-rnd" name="keyboard" value="1" />Keyboard</td>
                 </tr>
                 <tr>
-                    <td><input type="checkbox" class="chk-rnd" name="randomize-groups[]" value="lfo2" checked="checked" />LFO 2</td>
-                    <td><input type="checkbox" class="chk-rnd" name="randomize-groups[]" value="mod-env" checked="checked" />Mod env</td>
-                    <td><input type="checkbox" class="chk-rnd" name="randomize-groups[]" value="arp" />ARP</td>
+                    <td><input type="checkbox" class="chk-rnd" name="lfo2" checked="checked" value="1" />LFO 2</td>
+                    <td><input type="checkbox" class="chk-rnd" name="mod-env" checked="checked" value="1" />Mod env</td>
+                    <td><input type="checkbox" class="chk-rnd" name="arp" value="1" />ARP</td>
                 </tr>
                 <tr>
-                    <td><input type="checkbox" class="chk-rnd" name="randomize-groups[]" value="osc2" checked="checked" />Osc 2</td>
-                    <td><input type="checkbox" class="chk-rnd" name="randomize-groups[]" value="amp-env" checked="checked" />Amp env</td>
-                    <td><input type="checkbox" class="chk-rnd" name="randomize-groups[]" value="vca" />VCA</td>
+                    <td><input type="checkbox" class="chk-rnd" name="osc1" checked="checked" value="1" />Osc 1</td>
+                    <td><input type="checkbox" class="chk-rnd" name="amp-env" checked="checked" value="1" />Amp env</td>
+                    <td><input type="checkbox" class="chk-rnd" name="vca" value="1" />VCA</td>
                 </tr>
                 <tr>
-                    <td><input type="checkbox" class="chk-rnd" name="randomize-groups[]" value="osc2" checked="checked" />Osc 2</td>
-                    <td><input type="checkbox" class="chk-rnd" name="randomize-groups[]" value="effects" checked="checked" />Effects</td>
+                    <td><input type="checkbox" class="chk-rnd" name="osc2" checked="checked" value="1" />Osc 2</td>
+                    <td><input type="checkbox" class="chk-rnd" name="effects" checked="checked" value="1" />Effects</td>
                     <td></td>
                 </tr>
             </table>
@@ -671,7 +671,7 @@
         <div style="margin:10px 0;">
             <h3>Theme:</h3>
             <select id="theme-choice">
-                <option value="dark">Dark (default)</option>
+                <option value="dark">Dark</option>
                 <option value="light">Light</option>
             </select>
         </div>

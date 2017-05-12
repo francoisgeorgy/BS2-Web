@@ -1607,7 +1607,7 @@ var BS2 = (function BassStationII() {
      */
     var decodeSysExControls = function(data, controls) {
 
-        console.group('decodeSysExControls');
+        console.groupCollapsed('decodeSysExControls');
 
         for (let i=0; i < controls.length; i++) {
 

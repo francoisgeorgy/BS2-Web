@@ -587,7 +587,7 @@
         console.groupCollapsed(`updateCustoms()`);
 
         // updateSwitch.apply(null, SWITCHES);
-        SWITCHES.forEach(updateSwitch);
+        SWITCHES.forEach(updateSwitch);         // FIXME: nothing must be sent to the connected device
 
         // Osc 1+2: PS controls are only displayed when wave form is pulse
         $('#nrpn-72').val() == DEVICE.OSC_WAVE_FORMS.indexOf('pulse') ? enable('#osc1-pw-controls') : disable('#osc1-pw-controls');
@@ -633,6 +633,12 @@
         setMidiStatus(false);
         setMidiInStatus(false);
         setMidiOutStatus(false);
+
+        loadSettings();
+        $("link#themesheet").attr("href", THEME[settings.theme].href);
+        $("#theme-choice").val(settings.theme);
+
+        console.log('settings', settings);
 
         setupDials();
         setupSelects();
@@ -855,19 +861,36 @@
         theme: "light"
     };
 
+    function loadSettings() {
+        Object.assign(settings, Cookies.getJSON('settings'));
+        // 1. reset all checkboxes:
+        $('input.chk-rnd').prop('checked', false);
+        // 2. then, select those that need to be:
+        for (let i=0; i<settings.randomize.length; i++) {
+            $(`input:checkbox[name=${settings.randomize[i]}]`).prop('checked', true);
+        }
+    }
+
     function setupSettings() {
 
-        console.log("setupSettings", Cookies.get());
+        console.log("setupSettings", Cookies.getJSON());
 
         $('input.chk-rnd').change(
             function() {
-                console.log(this.value, this);
+                // console.log(this.value, this);
                 let checked = []
-                $("input[name='randomize-groups[]']:checked").each(function () {
-                    checked.push(this.value);
+                $("input.chk-rnd:checked").each(function () {
+                    // console.log(this, this.name);
+                    checked.push(this.name);
                 });
+
+                // let checked = $("input.chk-rnd:checked").map(function() { return $(this).name }).get();
+
                 settings.randomize = checked;
-                console.log(settings);
+
+                console.log('save settings', settings);
+                Cookies.set('settings', settings);
+
             }
         );
         $('#theme-choice').change(
@@ -875,10 +898,10 @@
                 settings.theme = this.value;
                 $("link#themesheet").attr("href", THEME[settings.theme].href);
 
-                //TODO: save theme in cookie
-                redrawDials();
-                //window.location.reload();
+                // redrawDials();
+                window.location.reload();
 
+                // console.log('save setting', settings);
                 Cookies.set('settings', settings);
 
             }
