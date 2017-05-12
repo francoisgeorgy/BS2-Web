@@ -71,6 +71,10 @@
         this.fgColor = null; // main color
         this.innerColor = null; // main color
         this.pColor = null; // previous color
+
+        this.negativeColor = null;
+        this.positiveColor = null;
+
         this.dH = null; // draw hook
         this.cH = null; // change hook
         this.eH = null; // cancel hook
@@ -118,6 +122,10 @@
                     displayInput: this.$.data('displayinput') == null || this.$.data('displayinput'),
                     displayPrevious: this.$.data('displayprevious'),
                     fgColor: this.$.data('fgcolor') || '#87CEEB',
+
+                    positiveColor: this.$.data('positivecolor') || '#87CEEB',
+                    negativeColor: this.$.data('positivecolor') || '#87CEEB',
+
                     innerColor: this.$.data('innercolor') || 'transparent',
                     inputColor: this.$.data('inputcolor'),
                     font: this.$.data('font') || 'Arial',
@@ -796,22 +804,26 @@
 
 
             let ccw = this.o.flip && !this.o.cursor;
-            let color = '#ffea00';  // FIXME: make it configurable
+            // let color = '#ffea00';  // FIXME: make it configurable
+            let color = this.o.positiveColor;
 
             if (this.o.cursor) {
                 sa = 1.5 * Math.PI;
                 if (ea < 1.5*Math.PI) {
                     ccw = true;
-                    color = '#ccbb00';  // FIXME: make it configurable
+                    // color = '#ccbb00';  // FIXME: make it configurable
+                    color = this.o.negativeColor;
                 }
             }
+
+            // console.log(`arc=${color}`);
 
             return {
               s: sa,    // start angle, in radians (0 is at the 3 o'clock position of the arc's circle)
               e: ea,    // end angle
               // d: this.o.flip && !this.o.cursor  // ccw
               d: ccw,
-                c: color
+              c: color
           };
         };
 
@@ -852,7 +864,9 @@
 
             c.beginPath();
             //c.strokeStyle = r ? this.o.fgColor : this.fgColor ;
-            c.strokeStyle = r ? a.c : this.fgColor ;
+
+            c.strokeStyle = r ? a.c : this.o.fgColor ;
+            // console.log(`c=${c.strokeStyle}`);
             c.arc(this.xy, this.xy, this.radius, a.s, a.e, a.d);    // x, y, radius, start-angle, end-angle, ccw
             c.stroke();
         };

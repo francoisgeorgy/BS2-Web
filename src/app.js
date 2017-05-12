@@ -4,6 +4,7 @@
 
     console.log(`Bass Station II Web Interface ${VERSION}`);
 
+
     function toggleOnOff(selector, bool) {
         if (bool) {
             $(selector).removeClass("off").addClass("on");
@@ -100,7 +101,8 @@
 
         // stroke
         ctx.lineWidth = 2;
-        ctx.strokeStyle = "#ffec03";
+        // ctx.strokeStyle = "#ffec03";
+        ctx.strokeStyle = THEME[settings.theme].positiveColor;
         ctx.stroke();
         ctx.closePath();
     }
@@ -207,15 +209,25 @@
         if (control.cc_type === 'cc') {
             let a = DEVICE.getMidiMessagesForNormalCC(control);
             for (let i=0; i<a.length; i++) {
-                console.log(`send CC ${a[i][0]} ${a[i][1]} (${control.name}) on channel ${midi_channel}`);
-                logOutgoingMidiMessage('cc', a[i][0], a[i][1]);
-                if (midi_output) midi_output.sendControlChange(a[i][0], a[i][1], midi_channel);
+                if (midi_output) {
+                    console.log(`send CC ${a[i][0]} ${a[i][1]} (${control.name}) on channel ${midi_channel}`);
+                    logOutgoingMidiMessage('cc', a[i][0], a[i][1]);
+                    midi_output.sendControlChange(a[i][0], a[i][1], midi_channel);
+                } else {
+                    console.log(`(send CC ${a[i][0]} ${a[i][1]} (${control.name}) on channel ${midi_channel})`);
+                    // logOutgoingMidiMessage('cc', a[i][0], a[i][1]);
+                    // midi_output.sendControlChange(a[i][0], a[i][1], midi_channel);
+                }
             }
         } else if (control.cc_type === 'nrpn') {
             let value = DEVICE.getControlValue(control);
-            console.log(`send NRPN ${control.cc_number} ${value} (${control.name}) on channel ${midi_channel}`);
-            logOutgoingMidiMessage('nrpn', control.cc_number, value);
-            if (midi_output) midi_output.setNonRegisteredParameter([0, control.cc_number], value, midi_channel);  // for the BS2, the NRPN MSB is always 0
+            if (midi_output) {
+                console.log(`send NRPN ${control.cc_number} ${value} (${control.name}) on channel ${midi_channel}`);
+                logOutgoingMidiMessage('nrpn', control.cc_number, value);
+                midi_output.setNonRegisteredParameter([0, control.cc_number], value, midi_channel);  // for the BS2, the NRPN MSB is always 0
+            } else {
+                console.log(`(send NRPN ${control.cc_number} ${value} (${control.name}) on channel ${midi_channel})`);
+            }
         }
 
     }
@@ -252,12 +264,11 @@
      *
      * Called by the onChange handlers of dials, switches and selects.
      *
-     * @param control
+     * @param control_type
+     * @param control_number
      * @param value_float
      */
     function updateDevice(control_type, control_number, value_float) {
-
-        // console.log('updateBS2', control, value_float);
 
         let value = Math.round(value_float);
 
@@ -405,6 +416,8 @@
                 //     console.log(`update select.cc #${controls[i].cc_type}-${i}`, e.val(), v);
                 // }
 
+                console.log(`update #${controls[i].cc_type}-${i}`);
+
                 $(`#${controls[i].cc_type}-${i}`).val(DEVICE.getControlValue(controls[i])).trigger('blur');
             }
         }
@@ -417,6 +430,24 @@
     } // updateControls()
 
     /**
+     * Called when the theme changes
+     */
+    function redrawDials() {
+        $('.dial').each(function(index){
+
+            //FIXME: the color of the value is not updated
+
+            $(this).trigger('configure', {
+                bgColor: THEME[settings.theme].bgColor,
+                fgColor: THEME[settings.theme].fgColor,
+                innerColor: THEME[settings.theme].innerColor,
+                positiveColor: THEME[settings.theme].positiveColor,
+                negativeColor: THEME[settings.theme].negativeColor
+            });
+        });
+    }
+
+    /**
      *
      */
     function setupDials() {
@@ -427,10 +458,11 @@
             // release : function (v) { console.log('release', this, v); },
             angleOffset: -135,
             angleArc: 270,
-            bgColor: "#606060",
-            //fgColor: "#ffec03",
-            fgColor: "#fff",
-            innerColor: "#272727"
+            bgColor: THEME[settings.theme].bgColor,
+            fgColor: THEME[settings.theme].fgColor,
+            innerColor: THEME[settings.theme].innerColor,
+            positiveColor: THEME[settings.theme].positiveColor,
+            negativeColor: THEME[settings.theme].negativeColor
         });
 
         function _setup(controls) {
@@ -518,10 +550,10 @@
      * @param dom_id
      * @param sendUpdate
      */
-    function updateSwitch(dom_id /*, sendUpdate = true*/) {
+    function updateSwitch(dom_id) {
         let e = $('#' + dom_id);                                // get the hidden input field of this switch
         toggleOnOff('#' + dom_id + '-handle', e.val() != 0);    // update the switch UI
-        /*if (sendUpdate)*/ handleUIChange(...dom_id.split('-'), e.val());  // update switch UI and the device too
+        handleUIChange(...dom_id.split('-'), e.val());  // update switch UI and the device too
     }
 
     const SWITCHES = ['cc-110', 'nrpn-89', 'nrpn-93', 'cc-108', 'cc-109', 'nrpn-106'];
@@ -533,11 +565,16 @@
     function setupSwitches(ids) {
         for (let i=0; i<ids.length; i++) {
             let dom_id = ids[i];
+
+            // let e = $('#' + dom_id);                                // get the hidden input field of this switch
+            // toggleOnOff(`#${dom_id}-handle`, e.val() != 0);    // update the switch UI
+
             $(`#${dom_id}-handle`).click(function () {
-                let v = $(`#${dom_id}`).val();
-                $(`#${dom_id}`).val(v == 0 ? 1 : 0);
-                console.log('switch click handler', dom_id, v, $(`#${dom_id}`).val());
-                updateSwitch(dom_id);
+                let elem = $(`#${dom_id}`);
+                let v = elem.val();
+                elem.val(v == 0 ? 1 : 0);
+                console.log('switch click handler', dom_id, v, elem.val());
+                updateSwitch(dom_id, true);
             });
         }
     }
@@ -545,11 +582,12 @@
     /**
      * Update the "custom" or "linked" UI controls
      */
-    function updateCustoms(/*sendUpdate = false*/) {
+    function updateCustoms() {
 
-        console.log(`updateCustoms()`);
+        console.groupCollapsed(`updateCustoms()`);
 
-        updateSwitch.apply(null, SWITCHES);
+        // updateSwitch.apply(null, SWITCHES);
+        SWITCHES.forEach(updateSwitch);
 
         // Osc 1+2: PS controls are only displayed when wave form is pulse
         $('#nrpn-72').val() == DEVICE.OSC_WAVE_FORMS.indexOf('pulse') ? enable('#osc1-pw-controls') : disable('#osc1-pw-controls');
@@ -561,6 +599,8 @@
 
         drawADSR(DEVICE.getADSREnv('mod'), 'mod-ADSR');
         drawADSR(DEVICE.getADSREnv('amp'), 'amp-ADSR');
+
+        console.groupEnd();
 
     }
 
@@ -586,6 +626,8 @@
      */
     function setupUI() {
 
+        console.groupCollapsed("setupUI");
+
         $('span.version').text(VERSION);
 
         setMidiStatus(false);
@@ -600,6 +642,9 @@
         setupSettings();
 
         init(false);    // init DEVICE then UI without sending any CC to the DEVICE
+
+        console.groupEnd();
+
     }
 
     //==================================================================================================================
@@ -782,11 +827,38 @@
     //==================================================================================================================
     // Settings
 
+    const THEME = {
+        "dark": {
+            href: "css/dark-theme.css",
+            bgColor: "#606060",
+            //fgColor: "#ffec03",
+            fgColor: "#fff",
+            innerColor: "#272727",
+            positiveColor: "#ffea00",
+            negativeColor: "#ccbb00"
+        },
+        "light": {
+            href: "css/light-theme.css",
+            bgColor: "#ddd",
+            //fgColor: "#ffec03",
+            fgColor: "#333",
+            innerColor: "#eee",
+            positiveColor: "#005b80",
+            negativeColor: "#0080b3"
+        }
+    };
+
+    // var theme = "light";
+
     var settings = {
-        randomize: []
+        randomize: [],
+        theme: "light"
     };
 
     function setupSettings() {
+
+        console.log("setupSettings", Cookies.get());
+
         $('input.chk-rnd').change(
             function() {
                 console.log(this.value, this);
@@ -796,6 +868,19 @@
                 });
                 settings.randomize = checked;
                 console.log(settings);
+            }
+        );
+        $('#theme-choice').change(
+            function() {
+                settings.theme = this.value;
+                $("link#themesheet").attr("href", THEME[settings.theme].href);
+
+                //TODO: save theme in cookie
+                redrawDials();
+                //window.location.reload();
+
+                Cookies.set('settings', settings);
+
             }
         );
     }

@@ -5,10 +5,11 @@
     <title>Bass Station II Web Interface</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Condensed:400,700" rel="stylesheet">
     <link rel="stylesheet" media="all" href="css/layout.css" />
-    <link rel="stylesheet" media="all" href="css/dark-theme.css" />
+    <link rel="stylesheet" media="all" href="css/light-theme.css" id="themesheet" />
     <link rel="stylesheet" href="lib/lity.min.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="lib/lity.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="lib/js.cookie.js"></script>
     <script src="lib/webmidi.min.js"></script>
     <script src="lib/jquery.knob.js"></script>
     <script src="bs2.js"></script>
@@ -667,6 +668,13 @@
                 </tr>
             </table>
         </div>
+        <div style="margin:10px 0;">
+            <h3>Theme:</h3>
+            <select id="theme-choice">
+                <option value="dark">Dark (default)</option>
+                <option value="light">Light</option>
+            </select>
+        </div>
         <div id="settings-dialog-error" style="margin:10px 0;color:red">
         </div>
     </div>
@@ -686,6 +694,7 @@
                 <li>WebMidi.js helps you tame the Web MIDI API. <a href="https://github.com/cotejp/webmidi" target="_blank">https://github.com/cotejp/webmidi</a></li>
                 <li>Nice, downward compatible, touchable, jQuery dial. <a href="https://github.com/aterrien/jQuery-Knob" target="_blank">https://github.com/aterrien/jQuery-Knob</a></li>
                 <li>Lity: Lightweight, accessible and responsive lightbox. <a href="http://sorgalla.com/lity/">http://sorgalla.com/lity/</a></li>
+                <li>A simple, lightweight JavaScript API for handling browser cookies. <a href="https://github.com/js-cookie/js-cookie" target="_blank">https://github.com/js-cookie/js-cookie</a></li>
                 <li>jQuery is a fast, small, and feature-rich JavaScript library.. <a href="https://jquery.com/" target="_blank">https://jquery.com/</a></li>
             </ul>
         </p>

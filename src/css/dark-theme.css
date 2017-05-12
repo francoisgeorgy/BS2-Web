@@ -106,3 +106,7 @@ div.disabled > * {
 select.disabled {
     opacity: 0.4;
 }
+
+.midi-messages {
+    color: #aaa;
+}

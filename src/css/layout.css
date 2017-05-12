@@ -112,7 +112,6 @@ main > div {
     float: left;
     margin-right: 20px;
     font-size: 0.7em;
-    color: #aaa;
     width:80px;
     height: 90px;
 }
@@ -222,7 +221,6 @@ button {
     font-family: 'Roboto Condensed', sans-serif;
     border-radius: 4px;
     font-size: 0.8em;
-    color: #aaa;
 }
 
 select {
@@ -244,14 +242,20 @@ select {
     user-select: none;
 }
 
-.lightbox {
-    display: none;
-}
-
 .trademarks {
     font-size: 0.8em;
 }
 
 #randomize-settings td {
     padding-right: 1em;
+}
+
+.lightbox {
+    display: none;
+}
+
+.lity-close {
+    position: absolute!important;
+    color: #000!important;
+    text-shadow: none!important;
 }
