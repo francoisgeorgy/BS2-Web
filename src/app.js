@@ -49,12 +49,19 @@
         $(sel).removeClass('disabled');
     }
 
+    var midi_out_messages = 0;
+    var midi_in_messages = 0;
+
     function logOutgoingMidiMessage(type, control, value) {
-        $('#midi-messages-out').prepend(`${type.toUpperCase()} ${control} ${value}<br />`);
+        midi_out_messages++;
+        $('#midi-messages-out').prepend(`<div>${type.toUpperCase()} ${control} ${value}</div>`);
+        if (midi_out_messages > 100) $("#midi-messages-out div:last-child").remove();
     }
 
     function logIncomingMidiMessage(type, control, value) {
-        $('#midi-messages-in').prepend(`${type.toUpperCase()} ${control} ${value}<br />`);
+        midi_in_messages++;
+        $('#midi-messages-in').prepend(`<div>${type.toUpperCase()} ${control} ${value}</div>`);
+        if (midi_in_messages > 100) $("#midi-messages-in div:last-child").remove();
     }
 
     //==================================================================================================================
@@ -487,7 +494,7 @@
                     change : function (v) {
                         handleUIChange(c.cc_type, i, v);
                     },
-                    //parse: function(v) { return parseInt(v); }
+                    parse: v => c.parse(v)
                 });
             }
         }
@@ -574,7 +581,7 @@
                 let elem = $(`#${dom_id}`);
                 let v = elem.val();
                 elem.val(v == 0 ? 1 : 0);
-                console.log('switch click handler', dom_id, v, elem.val());
+                // console.log('switch click handler', dom_id, v, elem.val());
                 updateSwitch(dom_id, true);
             });
         }
@@ -587,8 +594,7 @@
 
         console.groupCollapsed(`updateCustoms()`);
 
-        // updateSwitch.apply(null, SWITCHES);
-        SWITCHES.forEach(updateSwitch);         // FIXME: nothing must be sent to the connected device
+        SWITCHES.forEach((currentValue, index, array) => updateSwitch(currentValue, false));
 
         // Osc 1+2: PS controls are only displayed when wave form is pulse
         $('#nrpn-72').val() == DEVICE.OSC_WAVE_FORMS.indexOf('pulse') ? enable('#osc1-pw-controls') : disable('#osc1-pw-controls');
