@@ -325,7 +325,7 @@ var BS2 = (function BassStationII() {
             parse: _parse_12,
             sysex: {
                 offset: 21,
-                mask: [0x03, 0x7C]
+                mask: [0x07, 0x7C]
             }
         };
         control[control_id.osc1_mod_env_depth] = { // 71
