@@ -145,7 +145,7 @@
                         return v;
                     },
                     parse: function (v) {
-                        // console.log(`parse ${v}`);
+                        console.log(`parse ${v}`);
                         return parseFloat(v);
                     }
                 }, this.o
@@ -187,6 +187,7 @@
                 this.$.bind(
                     'change blur',
                     function () {
+                        // console.log('dial blur');
                         s.val(s._validate(s.o.parse(s.$.val())));
                     }
                 );
@@ -194,6 +195,7 @@
                 this.$.bind(
                     'update',
                     function () {
+                        // console.log('dial update');
                         s.val(s._validate(s.o.parse(s.$.val())), false);
                     }
                 );
@@ -265,7 +267,7 @@
                 .bind("configure", cf);
 
 
-            this.$.attr('readonly', 'readonly');    //CHANGE: make input field read-only
+            // this.$.attr('readonly', 'readonly');    //CHANGE: make input field read-only
 
 
             // finalize init
@@ -804,14 +806,12 @@
 
 
             let ccw = this.o.flip && !this.o.cursor;
-            // let color = '#ffea00';  // FIXME: make it configurable
             let color = this.o.positiveColor;
 
             if (this.o.cursor) {
                 sa = 1.5 * Math.PI;
                 if (ea < 1.5*Math.PI) {
                     ccw = true;
-                    // color = '#ccbb00';  // FIXME: make it configurable
                     color = this.o.negativeColor;
                 }
             }

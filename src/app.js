@@ -550,10 +550,11 @@
      * @param dom_id
      * @param sendUpdate
      */
-    function updateSwitch(dom_id) {
+    function updateSwitch(dom_id, send_to_device = false) {
         let e = $('#' + dom_id);                                // get the hidden input field of this switch
         toggleOnOff('#' + dom_id + '-handle', e.val() != 0);    // update the switch UI
-        handleUIChange(...dom_id.split('-'), e.val());  // update switch UI and the device too
+        console.log('updateSwitch', send_to_device);
+        if (send_to_device) handleUIChange(...dom_id.split('-'), e.val());  // update switch UI and the device too
     }
 
     const SWITCHES = ['cc-110', 'nrpn-89', 'nrpn-93', 'cc-108', 'cc-109', 'nrpn-106'];
