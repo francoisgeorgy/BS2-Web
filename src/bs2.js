@@ -123,16 +123,29 @@ var BS2 = (function BassStationII() {
         return v < 64 ? (v - 63) : (v - 64);
     };
 
+    var _parse_63 = function(v) {
+        // console.log(`_parse_63(${v})`);
+        return v < 0 ? (v + 63) : (v + 64);
+    };
+
     var _64 = function(v) {
         return v - 64;
     };
 
-    // var _63_reverse = function(v) {
-    //     return v < 0 ? (v + 63) : (v + 64);
-    // };
-
     var _12 = function(v) {
         return COARSE_VALUES[v] / 10;
+    };
+
+    var _parse_12 = function(v) {
+        // console.log(`parse ${v}`);
+        let t = Math.round(v*10.0);
+        for (let i=0; i<COARSE_VALUES.length; i++) {
+            if (COARSE_VALUES[i] === t) {
+                // console.log(`parse ${v} => ${i}`);
+                return i;
+            }
+        }
+        return 0;
     };
 
     // var _12_reverse = function(v) {
@@ -178,7 +191,7 @@ var BS2 = (function BassStationII() {
 
     // Map 0..255 to -90..+90
     var _pw = function(v) {
-        console.log(v * 2 * 91.0 / 256 + 5 -0.4);
+        // console.log(v * 2 * 91.0 / 256 + 5 -0.4);
         return Math.round(v * 2 * 91.0 / 256 + 5 -0.4);
     };
 
@@ -309,6 +322,7 @@ var BS2 = (function BassStationII() {
             lsb: 59,
             range: [-12, 12],
             human: v => _12(v).toFixed(1),
+            parse: _parse_12,
             sysex: {
                 offset: 21,
                 mask: [0x03, 0x7C]
@@ -318,6 +332,7 @@ var BS2 = (function BassStationII() {
             name: "Osc1 Mod Env Depth",
             range: [-63,63],
             human: _63,
+            parse: _parse_63,
             sysex: {
                 offset: 98,
                 mask: [0x1F, 0x60]
@@ -388,6 +403,7 @@ var BS2 = (function BassStationII() {
             lsb: 62,
             range: [-12, 12],
             human: v => _12(v).toFixed(1),
+            parse: _parse_12,
             sysex: {
                 offset: 27,
                 mask: [0x1F, 0x70]
@@ -397,6 +413,7 @@ var BS2 = (function BassStationII() {
             name: "Osc2 Mod Env Depth",
             range: [-63, 63],
             human: _63,
+            parse: _parse_63,
             sysex: {
                 offset: 99,
                 mask: [0x0F, 0x70]
@@ -416,7 +433,7 @@ var BS2 = (function BassStationII() {
             name: "Osc2 Mod Env PW Mod",
             range: [-63,63],
             human: _63,
-            //map_r: _63_reverse,
+            parse: _parse_63,
             sysex: {
                 offset: 102,
                 mask: [0x01, 0x7E]
@@ -576,6 +593,7 @@ var BS2 = (function BassStationII() {
             name: "Filter Mod Env Depth",
             range: [-63, 63],
             human: _63,
+            parse: _parse_63,
             sysex: {
                 offset: 105,
                 mask: [0x3F, 0x40]
@@ -838,6 +856,7 @@ var BS2 = (function BassStationII() {
             range: [-63, 63],
             cc_range: [1, 127],
             human: _64,
+            parse: _parse_63,
             sysex: {
                 offset: 49,
                 mask: [0x3F, 0x40]
@@ -848,6 +867,7 @@ var BS2 = (function BassStationII() {
             range: [-63, 63],
             cc_range: [1, 127],
             human: _64,
+            parse: _parse_63,
             sysex: {
                 offset: 56,
                 mask: [0x7F]
@@ -908,6 +928,9 @@ var BS2 = (function BassStationII() {
                     obj.init_value = Math.min(...obj.range);
                 }
             }
+            if (!obj.hasOwnProperty('parse')) {
+                obj.parse = v => parseFloat(v);
+            }
         });
     } // defineControls()
 
@@ -957,6 +980,7 @@ var BS2 = (function BassStationII() {
             name: "Mod Wheel Filter Freq",
             range: [-64,63],
             human: _63, // TODO: make _64_63 because on the BS2 the values are -64..+63 (same for all mod wheel FN keys)
+            parse: _parse_63,
             sysex: {
                 offset: 82,
                 mask: [0x1F, 0x60]
@@ -966,6 +990,7 @@ var BS2 = (function BassStationII() {
             name: "Mod Wheel LFO1 to Osc Pitch",
             range: [-63, 63],
             human: _63,  // TODO: make _64_63 because on the BS2 the values are -64..+63 (same for all mod wheel FN keys)
+            parse: _parse_63,
             init_value: 10,
             sysex: {
                 offset: 83,
@@ -976,6 +1001,7 @@ var BS2 = (function BassStationII() {
             name: "Mod Wheel LFO2 to Filter Freq",
             range: [-63, 63],
             human: _63,  // TODO: make _64_63 because on the BS2 the values are -64..+63 (same for all mod wheel FN keys)
+            parse: _parse_63,
             sysex: {
                 offset: 84,
                 mask: [0x07, 0x78]
@@ -985,6 +1011,7 @@ var BS2 = (function BassStationII() {
             name: "Mod Wheel Osc2 Pitch",
             range: [-63, 63],
             human: _63, // TODO: make _64_63 because on the BS2 the values are -64..+63 (same for all mod wheel FN keys)
+            parse: _parse_63,
             sysex: {
                 offset: 85,
                 mask: [0x03, 0x7C]
@@ -995,7 +1022,7 @@ var BS2 = (function BassStationII() {
             name: "Aftertouch Filter Freq",
             range: [-63, 63],
             human: _63,
-            //map_r: _63_reverse,
+            parse: _parse_63,
             init_value: 10,
             sysex: {
                 offset: 86,
@@ -1006,7 +1033,7 @@ var BS2 = (function BassStationII() {
             name: "Aftertouch LFO1 to Osc 1+2 Pitch",
             range: [-63, 63],
             human: _63,
-            //map_r: _63_reverse,
+            parse: _parse_63,
             sysex: {
                 offset: 88,
                 mask: [0x7F]
@@ -1016,6 +1043,7 @@ var BS2 = (function BassStationII() {
             name: "Aftertouch LFO2 Speed",
             range: [-63,63],
             human: _63,     // todo: check
+            parse: _parse_63,
             sysex: {
                 offset: 89,
                 mask: [0x3F, 0x40]
@@ -1156,6 +1184,9 @@ var BS2 = (function BassStationII() {
                 } else {
                     obj.init_value = Math.min(...obj.range);
                 }
+            }
+            if (!obj.hasOwnProperty('parse')) {
+                obj.parse = v => parseFloat(v);
             }
         });
 
@@ -1632,17 +1663,17 @@ var BS2 = (function BassStationII() {
                 raw_value = v8(data[sysex.offset], sysex.mask[0]);
             }
 
-            console.log(`${i} raw_value=${raw_value}`);
+            // console.log(`${i} raw_value=${raw_value}`);
 
             if (sysex.hasOwnProperty('f')) {
                 raw_value = sysex.f(raw_value);
-                console.log('${i} sysex.f(raw_value) =' + raw_value);
+                // console.log('${i} sysex.f(raw_value) =' + raw_value);
             }
 
             let final_value = 0;
             final_value = controls[i].human(raw_value);
 
-            console.log(`${i} finale_value(${raw_value}) = ${final_value}`);
+            // console.log(`${i} finale_value(${raw_value}) = ${final_value}`);
 
             controls[i]['raw_value'] = raw_value;
             controls[i]['value'] = final_value;
@@ -1657,10 +1688,10 @@ var BS2 = (function BassStationII() {
      * @param data
      */
     var decodeSysExMeta = function(data) {
-        console.log('BS2.decodeSysExMeta', data);
+        // console.log('BS2.decodeSysExMeta', data);
         meta.patch_id['value'] = data[meta.patch_id.sysex.offset];
         meta.patch_name['value'] = String.fromCharCode(...data.slice(meta.patch_name.sysex.offset, meta.patch_name.sysex.offset + meta.patch_name.sysex.mask.length));
-        console.log(`decodeSysExMeta, id=${meta.patch_id.value}, name=${meta.patch_name.value}`);
+        // console.log(`decodeSysExMeta, id=${meta.patch_id.value}, name=${meta.patch_name.value}`);
     };
 
     /**
@@ -1711,7 +1742,7 @@ var BS2 = (function BassStationII() {
      * return the updated control object
      */
     var setControlValue = function() {
-        console.log('BS2.setControlValue', ...arguments);
+        // console.log('BS2.setControlValue', ...arguments);
         let c;
         if (arguments.length===2) {
             let value = arguments[1];

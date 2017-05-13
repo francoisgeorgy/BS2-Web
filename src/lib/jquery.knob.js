@@ -145,7 +145,7 @@
                         return v;
                     },
                     parse: function (v) {
-                        console.log(`parse ${v}`);
+                        //console.log(`parse ${v}`);
                         return parseFloat(v);
                     }
                 }, this.o
@@ -188,7 +188,8 @@
                     'change blur',
                     function () {
                         // console.log('dial blur');
-                        s.val(s._validate(s.o.parse(s.$.val())));
+                        //s.val(s._validate(s.o.parse(s.$.val())));
+                        s.val(s._validate(s.$.val()));
                     }
                 );
                 
@@ -267,7 +268,7 @@
                 .bind("configure", cf);
 
 
-            // this.$.attr('readonly', 'readonly');    //CHANGE: make input field read-only
+            this.$.attr('readonly', 'readonly');    //CHANGE: make input field read-only
 
 
             // finalize init
@@ -379,6 +380,7 @@
         };
 
         this._mouse = function (e) {
+
             var mouseMove = function (e) {
                 var v = s.xy2val(e.pageX, e.pageY);
 
@@ -581,6 +583,7 @@
         };
 
         this.xy2val = function (x, y) {
+
             var a, ret;
 
             a = Math.atan2(
@@ -663,12 +666,14 @@
                     39: s.o.step,
                     40: -s.o.step
                 };
-
+/*
             this.$
                 .bind(
                     "keydown",
                     function (e) {
                         var kc = e.keyCode;
+
+                        console.log(`key ${kc}`);
 
                         // numpad support
                         if (kc >= 96 && kc <= 105) {
@@ -687,7 +692,8 @@
                             && e.preventDefault();
 
                             // arrows
-                            if ($.inArray(kc,[37,38,39,40]) > -1) {
+                            // if ($.inArray(kc,[37,38,39,40]) > -1) {
+                            if ($.inArray(kc,[38,40]) > -1) {
                                 e.preventDefault();
 
                                 var v = s.o.parse(s.$.val()) + kv[kc] * m;              //FIXME: use cv
@@ -721,7 +727,7 @@
                         }
                     }
                 );
-
+*/
             this.$c.bind("mousewheel DOMMouseScroll", mw);
             this.$.bind("mousewheel DOMMouseScroll", mw);
         };
