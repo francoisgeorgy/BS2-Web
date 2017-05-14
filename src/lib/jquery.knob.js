@@ -87,7 +87,11 @@
         this.scrubbing = false; // the user is currently scrubbing the dial
 
         this.run = function () {
+
             var cf = function (e, conf) {
+
+                //console.log('cf', conf);
+
                 var k;
                 for (k in conf) {
                     s.o[k] = conf[k];
@@ -96,6 +100,15 @@
                 s._configure()
                  ._draw();
             };
+
+            // set val
+            // var sv = function (e, conf) {
+            //
+            //     console.log('sv', conf);
+            //
+            // };
+
+            //console.log('data-value', this.$.data("value"));
 
             if (this.$.data('kontroled')) return;
             this.$.data('kontroled', true);
@@ -158,6 +171,7 @@
             }
 
             // routing value
+            /*
             if (this.$.is('fieldset')) {
 
                 // fieldset = array of integer
@@ -179,20 +193,48 @@
                 });
                 this.$.find('legend').remove();
             } else {
-
+            */
                 // input = integer
                 this.i = this.$;
-                this.v = this.o.parse(this.$.val());        //FIXME: use cv?
-                this.v === '' && (this.v = this.o.min);
-                this.$.bind(
+                //this.v = this.o.parse(this.$.val());        //FIXME: use cv?
+                this.v = this.$.data('value');  // || this.$.val();
+
+                //console.log(`dial v=${this.v} id=${this.$[0].id}`);
+
+                //this.v === '' && (this.v = this.o.min);
+                this.$.on(
                     'change blur',
-                    function () {
-                        // console.log('dial blur');
+                    function (e, k) {
+                        // console.log('dial blur', s);
                         //s.val(s._validate(s.o.parse(s.$.val())));
-                        s.val(s._validate(s.$.val()));
+                        //s.val(s._validate(s.$.val()));
+
+                        //console.log('on change blur', e, k, s.$[0].id, s.v);
+                        // if (s.$[0].id==='cc-27') {
+                            //s.$.html(s.$.val());
+                            // s.$.html(s.v);
+                        // }
+                        if (typeof k === 'undefined') {
+
+                            s.val(s._validate(s.v));
+                        } else {
+                            console.log(`force val to ${k.value}`);
+                            s.val(k.value);
+                        }
+
                     }
                 );
-                
+
+                this.$.on(
+                    'dblclick',
+                    function (e) {
+                        //console.log('double click');
+                        e.preventDefault();
+                        s.val(s.$.data('value'));   // || s.$.val());
+                    }
+                );
+
+                /*
                 this.$.bind(
                     'update',
                     function () {
@@ -200,7 +242,10 @@
                         s.val(s._validate(s.o.parse(s.$.val())), false);
                     }
                 );
+                */
+            /*
             }
+            */
 
             !this.o.displayInput && this.$.hide();
 
@@ -279,7 +324,8 @@
 
             this.isInit = true;
 
-            this.$.val(this.o.format(this.v));
+            //this.$.val(this.o.format(this.v));
+            this.$.html(this.o.format(this.v));
             this._draw();
 
             return this;
@@ -339,7 +385,7 @@
 
             d !== false && s.draw();
         };
-
+/*
         this._touch = function (e) {
             var touchMove = function (e) {
                 var v = s.xy2val(
@@ -362,7 +408,7 @@
             touchMove(e);
             // scrubbing has started
             s.scrubbing = true;
-            
+
             // Touch events listeners
             k.c.d
                 .bind("touchmove.k", touchMove)
@@ -378,7 +424,7 @@
 
             return this;
         };
-
+*/
         this._mouse = function (e) {
 
             var mouseMove = function (e) {
@@ -386,10 +432,18 @@
 
                 if (v == s.cv) return;
 
-                if (s.cH && (s.cH(v) === false)) return;
+                let validated = s._validate(v);
 
-                s.change(s._validate(v));
+                if (s.cH && (s.cH(validated) === false)) return;
+
+                //s.change(s._validate(v));
+                s.change(validated);
                 s._draw();
+
+                //console.log('mouse move', validated, s.$[0].id, v);
+                // if (s.$[0].id==='cc-27') {
+                    s.$.html(s.o.format(validated));
+                // }
             };
 
             // First click
@@ -423,7 +477,11 @@
                         // scrubbing has ended
                         s.scrubbing = false;
                         k.c.d.unbind('mousemove.k mouseup.k keyup.k');
-                        s.val(s.cv);
+                        //s.val(s.cv);
+
+                        console.log('mouse up', s.cv);
+                        s.$.html(s.o.format(s.cv));
+
                     }
                 );
 
@@ -447,13 +505,13 @@
                             e.preventDefault();
                             s._xy()._mouse(e);
                         }
-                    )
-                    .bind(
-                        "touchstart",
-                        function (e) {
-                            e.preventDefault();
-                            s._xy()._touch(e);
-                        }
+                    // )
+                    // .bind(
+                    //     "touchstart",
+                    //     function (e) {
+                    //         e.preventDefault();
+                    //         s._xy()._touch(e);
+                    //     }
                     );
 
                 this.listen();
@@ -554,6 +612,9 @@
         };
 
         this.val = function (v, triggerRelease) {
+
+            //console.log(`dial val(${v})`);
+
             if (null != v) {
 
                 // reverse format
@@ -563,7 +624,10 @@
                 if (triggerRelease !== false
                     && v != this.v
                     && this.rH
-                    && this.rH(v) === false) { return; }
+                    && this.rH(v) === false) {
+                    //console.log('val return');
+                    return;
+                }
                     
                 if(!this.scrubbing)
 				{
@@ -575,7 +639,11 @@
 					this.v = this.o.stopper ? max(min(v, this.o.max), this.o.min) : v;
 				}
 
-                this.$.val(this.o.format(this.v));
+
+				//this.$.val(this.o.format(this.v));
+                //console.log('this.val', this.v,this.o.format(this.v));
+                this.$.html(this.o.format(this.v));
+
                 this._draw();
             } else {
                 return this.v;
@@ -619,7 +687,8 @@
 
                     e.preventDefault();
 
-                    // console.log(`wheel parse ${s.$.val()}`, s.v, s.cv, s);
+                    //console.log(`wheel parse ${s.$.val()}`, s.v, s.cv, s);
+                    //console.log(`wheel parse`, s.v, s.cv, s);
 
                     var ori = e.originalEvent,
                         deltaX = ori.detail || ori.wheelDeltaX,
@@ -635,9 +704,21 @@
                     v = max(min(v, s.o.max), s.o.min);
 
                     // trigger change handler
+
+                    // console.log('call change handler', s.cH);
+
                     if (s.cH && (s.cH(v) === false)) return;
-                    
+
+                    //FIX: set span text
+
+                    //console.log('mouse wheel', s.$[0].id, v);
                     s.val(v, false);
+                    // if (s.$[0].id==='cc-27') {
+                    //     s.$.html(s.o.format(v));
+                    // }
+
+
+
 
                     if (s.rH) {
                         // Handle mousewheel stop
@@ -736,7 +817,7 @@
             if (this.v < this.o.min
                 || this.v > this.o.max) { this.v = this.o.min; }
 
-            this.$.val(this.v);
+            // this.$.val(this.v);
             this.w2 = this.w / 2;
             this.cursorExt = this.o.cursor / 100;
             this.xy = this.w2 * this.scale;
@@ -770,7 +851,8 @@
                         'height' : ((this.w / 3) >> 0) + 'px',
                         'position' : 'absolute',
                         'vertical-align' : 'middle',
-                        'margin-top' : ((this.w / 3) >> 0) + 'px',
+                        //'margin-top' : ((this.w / 3) >> 0) + 'px',
+                        'margin-top' : ((this.w / 3) >> 0) + 3 + 'px',
                         'margin-left' : '-' + ((this.w * 3 / 4 + 2) >> 0) + 'px',
                         'border' : 0,
                         'background' : 'none',
@@ -787,7 +869,7 @@
 
         this.change = function (v) {
             this.cv = v;
-            this.$.val(this.o.format(v));
+            // this.$.val(this.o.format(v));    //FIXME
         };
 
         this.angle = function (v) {

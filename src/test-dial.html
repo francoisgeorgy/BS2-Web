@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Condensed:400,700" rel="stylesheet">
+    <!--<link rel="stylesheet" media="all" href="css/layout.css" />-->
+    <!--<link rel="stylesheet" media="all" href="css/light-theme.css" id="themesheet" />-->
+    <!--<link rel="stylesheet" href="lib/lity.min.css" />-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!--<script src="lib/lity.min.js" type="text/javascript" charset="utf-8"></script>-->
+    <!--<script src="lib/js.cookie.js"></script>-->
+    <!--<script src="lib/webmidi.min.js"></script>-->
+    <script src="lib/jquery.knob.js"></script>
+    <!--<script src="bs2.js"></script>-->
+    <!--<script src="app.js"></script>-->
+    <style>
+        .dial {
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+    <!--<input id="cc-27" class="dial" data-width="60" data-height="60" value="0" />-->
+    <span id="cc-27" class="dial" data-width="60" data-height="60" data-value="0"></span>
+<script>
+    $(function () {
+
+        console.group('knob');
+
+        $(".dial").knob({
+            // release : function (v) { console.log('release', this, v); },
+            angleOffset: -135,
+            angleArc: 270   //,
+//            bgColor: THEME[settings.theme].bgColor,
+//            fgColor: THEME[settings.theme].fgColor,
+//            innerColor: THEME[settings.theme].innerColor,
+//            positiveColor: THEME[settings.theme].positiveColor,
+//            negativeColor: THEME[settings.theme].negativeColor
+        });
+
+        console.groupEnd();
+        console.group('configure');
+
+        $(".dial").trigger('configure', {
+            min: 0,
+            max: 255,
+            step: 1,
+            cursor: 20,
+            format: function (v) {
+                console.log(`format ${v}`);
+                return v - 127;
+            },
+            change : function (v) {
+                console.log(`change handler ${v}`);
+            },
+            parse: function (v) {
+//                console.log(`parse ${v}`);
+                return v;
+            }
+        });
+
+        console.groupEnd();
+        console.group('val');
+
+        console.log('trigger blur', $('#cc-27'));
+        $('#cc-27').trigger('blur', { value: 100 });
+//        $('#cc-27').val(100).trigger('blur');
+
+        console.groupEnd();
+    });
+</script>
+</body>
+</html>

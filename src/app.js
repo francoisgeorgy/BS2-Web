@@ -198,7 +198,14 @@
         DEVICE.setControlValue(control_type, control_number, value);
 
         // the "blur" event will force a redraw of the dial. Do not send the "change" event as this will ping-pong between BS2 and this application.
-        $('#' + control_type + '-' + control_number).val(value).trigger('blur');
+        //$('#' + control_type + '-' + control_number).val(value).trigger('blur');
+        let e = $('#' + control_type + '-' + control_number);
+        if (e.is('.dial')) {
+            e.trigger('blur', { value });
+        } else {
+            e.val(value).trigger('blur');
+        }
+        //$('#' + control_type + '-' + control_number).trigger('blur', { value });
 
         // update the customs UI elements. Any input|select element has already been updated by the above instruction.
         updateCustoms(/*false*/);   //TODO: pass the current CC number and in updateCustoms() only update controls linked to this CC number
@@ -392,13 +399,19 @@
         $(e.target).parent().find('[id^=cc-],[id^=nrpn-]').each(function(){
             let dom_id = this.id;
             if (dom_id.endsWith('-handle')) return;
-            let v = getDefaultValue(dom_id);
+            let value = getDefaultValue(dom_id);
 
             // update the control
-            $(`#${dom_id}`).val(v).trigger('blur');
+            //$(`#${dom_id}`).val(value).trigger('blur');
+            let e = $(`#${dom_id}`);
+            if (e.is('.dial')) {
+                e.trigger('blur', { value });
+            } else {
+                e.val(value).trigger('blur');
+            }
 
             // update the connected device
-            handleUIChange(...dom_id.split('-'), v);
+            handleUIChange(...dom_id.split('-'), value);
         });
         updateCustoms(/*false*/);
         //updateUI();
@@ -425,7 +438,16 @@
 
                 console.log(`update #${controls[i].cc_type}-${i}`);
 
-                $(`#${controls[i].cc_type}-${i}`).val(DEVICE.getControlValue(controls[i])).trigger('blur');
+                // $(`#${controls[i].cc_type}-${i}`).val(DEVICE.getControlValue(controls[i])).trigger('blur');
+                let e = $(`#${controls[i].cc_type}-${i}`);
+                if (e.is('.dial')) {
+                    e.trigger('blur', { value: DEVICE.getControlValue(controls[i]) });
+                } else {
+                    e.val(DEVICE.getControlValue(controls[i])).trigger('blur');
+                }
+
+
+
             }
         }
 
