@@ -236,6 +236,7 @@ select {
     font-size: 0.8em!important;
 }
 
+.dial,
 .handle,
 .reset-handler {
     cursor: pointer;

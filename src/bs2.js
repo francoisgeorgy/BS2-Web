@@ -343,7 +343,6 @@ var BS2 = (function BassStationII() {
             lsb: 60,
             range: [-127,127],
             human: _127,
-            //map_r: _127_reverse,
             sysex: {
                 offset: 90,
                 mask: [0x3F, 0x60]
