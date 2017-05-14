@@ -89,9 +89,6 @@
         this.run = function () {
 
             var cf = function (e, conf) {
-
-                //console.log('cf', conf);
-
                 var k;
                 for (k in conf) {
                     s.o[k] = conf[k];
@@ -100,15 +97,6 @@
                 s._configure()
                  ._draw();
             };
-
-            // set val
-            // var sv = function (e, conf) {
-            //
-            //     console.log('sv', conf);
-            //
-            // };
-
-            //console.log('data-value', this.$.data("value"));
 
             if (this.$.data('kontroled')) return;
             this.$.data('kontroled', true);
@@ -120,7 +108,6 @@
                     max: this.$.data('max') !== undefined ? this.$.data('max') : 100,
 
                     stopper: true,
-
                     readOnly: this.$.data('readonly') || (this.$.attr('readonly') === 'readonly'),
 
                     // UI
@@ -153,13 +140,9 @@
                     cancel: null, // function () {}
                     release: null, // function (value) {}
 
-                    // Output formatting, allows to add unit: %, ms ...
+                    // Output formatting
                     format: function(v) {
                         return v;
-                    },
-                    parse: function (v) {
-                        //console.log(`parse ${v}`);
-                        return parseFloat(v);
                     }
                 }, this.o
             );
@@ -170,82 +153,27 @@
                 this.o.inputColor = this.o.fgColor;
             }
 
-            // routing value
-            /*
-            if (this.$.is('fieldset')) {
+            this.i = this.$;
+            this.v = this.$.data('value');  // || this.$.val();
 
-                // fieldset = array of integer
-                this.v = {};
-                this.i = this.$.find('input');
-                this.i.each(function(k) {
-                    var $this = $(this);
-                    s.i[k] = $this;
-                    s.v[k] = s.o.parse($this.val());        // FIXME: use cv
-
-                    $this.bind(
-                        'change blur',
-                        function () {
-                            var val = {};
-                            val[k] = $this.val();
-                            s.val(s._validate(val));
-                        }
-                    );
-                });
-                this.$.find('legend').remove();
-            } else {
-            */
-                // input = integer
-                this.i = this.$;
-                //this.v = this.o.parse(this.$.val());        //FIXME: use cv?
-                this.v = this.$.data('value');  // || this.$.val();
-
-                //console.log(`dial v=${this.v} id=${this.$[0].id}`);
-
-                //this.v === '' && (this.v = this.o.min);
-                this.$.on(
-                    'change blur',
-                    function (e, k) {
-                        // console.log('dial blur', s);
-                        //s.val(s._validate(s.o.parse(s.$.val())));
-                        //s.val(s._validate(s.$.val()));
-
-                        //console.log('on change blur', e, k, s.$[0].id, s.v);
-                        // if (s.$[0].id==='cc-27') {
-                            //s.$.html(s.$.val());
-                            // s.$.html(s.v);
-                        // }
-                        if (typeof k === 'undefined') {
-
-                            s.val(s._validate(s.v));
-                        } else {
-                            console.log(`force val to ${k.value}`);
-                            s.val(k.value);
-                        }
-
+            this.$.on(
+                'change blur',
+                function (e, k) {
+                    if (typeof k === 'undefined') {
+                        s.val(s._validate(s.v));
+                    } else {
+                        s.val(k.value);
                     }
-                );
+                }
+            );
 
-                this.$.on(
-                    'dblclick',
-                    function (e) {
-                        //console.log('double click');
-                        e.preventDefault();
-                        s.val(s.$.data('value'));   // || s.$.val());
-                    }
-                );
-
-                /*
-                this.$.bind(
-                    'update',
-                    function () {
-                        // console.log('dial update');
-                        s.val(s._validate(s.o.parse(s.$.val())), false);
-                    }
-                );
-                */
-            /*
-            }
-            */
+            this.$.on(
+                'dblclick',
+                function (e) {
+                    e.preventDefault();
+                    s.val(s.$.data('value'));   // || s.$.val());
+                }
+            );
 
             !this.o.displayInput && this.$.hide();
 
@@ -289,10 +217,8 @@
                          );
 
             // detects relative width / height
-            this.relativeWidth =  this.o.width % 1 !== 0
-                                  && this.o.width.indexOf('%');
-            this.relativeHeight = this.o.height % 1 !== 0
-                                  && this.o.height.indexOf('%');
+            this.relativeWidth =  this.o.width % 1 !== 0  && this.o.width.indexOf('%');
+            this.relativeHeight = this.o.height % 1 !== 0 && this.o.height.indexOf('%');
             this.relative = this.relativeWidth || this.relativeHeight;
 
             // computes size and carves the component
@@ -312,10 +238,6 @@
                 .parent()
                 .bind("configure", cf);
 
-
-            this.$.attr('readonly', 'readonly');    //CHANGE: make input field read-only
-
-
             // finalize init
             this._listen()
                 ._configure()
@@ -324,7 +246,6 @@
 
             this.isInit = true;
 
-            //this.$.val(this.o.format(this.v));
             this.$.html(this.o.format(this.v));
             this._draw();
 
@@ -385,46 +306,7 @@
 
             d !== false && s.draw();
         };
-/*
-        this._touch = function (e) {
-            var touchMove = function (e) {
-                var v = s.xy2val(
-                            e.originalEvent.touches[s.t].pageX,
-                            e.originalEvent.touches[s.t].pageY
-                        );
 
-                if (v == s.cv) return;
-
-                if (s.cH && s.cH(v) === false) return;
-
-                s.change(s._validate(v));
-                s._draw();
-            };
-
-            // get touches index
-            this.t = k.c.t(e);
-
-            // First touch
-            touchMove(e);
-            // scrubbing has started
-            s.scrubbing = true;
-
-            // Touch events listeners
-            k.c.d
-                .bind("touchmove.k", touchMove)
-                .bind(
-                    "touchend.k",
-                    function () {
-                        k.c.d.unbind('touchmove.k touchend.k');
-                        // scrubbing has ended
-                        s.scrubbing = false;
-                        s.val(s.cv);
-                    }
-                );
-
-            return this;
-        };
-*/
         this._mouse = function (e) {
 
             var mouseMove = function (e) {
@@ -436,14 +318,9 @@
 
                 if (s.cH && (s.cH(validated) === false)) return;
 
-                //s.change(s._validate(v));
                 s.change(validated);
                 s._draw();
-
-                //console.log('mouse move', validated, s.$[0].id, v);
-                // if (s.$[0].id==='cc-27') {
-                    s.$.html(s.o.format(validated));
-                // }
+                s.$.html(s.o.format(validated));
             };
 
             // First click
@@ -477,11 +354,7 @@
                         // scrubbing has ended
                         s.scrubbing = false;
                         k.c.d.unbind('mousemove.k mouseup.k keyup.k');
-                        //s.val(s.cv);
-
-                        console.log('mouse up', s.cv);
                         s.$.html(s.o.format(s.cv));
-
                     }
                 );
 
@@ -497,27 +370,12 @@
         };
 
         this._listen = function () {
-            if (!this.o.readOnly) {
-                this.$c
-                    .bind(
-                        "mousedown",
-                        function (e) {
-                            e.preventDefault();
-                            s._xy()._mouse(e);
-                        }
-                    // )
-                    // .bind(
-                    //     "touchstart",
-                    //     function (e) {
-                    //         e.preventDefault();
-                    //         s._xy()._touch(e);
-                    //     }
-                    );
+            this.$c.on("mousedown", function (e) {
+                        e.preventDefault();
+                        s._xy()._mouse(e);
+            });
 
-                this.listen();
-            } else {
-                this.$.attr('readonly', 'readonly');
-            }
+            this.listen();
 
             if (this.relative) {
                 $(window).resize(function() {
@@ -613,38 +471,26 @@
 
         this.val = function (v, triggerRelease) {
 
-            //console.log(`dial val(${v})`);
-
             if (null != v) {
-
-                // reverse format
-                // console.log(`reverse format ${v}`, this);
-                // v = this.o.parse(v);                        // FIXME: do not use parse()
 
                 if (triggerRelease !== false
                     && v != this.v
                     && this.rH
                     && this.rH(v) === false) {
-                    //console.log('val return');
                     return;
                 }
                     
-                if(!this.scrubbing)
-				{
+                if(!this.scrubbing) {
 					this.cv = this.o.stopper ? max(min(v, this.o.max), this.o.min) : v;
 					this.v = this.cv;
-				}
-				else if(triggerRelease === false)
-				{
+				} else if(triggerRelease === false) {
 					this.v = this.o.stopper ? max(min(v, this.o.max), this.o.min) : v;
 				}
 
-
-				//this.$.val(this.o.format(this.v));
-                //console.log('this.val', this.v,this.o.format(this.v));
                 this.$.html(this.o.format(this.v));
 
                 this._draw();
+
             } else {
                 return this.v;
             }
@@ -664,7 +510,6 @@
             }
 
             if (this.angleArc != this.PI2 && (a < 0) && (a > -0.5)) {
-
                 // if isset angleArc option, set to min if .5 under min
                 a = 0;
             } else if (a < 0) {
@@ -687,14 +532,10 @@
 
                     e.preventDefault();
 
-                    //console.log(`wheel parse ${s.$.val()}`, s.v, s.cv, s);
-                    //console.log(`wheel parse`, s.v, s.cv, s);
-
                     var ori = e.originalEvent,
                         deltaX = ori.detail || ori.wheelDeltaX,
                         deltaY = ori.detail || ori.wheelDeltaY,
                         v = s._validate(s.cv)                       // use internal, not yet commited, value
-                        //v = s._validate(s.o.parse(s.$.val()))
                             + (
                                 deltaX > 0 || deltaY > 0
                                 ? s.o.step
@@ -704,21 +545,9 @@
                     v = max(min(v, s.o.max), s.o.min);
 
                     // trigger change handler
-
-                    // console.log('call change handler', s.cH);
-
                     if (s.cH && (s.cH(v) === false)) return;
 
-                    //FIX: set span text
-
-                    //console.log('mouse wheel', s.$[0].id, v);
                     s.val(v, false);
-                    // if (s.$[0].id==='cc-27') {
-                    //     s.$.html(s.o.format(v));
-                    // }
-
-
-
 
                     if (s.rH) {
                         // Handle mousewheel stop
@@ -747,68 +576,7 @@
                     39: s.o.step,
                     40: -s.o.step
                 };
-/*
-            this.$
-                .bind(
-                    "keydown",
-                    function (e) {
-                        var kc = e.keyCode;
 
-                        console.log(`key ${kc}`);
-
-                        // numpad support
-                        if (kc >= 96 && kc <= 105) {
-                            kc = e.keyCode = kc - 48;
-                        }
-
-                        kval = parseInt(String.fromCharCode(kc));
-
-                        if (isNaN(kval)) {
-                            (kc !== 13)                     // enter
-                            && kc !== 8                     // bs
-                            && kc !== 9                     // tab
-                            && kc !== 189                   // -
-                            && (kc !== 190
-                                || s.$.val().match(/\./))   // . allowed once
-                            && e.preventDefault();
-
-                            // arrows
-                            // if ($.inArray(kc,[37,38,39,40]) > -1) {
-                            if ($.inArray(kc,[38,40]) > -1) {
-                                e.preventDefault();
-
-                                var v = s.o.parse(s.$.val()) + kv[kc] * m;              //FIXME: use cv
-                                s.o.stopper && (v = max(min(v, s.o.max), s.o.min));
-
-                                s.change(s._validate(v));
-                                s._draw();
-
-                                // long time keydown speed-up
-                                to = window.setTimeout(function () {
-                                    m *= 2;
-                                }, 30);
-                            }
-                        }
-                    }
-                )
-                .bind(
-                    "keyup",
-                    function (e) {
-                        if (isNaN(kval)) {
-                            if (to) {
-                                window.clearTimeout(to);
-                                to = null;
-                                m = 1;
-                                s.val(s.$.val());
-                            }
-                        } else {
-                            // kval postcond
-                            (s.$.val() > s.o.max && s.$.val(s.o.max))
-                            || (s.$.val() < s.o.min && s.$.val(s.o.min));
-                        }
-                    }
-                );
-*/
             this.$c.bind("mousewheel DOMMouseScroll", mw);
             this.$.bind("mousewheel DOMMouseScroll", mw);
         };
@@ -817,7 +585,6 @@
             if (this.v < this.o.min
                 || this.v > this.o.max) { this.v = this.o.min; }
 
-            // this.$.val(this.v);
             this.w2 = this.w / 2;
             this.cursorExt = this.o.cursor / 100;
             this.xy = this.w2 * this.scale;
@@ -851,7 +618,6 @@
                         'height' : ((this.w / 3) >> 0) + 'px',
                         'position' : 'absolute',
                         'vertical-align' : 'middle',
-                        //'margin-top' : ((this.w / 3) >> 0) + 'px',
                         'margin-top' : ((this.w / 3) >> 0) + 3 + 'px',
                         'margin-left' : '-' + ((this.w * 3 / 4 + 2) >> 0) + 'px',
                         'border' : 0,
@@ -869,7 +635,6 @@
 
         this.change = function (v) {
             this.cv = v;
-            // this.$.val(this.o.format(v));    //FIXME
         };
 
         this.angle = function (v) {
@@ -888,10 +653,6 @@
                 sa = this.startAngle - 0.00001;
                 ea = sa + v + 0.00001;
             }
-            // this.o.cursor
-            //     && (sa = ea - this.cursorExt)
-            //     && (ea = ea + this.cursorExt);
-
 
             let ccw = this.o.flip && !this.o.cursor;
             let color = this.o.positiveColor;
@@ -903,8 +664,6 @@
                     color = this.o.negativeColor;
                 }
             }
-
-            // console.log(`arc=${color}`);
 
             return {
               s: sa,    // start angle, in radians (0 is at the 3 o'clock position of the arc's circle)
@@ -951,10 +710,7 @@
             }
 
             c.beginPath();
-            //c.strokeStyle = r ? this.o.fgColor : this.fgColor ;
-
             c.strokeStyle = r ? a.c : this.o.fgColor ;
-            // console.log(`c=${c.strokeStyle}`);
             c.arc(this.xy, this.xy, this.radius, a.s, a.e, a.d);    // x, y, radius, start-angle, end-angle, ccw
             c.stroke();
         };
