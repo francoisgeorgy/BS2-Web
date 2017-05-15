@@ -1,9 +1,8 @@
 (function(){
 
-    const VERSION = '1.1.0';
+    const VERSION = '1.2.0';
 
     console.log(`Bass Station II Web Interface ${VERSION}`);
-
 
     function toggleOnOff(selector, bool) {
         if (bool) {
@@ -193,19 +192,15 @@
 
         if ((control_type != 'cc') && (control_type != 'nrpn')) return; //TODO: signal an error
 
-        // console.log('dispatch ' + '#' + control_type + '-' + control_number + ' = ' + value);
-
         DEVICE.setControlValue(control_type, control_number, value);
 
         // the "blur" event will force a redraw of the dial. Do not send the "change" event as this will ping-pong between BS2 and this application.
-        //$('#' + control_type + '-' + control_number).val(value).trigger('blur');
         let e = $('#' + control_type + '-' + control_number);
         if (e.is('.dial')) {
             e.trigger('blur', { value });
         } else {
             e.val(value).trigger('blur');
         }
-        //$('#' + control_type + '-' + control_number).trigger('blur', { value });
 
         // update the customs UI elements. Any input|select element has already been updated by the above instruction.
         updateCustoms(/*false*/);   //TODO: pass the current CC number and in updateCustoms() only update controls linked to this CC number
@@ -229,8 +224,6 @@
                     midi_output.sendControlChange(a[i][0], a[i][1], midi_channel);
                 } else {
                     console.log(`(send CC ${a[i][0]} ${a[i][1]} (${control.name}) on channel ${midi_channel})`);
-                    // logOutgoingMidiMessage('cc', a[i][0], a[i][1]);
-                    // midi_output.sendControlChange(a[i][0], a[i][1], midi_channel);
                 }
             }
         } else if (control.cc_type === 'nrpn') {
@@ -308,7 +301,6 @@
             }
         }
     }
-
 
     //==================================================================================================================
 
@@ -395,6 +387,10 @@
         return c.init_value;
     }
 
+    /**
+     *
+     * @param e
+     */
     function resetGroup(e) {
         $(e.target).parent().find('[id^=cc-],[id^=nrpn-]').each(function(){
             let dom_id = this.id;
@@ -402,7 +398,6 @@
             let value = getDefaultValue(dom_id);
 
             // update the control
-            //$(`#${dom_id}`).val(value).trigger('blur');
             let e = $(`#${dom_id}`);
             if (e.is('.dial')) {
                 e.trigger('blur', { value });
@@ -429,25 +424,13 @@
         function _updateControls(controls) {
             for (let i=0; i < controls.length; i++) {
                 if (typeof controls[i] === 'undefined') continue;
-                //let e = $(`#${controls[i].cc_type}-${i}`);
-
-                //let v = DEVICE.getControlValue(controls[i]);
-                // if (e.is('select.cc')) {
-                //     console.log(`update select.cc #${controls[i].cc_type}-${i}`, e.val(), v);
-                // }
-
                 console.log(`update #${controls[i].cc_type}-${i}`);
-
-                // $(`#${controls[i].cc_type}-${i}`).val(DEVICE.getControlValue(controls[i])).trigger('blur');
                 let e = $(`#${controls[i].cc_type}-${i}`);
                 if (e.is('.dial')) {
                     e.trigger('blur', { value: DEVICE.getControlValue(controls[i]) });
                 } else {
                     e.val(DEVICE.getControlValue(controls[i])).trigger('blur');
                 }
-
-
-
             }
         }
 
@@ -515,8 +498,8 @@
                     format: v => c.human(v),
                     change : function (v) {
                         handleUIChange(c.cc_type, i, v);
-                    },
-                    parse: v => c.parse(v)
+                    }   //,
+                    //parse: v => c.parse(v)
                 });
             }
         }
@@ -866,7 +849,6 @@
         "dark": {
             href: "css/dark-theme.css",
             bgColor: "#606060",
-            //fgColor: "#ffec03",
             fgColor: "#fff",
             innerColor: "#272727",
             positiveColor: "#ffea00",
@@ -875,15 +857,12 @@
         "light": {
             href: "css/light-theme.css",
             bgColor: "#ddd",
-            //fgColor: "#ffec03",
             fgColor: "#333",
             innerColor: "#eee",
             positiveColor: "#005b80",
             negativeColor: "#0080b3"
         }
     };
-
-    // var theme = "light";
 
     var settings = {
         randomize: [],
@@ -906,33 +885,22 @@
 
         $('input.chk-rnd').change(
             function() {
-                // console.log(this.value, this);
                 let checked = []
                 $("input.chk-rnd:checked").each(function () {
-                    // console.log(this, this.name);
                     checked.push(this.name);
                 });
-
                 // let checked = $("input.chk-rnd:checked").map(function() { return $(this).name }).get();
-
                 settings.randomize = checked;
-
                 console.log('save settings', settings);
                 Cookies.set('settings', settings);
-
             }
         );
         $('#theme-choice').change(
             function() {
                 settings.theme = this.value;
                 $("link#themesheet").attr("href", THEME[settings.theme].href);
-
-                // redrawDials();
                 window.location.reload();
-
-                // console.log('save setting', settings);
                 Cookies.set('settings', settings);
-
             }
         );
     }
