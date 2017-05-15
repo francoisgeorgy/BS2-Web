@@ -4,7 +4,7 @@ This application requires a browser that support the [Web MIDI API](http://webau
 
 Currently, only Chrome 43+ and Opera 44+ support this standard. This app will therefore _not_ works in Firefox, Safari or IE. 
 
-![light theme](/images/BS2-Web-light-theme.png) <!-- .element width="200px" -->
+![light theme](/images/BS2-Web-light-theme.png "Light theme")
 
 # How to use
 
