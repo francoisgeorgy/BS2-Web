@@ -10,7 +10,6 @@ Coming soon: randomizer configuration. Only randomize what you want to be random
 
 ![light theme](/images/BS2-Web-light-theme.png "Light theme")
 
-
 # How to use
 
 1. Open https://francoisgeorgy.github.io/BS2-Web/
@@ -67,12 +66,13 @@ In summary:
 
     value = byte1*2 + byte2/64
 
-# Libs used
+# Credits
 
 - jQuery Knob: http://anthonyterrien.com/knob/ (https://github.com/aterrien/jQuery-Knob)
 - Lity Lightbox: http://sorgalla.com/lity/
 - js-cookie: https://github.com/js-cookie/js-cookie
 - maybe in a future release: Store.js: https://github.com/marcuswestin/store.js/
+- Roboto font by Google: https://fonts.google.com/specimen/Roboto
 
 I quite heavily modified the jQuery Knob lib. In particular I swapped the `input` element by a `span` element. It is therefore
 not possible anymore to enter a value with the keyboard. Only the mouse is supported. 
