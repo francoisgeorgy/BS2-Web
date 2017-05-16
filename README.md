@@ -4,9 +4,12 @@ This application requires a browser that support the [Web MIDI API](http://webau
 
 Currently, only Chrome 43+ and Opera 44+ support this standard. This app will therefore _not_ works in Firefox, Safari or IE. 
 
+Still under active development. Feel free to log bugs/issues.
+
+Coming soon: randomizer configuration. Only randomize what you want to be randomized.
+
 ![light theme](/images/BS2-Web-light-theme.png "Light theme")
 
-Still under active development. Feel free to log bugs/issues.
 
 # How to use
 
