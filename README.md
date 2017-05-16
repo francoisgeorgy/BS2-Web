@@ -6,12 +6,14 @@ Currently, only Chrome 43+ and Opera 44+ support this standard. This app will th
 
 ![light theme](/images/BS2-Web-light-theme.png "Light theme")
 
+Still under active development. Feel free to log bugs/issues.
+
 # How to use
 
 1. Open https://francoisgeorgy.github.io/BS2-Web/
 2. Allow the browser to use your MIDI devices
-3. If it's not already done, connect your Bass Station II to your computer
-4. On the top-right corner of the application, "midi", "IN" and "OUT" must be ON (gold/yellow) 
+3. If it's not already done, connect your Bass Station II to your computer.
+4. On the top-right corner of the application, "midi", "IN" and "OUT" must be ON (highlighted). 
 5. Move a dial or a slider on your Bass Station II, the corresponding on-screen control must move accordingly.
 
 # Why this app?
