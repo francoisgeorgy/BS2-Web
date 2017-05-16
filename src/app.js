@@ -450,24 +450,6 @@
     } // updateControls()
 
     /**
-     * Called when the theme changes
-     */
-    function redrawDials() {
-        $('.dial').each(function(index){
-
-            //FIXME: the color of the value is not updated
-
-            $(this).trigger('configure', {
-                bgColor: THEME[settings.theme].bgColor,
-                fgColor: THEME[settings.theme].fgColor,
-                innerColor: THEME[settings.theme].innerColor,
-                positiveColor: THEME[settings.theme].positiveColor,
-                negativeColor: THEME[settings.theme].negativeColor
-            });
-        });
-    }
-
-    /**
      *
      */
     function setupDials() {
@@ -638,6 +620,7 @@
         updateControls();
         updateCustoms();
         updateMeta();
+        updateCommands();
     }
 
     /**
@@ -664,6 +647,7 @@
         setupSelects();
         setupSwitches(SWITCHES);
         setupCommands();
+        updateCommands();
 
         init(false);    // init DEVICE then UI without sending any CC to the DEVICE
 
@@ -832,14 +816,24 @@
     /**
      *
      */
+    function updateCommands() {
+        toggleOnOff('#cmd-sync', !!midi_output);
+        toggleOnOff('#cmd-send', !!midi_output);
+        toggleOnOff('#cmd-export', !!midi_output);
+    }
+
+    /**
+     *
+     */
     function setupCommands() {
+        console.log('setupCommands');
         $('#cmd-sync').click(syncUIwithBS2);
-        // $('#cmd-save').click(saveInLocalStorage);
-        $('#cmd-export').click(exportToFile);
-        $('#cmd-import').click(importFromFile);
         $('#cmd-send').click(updateConnectedDevice);
         $('#cmd-init').click(init);
         $('#cmd-randomize').click(randomize);
+        // $('#cmd-save').click(saveInLocalStorage);
+        $('#cmd-import').click(importFromFile);
+        $('#cmd-export').click(exportToFile);
         // $('#cmd-record').click(record);
         // $('#cmd-play').click(play);
         $('#cmd-settings').click(settingsDialog);
@@ -920,7 +914,7 @@
 
     function displayRandomizerSettings() {
         let groups = Object.getOwnPropertyNames(BS2.control_groups);
-        const COLS = 3;
+        const COLS = 5;
         let i = 0;
         let html = '<table><tr>';
         for (group of groups) {
@@ -1075,7 +1069,7 @@
                 if (input) {
                     connectInput(input);
                 } else {
-                    setStatusError(`"${DEVICE.name_device_in}" input not found.`)
+                    setStatusError(`${DEVICE.name_device_in} not found.`)
                     setMidiInStatus(false);
                 }
 
@@ -1083,7 +1077,7 @@
                 if (output) {
                     connectOutput(output);
                 } else {
-                    setStatusError(`"${DEVICE.name_device_in}" output not found.`)
+                    setStatusError(`${DEVICE.name_device_in} not found.`)
                     setMidiOutStatus(false);
                 }
 
