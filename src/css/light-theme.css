@@ -101,6 +101,24 @@ select {
     color: #000;
 }
 
+.lity {
+    background: rgba(0,0,0,0.7);
+}
+
+/*
+.lity.lity-opened {
+    opacity: 0.7;
+}
+
+.lity-content {
+    opacity: 1;
+}
+
+#settings-dialog {
+    background-color: #fff;
+    opacity: 1;
+}
+*/
 div.disabled > * {
     opacity: 0.35;
 }

@@ -255,6 +255,11 @@ select {
     display: none;
 }
 
+.lity-container {
+    vertical-align: top;
+    margin-top: 2em;
+}
+
 .lity-close {
     position: absolute!important;
     color: #000!important;
