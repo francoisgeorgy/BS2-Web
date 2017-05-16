@@ -44,9 +44,9 @@ var BS2 = (function BassStationII() {
         portamento_time: 5,
         lfo1_speed: 18,
         lfo1_delay: 86,
+        lfo1_wave: 88,
         lfo2_speed: 19,
         lfo2_delay: 87,
-        lfo1_wave: 88,
         lfo2_wave: 89,
         amp_env_attack: 90,
         amp_env_decay: 91,
@@ -63,14 +63,14 @@ var BS2 = (function BassStationII() {
         arp_rhythm: 119,
         arp_note_mode: 118,
         arp_octaves: 111,
+        arp_swing: 116,
         mod: 1,
         sustain: 64,
         osc_pitch_bend_range: 107,
         osc_1_2_sync: 110,
         velocity_amp_env: 112,
         velocity_mod_env: 113,
-        vca_limit: 95,
-        arp_swing: 116
+        vca_limit: 95
     };
 
     var nrpn_id = {
@@ -102,15 +102,175 @@ var BS2 = (function BassStationII() {
         arp_seq_retrig: 106
     };
 
+    var control_groups = {
+        sub: {
+            name: 'Sub osc',
+            controls: [
+                control_id.sub_osc_oct,
+                control_id.sub_osc_wave],
+            nrpns: []
+        },
+        lfo1: {
+            name: 'LFO 1',
+            controls: [
+                control_id.lfo1_speed,
+                control_id.lfo1_delay,
+                control_id.lfo1_wave],
+            nrpns: [
+                nrpn_id.lfo1_key_sync,
+                nrpn_id.lfo1_speed_sync,
+                nrpn_id.lfo1_sync_value,
+                nrpn_id.lfo1_slew]
+        },
+        lfo2: {
+            name: 'LFO 2',
+            controls: [
+                control_id.lfo2_speed,
+                control_id.lfo2_delay,
+                control_id.lfo2_wave],
+            nrpns: [
+                nrpn_id.lfo2_key_sync,
+                nrpn_id.lfo2_speed_sync,
+                nrpn_id.lfo2_sync_value,
+                nrpn_id.lfo2_slew]
+        },
+        osc1: {
+            name: 'Osc 1',
+            controls: [
+                control_id.osc1_fine,
+                control_id.osc1_range,
+                control_id.osc1_coarse,
+                control_id.osc1_mod_env_depth,
+                control_id.osc1_lfo1_depth,
+                control_id.osc1_mod_env_pw_mod,
+                control_id.osc1_lfo2_pw_mod,
+                control_id.osc1_manual_pw],
+            nrpns: [
+                nrpn_id.osc1_waveform]
+        },
+        osc2: {
+            name: 'Osc 2',
+            controls: [
+                control_id.osc2_fine,
+                control_id.osc2_range,
+                control_id.osc2_coarse,
+                control_id.osc2_mod_env_depth,
+                control_id.osc2_lfo1_depth,
+                control_id.osc2_mod_env_pw_mod,
+                control_id.osc2_lfo2_pw_mod,
+                control_id.osc2_manual_pw,
+                control_id.osc_1_2_sync],
+            nrpns: [
+                nrpn_id.osc2_waveform]
+        },
+        mixer: {
+            name: 'Mixer',
+            controls: [
+                control_id.mixer_osc_1_level,
+                control_id.mixer_osc_2_level,
+                control_id.mixer_sub_osc_level,
+                control_id.mixer_noise_level,
+                control_id.mixer_ring_mod_level,
+                control_id.mixer_external_signal_level],
+            nrpns: []
+        },
+        filter: {
+            name: 'Filter',
+            controls: [
+                control_id.filter_type,
+                control_id.filter_slope,
+                control_id.filter_shape,
+                control_id.filter_frequency,
+                control_id.filter_resonance,
+                control_id.filter_mod_env_depth,
+                control_id.filter_lfo2_depth,
+                control_id.filter_overdrive],
+            nrpns: []
+        },
+        amp_env: {
+            name: 'Amp Env',
+            controls: [
+                control_id.amp_env_attack,
+                control_id.amp_env_decay,
+                control_id.amp_env_sustain,
+                control_id.amp_env_release],
+            nrpns: [
+                nrpn_id.amp_env_triggering]
+        },
+        mod_env: {
+            name: 'Mod Env',
+            controls: [
+                control_id.mod_env_attack,
+                control_id.mod_env_decay,
+                control_id.mod_env_sustain,
+                control_id.mod_env_release],
+            nrpns: [
+                nrpn_id.mod_env_triggering]
+        },
+        vca: {
+            name: 'VCA',
+            controls: [
+                control_id.vca_limit],
+            nrpns: []
+        },
+        effects: {
+            name: 'Effects',
+            controls: [
+                control_id.fx_distortion,
+                control_id.fx_osc_filter_mod],
+            nrpns: []
+        },
+        arp: {
+            name: 'ARP',
+                controls: [
+                    control_id.arp_on,
+                    control_id.arp_latch,
+                    control_id.arp_rhythm,
+                    control_id.arp_note_mode,
+                    control_id.arp_octaves,
+                    control_id.arp_swing],
+            nrpns: [
+                nrpn_id.arp_seq_retrig]
+        },
+        keyboard: {
+            name: 'Keyboard',
+            controls: [
+                control_id.portamento_time,
+                control_id.sustain,
+                control_id.velocity_amp_env,
+                control_id.velocity_mod_env],
+            nrpns: [
+                nrpn_id.aftertouch_filter_freq,
+                nrpn_id.aftertouch_lfo1_to_osc_pitch,
+                nrpn_id.aftertouch_lfo2_speed]
+        },
+        wheels: {
+            name: 'Wheels',
+            controls: [
+                control_id.osc_pitch_bend_range],
+            nrpns: [
+                nrpn_id.mod_wheel_filter_freq,
+                nrpn_id.mod_wheel_lfo1_osc_pitch,
+                nrpn_id.mod_wheel_lfo2_filter_freq,
+                nrpn_id.mod_wheel_osc2_pitch]
+        },
+        others: {
+            name: 'Others',
+            controls: [control_id.mod],
+            nrpns: []
+        }
+    };
 
+    /**
+     * 0..255 to -127..127
+     */
     var _127 = function(v) {
         return v < 128 ? (v - 127) : (v - 128);
     };
 
-    // var _127_reverse = function(v) {
-    //     return v < 0 ? (v + 127) : (v + 128);
-    // };
-
+    /**
+     * 0..127 to -100..100
+     */
     var _100 = function(v) {
         let x = v < 128 ? (v - 127) : (v - 128);
         if (x < -100) {
@@ -119,51 +279,36 @@ var BS2 = (function BassStationII() {
             x = 100;
         }
         return x;
-        //return v < 128 ? (v - 127) : (v - 128);
     };
 
-    // var _100_reverse = function(v) {
-    //     return v < 0 ? (v + 127) : (v + 128);
-    // };
-
+    /**
+     * 0..127 to -63..63
+     */
     var _63 = function(v) {
         return v < 64 ? (v - 63) : (v - 64);
     };
 
-    // var _parse_63 = function(v) {
-    //     // console.log(`_parse_63(${v})`);
-    //     return v < 0 ? (v + 63) : (v + 64);
-    // };
-
+    /**
+     * 0..127 to -64..63
+     */
     var _64 = function(v) {
         return v - 64;
     };
 
+    /**
+     * 0..255 to -12.0..12.0 with a lookup table
+     */
     var _12 = function(v) {
         return COARSE_VALUES[v] / 10;
     };
-
-    // var _parse_12 = function(v) {
-    //     // console.log(`parse ${v}`);
-    //     let t = Math.round(v*10.0);
-    //     for (let i=0; i<COARSE_VALUES.length; i++) {
-    //         if (COARSE_VALUES[i] === t) {
-    //             // console.log(`parse ${v} => ${i}`);
-    //             return i;
-    //         }
-    //     }
-    //     return 0;
-    // };
 
     // var _12_reverse = function(v) {
     //     return COARSE_VALUES.indexOf(Math.round(v * 10));
     // };
 
-    var _waveform = function(v) {    // todo: check if this is a good idea
-        return this.labels.waveform.v;
-    };
-
-    // 0..127 to 5..95
+    /**
+     * 0..127 to 5..95
+     */
     var _5_95 = function(v) {
         //console.log(v * 2 * 91.0 / 256 + 5 -0.4);
         // return Math.round(v * 2 * 91.0 / 256 + 5 -0.4);
@@ -174,21 +319,11 @@ var BS2 = (function BassStationII() {
         return Math.round(((v - in_min) / (in_max - in_min)) * (out_max - out_min) + out_min - 0.4);
     };
 
-    // 0..127 to 5..95
-    // var _5_95_reverse = function(v) {
-    //     //console.log(v * 2 * 91.0 / 256 + 5 -0.4);
-    //     // return Math.round(v * 2 * 91.0 / 256 + 5 -0.4);
-    //     let out_max = 127;
-    //     let out_min = 0;
-    //     let in_max = 95;
-    //     let in_min = 5;
-    //     return Math.round(((v - in_min) / (in_max - in_min)) * (out_max - out_min) + out_min - 0.4);
-    // };
-
-    // 0..127 to -90..90            //FIXME: value 63 must gives 0
+    /**
+     * 0..127 to -90..90
+     */
     var _90_90 = function(v) {
-        //console.log(v * 2 * 91.0 / 256 + 5 -0.4);
-        // return Math.round(v * 2 * 91.0 / 256 + 5 -0.4);
+        //FIXME: value 63 must gives 0
         let out_max = 90;
         let out_min = -90;
         let in_max = 127;
@@ -196,6 +331,9 @@ var BS2 = (function BassStationII() {
         return Math.round(((v - in_min) / (in_max - in_min)) * (out_max - out_min) + out_min - 0.4);
     };
 
+    /**
+     * 0..127 to -24..24
+     */
     var _24_24 = function(v) {
         //FIXME
         let out_max = 24;
@@ -205,69 +343,12 @@ var BS2 = (function BassStationII() {
         return Math.round(((v - in_min) / (in_max - in_min)) * (out_max - out_min) + out_min - 0.4);
     };
 
-    // Map 0..255 to -90..+90
-    var _pw = function(v) {
-        // console.log(v * 2 * 91.0 / 256 + 5 -0.4);
-        return Math.round(v * 2 * 91.0 / 256 + 5 -0.4);
-    };
-
-    var _depth = function(v) {
-        /*
-         let w = v * 1.0;
-         if (v < 64) {
-         let OutputHigh = 0.0;
-         let OutputLow = -90.0;
-         let InputHigh = 63.0;
-         let InputLow = 0.0;
-         console.log(v, ((w - InputLow) / (InputHigh - InputLow)) * (OutputHigh - OutputLow) + OutputLow + 0.5);
-         } else {
-         let OutputHigh = 90.0;
-         let OutputLow = 0.0;
-         let InputHigh = 127.0;
-         let InputLow = 64.0;
-         console.log(v, ((w - InputLow) / (InputHigh - InputLow)) * (OutputHigh - OutputLow) + OutputLow);
-         }
-         */
-        return v < 64 ? (v - 63) : (v - 64);
-    };
-
-    var _scale = function(v) {
-        //console.log(v, v * 182.0 / 128, Math.round(v * 182.0 / 128));
-        /*
-         let v = w * 1.0;
-         let r = v < 0 ?
-         ((v - 1.0) * 90.0 / 64.0) :
-         (v * 90.0 / 64);
-
-         //console.log(v, v - 1, r, v < 0 ? Math.ceil(r) : Math.round(r));
-
-         return Math.round(v * 2 * 90.0 / 128 );
-         */
-        // in progres..... still not working correctly :-(
-
-        let out_max = 90.0;
-        let out_min = -90.0;
-        let in_max = 63.0;
-        let in_min = -63.0;
-        let r;
-        if (v < 0) {
-            console.log(((v - in_min) / (in_max - in_min)) * (out_max - out_min) + out_min + 0.4);
-            r = Math.round(((v - in_min) / (in_max - in_min)) * (out_max - out_min) + out_min + 0.4);
-        } else {
-            console.log(((v - in_min) / (in_max - in_min)) * (out_max - out_min) + out_min - 0.4);
-            r = Math.round(((v - in_min) / (in_max - in_min)) * (out_max - out_min) + out_min - 0.4);
-        }
-        return r;
-    };
-
     var doubleByteValue = function(msb, lsb) {
         let v = msb << 1;
         return lsb > 0 ? (v+1) : v;
     };
 
-
     var meta = {
-        //sysex_length: 154,
         patch_id: {
             name: 'Patch Number',
             value: '-',
@@ -1841,6 +1922,7 @@ var BS2 = (function BassStationII() {
         nrpn_id,
         control,
         nrpn,
+        control_groups,
         SUB_WAVE_FORMS,
         SUB_OCTAVE,
         OSC_RANGES,

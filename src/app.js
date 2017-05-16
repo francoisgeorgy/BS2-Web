@@ -1,6 +1,6 @@
 (function(){
 
-    const VERSION = '1.2.0';
+    const VERSION = '1.2.1';
 
     console.log(`Bass Station II Web Interface ${VERSION}`);
 
@@ -351,8 +351,16 @@
 
         console.groupCollapsed(`randomize`);
 
-        _randomize(DEVICE.control);
-        _randomize(DEVICE.nrpn);
+        // concatenate the indexes of the controls/nrpns set for randomization:
+        let randomize_controls = [];
+        let randomize_nrpns = [];
+        for (let i=0; i<settings.randomize.length; i++) {
+            randomize_controls.push(...BS2.control_groups[settings.randomize[i]].controls);
+            randomize_nrpns.push(...BS2.control_groups[settings.randomize[i]].nrpns);
+        }
+
+        _randomize(DEVICE.control.filter((element, index) => randomize_controls.includes(index)));
+        _randomize(DEVICE.nrpn.filter((element, index) => randomize_nrpns.includes(index)));
 
         console.groupEnd();
 
@@ -646,18 +654,16 @@
         setMidiInStatus(false);
         setMidiOutStatus(false);
 
+        setupSettings();    // must be done before loading the settings
         loadSettings();
+
         $("link#themesheet").attr("href", THEME[settings.theme].href);
         $("#theme-choice").val(settings.theme);
-
-        console.log('settings', settings);
 
         setupDials();
         setupSelects();
         setupSwitches(SWITCHES);
         setupCommands();
-
-        setupSettings();
 
         init(false);    // init DEVICE then UI without sending any CC to the DEVICE
 
@@ -881,7 +887,11 @@
 
     function setupSettings() {
 
-        console.log("setupSettings", Cookies.getJSON());
+        console.group("setupSettings");
+
+        displayRandomizerSettings();
+
+        console.log("settings cookie", Cookies.getJSON());
 
         $('input.chk-rnd').change(
             function() {
@@ -903,6 +913,24 @@
                 Cookies.set('settings', settings);
             }
         );
+
+        console.groupEnd();
+
+    }
+
+    function displayRandomizerSettings() {
+        let groups = Object.getOwnPropertyNames(BS2.control_groups);
+        const COLS = 3;
+        let i = 0;
+        let html = '<table><tr>';
+        for (group of groups) {
+            i++;
+            let g = BS2.control_groups[group];
+            html += `<td><input type="checkbox" class="chk-rnd" name="${group}" checked="checked" value="1" />${g.name}</td>`;
+            if (i % COLS === 0) html += '</tr><tr>';
+        }
+        html += '</tr></table>';
+        $('#randomizer-settings').html(html);
     }
 
     //==================================================================================================================
