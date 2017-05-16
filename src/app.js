@@ -819,7 +819,7 @@
     function updateCommands() {
         toggleOnOff('#cmd-sync', !!midi_output);
         toggleOnOff('#cmd-send', !!midi_output);
-        toggleOnOff('#cmd-export', !!midi_output);
+        // toggleOnOff('#cmd-export', !!midi_output);
     }
 
     /**
@@ -833,7 +833,7 @@
         $('#cmd-randomize').click(randomize);
         // $('#cmd-save').click(saveInLocalStorage);
         $('#cmd-import').click(importFromFile);
-        $('#cmd-export').click(exportToFile);
+        // $('#cmd-export').click(exportToFile);    //TODO: fixme
         // $('#cmd-record').click(record);
         // $('#cmd-play').click(play);
         $('#cmd-settings').click(settingsDialog);
@@ -955,11 +955,13 @@
                 handleCC(e);
             })
             .on('sysex', midi_channel, function(e) {
+                console.log('sysex handler');
                 last_sysex_data = e.data;   // we keep it here because we may use it as data for the "export" command
-                if (sysex_received_callback) {
-                    sysex_received_callback(last_sysex_data);   // FIXME: not a very good solution
-                    sysex_received_callback = null;
-                }
+                // if (sysex_received_callback) {
+                //     console.log('sysex_received_callback is defined');
+                //     sysex_received_callback(last_sysex_data);   // FIXME: not a very good solution
+                //     sysex_received_callback = null;
+                // }
                 if (ignore_next_sysex) {
                     setStatus("SysEx ignored.");
                     return;
