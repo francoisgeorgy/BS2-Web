@@ -1882,6 +1882,7 @@ var BS2 = (function BassStationII() {
                 let c = controls[i];
                 if (typeof c === 'undefined') continue;
                 c.raw_value = c.init_value;
+                c.value = c.human(c.raw_value);
             }
         }
 

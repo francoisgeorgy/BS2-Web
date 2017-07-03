@@ -1,3 +1,4 @@
+tmp/
 
 # Created by .ignore support plugin (hsz.mobi)
 ### Node template
@@ -38,3 +39,4 @@ jspm_packages/
 .idea/
 .idea
 BS2-Web.iml
+
