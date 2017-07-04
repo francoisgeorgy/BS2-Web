@@ -6,15 +6,6 @@
 
     const DEVICE = BS2;
 
-/*
-    function loadTemplate() {
-        $.get('templates/patch-sheet.template.html', function(template) {
-            var template = $(templates).filter('#tpl-greeting').html();
-            $('body').append(Mustache.render(template, templateData));
-        });
-    }
-*/
-
     /**
      *
      */
@@ -71,9 +62,22 @@
         }
     }
 
+    function loadTemplate() {
+        $.get('templates/patch-sheet-template.html?kc123', function(template) {
+            console.log('patch-sheet-template.html loaded');
+            // var t = $(template).filter('#foobar').html();
+            // $('#sheet').append(Mustache.render(t, {yo:'mama'}));
+            var t = $(template).filter('#template-main').html();
+            var o = Mustache.render(t, {});
+            $(o).for
+            $('body').append(o);
+        });
+    }
+
     $(function () {
         DEVICE.init();
-        printall();
+        // printall();
+        loadTemplate();
     });
 
 })(); // Call the anonymous function once, then throw it away!
