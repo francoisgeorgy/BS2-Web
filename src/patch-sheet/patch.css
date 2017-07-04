@@ -1,0 +1,20 @@
+table {
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+table.values tr td:first-child {
+    /*padding-right: 1em;*/
+    width: 7cm;
+}
+table.values tr td:last-child {
+    text-align: right;
+    width: 2cm;
+}
+
+table.values tr:nth-child(odd) {
+    background-color:#eee;
+}
+table.values tr:nth-child(even) {
+    background-color:#fff;
+}

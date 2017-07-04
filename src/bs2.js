@@ -253,11 +253,11 @@ var BS2 = (function BassStationII() {
                 nrpn_id.mod_wheel_lfo1_osc_pitch,
                 nrpn_id.mod_wheel_lfo2_filter_freq,
                 nrpn_id.mod_wheel_osc2_pitch]
-        },
-        others: {
-            name: 'Others',
-            controls: [control_id.mod],
-            nrpns: []
+        // },
+        // others: {
+        //     name: 'Others',
+        //     controls: [control_id.mod],
+        //     nrpns: []
         }
     };
 
