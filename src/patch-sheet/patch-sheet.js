@@ -6,33 +6,33 @@
 
     const DEVICE = BS2;
 
+    function _p(controls, list, id_prefix) {
+        // $('#sheet').append(`<!--<table class="values">-->`);
+        // var o = `<table class="values">`;
+        let o = '';
+        for (let i=0; i < list.length; i++) {
+            let c = controls[list[i]];
+            if (typeof c === 'undefined') continue;
+            console.log(c.name, c.init_value, c.raw_value, c.value);
+
+            let v = c.value;
+            if (c.on_off) {
+                v = c.value == 0 ? 'off' : 'on';
+            }
+
+            o += `<tr id="${id_prefix}-${list[i]}" title="${c.name}"><td>${c.name}</td><td>${v}</td></tr>`;
+
+        }
+        // $('#sheet').append(`</table>`);
+        // o += `</table>`;
+        // $('#sheet').append(o);
+        return o;
+    }
     /**
      *
      */
     function printall() {
 
-        function _p(controls, list, id_prefix) {
-            // $('#sheet').append(`<!--<table class="values">-->`);
-            // var o = `<table class="values">`;
-            let o = '';
-            for (let i=0; i < list.length; i++) {
-                let c = controls[list[i]];
-                if (typeof c === 'undefined') continue;
-                console.log(c.name, c.init_value, c.raw_value, c.value);
-
-                let v = c.value;
-                if (c.on_off) {
-                    v = c.value == 0 ? 'off' : 'on';
-                }
-
-                o += `<tr id="${id_prefix}-${list[i]}" title="${c.name}"><td>${c.name}</td><td>${v}</td></tr>`;
-
-            }
-            // $('#sheet').append(`</table>`);
-            // o += `</table>`;
-            // $('#sheet').append(o);
-            return o;
-        }
 
         for (let group in DEVICE.control_groups) {
             if (DEVICE.control_groups.hasOwnProperty(group)) {
@@ -62,14 +62,41 @@
         }
     }
 
+    function renderGroup(group) {
+        var o = '';
+        if (DEVICE.control_groups.hasOwnProperty(group)) {
+            console.log('group', group, DEVICE.control_groups[group]);
+
+            o = `<table id="${group}" class="values">`;
+
+            //o += `<h2>${DEVICE.control_groups[group].name}</h2>`;
+
+            o += _p(DEVICE.control, DEVICE.control_groups[group].controls, 'control');
+            o += _p(DEVICE.nrpn, DEVICE.control_groups[group].nrpns, 'nrpn');
+
+            o += `</table>`;
+        }
+        return o;
+    }
+
     function loadTemplate() {
         $.get('templates/patch-sheet-template.html?kc123', function(template) {
             console.log('patch-sheet-template.html loaded');
             // var t = $(template).filter('#foobar').html();
             // $('#sheet').append(Mustache.render(t, {yo:'mama'}));
             var t = $(template).filter('#template-main').html();
-            var o = Mustache.render(t, {});
-            $(o).for
+            var p = {
+                "name": "Tater",
+                "v": function () {
+                    return function (text, render) {
+                        console.log('render ' + text);
+                        //return "<b>" + render(text) + "</b>";
+                        return renderGroup(text.trim().toLowerCase());
+                    }
+                }
+            };
+            var o = Mustache.render(t, p);
+
             $('body').append(o);
         });
     }

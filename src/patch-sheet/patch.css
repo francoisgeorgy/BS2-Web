@@ -1,15 +1,27 @@
 
+
 body {
-    -webkit-print-color-adjust: exact;  // force background graphics to be printed
-    font-family: 'Roboto Condensed', sans-serif;
-    /*font-family: 'Roboto Mono', monospace;*/
+    -webkit-print-color-adjust: exact;  /* force background graphics to be printed */
+    font-family: sans-serif;
+    font-size: 10pt;
 }
 
 h1, h2 {
     font-family: 'Roboto Condensed', sans-serif;
     font-weight: normal;
+    padding: 0;
+    margin: 0;
 }
 
+h1 {
+    font-size: 24px;
+    margin-bottom: 12px;
+}
+h2 {
+    font-size: 18px;
+    border-bottom: 1px solid #aaa;
+    margin-bottom: 9px;
+}
 
 table {
     border-spacing: 0;
@@ -18,11 +30,11 @@ table {
 
 table.values tr td:first-child {
     /*padding-right: 1em;*/
-    width: 7cm;
+    /*width: 7cm;*/
 }
 table.values tr td:last-child {
     text-align: right;
-    width: 2cm;
+    /*width: 2cm;*/
 }
 
 table.values tr:nth-child(odd) {
@@ -36,15 +48,16 @@ table.values tr:nth-child(even) {
 .wrapper {
     display: grid;
     grid-gap: 10px;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     background-color: #fff;
 }
 
 .box {
     background-color: #eee;
     border-radius: 5px;
-    padding: 20px;
+    padding: 10px;
     /*font-size: 150%;*/
+    line-height: 140%;
 }
 
 .wrapper h1 {
