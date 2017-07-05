@@ -351,7 +351,7 @@ var BS2 = (function BassStationII() {
     var meta = {
         patch_id: {
             name: 'Patch Number',
-            value: '-',
+            value: '',
             sysex: {
                 offset: 8,
                 range: [0, 127],
@@ -360,7 +360,7 @@ var BS2 = (function BassStationII() {
         },
         patch_name: {
             name: 'Patch Name',
-            value: '-',
+            value: '',
             sysex: {
                 offset: 137,
                 range: [0, 0x7F],

@@ -84,7 +84,10 @@
 
     function renderPatch(template) {
         console.log('renderPatch');
-        let s = `<h1>Bass Station II Patch <span id="patch-number">${DEVICE.meta.patch_id.value}</span> - <span id="patch-name">${DEVICE.meta.patch_name.value}</span></h1>`;
+        // let pi = DEVICE.meta.patch_id.value;
+        // let pv = DEVICE.meta.patch_name.value;
+        // if (pi && pv) {
+        let s = `<h1>Bass Station II Patch <span id="patch-number">${DEVICE.meta.patch_id.value}</span> <span id="patch-name">${DEVICE.meta.patch_name.value}</span></h1>`;
         $('body').append(s);
         var t = $(template).filter('#template-main').html();
         var p = {
@@ -102,8 +105,8 @@
     function loadTemplate(data) {
         $.get('templates/patch-sheet-template.html?kc123', function(template) {
             console.log('patch-sheet-template.html loaded');
+            let d = null;
             if (data) {
-                let d = null;
                 for (let i=0; i<data.length; i++) {
                     if (data[i] === 240) {
                         console.log('start sysex');
