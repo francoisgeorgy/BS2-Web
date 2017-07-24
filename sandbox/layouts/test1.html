@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Condensed:400,700" rel="stylesheet">
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Roboto', sans-serif;
+        }
+        #main {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        #main > div {
+            display: flex;
+        }
+
+        .knob {
+            height: 12vh;
+        }
+        .path {
+            stroke: #fff;
+            stroke-width: 6;
+            fill: none;
+        }
+        .label {
+            font-family: Roboto;
+            font-size: 120%;
+            /*stroke: #fff;*/
+            fill: #fff;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="main">
+        <div style="background-color:#333">
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+        </div>
+        <div>
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+        </div>
+        <div>
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+        </div>
+    </div>
+    <svg xmlns="http://www.w3.org/2000/svg" >
+        <defs>
+            <g id="knob">
+                <circle class="path" cx="50", cy="50" r="34" />
+                <text class="label" x="50" y="110" text-anchor="middle">Label</text>
+            </g>
+        </defs>
+    </svg>
+</body>
+</html>
