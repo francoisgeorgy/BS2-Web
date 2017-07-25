@@ -7,18 +7,112 @@
             background-color: #000;
             color: #fff;
             font-family: 'Roboto', sans-serif;
+            /*font-size: 84%;*/
         }
         #main {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+
+            /*grid-template-columns: repeat(3, auto);*/
+            justify-content: left;
+            /*background-color: #000;*/
+
+            /*grid-template-rows: repeat(9, 1fr);*/
+            grid-gap:10px;
+            /*height: calc(100vh - 10px);*/
         }
 
         #main > div {
             display: flex;
+            /*border: 1px solid #999;*/
+            background-color: #333;
         }
 
+
+
+        #midi {
+            grid-column: 1;
+            grid-row: 1;
+        }
+        #sub {
+            grid-column: 2;
+            grid-row: 1;
+        }
+        #mixer {
+            grid-column: 3;
+            grid-row: 1 / span 3;
+        }
+        #filter {
+            grid-column: 4;
+            grid-row: 1 / span 3;
+        }
+        #osc1 {
+            grid-column: 1 / span 2;
+            grid-row: 2;
+        }
+        #osc2 {
+            grid-column: 1 / span 2;
+            grid-row: 3;
+        }
+        #lfo1 {
+            grid-column: 1;
+            grid-row: 4;
+        }
+        #lfo2 {
+            grid-column: 2;
+            grid-row: 4;
+        }
+/*
+        #effects {
+            grid-column: 9;
+            grid-row: 2 / span 3;
+        }
+*/
+        #mod-env {
+            grid-column: 3;
+            grid-row: 4;
+        }
+        #amp-env {
+            grid-column: 4;
+            grid-row: 4;
+        }
+
+        #mod-env-adsr {
+            grid-column: 3;
+            grid-row: 5;
+        }
+
+        #amp-env-adsr {
+            grid-column: 4;
+            grid-row: 5;
+        }
+
+        /*
+                #vca {
+                    grid-column: 9;
+                    grid-row: 5 / span 2;
+                }
+        */
+        #wheels {
+            grid-column: 1 / span 2;
+            grid-row: 6;
+        }
+
+        #keyboard {
+            grid-column: 1 / span 2;
+            grid-row: 7;
+        }
+        #arpeggiator {
+            grid-column: 1 / span 2;
+            grid-row: 8;
+        }
+
+
+
+
+
+
         .knob {
-            height: 12vh;
+            height: 8vh;
         }
         .path {
             stroke: #fff;
@@ -32,25 +126,279 @@
             fill: #fff;
         }
 
+        div.bt {
+            padding: 0px 3px;
+            margin: 0;
+            /*border-color: #9ecaed;*/
+            /*box-shadow: 0 0 10px #9ecaed;*/
+            border: 1px solid transparent;
+            border-radius: 4px;
+            color: #aaaaaa;
+        }
+
+        div.bt.on {
+            border-color: #fff;
+            color: #fff;
+        }
+
     </style>
 </head>
 <body>
     <div id="main">
-        <div style="background-color:#333">
-            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
-            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
-            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
-            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
-            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
-            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
-            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+
+        <div id="midi">
+            MIDI in/out port
+            <!-- TODO: add a play key like in blofeld rocket -->
         </div>
+
+        <div id="sub">
+            <div>
+            SUB<br />
+            <select><option>oct</option></select><br>
+            <select><option>wave</option></select>
+
+            </div>
+        </div>
+
+        <div id="mixer">
+            <div>MIXER</div>
+            <div>
+                <div>
+                    <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+                </div>
+                <div>
+                    <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+                </div>
+                <div>
+                    <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="osc1" style="background-color:#333">
+            <div>
+                OSC 1<br/>
+            </div>
+            <div>
+                <div class="bt">sin</div>
+                <div class="bt on">tri</div>
+                <div class="bt">saw</div>
+                <div class="bt">pul</div>
+            </div>
+            <div>
+                <div class="bt on">16'</div>
+                <div class="bt">8'</div>
+                <div class="bt">4'</div>
+                <div class="bt">2'</div>
+            </div>
+
+
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+
+            <div style="background-color: #606060">
+                <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+            </div>
+            <div style="background-color: #992244">
+                <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+            </div>
+
+                <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+                <div style="background-color: #992244">
+                    <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+                </div>
+                <div style="background-color: #005b80">
+                    <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+                </div>
+        </div>
+
         <div>
-            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
         </div>
+
+        <div id="osc2" style="background-color:#333">
+            <div>
+                OSC 2<br/>
+            </div>
+            <div>
+                <div class="bt">sin</div>
+                <div class="bt on">tri</div>
+                <div class="bt">saw</div>
+                <div class="bt">pul</div>
+            </div>
+            <div>
+                <div class="bt on">16'</div>
+                <div class="bt">8'</div>
+                <div class="bt">4'</div>
+                <div class="bt">2'</div>
+            </div>
+
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+            <div style="background-color: #606060">
+                <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+            </div>
+            <div style="background-color: #992244">
+                <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+            </div>
+
+
+                <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+                <div style="background-color: #992244">
+                    <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+                </div>
+                <div style="background-color: #005b80">
+                    <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+                </div>
+        </div>
+
         <div>
+        </div>
+
+        <div id="lfo1" style="background-color:#606060">
+            <div>
+                LFO 1<br/>
+            </div>
+            <div>
+                <div class="bt">tri</div>
+                <div class="bt on">saw</div>
+                <div class="bt">square</div>
+                <div class="bt">S+H</div>
+            </div>
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+            <div style="float:left">
+                <select><option>oct</option></select><br>
+                <select><option>wave</option></select>
+            </div>
             <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
         </div>
+
+        <div id="lfo2" style="background-color:#005b80">
+            <div>
+                LFO 2<br/>
+            </div>
+            <div>
+                <div class="bt">tri</div>
+                <div class="bt on">saw</div>
+                <div class="bt">square</div>
+                <div class="bt">S+H</div>
+            </div>
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+            <div style="float:left">
+                <select><option>oct</option></select><br>
+                <select><option>wave</option></select>
+            </div>
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+        </div>
+
+
+        <div id="filter">
+
+            <div>
+                <div>FILTER</div>
+                <div>
+                <div style="float: left">
+                    <div class="bt">classic</div>
+                    <div class="bt on">acid</div>
+                </div>
+                <div style="float: left">
+                    <div class="bt on">12dB</div>
+                    <div class="bt">24dB</div>
+                </div>
+                <div style="float: left">
+                    <div class="bt on">LP</div>
+                    <div class="bt">BP</div>
+                    <div class="bt">HP</div>
+                </div>
+                </div>
+                <div>
+                    <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+                    <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+                </div>
+                <div>
+                    <div style="background-color: #992244;float:left">
+                        <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+                    </div>
+                    <div style="background-color: #005b80">
+                        <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+                    </div>
+                </div>
+                <div>
+                    <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+                </div>
+            </div>
+        </div>
+
+
+        <div  id="mod-env" style="background-color:#992244">
+
+            <div>
+                MOD ENV
+            </div>
+
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+        </div>
+
+        <div id="amp-env">
+
+            <div>
+                AMP ENV
+            </div>
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+        </div>
+
+        <div id="mod-env-adsr">
+        </div>
+
+        <div id="amp-env-adsr">
+        </div>
+
+        <div id="wheels">
+            <div>
+                WHEELS
+            </div>
+
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+        </div>
+
+
+        <div id="keyboard">
+            <div>
+                KEYBOARD
+            </div>
+
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+        </div>
+
+        <div id="arpeggiator">
+            <div>
+                ARP
+            </div>
+
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+            <svg class="knob" viewBox="0 0 100 120"><use href="#knob" /></svg>
+        </div>
+
+
     </div>
     <svg xmlns="http://www.w3.org/2000/svg" >
         <defs>
