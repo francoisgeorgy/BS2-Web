@@ -2,26 +2,32 @@
 <html>
 <head>
     <!--<link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Condensed:400,700" rel="stylesheet">-->
-    <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Condensed:400,700|Montserrat:300,400,500,600,700|Jura:300,400,500,600,700|Oswald:200,300,400,500,600,700"
+    <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Condensed:400,700|Montserrat:300,400,500,600,700|Jura:300,400,500,600,700|Oswald:200,300,400,500,600,700|Dosis:400,600"
           rel="stylesheet">
     <style>
+
         body {
             margin: 0;
             padding: 0;
             background-color: #000000;
             color: #fff;
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Dosis', sans-serif;
             /*font-family: 'Oswald', sans-serif;*/
             /*font-size: 2vh;*/
-            font-size: 1.5vh;
-            font-weight: 300;
+            font-size: 1.7vh;
+            font-weight: 400;
             /*background-color: #434343;*/
             /*background-image:linear-gradient(#434343, #282828);*/
+/*
+
+            background: linear-gradient(to right, red , white, red);
+*/
         }
 
         h1, h2 {
-            font-family: 'Roboto Condensed', sans-serif;
-            font-weight: 300;
+            /*font-family: 'Roboto Condensed', sans-serif;*/
+            font-family: 'Dosis', sans-serif;
+            font-weight: 400;
         }
 
         h1, h2 {
@@ -31,11 +37,14 @@
         }
 
         h1 {
-            color: #607393;
+            color: #ddd;
+            margin-left: -0.4vw;
             display:block;
             align-self: center;
-            font-size: 1rem;
+            font-size: 1.2rem;
+            font-weight: 600;
             padding-left:0.2vw;
+            /*background-color: #AF864D;*/
         }
 
         h2 {
@@ -46,7 +55,9 @@
 
             margin: 0 20px;
 
-            background-color: #607393;
+            background-color: #000;
+
+            /*background: linear-gradient(90deg, rgba(0,0,0,1) 0%, #607393 2%, #607393 98%, rgba(0,0,0,1) 100%);*/
 
             padding: 1vh;
 
@@ -60,21 +71,14 @@
             /*grid-gap: 0px;*/
             /*height: calc(100vh - 10px);*/
 
-            grid-column-gap: 0.5vh;
-            grid-row-gap: 0.5vh;
+            grid-column-gap: 0.6vw;
+            grid-row-gap: 0.6vw;
 
             /*align-items: center;*/
             align-items: start;
             /*align-items: end;*/
 
-
-            /*grid-template-rows: minmax(5rem, 6rem);*/
-
-            /*grid-template-rows: repeat(7, 1fr);*/
-
-            /*grid-template-rows: repeat(7, calc(100vh / 8));*/
-
-            grid-template-rows: repeat(7, calc(
+            xgrid-template-rows: repeat(7, calc(
                     1.3rem +    /* label */
                     8vh +       /* controls */
                     0.5vh +     /* grid-row-gap */
@@ -82,18 +86,34 @@
                     0.5vh
             ));
 
+            grid-template-rows: repeat(7, calc(100vh / 7.6));
+
+
         }
+
+        /*
+        one row:
+            - h1 / .combo-label     2.5vh
+            - options
+                - controls
+                - knob
+                    - .knob-only    6vh
+                    - .knob-label   0.2vh + 1.7vh
+
+
+        */
 
         #main > div {
             /*display: flex;*/
             align-self: stretch;
 
             /*border: 1px solid yellow;*/
-            background-color: #3E424B;
+            background-color: #252930;
             /*height: 100%;*/
             /*height: calc(100vh / 8);*/
             /*padding: 0 0.3rem;*/
             /*border-radius: 0.2rem;*/
+            padding: 0 0.6vw;
         }
 
         div.controls {
@@ -135,9 +155,10 @@
         }
 
         #osc1, #osc2 {
+            background-color: #3E424B!important;
             display: grid!important;
             /*grid-template-columns: repeat(9, 1fr);*/
-            grid-column-gap: 1vw;
+            grid-column-gap: 1.5vw;
             grid-row-gap: 0.5vh;
             /*justify-items: stretch;*/
             justify-content: start;
@@ -148,9 +169,9 @@
             text-align: center;
             border-bottom: 1px solid #999;
             /*font-family: 'Jura', sans-serif;*/
-            font-weight: 500;
+            font-weight: 400;
             color: #aaaaaa;
-
+            font-size: 1rem;
             align-self: end; /* push text to bottom */
             padding-bottom: 2px;
         }
@@ -343,7 +364,7 @@
         }
 
         .knob-only {
-            height: 6vh;
+            height: 7.5vh;
             margin: 0;
         }
 
@@ -351,11 +372,12 @@
             text-align: center;
             padding-top: 0.2vh;
             margin: 0 0.2vh;
-            font-family: 'Roboto', sans-serif;
-            font-size: 1.5vh;
+            font-family: 'Dosis', sans-serif;
+            font-size: 1.7vh;
+            font-weight: 600;
             line-height: 1.7vh;
             height: 1.7vh;
-            color: #dddddd;
+            color: #bbb;
         }
 
         .no-margin {
@@ -364,12 +386,12 @@
 
         .path {
             stroke: #aaaaaa;
-            stroke-width: 6;
+            stroke-width: 5;
             fill: none;
         }
 
         .label {
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Dosis', sans-serif;
             font-size: 1.4rem;
             stroke: none;
             fill: #fff;
@@ -381,10 +403,10 @@
             margin: 0;
             /*border: 1px solid transparent;*/
             /*border-radius: 5px;*/
-            color: #aaaaaa;
+            color: #bbb;
             /*font-size: 1.1rem;*/
-            font-family: 'Roboto', sans-serif;
-            font-weight: 300;
+            font-family: 'Dosis', sans-serif;
+            font-weight: 600;
         }
 
         /*div.bt.float {*/
@@ -414,7 +436,7 @@
         }
 
         .modenv {
-            background-color: #992244!important;
+            background-color: #474226!important;
         }
 
     </style>
@@ -480,7 +502,7 @@
             <!--<h1 style="margin-left: auto;min-width: auto">MIXER</h1>-->
         </div>
 
-        <div id="osc1" style="background-color:#333">
+        <div id="osc1">
 
             <h1 class="osc-label">OSC 1</h1>
 
@@ -566,7 +588,7 @@
 
 
 
-        <div id="osc2" style="background-color:#333">
+        <div id="osc2">
 
             <h1 class="osc-label">OSC 2</h1>
 
