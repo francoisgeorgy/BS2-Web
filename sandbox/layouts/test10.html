@@ -115,9 +115,9 @@
 
             #main > div {
                 align-self: stretch;
-                background-color: #252930;
+                background-color: #395A5A;
 
-                background: linear-gradient(to bottom, #252930, #2f3f3f);
+                 background: linear-gradient(to bottom, #274444, #395A5A); 
 
                 border-radius: 4px;
                 padding: 0.25vh 0.6vw 0;
@@ -490,9 +490,10 @@
             }
 
             .path {
-                stroke: #aaaaaa;
+                /* stroke: #aaaaaa; */
+                stroke: #000;
                 stroke-width: 5;
-                fill: none;
+                /* fill: #333; */
             }
 
             .label {
@@ -532,18 +533,18 @@
             }
 
             .lfo1 {
-                background-color: #606060!important;
-                background: linear-gradient(to bottom, #505050, #606060)!important;
+                background-color: #715441!important;
+                background: linear-gradient(to bottom, #6B432B, #715441)!important;
             }
 
             .lfo2 {
-                background-color: #005b80!important;
-                background: linear-gradient(to bottom, #005070, #005b80)!important;
+                background-color: #575B19!important;
+                background: linear-gradient(to bottom, #414408, #575B19)!important;
             }
 
             .modenv {
-                background-color: #474226!important;
-                background: linear-gradient(to bottom, #403a10, #474226)!important;
+                background-color: #444E65!important;
+                background: linear-gradient(to bottom, #2F384C, #444E65)!important;
             }
         </style>
     </head>
@@ -1217,12 +1218,16 @@
         </div>
         <svg xmlns="http://www.w3.org/2000/svg">
             <defs>
+        <linearGradient id="grad" gradientTransform="rotate(65)">
+            <stop offset="5%"  stop-color="#666"/>
+            <stop offset="95%" stop-color="#222"/>
+        </linearGradient>
                 <g id="knob">
                     <circle ,="," class="path" cx="50" cy="50" r="34"/>
                     <text class="label" text-anchor="middle" x="50" y="110">Label</text>
                 </g>
                 <g id="knob-only">
-                    <circle ,="," class="path" cx="50" cy="50" r="40"/>
+                    <circle fill="url(#grad)" class="path" cx="50" cy="50" r="40"/>
                 </g>
             </defs>
         </svg>
