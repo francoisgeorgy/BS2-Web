@@ -2,7 +2,8 @@
 <html>
 <head>
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,500,700|Roboto+Condensed:300,400,700" rel="stylesheet" />
-    <link href="new-ui.css" rel="stylesheet" />
+    <!-- <link href="new-ui-layout.css" rel="stylesheet" /> -->
+    <link href="new-ui-mono.css?123" rel="stylesheet" />
 </head>
 <body>
     <div id="main">
@@ -12,6 +13,7 @@
 
             <!-- TODO: add a play key like in blofeld rocket -->
             <!--<div>MIDI</div>-->
+            <!-- <span style="float:right"><img src="noun_583243_cc.svg" alt="Settings"></span> -->
         </div>
 
         <div id="sub">
@@ -36,22 +38,63 @@
             </div>
         </div>
 
+        <div id="mixer-top-right">
+        </div>
+
         <div id="mixer">
 
             <div class="header">
-                <div>MIXER &amp; VCA</div>
+                <div>MIXER</div>
             </div>
 
             <div class="controls">
 
-                <div></div>
-                <div class="knob-combo">
+                <div style="display:flex">
+                    <div class="vslider">
+                        <div class="slider-value">123</div>
+                        <input type="range" min="0" max="100" value="7" step="1" />
+                        <div class="slider-label">Sub</div>
+                    </div>
+
+                    <div class="vslider">
+                        <div class="slider-value">123</div>
+                        <input type="range" min="0" max="100" value="7" step="1" />
+                        <div class="slider-label">Osc 1</div>
+                    </div>
+
+                    <div class="vslider">
+                        <div class="slider-value">123</div>
+                        <input type="range" min="0" max="100" value="7" step="1" />
+                        <div class="slider-label">Osc 2</div>
+                    </div>
+                </div>
+
+                <div style="display:flex">
+                    <div class="vslider">
+                        <div class="slider-value">123</div>
+                        <input type="range" min="0" max="100" value="7" step="1" />
+                        <div class="slider-label">Ext</div>
+                    </div>
+
+                    <div class="vslider">
+                        <div class="slider-value">123</div>
+                        <input type="range" min="0" max="100" value="7" step="1" />
+                        <div class="slider-label">Ring</div>
+                    </div>
+
+                    <div class="vslider">
+                        <div class="slider-value">123</div>
+                        <input type="range" min="0" max="100" value="7" step="1" />
+                        <div class="slider-label">Noise</div>
+                    </div>
+                </div>    
+                <!-- <div class="knob-combo">
                     <svg class="knob-only" viewbox="0 0 100 100">
                         <use href="#knob-only"/>
                     </svg>
                     <div class="knob-label">VCA Limiter</div>
-                </div>
-
+                </div> -->
+<!--
                 <div class="knob-combo">
                     <svg class="knob-only" viewbox="0 0 100 100">
                         <use href="#knob-only"/>
@@ -90,25 +133,26 @@
                     </svg>
                     <div class="knob-label">Noise</div>
                 </div>
-
+-->
             </div>
         </div>
 
-        <!--
         <div id="vca">
 
             <div class="header">
                 <div>VCA</div>
             </div>
 
+            <div class="control-row">
+                <div></div>
             <div class="knob-combo">
                 <svg class="knob-only" viewbox="0 0 100 100">
                     <use href="#knob-only"/>
                 </svg>
-                <div class="knob-label">X</div>
+                <div class="knob-label">Limiter</div>
+            </div>
             </div>
         </div>
-        -->
 
         <div id="effects">
             <div class="header">
@@ -406,8 +450,7 @@
 
             <div class="control-row">
 
-                <div class="combo-label" id="filter-options-label">
-                    type
+                <div id="filter-options-label">
                 </div>
 
                 <div id="filter-options">
@@ -487,7 +530,12 @@
             </div>
 
             <div class="control-row">
-                <div></div>
+                
+                <div style="display:flex;justify-content:flex-end">
+                    <div class="bt">multi</div>
+                        <div class="bt" style="margin-left:12px">single</div>
+                        <div class="bt on" style="margin-left:12px">autoglide</div>
+                </div>
 
                 <div class="controls">
 
@@ -515,11 +563,11 @@
                         </svg>
                         <div class="knob-label">Release</div>
                     </div>
-                    <div style="margin-top:0.3rem;margin-left:1rem">
+                    <!-- <div style="margin-top:0.3rem;margin-left:1rem">
                         <div class="bt">multi</div>
                         <div class="bt">single</div>
                         <div class="bt on">autoglide</div>
-                    </div>
+                    </div> -->
                 </div>
 
             </div>
@@ -532,7 +580,13 @@
             </div>
 
             <div class="control-row">
-                <div></div>
+                
+                <div style="display:flex;justify-content:flex-end">
+                    <div class="bt">multi</div>
+                        <div class="bt" style="margin-left:12px">single</div>
+                        <div class="bt on" style="margin-left:12px">autoglide</div>
+                </div>
+
 
                 <div class="controls">
 
@@ -560,15 +614,19 @@
                         </svg>
                         <div class="knob-label">R</div>
                     </div>
-                    <div style="margin-top:0.3rem;margin-left:1rem">
+                    <!-- <div style="margin-top:0.3rem;margin-left:1rem">
                         <div class="bt">multi</div>
                         <div class="bt">single</div>
                         <div class="bt on">autoglide</div>
-                    </div>
+                    </div> -->
                 </div>
 
             </div>
 
+        </div>
+
+        <div id="separator"> 
+            
         </div>
 
         <div id="wheels">
@@ -577,7 +635,7 @@
                 <div>WHEELS</div>
             </div>
 
-            <div class="control-row">
+            <div class="control-row add-row">
 
                 <div class="combo-label wheel-pitch-label">
                     osc 1
@@ -588,9 +646,9 @@
                 <div class="combo-label wheel-osc2-label">
                     osc 2
                 </div>
-                <div class="combo-label wheel-filter-label">
+                 <div class="combo-label wheel-filter-label">
                     filter freq.
-                </div>
+                </div> 
 
                 <div class="wheel-pitch">
                     <div class="knob-combo">
@@ -616,6 +674,7 @@
                         <div class="knob-label">Pitch</div>
                     </div>
                 </div>
+                
                 <div class="wheel-filter">
                     <div class="knob-combo">
                         <svg class="knob-only" viewbox="0 0 100 100">
