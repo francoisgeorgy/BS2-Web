@@ -1,19 +1,25 @@
 <!doctype html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,500,700|Roboto+Condensed:300,400,700" rel="stylesheet" />
     <!-- <link href="new-ui-layout.css" rel="stylesheet" /> -->
-    <link href="new-ui-mono.css?123" rel="stylesheet" />
+    <link href="new-ui-mono.css?13" rel="stylesheet" />
 </head>
 <body>
     <div id="main">
 
         <div id="title">
-            <h1>Bass Station II</h1>
+            <h1 class="glow">Bass Station II</h1>
 
             <!-- TODO: add a play key like in blofeld rocket -->
             <!--<div>MIDI</div>-->
             <!-- <span style="float:right"><img src="noun_583243_cc.svg" alt="Settings"></span> -->
+            <div>
+                <span>sync</span>
+                <span>load-patch</span>
+                <span>settings</span>
+            </div>
         </div>
 
         <div id="sub">
@@ -26,8 +32,8 @@
                 <div></div>
                 <div class="controls" style="padding-bottom: 1vh;">
                     <div>
-                        <div class="bt">sin</div>
-                        <div class="bt">pul</div>
+                        <div class="bt">sine</div>
+                        <div class="bt">pulse</div>
                         <div class="bt on">square</div>
                     </div>
                     <div style="margin-left:12px">
@@ -182,41 +188,68 @@
                 <div class="lfo1"></div>
             </div>
 
-            <div class="control-row">
-                <div></div>
+            <div class="control-row" style="grid-column-gap: 0">
 
-                <div class="controls">
+                <div class="combo-label lfo-speed-label" style="border-bottom: none">
+                    <select>
+                        <option>speed</option>
+                        <option>sync</option>
+                    </select>
+                </div>
+                <div class="combo-label lfo-sync-select" style="border-bottom: none">
+                    <select class="sync-list">
+                        <option value="0">64</option><option value="1">48</option><option value="2">42</option><option value="3">36</option><option value="4">32</option><option value="5">30</option><option value="6">28</option><option value="7">24</option><option value="8">21+2/3</option><option value="9">20</option><option value="10">18+2/3</option><option value="11">18</option><option value="12">16</option><option value="13">13+1/3</option><option value="14">12</option><option value="15">10+2/3</option><option value="16">8</option><option value="17">6</option><option value="18">5+1/3</option><option value="19">4</option><option value="20">3</option><option value="21">2+2/3</option><option value="22">1/2</option><option value="23">1/4 •</option><option value="24">1+1/3</option><option value="25">1/4</option><option value="26">1/8 •</option><option value="27">1/4 tr</option><option value="28">1/8</option><option value="29">1/16 •</option><option value="30">1/8 tr</option><option value="31">1/16</option><option value="32">1/16 tr</option><option value="33">1/32</option><option value="34">1/32 tr</option>
+                    </select>
+                </div>
 
-                    <div>
-                        <div class="bt">tri</div>
+                <!--<div class="controls">-->
+
+                <div class="lfo-options" style="margin-right: 1.5vw;">
+                    <div style="margin-top:0.3rem">
+                        <div class="bt">triangle</div>
                         <div class="bt on">saw</div>
                         <div class="bt">square</div>
                         <div class="bt">S+H</div>
                     </div>
+                </div>
+
+                <div class="lfo-delay">
                     <div class="knob-combo">
                         <svg class="knob-only" viewbox="0 0 100 100">
                             <use href="#knob-only"/>
                         </svg>
-                        <div class="knob-label">X</div>
-                    </div>
-                    <div class="knob-combo">
-                        <svg class="knob-only" viewbox="0 0 100 100">
-                            <use href="#knob-only"/>
-                        </svg>
-                        <div class="knob-label">X</div>
-                    </div>
-                    <div>
-                        <div class="bt">speed</div>
-                        <div class="bt on">sync</div>
-                        <select></select>
-                    </div>
-                    <div class="knob-combo">
-                        <svg class="knob-only" viewbox="0 0 100 100">
-                            <use href="#knob-only"/>
-                        </svg>
-                        <div class="knob-label">X</div>
+                        <div class="knob-label">Delay</div>
                     </div>
                 </div>
+
+                <div class="lfo-speed">
+                    <div class="knob-combo">
+                        <svg class="knob-only" viewbox="0 0 100 100">
+                            <use href="#knob-only"/>
+                        </svg>
+                        <div class="knob-label">Speed</div>
+                    </div>
+                </div>
+<!--
+                    <div>
+                        <div class="bt">
+                            speed
+                        </div>
+                        <div class="bt on">sync</div>
+                        <select class="sync-list">
+                            <option value="0">64</option><option value="1">48</option><option value="2">42</option><option value="3">36</option><option value="4">32</option><option value="5">30</option><option value="6">28</option><option value="7">24</option><option value="8">21+2/3</option><option value="9">20</option><option value="10">18+2/3</option><option value="11">18</option><option value="12">16</option><option value="13">13+1/3</option><option value="14">12</option><option value="15">10+2/3</option><option value="16">8</option><option value="17">6</option><option value="18">5+1/3</option><option value="19">4</option><option value="20">3</option><option value="21">2+2/3</option><option value="22">1/2</option><option value="23">1/4 •</option><option value="24">1+1/3</option><option value="25">1/4</option><option value="26">1/8 •</option><option value="27">1/4 tr</option><option value="28">1/8</option><option value="29">1/16 •</option><option value="30">1/8 tr</option><option value="31">1/16</option><option value="32">1/16 tr</option><option value="33">1/32</option><option value="34">1/32 tr</option>
+                        </select>
+                    </div>
+-->
+                <div class="lfo-slew">
+                    <div class="knob-combo">
+                        <svg class="knob-only" viewbox="0 0 100 100">
+                            <use href="#knob-only"/>
+                        </svg>
+                        <div class="knob-label">Slew</div>
+                    </div>
+                </div>
+                <!--</div>-->
             </div>
         </div>
 
@@ -235,7 +268,7 @@
                 <div class="controls">
 
                     <div>
-                        <div class="bt">tri</div>
+                        <div class="bt">triangle</div>
                         <div class="bt on">saw</div>
                         <div class="bt">square</div>
                         <div class="bt">S+H</div>
@@ -274,27 +307,24 @@
 
             <div class="control-row">
 
-
                 <div class="combo-label osc-pitch-label">
                     pitch
                 </div>
-
                 <div class="combo-label osc-mod-label">
                     modulation
                 </div>
-
                 <div class="combo-label osc-pw-label">
                     pulse width
                 </div>
 
                 <div class="osc-options">
                     <div style="margin-top:0.3rem">
-                        <div class="bt">sin</div>
-                        <div class="bt on">tri</div>
+                        <div class="bt">sine</div>
+                        <div class="bt on">triangle</div>
                         <div class="bt">saw</div>
-                        <div class="bt">pul</div>
+                        <div class="bt">pulse</div>
                     </div>
-                    <div style="margin-top:0.3rem;margin-left:0.5rem;margin-right:1rem;">
+                    <div style="margin-top:0.3rem;margin-left:1vw;text-align:right">
                         <div class="bt on">16'</div>
                         <div class="bt">8'</div>
                         <div class="bt">4'</div>
@@ -376,12 +406,12 @@
 
                 <div class="osc-options">
                     <div style="margin-top:0.3rem">
-                        <div class="bt">sin</div>
-                        <div class="bt on">tri</div>
+                        <div class="bt">sine</div>
+                        <div class="bt on">triangle</div>
                         <div class="bt">saw</div>
-                        <div class="bt">pul</div>
+                        <div class="bt">pulse</div>
                     </div>
-                    <div style="margin-top:0.3rem;margin-left:0.5rem;margin-right:1rem;">
+                    <div style="margin-top:0.3rem;margin-left:1vw;text-align:right">
                         <div class="bt on">16'</div>
                         <div class="bt">8'</div>
                         <div class="bt">4'</div>
@@ -448,6 +478,95 @@
                 <div>FILTER</div>
             </div>
 
+            <div style="display:flex">
+                <div style="">
+                    <div class="control-row">
+
+                        <div id="filter-options-label">
+                        </div>
+
+                        <div id="filter-options">
+                            <div style="display:flex;align-items: flex-start">
+                                <div>
+                                    <div class="bt">classic</div>
+                                    <div class="bt float on">acid</div>
+                                </div>
+                                <div style="margin-left:1vw">
+                                    <div class="bt on">low-pass</div>
+                                    <div class="bt ">band-pass</div>
+                                    <div class="bt ">hi-pass</div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="bt on">12dB</div>
+                                <div class="bt">24dB</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="flex-grow: 1">
+
+                    <div class="control-row">
+
+                        <div id="filter-reso">
+                            <div class="knob-combo">
+                                <svg class="knob-only" viewbox="0 0 100 100">
+                                    <use href="#knob-only"/>
+                                </svg>
+                                <div class="knob-label">Resonance</div>
+                            </div>
+                        </div>
+                        <div id="filter-freq">
+                            <div class="knob-combo">
+                                <svg class="knob-only" style="height: 10.9vh;" viewbox="0 0 100 100">
+                                    <use href="#knob-only"/>
+                                </svg>
+                                <div class="knob-label">Frequency</div>
+                            </div>
+                        </div>
+                        <div class="combo-label" id="filter-mod-label">
+                            freq. modulation
+                        </div>
+                        <div id="filter-mod">
+                            <div class="knob-combo">
+                                <svg class="knob-only" viewbox="0 0 100 100">
+                                    <use href="#knob-only"/>
+                                </svg>
+                                <div class="knob-label lfo2">LFO 2</div>
+                            </div>
+                            <div class="knob-combo">
+                                <svg class="knob-only" viewbox="0 0 100 100">
+                                    <use href="#knob-only"/>
+                                </svg>
+                                <div class="knob-label modenv">Env</div>
+                            </div>
+                        </div>
+                        <div id="filter-overdrive">
+                            <div class="knob-combo">
+                                <svg class="knob-only" viewbox="0 0 100 100">
+                                    <use href="#knob-only"/>
+                                </svg>
+                                <div class="knob-label">Overdrive</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+        </div>
+
+<!--
+        <div id="filter">
+
+            <div class="header">
+                <div>FILTER</div>
+            </div>
+
             <div class="control-row">
 
                 <div id="filter-options-label">
@@ -459,7 +578,7 @@
                             <div class="bt">classic</div>
                             <div class="bt float on">acid</div>
                         </div>
-                        <div style="margin-left:12px">
+                        <div style="margin-left:1vw">
                             <div class="bt on">LP</div>
                             <div class="bt ">BP</div>
                             <div class="bt ">HP</div>
@@ -520,6 +639,7 @@
             </div>
 
         </div>
+-->
 
         <div class="modenv" id="mod-env">
 
@@ -562,7 +682,7 @@
                         <div class="bt" style="margin-left:6px">single</div>
                         <div class="bt on" style="margin-left:6px">autoglide</div>
                     </div>
-                    <div>adsr graph</div>
+                    <div class="adsr-graph">adsr graph</div>
                 </div>
             </div>
 
@@ -573,7 +693,6 @@
             <div class="header">
                 <div>AMP ENV</div>
             </div>
-
 
             <div class="env-combo">
                 <div>
@@ -608,7 +727,7 @@
                         <div class="bt" style="margin-left:6px">single</div>
                         <div class="bt on" style="margin-left:6px">autoglide</div>
                     </div>
-                    <div>adsr graph</div>
+                    <div class="adsr-graph">adsr graph</div>
                 </div>
             </div>
 
@@ -839,11 +958,11 @@
         </div>
 
     </div>
-    <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+    <svg xmlns="http://www.w3.org/2000/svg" width="1" height="0" style="display:block">
         <defs>
             <linearGradient id="grad" gradientTransform="rotate(65)">
-                <stop offset="0%" stop-color="#555"/>
-                <stop offset="95%" stop-color="#222"/>
+                <stop offset="0%" stop-color="#999" />
+                <stop offset="95%" stop-color="#555" />
             </linearGradient>
             <g id="knob">
                 <circle class="path" cx="50" cy="50" r="34"/>
