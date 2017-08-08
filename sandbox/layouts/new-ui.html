@@ -529,48 +529,43 @@
                 <div class="modenv"></div>
             </div>
 
-            <div class="control-row">
-                
-                <div style="display:flex;justify-content:flex-end">
-                    <div class="bt">multi</div>
-                        <div class="bt" style="margin-left:12px">single</div>
-                        <div class="bt on" style="margin-left:12px">autoglide</div>
+            <div class="env-combo">
+                <div>
+                    <div class="controls">
+                        <div style="display:flex">
+                            <div class="env-slider">
+                                <div class="slider-value">123</div>
+                                <input type="range" min="0" max="100" value="7" step="1" />
+                                <div class="slider-label">A</div>
+                            </div>
+                            <div class="env-slider">
+                                <div class="slider-value">123</div>
+                                <input type="range" min="0" max="100" value="7" step="1" />
+                                <div class="slider-label">D</div>
+                            </div>
+                            <div class="env-slider">
+                                <div class="slider-value">123</div>
+                                <input type="range" min="0" max="100" value="7" step="1" />
+                                <div class="slider-label">S</div>
+                            </div>
+                            <div class="env-slider">
+                                <div class="slider-value">123</div>
+                                <input type="range" min="0" max="100" value="7" step="1" />
+                                <div class="slider-label">R</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
-                <div class="controls">
-
-                    <div class="knob-combo">
-                        <svg class="knob-only" viewbox="0 0 100 100">
-                            <use href="#knob-only"/>
-                        </svg>
-                        <div class="knob-label">Attack</div>
-                    </div>
-                    <div class="knob-combo">
-                        <svg class="knob-only" viewbox="0 0 100 100">
-                            <use href="#knob-only"/>
-                        </svg>
-                        <div class="knob-label">Decay</div>
-                    </div>
-                    <div class="knob-combo">
-                        <svg class="knob-only" viewbox="0 0 100 100">
-                            <use href="#knob-only"/>
-                        </svg>
-                        <div class="knob-label">Sustain</div>
-                    </div>
-                    <div class="knob-combo">
-                        <svg class="knob-only" viewbox="0 0 100 100">
-                            <use href="#knob-only"/>
-                        </svg>
-                        <div class="knob-label">Release</div>
-                    </div>
-                    <!-- <div style="margin-top:0.3rem;margin-left:1rem">
+                <div>
+                    <div>
                         <div class="bt">multi</div>
-                        <div class="bt">single</div>
-                        <div class="bt on">autoglide</div>
-                    </div> -->
+                        <div class="bt" style="margin-left:6px">single</div>
+                        <div class="bt on" style="margin-left:6px">autoglide</div>
+                    </div>
+                    <div>adsr graph</div>
                 </div>
-
             </div>
+
         </div>
 
         <div id="amp-env">
@@ -579,6 +574,45 @@
                 <div>AMP ENV</div>
             </div>
 
+
+            <div class="env-combo">
+                <div>
+                    <div class="controls">
+                        <div style="display:flex">
+                            <div class="env-slider">
+                                <div class="slider-value">123</div>
+                                <input type="range" min="0" max="100" value="7" step="1" />
+                                <div class="slider-label">A</div>
+                            </div>
+                            <div class="env-slider">
+                                <div class="slider-value">123</div>
+                                <input type="range" min="0" max="100" value="7" step="1" />
+                                <div class="slider-label">D</div>
+                            </div>
+                            <div class="env-slider">
+                                <div class="slider-value">123</div>
+                                <input type="range" min="0" max="100" value="7" step="1" />
+                                <div class="slider-label">S</div>
+                            </div>
+                            <div class="env-slider">
+                                <div class="slider-value">123</div>
+                                <input type="range" min="0" max="100" value="7" step="1" />
+                                <div class="slider-label">R</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <div class="bt">multi</div>
+                        <div class="bt" style="margin-left:6px">single</div>
+                        <div class="bt on" style="margin-left:6px">autoglide</div>
+                    </div>
+                    <div>adsr graph</div>
+                </div>
+            </div>
+
+<!--
             <div class="control-row">
                 
                 <div style="display:flex;justify-content:flex-end">
@@ -614,14 +648,15 @@
                         </svg>
                         <div class="knob-label">R</div>
                     </div>
-                    <!-- <div style="margin-top:0.3rem;margin-left:1rem">
+                    &lt;!&ndash; <div style="margin-top:0.3rem;margin-left:1rem">
                         <div class="bt">multi</div>
                         <div class="bt">single</div>
                         <div class="bt on">autoglide</div>
-                    </div> -->
+                    </div> &ndash;&gt;
                 </div>
 
             </div>
+-->
 
         </div>
 
@@ -804,7 +839,7 @@
         </div>
 
     </div>
-    <svg xmlns="http://www.w3.org/2000/svg">
+    <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
         <defs>
             <linearGradient id="grad" gradientTransform="rotate(65)">
                 <stop offset="0%" stop-color="#555"/>

@@ -4,7 +4,9 @@
 
         --lfo1: #BA7B0B;
         --lfo2: #976308;
-        --modenv: #4B0F9F;
+        /*--modenv: #4B0F9F;*/
+        /*--modenv: #632ead;*/
+        --modenv: #5A0C9E;
 
         --lfo1-text: #ccc;
         --lfo2-text: #bbb;
@@ -36,7 +38,7 @@
 
     body {
         margin: 0;
-        padding: 1.5vh 0 0 0;
+        padding: 1vh 0 0 0;
         background: #251639 linear-gradient(to bottom, #262642, #251639);
         color: #fff;
         font-family: 'Roboto Condensed', sans-serif;
@@ -148,6 +150,9 @@
         padding-left: 6px;
         padding-right: 6px;
     }
+    .control-row.add-row {
+        grid-template-rows: 2.5vh auto 2.5vh auto;
+    }
 
     div.controls {
         display: flex;
@@ -156,32 +161,38 @@
     }
 
     #title {
-        grid-column: 1 / span 2;
+        grid-column: 1 / span 5;
         grid-row: 1;
         background: transparent !important;
         border-top-color: transparent !important;
         border-left-color: transparent !important;
+        border-right-color: transparent !important;
         padding: 0 !important;
     }
 
     #title h1 {
         font-family: 'Roboto', sans-serif;
         font-weight: 300;
-        font-size: 2rem;
+        font-size: 1.6rem;
         color: #ccc;
         padding: 0;
         margin: 0;
     }
 
     #sub {
-        grid-column: 3;
-        grid-row: 1;
-        min-width: 10vw;
+        grid-row: 2;
+        grid-column: 4;
+        /* min-width: 10vw; */
+    }
+
+    #mixer-top-right {
+        grid-row: 2;
+        grid-column: 5;
     }
 
     #mixer {
-        grid-row: 1 / span 3;
-        grid-column: 4;
+        grid-row: 3;
+        grid-column: 4 / span 2;
         display: grid !important;
         grid-template-rows: 2.5vh auto;
         grid-column-gap: 1.5vw;
@@ -192,18 +203,17 @@
         align-self: end;
         display: grid !important;
         grid-template-columns: 1fr 1fr;
+            grid-column-gap: 1.5vw;
     }
 
-/*
     #vca {
+        grid-row: 7;
         grid-column: 5;
-        grid-row: 1;
     }
-*/
 
     #effects {
-        grid-row: 1 / span 3;
-        grid-column: 5;
+        grid-row: 7;
+        grid-column: 4;
         display: grid !important;
         grid-template-rows: 2.5vh auto;
         grid-row-gap: 0.5vh;
@@ -211,7 +221,8 @@
 
     #effects .controls {
         align-self: end;
-        display: grid !important;
+            /* display: grid !important; */
+            display: flex;
     }
 
     #sub, #lfo1, #lfo2, #mod-env {
@@ -305,7 +316,7 @@
     }
 
     #filter .control-row {
-        grid-template-rows: 2.5vh auto auto;
+            grid-template-rows: 2.5vh auto;
     }
 
     #filter-options-label {
@@ -362,13 +373,22 @@
     }
 
     #amp-env {
-        grid-column: 4 / span 2;
         grid-row: 4 / span 2;
+        grid-column: 4 / span 2;
+    }
+
+    #separator {
+        grid-row: 6;
+        grid-column: 1 / span 5;
+        height: 1vh;
+        background: transparent!important;
+        border: none!important;
+
     }
 
     #wheels {
         grid-column: 1;
-        grid-row: 6;
+        grid-row: 7 / span 2;
     }
 
     .wheel-pitch-label {
@@ -386,43 +406,38 @@
         grid-row: 1;
     }
 
-    .wheel-filter-label {
-        grid-column: 4 / span 2;
-        grid-row: 1;
-    }
-
     .wheel-pitch {
         grid-column: 1;
         grid-row: 2;
         display: flex;
     }
 
-    .wheel-osc1-2 {
+        .wheel-osc2 {
         grid-column: 2;
         grid-row: 2;
         display: flex;
     }
 
-    .wheel-osc2 {
+        .wheel-osc1-2 {
         grid-column: 3;
         grid-row: 2;
         display: flex;
     }
 
+        .wheel-filter-label {
+            grid-column: 1 / span 2;
+            grid-row: 3;
+        }
+
     .wheel-filter {
-        grid-column: 4 / span 2;
-        grid-row: 2;
+            grid-column: 1 / span 3;
+            grid-row: 4;
         display: flex;
     }
 
-    #arpeggiator {
-        grid-column: 4 / span 2;
-        grid-row: 6;
-    }
-
     #keyboard {
+        grid-row: 7;
         grid-column: 2 / span 2;
-        grid-row: 6;
     }
 
     .keyboard-aftertouch-label {
@@ -451,6 +466,11 @@
         grid-column: 6 / span 2;
         grid-row: 2;
         display: flex;
+    }
+
+    #arpeggiator {
+        grid-row: 8;
+        grid-column: 2 / span 4;
     }
 
 /*
@@ -484,7 +504,7 @@
     }
 
     .path {
-        stroke: #111;
+        stroke: #1c1c1c;
         stroke-width: 5;
     }
 
@@ -496,7 +516,8 @@
 
     .value {
         font-family: "Roboto Condensed", sans-serif;
-        font-size: 140%;
+        font-size: 130%;
+        font-weight: 300;
         stroke: none;
         fill: #c6c600;
     }
@@ -525,4 +546,95 @@
     .modenv {
         background-color: var(--modenv) !important;
         color: var(--modenv-text);
+    }
+
+
+    .env-combo {
+        display:flex;
+        margin-top:1.5vh;
+    }
+
+    .env-combo > div:nth-child(1) {
+        margin-left:4px;
+    }
+
+    .env-combo > div:nth-child(2) {
+        flex-grow:1;
+        margin-left:1vw;
+        /*border:1px solid yellow;*/
+    }
+
+    .env-combo > div:nth-child(2) > div:nth-child(1) {
+        display:flex;
+        justify-content:flex-end;
+    }
+
+    .vslider {
+       /* display: inline-block; */
+        display:flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 3vw;
+
+        text-align: center;
+        margin-bottom: 6px;
+    }
+
+
+    .env-slider {
+        /* display: inline-block; */
+        display:flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 2vw;
+        text-align: center;
+        margin-bottom: 6px;
+    }
+
+
+    .slider-value {
+        font-family: "Roboto Condensed", sans-serif;
+        font-size: 1rem;
+        font-weight: 300;
+        color: #A39038;
+    }
+
+    .slider-label {
+        font-size: 1rem;
+        color: #bbb;
+    }
+
+    input[type="range"] {
+        /* display:block; */
+        -webkit-appearance: slider-vertical;
+        /* width: 2vw; */
+        height: 9vh;
+         margin: 4px 0 8px 0;
+         padding: 0;
+             /* transform-origin: 75px 75px;
+             transform: rotate(-90deg);  */
+    }
+
+    .env-slider input[type="range"] {
+        height: 8.5vh;
+        margin: 4px 0 4px 0;
+
+    }
+
+    input[type=range]::-webkit-slider-runnable-track {
+        background: #333;
+        border-radius: 0;
+        border: 1px solid #877;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        border: 1px solid blue;
+        /*height: 36px;*/
+        /*width: 16px;*/
+        /*border-radius: 3px;*/
+        background: yellow;
+        cursor: pointer;
+        /*margin-top: -14px; !* You need to specify a margin in Chrome, but in Firefox and IE it is automatic *!*/
+        /*box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d; !* Add cool effects to your sliders! *!*/
     }

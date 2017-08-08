@@ -4,7 +4,9 @@
 
         --lfo1: #BA7B0B;
         --lfo2: #976308;
-        --modenv: #4B0F9F;
+        /*--modenv: #4B0F9F;*/
+        /*--modenv: #632ead;*/
+        --modenv: #5A0C9E;
 
         --lfo1-text: #ccc;
         --lfo2-text: #bbb;
@@ -36,7 +38,7 @@
 
     body {
         margin: 0;
-        padding: 1.5vh 0 0 0;
+        padding: 1vh 0 0 0;
         background: #202023; /* linear-gradient(to bottom, #202023, #3E3E46); */
         color: #fff;
         font-family: 'Roboto Condensed', sans-serif;
@@ -547,14 +549,46 @@
     }
 
 
-    div.vslider {
+    .env-combo {
+        display:flex;
+        margin-top:1.5vh;
+    }
+
+    .env-combo > div:nth-child(1) {
+        margin-left:4px;
+    }
+
+    .env-combo > div:nth-child(2) {
+        flex-grow:1;
+        margin-left:1vw;
+        /*border:1px solid yellow;*/
+    }
+
+    .env-combo > div:nth-child(2) > div:nth-child(1) {
+        display:flex;
+        justify-content:flex-end;
+    }
+
+    .vslider {
        /* display: inline-block; */
         display:flex;
         flex-direction: column;
         justify-content: center;
-        width: 3rem;
+        width: 3vw;
+
         text-align: center;        
-        margin-bottom: 12px;
+        margin-bottom: 6px;
+    }
+
+
+    .env-slider {
+        /* display: inline-block; */
+        display:flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 2vw;
+        text-align: center;
+        margin-bottom: 6px;
     }
 
 
@@ -579,4 +613,28 @@
          padding: 0;
              /* transform-origin: 75px 75px; 
              transform: rotate(-90deg);  */
+    }
+
+    .env-slider input[type="range"] {
+        height: 8.5vh;
+        margin: 4px 0 4px 0;
+
+    }
+
+    input[type=range]::-webkit-slider-runnable-track {
+        background: #333;
+        border-radius: 0;
+        border: 1px solid #877;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        border: 1px solid blue;
+        /*height: 36px;*/
+        /*width: 16px;*/
+        /*border-radius: 3px;*/
+        background: yellow;
+        cursor: pointer;
+        /*margin-top: -14px; !* You need to specify a margin in Chrome, but in Firefox and IE it is automatic *!*/
+        /*box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d; !* Add cool effects to your sliders! *!*/
     }
