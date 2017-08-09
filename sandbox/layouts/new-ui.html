@@ -970,41 +970,69 @@
                 <div>ARPEGGIATOR</div>
             </div>
 
-            <div class="control-row">
+            <div class="control-row" style="grid-template-rows: 1vh auto">
+
                 <div></div>
 
                 <div class="controls">
 
+                    <div style="margin-right: 1.5vw;">
+                        <div style="margin-top:0.3rem">
+                            <div class="bt">ARP OFF</div>
+                            <div class="bt on">Latch</div>
+                            <div class="bt">Retrig</div>
+                        </div>
+                    </div>
+
+                    <!--<div style="margin-right: 1.5vw;">-->
+                        <div class="arp-options">
+                            <div style="justify-self:end">Rhythm</div>
+                            <div><select style="background: transparent"><option>32</option></select></div>
+
+                            <div style="justify-self:end">Octaves</div>
+                            <div><select style="background: transparent"><option>1</option></select></div>
+
+                            <div style="justify-self:end">Note mode</div>
+                            <div><select style="background: transparent"><option>up-down 2</option></select></div>
+                        </div>
+                    <!--</div>-->
+
+
                     <div class="knob-combo">
                         <svg class="knob-only" viewbox="0 0 100 100">
                             <use href="#knob-only"/>
                         </svg>
-                        <div class="knob-label">X</div>
+                        <div class="knob-label">Swing</div>
                     </div>
-                    <div class="knob-combo">
-                        <svg class="knob-only" viewbox="0 0 100 100">
-                            <use href="#knob-only"/>
-                        </svg>
-                        <div class="knob-label">X</div>
+
+                    <!--<div>-->
+                        <!--<table border="1" cellpadding="5" cellspacing="0">-->
+                            <!--<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
+                            <!--<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
+                        <!--</table>-->
+                    <!--</div>-->
+
+                    <div id="seq">
+                        <!--<div class="l">1</div><div class="l"></div><div class="l"></div><div class="l">4</div>-->
+                        <!--<div class="l"></div><div class="l"></div><div class="l"></div><div class="l">8</div>-->
+                        <!--<div class="l"></div><div class="l"></div><div class="l"></div><div class="l">12</div>-->
+                        <!--<div class="l"></div><div class="l"></div><div class="l"></div><div class="l">16</div>-->
+
+                        <div class="s off"></div><div class="s"></div><div class="s"></div><div class="s on">4</div>
+                        <div class="s off"></div><div class="s"></div><div class="s"></div><div class="s">8</div>
+                        <div class="s"></div><div class="s off"></div><div class="s"></div><div class="s off">12</div>
+                        <div class="s"></div><div class="s"></div><div class="s"></div><div class="s">16</div>
+                        <div class="s"></div><div class="s"></div><div class="s"></div><div class="s">20</div>
+                        <div class="s"></div><div class="s"></div><div class="s"></div><div class="s">24</div>
+                        <div class="s"></div><div class="s"></div><div class="s"></div><div class="s">28</div>
+                        <div class="s"></div><div class="s"></div><div class="s"></div><div class="s">32</div>
+
+                        <!--<div class="l">1</div><div class="l"></div><div class="l"></div><div class="l">4</div>-->
+                        <!--<div class="l"></div><div class="l"></div><div class="l"></div><div class="l">8</div>-->
+                        <!--<div class="l"></div><div class="l"></div><div class="l"></div><div class="l">12</div>-->
+                        <!--<div class="l"></div><div class="l"></div><div class="l"></div><div class="l">16</div>-->
                     </div>
-                    <div class="knob-combo">
-                        <svg class="knob-only" viewbox="0 0 100 100">
-                            <use href="#knob-only"/>
-                        </svg>
-                        <div class="knob-label">X</div>
-                    </div>
-                    <div class="knob-combo">
-                        <svg class="knob-only" viewbox="0 0 100 100">
-                            <use href="#knob-only"/>
-                        </svg>
-                        <div class="knob-label">X</div>
-                    </div>
-                    <div class="knob-combo">
-                        <svg class="knob-only" viewbox="0 0 100 100">
-                            <use href="#knob-only"/>
-                        </svg>
-                        <div class="knob-label">X</div>
-                    </div>
+
                 </div>
             </div>
         </div>
