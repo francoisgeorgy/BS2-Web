@@ -1,5 +1,14 @@
 # Novation Bass Station II Web interface
 
+# What is this?
+
+The Bass Station II is my first synthesizer. I bought one a couple of weeks ago. For a beginner like me the number
+of controls and parameters available is huge. I want to understand how some patches and sound are done. Quite a lot of 
+parameters are hidden behind "FN  Keys" and I wanted to be able to change them in a more direct, visual way.
+The introduction of the Web MIDI API seemed just a perfect match for this kind of development. So, here is the result.
+
+# Requirements &amp; Limitations
+
 This application requires a browser that support the [Web MIDI API](http://webaudio.github.io/web-midi-api/).
 
 Currently, only Chrome 43+ and Opera 44+ support this standard. This app will therefore _not_ works in Firefox, Safari or IE. 
@@ -17,13 +26,6 @@ Coming soon: randomizer configuration. Only randomize what you want to be random
 3. If it's not already done, connect your Bass Station II to your computer.
 4. On the top-right corner of the application, "midi", "IN" and "OUT" must be ON (highlighted). 
 5. Move a dial or a slider on your Bass Station II, the corresponding on-screen control must move accordingly.
-
-# Why this app?
-
-The Bass Station II is my first synthesizer. I bought one a couple of weeks ago. For a beginner like me the number
-of controls and parameters available is huge. I want to understand how some patches and sound are done. Quite a lot of 
-parameters are hidden behind "FN  Keys" and I wanted to be able to change them in a more direct, visual way.
-The introduction of the Web MIDI API seemed just a perfect match for this kind of development. So, here is the result.
 
 # Bass Station II MIDI messages
 

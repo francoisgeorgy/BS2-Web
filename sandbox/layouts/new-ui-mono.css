@@ -22,6 +22,9 @@
         --title-text: #aaa;
         --header-text: #ccc;
 
+        --menu-text: #ccc;
+        --menu-text-hover: yellow;
+
         --default-bg-from: #454547;
         --default-bg-to: #373738;
 
@@ -42,6 +45,10 @@
 
         --combo-label: #aaaaaa;
         --combo-separator: #999;
+    }
+
+    *:focus {
+        outline: none;
     }
 
     html {
@@ -195,15 +202,24 @@
     }
 
     .glow {
-        text-shadow: 0 0 10px #ffff00;
+        text-shadow: 0 0 16px #ffff00;
     }
 
-    #title > div {
+    #title > div.menu {
         margin-bottom: 0.25rem;
+        color: var(--menu-text);
     }
 
-    #title span {
+
+    .menu span {
         margin-left: 0.8vw;
+    }
+    .menu a {
+        color: var(--menu-text);
+        text-decoration: none;
+    }
+    .menu a:hover {
+        color: var(--menu-text-hover);
     }
 
     #sub {
@@ -268,12 +284,15 @@
 
     select {
         font-family: 'Roboto Condensed', sans-serif;
-        font-size: 0.8em;
-        color: #ffec03;
-        background-color: var(--default-bg-from);
-        border-color: var(--combo-separator);
+        font-size: 1rem;
+        color: var(--value);
+        background-color: var(--default-bg-to);
+        /*border-color: var(--combo-separator);*/
         /*border-radius: 4px;*/
+        border: none;
+        margin-top: -1px;
     }
+
 
     /*#lfo1 .control-row > div {*/
         /*border: 1px solid green;*/
@@ -503,9 +522,10 @@
         }
 
         .wheel-filter {
-            grid-column: 1 / span 3;
+            grid-column: 1 / span 2;
             grid-row: 4;
             display: flex;
+            justify-content: space-between;
         }
 
     #keyboard {
