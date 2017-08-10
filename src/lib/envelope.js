@@ -83,14 +83,14 @@ var envelope = (function(elem, conf) {
         y = 0.0 + (config.env_width / 2);
         p += `L${x * 100.0},${100.0 - y + 2}`;
 
-        console.log(p);
+        // console.log(p);
 
         return p;
     }
 
     function draw() {
 
-        console.log('draw', element);
+        // console.log('draw', element);
 
         // https://www.w3.org/TR/SVG/render.html#RenderingOrder:
         // Elements in an SVG document fragment have an implicit drawing order, with the first elements in the SVG document

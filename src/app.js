@@ -1052,8 +1052,23 @@
             envelopes[element.id] = new envelope(element, {});
         });
 
-        var k = new knob(document.getElementById('knob1'), {arcMin:30});
-        console.log(k);
+        var k1 = new knob(document.getElementById('knob1'), {});
+        var k2 = new knob(document.getElementById('knob2'), {
+            with_label: false,
+            default_value: 50,
+            cursor: 50
+        });
+/*
+        var k = new knob(document.getElementById('knob1'), {
+            // arcMin: 30,
+            // cursor_dot_size: 10,
+            // cursor_start: 10,
+            // cursor_end: 20,
+            default_value: 50
+        });
+*/
+        console.log(k1);
+        console.log(k2);
 
 /*
         setupUI();

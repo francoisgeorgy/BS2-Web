@@ -643,28 +643,48 @@ select {
     color: var(--label);
 }
 
+/* knob.js classes: */
+
+.knob-back {
+    stroke-width: 5;
+    stroke: #1c1c1c;
+}
+
+.knob-arc {
+    stroke-width: 5;
+    stroke: var(--knob-value);
+}
+
+.knob-value {
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 130%;
+    font-weight: 300;
+    stroke: none;
+    fill: var(--knob-value);
+}
+
+/* --- */
+
 .no-margin {
     margin: 0;
 }
 
-.path {
+.path {     /* TO BE DELETED / replaced by .knob-arc */
     stroke: #1c1c1c;
     stroke-width: 5;
 }
 
-.label {
+.label {    /* TO BE DELETED */
     font-size: 1rem;
     stroke: none;
     fill: #fff;
 }
 
-.value {
+.value {    /* TO BE DELETED / replaced by .knob-value */
     font-family: "Roboto Condensed", sans-serif;
     font-size: 130%;
     font-weight: 300;
     stroke: none;
-    /*fill: #A39038;*/
-    /*fill: #ffffff;*/
     fill: var(--knob-value);
 }
 

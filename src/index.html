@@ -5,10 +5,10 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,500,700|Roboto+Condensed:300,400,700" rel="stylesheet" />
     <link href="css/layout.css" rel="stylesheet" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="lib/envelope.js"></script>
-    <script src="lib/knob.js"></script>
-    <script src="bs2.js"></script>
-    <script src="app.js"></script>
+    <script src="lib/envelope.js?ck"></script>
+    <script src="lib/knob.js?ck"></script>
+    <script src="bs2.js?ck"></script>
+    <script src="app.js?ck"></script>
 </head>
 <body>
     <div id="main">
@@ -225,7 +225,7 @@
 
                 <div class="lfo-delay">
                     <div class="knob-combo">
-                        <svg class="knob-only" id="knob1" data-config='{"with_label": false}'></svg>
+                        <svg class="knob-only" id="knob1" ></svg>
                         <!--<svg class="knob-only" viewbox="0 0 100 100">-->
                             <!--<use href="#knob-only"/>-->
                         <!--</svg>-->
@@ -235,9 +235,10 @@
 
                 <div class="lfo-speed">
                     <div class="knob-combo">
-                        <svg class="knob-only" viewbox="0 0 100 100">
-                            <use href="#knob-only"/>
-                        </svg>
+                        <svg class="knob-only" id="knob2" ></svg>
+                        <!--<svg class="knob-only" viewbox="0 0 100 100">-->
+                            <!--<use href="#knob-only"/>-->
+                        <!--</svg>-->
                         <div class="knob-label" style="padding: 0px 1px 0px 1px;">
                             <select>
                                 <option>Speed</option>
