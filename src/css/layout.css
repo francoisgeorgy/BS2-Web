@@ -3,6 +3,7 @@
     --inset-width: 1px;
 
     --value: yellow;
+    --knob-path-bg: #1c1c1c;
     --knob-value: #d3d347;
 
     --lfo1: #BA7B0B;
@@ -645,9 +646,14 @@ select {
 
 /* knob.js classes: */
 
+
+.knob-bg {
+    fill: url("#grad");
+}
+
 .knob-back {
     stroke-width: 5;
-    stroke: #1c1c1c;
+    stroke: var(--knob-path-bg);
 }
 
 .knob-arc {

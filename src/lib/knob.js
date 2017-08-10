@@ -48,8 +48,6 @@
         let data_config = JSON.parse(element.dataset.config || '{}');
         let config = Object.assign({}, defaults, conf, data_config);
 
-        console.log(config);
-
         // NOTE: viewBox must be 100x120: 100x100 for the arc and 100x20 below for the label.
 
         const HALF_WIDTH = 50;      // viewBox/2
@@ -293,6 +291,18 @@
             // back.setAttribute("class", "knob-back");
             // element.append(back);
 
+            // let bg_radius = config.radius + (config.arc_width * config.radius / 100) / 2;
+            let bg_radius = config.radius + 1 - (config.arc_width * config.radius / 100) / 2;
+            let bg = document.createElementNS(NS, "circle");
+            bg.setAttributeNS(null, "cx", "50");
+            bg.setAttributeNS(null, "cy", "50");
+            bg.setAttributeNS(null, "r", `${bg_radius}`);
+            bg.setAttribute("stroke", "transparent");
+            bg.setAttribute("stroke-width", "0");
+            bg.setAttribute("fill", "transparent");
+            bg.setAttribute("class", "knob-bg");
+            element.appendChild(bg);
+
             let back = document.createElementNS(NS, "path");
             back.setAttributeNS(null, "d", getPath(maxAngle, true));
             back.setAttribute("stroke", config.back_color);
@@ -347,13 +357,13 @@
          */
         function redraw() {
 
-            element.childNodes[1].textContent = getValue(); //.toFixed(2);
-            element.childNodes[2].setAttributeNS(null, "d", getPath(getPolarAngle(), false));
+            element.childNodes[2].textContent = getValue(); //.toFixed(2);
+            element.childNodes[3].setAttributeNS(null, "d", getPath(getPolarAngle(), false));
 
             if (config.cursor_dot_size > 0) {
                 let d = getDotCursor(getPolarAngle());
-                element.childNodes[3].setAttributeNS(null, "cx", d.cx);
-                element.childNodes[3].setAttributeNS(null, "cy", d.cy);
+                element.childNodes[4].setAttributeNS(null, "cx", d.cx);
+                element.childNodes[4].setAttributeNS(null, "cy", d.cy);
             }
         }
 
