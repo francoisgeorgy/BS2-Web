@@ -1,0 +1,267 @@
+body {
+    font-family: 'Roboto Condensed', sans-serif;
+    /*font-family: 'Roboto Mono', monospace;*/
+}
+
+h1, h2 {
+    font-family: 'Roboto Condensed', sans-serif;
+    font-weight: normal;
+}
+
+h1 {
+    font-size: 1.5em;
+    margin: 0 0 10px 0;
+}
+
+h2 {
+    font-size: 1.2em;
+    margin: 0 0 10px 0;
+}
+
+main {
+    display: grid;
+    grid-gap: 4px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+main > div {
+    border-radius: 8px;
+    padding: 8px;
+}
+
+.head {
+    grid-column: 1 / span 9;
+    grid-row: 1;
+}
+#sub {
+    grid-column: 1 / span 2;
+    grid-row: 2 / span 2;
+}
+#lfo1 {
+    grid-column: 1;
+    grid-row: 4 / span 3;
+}
+#lfo2 {
+    grid-column: 2 ;
+    grid-row: 4 / span 3;
+}
+#osc1 {
+    grid-column: 3;
+    grid-row: 2 / span 5;
+}
+#osc2 {
+    grid-column: 4;
+    grid-row: 2 / span 5;
+}
+#mixer {
+    grid-column: 5 / span 2;
+    grid-row: 2 / span 3;
+}
+#filter {
+    grid-column: 7 / span 2;
+    grid-row: 2 / span 3;
+}
+#effects {
+    grid-column: 9;
+    grid-row: 2 / span 3;
+}
+#mod-env {
+    grid-column: 5 / span 2;
+    grid-row: 5 / span 2;
+}
+#amp-env {
+    grid-column: 7 / span 2;
+    grid-row: 5 / span 2;
+}
+#vca {
+    grid-column: 9;
+    grid-row: 5 / span 2;
+}
+#wheels {
+    grid-column: 1 / span 4;
+    grid-row: 7;
+}
+#keyboard {
+    grid-column: 5 / span 5;
+    grid-row: 7;
+}
+#arpeggiator {
+    grid-column: 1 / span 6;
+    grid-row: 8;
+}
+#midi {
+    grid-column: 7 / span 3;
+    grid-row: 8;
+    /*max-height: 100px;*/
+}
+#status-bar {
+    grid-column: 1 / span 9;
+    grid-row: 9;
+}
+
+#credits-link {
+    float: right;
+}
+
+.head {
+    font-size: 0.9em;
+}
+
+.midi-messages {
+    float: left;
+    margin-right: 20px;
+    font-size: 0.7em;
+    width:80px;
+    height: 90px;
+}
+
+#midi-messages-in,
+#midi-messages-out {
+    margin-top: 4px;
+    max-height: 80px;
+    overflow-y: scroll;
+}
+
+#status {
+    font-size: 0.9em;
+}
+
+
+#patch-number {
+}
+
+.commands {
+    margin-left:20px;
+}
+
+.subhead {
+    float:right;
+    margin-right: 5px;
+    margin-top: 3px;
+}
+
+.adsr {
+    display: block;
+}
+
+#midi-status,
+#midi-in-status,
+#midi-out-status {
+    float: right;
+    margin-right: 5px;
+    /*font-size: 0.8em;*/
+}
+
+div.control {
+    /*float: left;*/
+    width: 60px;
+    text-align: center;
+    margin: 0 5px 5px 0;
+}
+
+div.row {
+    float: left;
+}
+
+div.left > div.control {
+    text-align: left;
+}
+
+div.double {
+    width: 125px;
+}
+
+label {
+    font-size: 0.8em;
+}
+
+div.control > label {
+    display: block;
+    margin-top:-10px;
+}
+
+.group:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.spacer {
+    float: left;
+    width: 10px;
+}
+
+.large-spacer {
+    float: left;
+    width: 30px;
+}
+
+.space-left {
+    margin-left: 10px;
+}
+
+.large-space-left {
+    margin-left: 30px;
+}
+
+.control.space-left {
+    margin-left: 10px;
+}
+
+.control.large-space-left {
+    margin-left: 30px;
+}
+
+.space-after {
+    margin-bottom: 15px;
+}
+
+button {
+    font-family: 'Roboto Condensed', sans-serif;
+    border-radius: 4px;
+    font-size: 0.8em;
+}
+
+select {
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 0.8em;
+}
+
+.value {
+    font-size: 0.8em;
+}
+
+.dial {
+    font-size: 0.8em!important;
+}
+
+.dial,
+.handle,
+.reset-handler {
+    cursor: pointer;
+    user-select: none;
+}
+
+.trademarks {
+    font-size: 0.8em;
+}
+
+#randomizer-settings td {
+    padding-right: 1em;
+}
+
+.lightbox {
+    display: none;
+}
+
+.lity-container {
+    vertical-align: top;
+    margin-top: 2em;
+}
+
+.lity-close {
+    position: absolute!important;
+    color: #000!important;
+    text-shadow: none!important;
+}

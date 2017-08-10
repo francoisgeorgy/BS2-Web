@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bass Station II Web Interface</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Condensed:400,700" rel="stylesheet">
+    <link rel="stylesheet" href="lib/lity.min.css" />
+    <link rel="stylesheet" media="all" href="css/layout.css" />
+    <link rel="stylesheet" media="all" href="css/light-theme.css" id="themesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="lib/lity.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="lib/js.cookie.js"></script>
+    <script src="lib/webmidi.min.js"></script>
+    <script src="lib/jquery.knob.js"></script>
+    <script src="bs2.js"></script>
+    <script src="app.js"></script>
+</head>
+<body>
+    <main>
+        <div class="head">
+            <span class="novation-blue">Bass Station II Web Interface</span><span id="patch" class="novation-blue">&nbsp;&nbsp;&bull;&nbsp;&nbsp;Patch</span>
+            <span id="patch-number" class="novation-blue">-</span>
+            <span class="commands">
+                <button id="cmd-sync" title="Sync with the BS2 by asking it to send a sysex dump of its current patch">pull</button>
+                <button id="cmd-send" title="Send all parameters to the connected Bass Station II">send</button>
+                <button id="cmd-init" title="Set all parameters to their default value">init</button>
+                <button id="cmd-randomize" title="Set all parameters to a random value">randomize</button>
+                <!--<button id="cmd-save" title="Save the current configuration in the browser local storage">save</button>-->
+                <button id="cmd-import" class="large-space-left" title="Import a configuration from a file (will not send to the BS2)">load patch</button>
+                <!--<button id="cmd-export" title="Export the current configuration in a file">export patch</button>-->
+                <!--<button id="cmd-record" class="large-space-left" title="Record all MIDI messages sent and received">record</button>-->
+                <!--<button id="cmd-play" title="Play previously recorded messages.">play</button>-->
+                <button id="cmd-settings" class="large-space-left" title="Application settings">settings</button>
+            </span>
+            <span class="commands">
+                <label>MIDI channel:</label>
+                <select id="midi-channel">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                    <option value="13">13</option>
+                    <option value="14">14</option>
+                    <option value="15">15</option>
+                    <option value="16">16</option>
+                    <option value="all">All</option>
+                </select>
+            </span>
+            <div id="midi-out-status">OUT</div>
+            <div id="midi-in-status">IN</div>
+            <div id="midi-status">midi</div>
+        </div>
+
+        <!--
+          -- SUB OSCILLATOR
+          -->
+        <div id="sub">
+            <h1 class="reset-handler">Sub</h1>
+            <div>
+                <label>Octave:</label>
+                <select id="cc-81" class="cc">
+                </select>
+                <select id="cc-80" class="cc" style="margin-left:10px">
+                </select>
+            </div>
+        </div>
+
+        <!--
+          -- LFO 1
+          -->
+        <div id="lfo1">
+            <h1 class="reset-handler">LFO 1</h1>
+            <div class="space-after">
+                <select id="cc-88" class="cc">
+                </select>
+            </div>
+            <div class="space-after" style="text-align: center">
+                <input id="nrpn-89" type="hidden" value="0" /><span id="nrpn-89-handle" class="handle value off">Key Sync</span>
+            </div>
+            <div class="group">
+                <div class="control row">
+                    <span id="cc-86" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                    <label>Delay</label>
+                </div>
+            </div>
+            <div class="group">
+                <div class="control row">
+                    <span id="cc-18" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                    <label>Speed</label>
+                </div>
+            </div>
+            <div class="group space-after">
+                <div class="control " style="margin-right:0">
+                    <select id="nrpn-88" class="cc">   <!-- FN key "Speed/Sync LFO 1" -->
+                    </select>
+                    <select id="nrpn-87" class="cc">   <!-- Sync value -->
+                    </select>
+                </div>
+            </div>
+            <div class="group">
+                <div class="control">
+                    <span id="nrpn-86" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                    <label>Slew</label>
+                </div>
+            </div>
+        </div>
+
+        <!--
+          -- LFO 2
+          -->
+        <div id="lfo2">
+            <h1 class="reset-handler">LFO 2</h1>
+            <div class="space-after">
+                <!--<label>Wave:</label>-->
+                <select id="cc-89" class="cc">
+                </select>
+            </div>
+            <div class="space-after" style="text-align: center">
+                <input id="nrpn-93" type="hidden" value="0" /><span id="nrpn-93-handle" class="handle value off">Key Sync</span>
+            </div>
+            <div class="group">
+                <div class="control row">
+                    <span id="cc-87" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                    <label>Delay</label>
+                </div>
+            </div>
+            <div class="group">
+                <div class="control row">
+                    <span id="cc-19" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                    <label>Speed</label>
+                </div>
+            </div>
+            <div class="group space-after">
+                <div class="control row">
+                    <select id="nrpn-92" class="cc">   <!-- FN key "Speed/Sync LFO 2" -->
+                    </select>
+                    <select id="nrpn-91" class="cc">   <!-- Sync value -->
+                    </select>
+                </div>
+            </div>
+            <div class="group">
+                <div class="control">
+                    <span id="nrpn-90" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                    <label>Slew</label>
+                </div>
+            </div>
+        </div>
+
+        <!--
+          -- OSCILLATOR 1
+          -->
+        <div id="osc1">
+            <h1 class="reset-handler">Osc 1</h1>
+            <div>
+                <div class="group left space-after">
+                    <div class="control double">
+                        <select id="cc-70" class="cc">
+                        </select>
+                        <select id="nrpn-72" class="cc">   <!-- osc1 waveform -->
+                        </select>
+                    </div>
+                </div>
+                <div class="group space-after">
+                    <div class="control row">
+                        <!--<input id="cc-27" class="dial" data-width="60" data-height="60" value="0" />-->
+                        <span id="cc-27" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                        <label>Coarse</label>
+                    </div>
+                    <div class="control row">
+                        <span id="cc-26" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                        <label>Fine</label>
+                    </div>
+                </div>
+                <div class="group space-after">
+                    <div class="control row">
+                        <span id="cc-71" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                        <label>Mod Env</label>
+                    </div>
+                    <div class="control row">
+                        <span id="cc-28" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                        <label>LFO 1</label>
+                    </div>
+                </div>
+                <div id="osc1-pw-controls">
+                    <div class="group">
+                        <div class="control row double">
+                            <span id="cc-74" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                            <label>Man PW</label>
+                        </div>
+                    </div>
+                    <div class="group">
+                        <div class="control row">
+                            <span id="cc-72" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                            <label>Mod Env</label>
+                        </div>
+                        <div class="control row">
+                            <span id="cc-73" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                            <label>LFO 2</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!--
+          -- OSCILLATOR 2
+          -->
+        <div id="osc2">
+            <div class="subhead">
+                <input id="cc-110" type="hidden" value="0" /><span id="cc-110-handle" class="handle value off">1-2 Sync</span>
+            </div>
+            <h1 class="reset-handler">Osc 2</h1>
+            <div>
+                <div class="group left space-after">
+                    <div class="control double">
+                        <select id="cc-75" class="cc">
+                        </select>
+                        <select id="nrpn-82" class="cc">   <!-- osc2 waveform -->
+                        </select>
+                    </div>
+                </div>
+                <div class="group space-after">
+                    <div class="control row">
+                        <span id="cc-30" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                        <label>Coarse</label>
+                    </div>
+                    <div class="control row">
+                        <span id="cc-29" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                        <label>Fine</label>
+                    </div>
+                </div>
+                <div class="group space-after">
+                    <div class="control row">
+                        <span id="cc-76" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                        <label>Mod Env</label>
+                    </div>
+                    <div class="control row">
+                        <span id="cc-31" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                        <label>LFO 1</label>
+                    </div>
+                </div>
+                <div id="osc2-pw-controls">
+                    <div class="group">
+                        <div class="control row double">
+                            <span id="cc-79" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                            <label>Man PW</label>
+                        </div>
+                    </div>
+                    <div class="group space-after">
+                        <div class="control row">
+                            <span id="cc-77" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                            <label>Mod Env</label>
+                        </div>
+                        <div class="control row">
+                            <span id="cc-78" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                            <label>LFO 2</label>
+                        </div>
+                    </div>
+                </div>
+                <!--<div style="text-align: center">-->
+                    <!--<input id="cc-110" type="hidden" value="0" /><span id="cc-110-handle" class="handle value off">Osc 1-2 Sync</span>-->
+                <!--</div>-->
+            </div>
+        </div>
+
+        <!--
+          -- MIXER
+          -->
+        <div id="mixer">
+            <h1 class="reset-handler">Mixer</h1>
+            <div class="group left space-after">
+                <div class="control">&nbsp;</div>
+            </div>
+            <div class="group space-after">
+                <div class="control row">
+                    <span id="cc-22" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                    <label>Sub</label>
+                </div>
+                <div class="control row">
+                    <span id="cc-20" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                    <label>Osc 1</label>
+                </div>
+                <div class="control row">
+                    <span id="cc-21" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                    <label>Osc 2</label>
+                </div>
+            </div>
+
+            <div class="group">
+                <div class="control row">
+                    <span id="cc-25" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                    <label>Ext</label>
+                </div>
+                <div class="control row">
+                    <span id="cc-24" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                    <label>Ring</label>
+                </div>
+                <div class="control row">
+                    <span id="cc-23" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                    <label>Noise</label>
+                </div>
+            </div>
+        </div>
+
+        <!--
+          -- FILTER
+          -->
+        <div id="filter">
+            <h1 class="reset-handler">Filter</h1>
+            <div>
+                <div class="group space-after">
+                    <select id="cc-83" class="cc">
+                    </select>
+                    <select id="cc-106" class="cc">
+                    </select>
+                    <select id="cc-84" class="cc">
+                    </select>
+                </div>
+                <div class="group space-after">
+                    <div class="control row">
+                        <span id="cc-82" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                        <label>Resonance</label>
+                    </div>
+                    <div class="control row">
+                        <span id="cc-16" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                        <label>Frequency</label>
+                    </div>
+                </div>
+                <div class="group">
+                    <div class="control row">
+                        <span id="cc-114" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                        <label>Overdrive</label>
+                    </div>
+                    <div class="control row">
+                        <span id="cc-85" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                        <label>Mod Env</label>
+                    </div>
+                    <div class="control row">
+                        <span id="cc-17" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                        <label>LFO 2</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--
+          -- EFFECTS
+          -->
+        <div id="effects">
+            <h1 class="reset-handler">Effects</h1>
+            <div class="group left space-after">
+                <div class="control">&nbsp;</div>
+            </div>
+            <div class="group space-after">
+                <div class="control row">
+                    <span id="cc-94" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                    <label>Distorsion</label>
+                </div>
+            </div>
+            <div class="group">
+                <div class="control row">
+                    <span id="cc-115" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                    <label>Osc 2 Filter Mod</label>
+                </div>
+            </div>
+        </div>
+
+        <!--
+          -- MOD ENVELOPE
+          -->
+        <div id="mod-env">
+            <div class="subhead">
+                <label>Triggering:</label>
+                <select id="nrpn-105" class="cc">
+                </select>
+            </div>
+            <h1 class="reset-handler">Mod Env</h1>
+            <div class="group space-after">
+                <div class="control row">
+                    <span id="cc-102" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                    <label>A</label>
+                </div>
+                <div class="control row">
+                    <span id="cc-103" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                    <label>D</label>
+                </div>
+                <div class="control row">
+                    <span id="cc-104" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                    <label>S</label>
+                </div>
+                <div class="control row">
+                    <span id="cc-105" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                    <label>R</label>
+                </div>
+            </div>
+            <div>
+                <canvas id="mod-ADSR" class="adsr" height="60" width="200"></canvas>
+            </div>
+        </div>
+
+        <!--
+          -- AMP ENVELOPE
+          -->
+        <div id="amp-env">
+            <div class="subhead">
+                <label>Triggering:</label>
+                <select id="nrpn-73" class="cc">
+                </select>
+            </div>
+            <h1 class="reset-handler">Amp Env</h1>
+            <div class="group space-after">
+                <div class="control row">
+                    <span id="cc-90" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                    <label>A</label>
+                </div>
+                <div class="control row">
+                    <span id="cc-91" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                    <label>D</label>
+                </div>
+                <div class="control row">
+                    <span id="cc-92" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                    <label>S</label>
+                </div>
+                <div class="control row">
+                    <span id="cc-93" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                    <label>R</label>
+                </div>
+            </div>
+            <div>
+                <canvas id="amp-ADSR" class="adsr" height="60" width="200"></canvas>
+            </div>
+        </div>
+
+        <!--
+          -- VCA
+          -->
+        <div id="vca">
+            <h1 class="reset-handler">VCA</h1>
+            <!--<div class="group left space-after">-->
+                <!--<div class="control">&nbsp;</div>-->
+            <!--</div>-->
+            <div class="control row">
+                <span id="cc-95" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                <label>VCA Limiter</label>
+            </div>
+        </div>
+
+        <!--
+          -- MOD WHEELS
+          -->
+        <div id="wheels">
+            <!--<h1 style="float:left;margin-right:10px">Wheels</h1>-->
+            <!--<div class="group" style="margin-top:10px">-->
+            <h1 class="reset-handler">Wheels</h1>
+            <div class="group">
+                <div class="control row">
+                    <span id="nrpn-70" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                    <label>LFO 1 Osc Pitch</label>
+                </div>
+                <div class="control row space-left">
+                    <span id="nrpn-71" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                    <label>LFO 2 Filter Freq</label>
+                </div>
+                <div class="control row space-left">
+                    <span id="nrpn-78" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                    <label>Osc 2 Pitch</label>
+                </div>
+                <div class="control row space-left">
+                    <span id="nrpn-94" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                    <label>Filter Freq</label>
+                </div>
+                <div class="control row space-left">
+                    <span id="cc-107" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                    <label>Osc Pitch Bend</label>
+                </div>
+            </div>
+        </div>
+
+        <!--
+          -- KEYBOARD
+          -->
+        <div id="keyboard">
+            <h1 class="reset-handler">Keyboard</h1>
+            <div class="group">
+                <div class="control row">
+                    <span id="cc-64" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                    <label>Sustain</label>
+                </div>
+                <div class="control row" style="margin-right:0">
+                    <span id="cc-5" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                    <label>Glide</label>
+                </div>
+                <div class="large-spacer">
+                    &nbsp;
+                </div>
+                <div class="row" style="margin-top:-20px">
+                    <!--<label>&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; aftertouch &#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</label>-->
+                    <fieldset style="padding:10px 0 0 0;border:0;border-top:1px solid #707070;margin: -5px 0 0;color:#707070">
+                        <legend style=" margin:0 auto;">Aftertouch</legend>
+                    <!--<div style="border-top:1px solid #aaa;padding-top:10px">-->
+                        <div class="control row">
+                            <span id="nrpn-75" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                            <label>LFO 1<br />Osc 1+2</label>
+                        </div>
+                        <div class="control row">
+                            <span id="nrpn-76" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                            <label>LFO 2<br />Speed</label>
+                        </div>
+                        <div class="control row" style="margin-right:0">
+                            <span id="nrpn-74" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                            <label>Filter Freq</label>
+                        </div>
+                        <!--</div>-->
+                    </fieldset>
+                </div>
+                <div class="large-spacer">
+                    &nbsp;
+                </div>
+                <div class="row" style="margin-top:-20px">
+                    <fieldset style="padding:10px 0 0 0;border:0;border-top:1px solid #707070;margin: -5px 0 0;color:#707070">
+                        <legend style=" margin:0 auto;">Velocity</legend>
+                        <div class="control row">
+                            <span id="cc-112" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                            <label>Amp Env</label>
+                        </div>
+                        <div class="control row">
+                            <span id="cc-113" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                            <label>Mod Env</label>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+
+        <!--
+          -- ARPEGGIATOR
+          -->
+        <div id="arpeggiator">
+            <h1 class="reset-handler" style="float:left;margin-right:10px">ARP</h1>
+            <div class="group" style="margin-top:10px">
+
+                <div class="row">
+                    <table>
+                        <tr>
+                            <td align="right" width="60">
+                                <input id="cc-108" type="hidden" value="0" /><span id="cc-108-handle" class="handle value off">ARP</span>
+                            </td>
+                            <td align="right" style="padding-left:20px">
+                                <label class="row">Rhythm</label>
+                            </td>
+                            <td>
+                                <select id="cc-119" class="cc">
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right" width="60">
+                                <input id="cc-109" type="hidden" value="0" /><span id="cc-109-handle" class="handle value off">Latch</span>
+                            </td>
+                            <td align="right" style="padding-left:20px">
+                                <label class="row">Octaves</label>
+                            </td>
+                            <td>
+                                <select id="cc-111" class="cc">
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right" width="60">
+                                <input id="nrpn-106" type="hidden" value="0" /><span id="nrpn-106-handle" class="handle value off">Retrig</span>
+                            </td>
+                            <td align="right" style="padding-left:20px">
+                                <label>Note mode</label>
+                            </td>
+                            <td>
+                                <select id="cc-118" class="cc">
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="control row large-space-left">
+                    <span id="cc-116" class="dial" data-width="60" data-height="60" data-value="0"></span>
+                    <label>Swing</label>
+                </div>
+
+            </div>
+        </div>
+
+        <!--
+          -- MIDI MESSAGES
+          -->
+        <div id="midi">
+            <div class="midi-messages">
+                midi in
+                <div id="midi-messages-in">
+                </div>
+            </div>
+            <div class="midi-messages">
+                midi out
+                <div id="midi-messages-out">
+                </div>
+            </div>
+        </div>
+
+        <!--
+          -- STATUS and MESSAGES
+          -->
+        <div id="status-bar">
+            <a href="#credits-dialog" id="credits-link" data-lity><span class="version">1.0.1</span> - About</a>
+            <div id="status">
+            </div>
+        </div>
+
+    </main>
+
+    <div id="import-dialog" style="overflow:auto;background:#FDFDF6;color:#000;padding:20px;min-width:400px;max-width:90%;border-radius:6px"  class="lity-hide">
+        <h1>Patch import</h1>
+        <div id="import-dialog-instructions">
+            Select a file containing a BS2 patch (sysex data).
+        </div>
+        <div style="margin:10px 0;">
+            <input type="file" id="patch-file" placeholder="patch file" />
+        </div>
+        <div id="import-dialog-error" style="margin:10px 0;color:red">
+        </div>
+    </div>
+
+    <div id="settings-dialog" style="overflow:auto;background:#FDFDF6;color:#000;padding:20px;min-width:500px;max-width:90%;border-radius:6px"  class="lity-hide">
+        <h1>Settings</h1>
+        <div id="settings-dialog-instructions">
+        </div>
+        <div style="margin:10px 0;">
+            <h3>Randomizer</h3>
+            <p>Only randomize the following groups of parameters:</p>
+            <div id="randomizer-settings">
+            </div>
+            <!--<table id="randomize-settings">-->
+                <!--<tr>-->
+                    <!--<td><input type="checkbox" class="chk-rnd" name="sub" checked="checked" value="1" />Sub</td>-->
+                    <!--<td><input type="checkbox" class="chk-rnd" name="mixer" checked="checked" value="1" />Mixer</td>-->
+                    <!--<td><input type="checkbox" class="chk-rnd" name="wheels" value="1" />Wheels</td>-->
+                <!--</tr>-->
+                <!--<tr>-->
+                    <!--<td><input type="checkbox" class="chk-rnd" name="lfo1" checked="checked" value="1" />LFO 1</td>-->
+                    <!--<td><input type="checkbox" class="chk-rnd" name="filter" checked="checked" value="1" />Filter</td>-->
+                    <!--<td><input type="checkbox" class="chk-rnd" name="keyboard" value="1" />Keyboard</td>-->
+                <!--</tr>-->
+                <!--<tr>-->
+                    <!--<td><input type="checkbox" class="chk-rnd" name="lfo2" checked="checked" value="1" />LFO 2</td>-->
+                    <!--<td><input type="checkbox" class="chk-rnd" name="mod-env" checked="checked" value="1" />Mod env</td>-->
+                    <!--<td><input type="checkbox" class="chk-rnd" name="arp" value="1" />ARP</td>-->
+                <!--</tr>-->
+                <!--<tr>-->
+                    <!--<td><input type="checkbox" class="chk-rnd" name="osc1" checked="checked" value="1" />Osc 1</td>-->
+                    <!--<td><input type="checkbox" class="chk-rnd" name="amp-env" checked="checked" value="1" />Amp env</td>-->
+                    <!--<td><input type="checkbox" class="chk-rnd" name="vca" value="1" />VCA</td>-->
+                <!--</tr>-->
+                <!--<tr>-->
+                    <!--<td><input type="checkbox" class="chk-rnd" name="osc2" checked="checked" value="1" />Osc 2</td>-->
+                    <!--<td><input type="checkbox" class="chk-rnd" name="effects" checked="checked" value="1" />Effects</td>-->
+                    <!--<td></td>-->
+                <!--</tr>-->
+            <!--</table>-->
+        </div>
+        <div style="margin:10px 0;">
+            <h3>Theme:</h3>
+            <select id="theme-choice">
+                <option value="dark">Dark</option>
+                <option value="light">Light</option>
+            </select>
+        </div>
+        <div id="settings-dialog-error" style="margin:10px 0;color:red">
+        </div>
+        <hr />
+        <p>All changes are immediately saved and applied.</p>
+    </div>
+
+    <div id="credits-dialog" style="overflow:auto;background:#FDFDF6;color:#000;padding:20px;min-width:400px;max-width:800px;border-radius:6px"  class="lity-hide">
+        <a href="https://github.com/francoisgeorgy/BS2-Web">
+            <img style="position: absolute; top: 0; right: 0; border: 0;"
+                 src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67"
+                 alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
+        <div class="novation-blue" style="font-weight: bold">
+            Bass Station II Web Interface <span class="version">1.0.1</span>
+        </div>
+        <p>Bass Station II Web Interface is under <strong>GNU General Public License v3.0</strong>. <a href="https://github.com/francoisgeorgy/BS2-Web/blob/master/LICENSE" target="_blank" >View license</a>.</p>
+        <h1 style="margin-top:20px">Credits</h1>
+        <p>This application uses the following Open Source components:</p>
+        <p>
+            <ul>
+                <li>WebMidi.js helps you tame the Web MIDI API. <a href="https://github.com/cotejp/webmidi" target="_blank">https://github.com/cotejp/webmidi</a></li>
+                <li>Nice, downward compatible, touchable, jQuery dial. <a href="https://github.com/aterrien/jQuery-Knob" target="_blank">https://github.com/aterrien/jQuery-Knob</a></li>
+                <li>Lity: Lightweight, accessible and responsive lightbox. <a href="http://sorgalla.com/lity/">http://sorgalla.com/lity/</a></li>
+                <li>A simple, lightweight JavaScript API for handling browser cookies. <a href="https://github.com/js-cookie/js-cookie" target="_blank">https://github.com/js-cookie/js-cookie</a></li>
+                <li>jQuery is a fast, small, and feature-rich JavaScript library. <a href="https://jquery.com/" target="_blank">https://jquery.com/</a></li>
+                <li>Roboto font by Google. <a href="https://fonts.google.com/specimen/Roboto" target="_blank">https://fonts.google.com/specimen/Roboto</a></li>
+
+            </ul>
+        </p>
+        <p>I acknowledge and am grateful to these developers for their contributions to open source.</p>
+        <p class="trademarks">
+            Novation is a registered trade mark of Focusrite Audio Engineering Limited.<br />
+            Bass Station II is a trade mark of Focusrite Audio Engineering Limited.
+        </p>
+    </div>
+
+</body>
+</html>

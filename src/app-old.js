@@ -1044,15 +1044,6 @@
      */
     $(function () {
 
-        console.log('app starting...');
-
-        var envelopes = {};
-
-        [].forEach.call(document.querySelectorAll('svg.envelope'), function(element) {
-            envelopes[element.id] = new envelope(element, {});
-        });
-
-/*
         setupUI();
 
         setStatus("Waiting for MIDI interface...");
@@ -1098,7 +1089,7 @@
             }
 
         }, true);   // pass true to enable sysex support
-*/
+
     });
 
 })(); // Call the anonymous function once, then throw it away!
