@@ -1052,6 +1052,9 @@
             envelopes[element.id] = new envelope(element, {});
         });
 
+        var k = new knob(document.getElementById('knob1'), {arcMin:30});
+        console.log(k);
+
 /*
         setupUI();
 

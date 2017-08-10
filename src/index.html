@@ -6,6 +6,7 @@
     <link href="css/layout.css" rel="stylesheet" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="lib/envelope.js"></script>
+    <script src="lib/knob.js"></script>
     <script src="bs2.js"></script>
     <script src="app.js"></script>
 </head>
@@ -224,9 +225,10 @@
 
                 <div class="lfo-delay">
                     <div class="knob-combo">
-                        <svg class="knob-only" viewbox="0 0 100 100">
-                            <use href="#knob-only"/>
-                        </svg>
+                        <svg class="knob-only" id="knob1" data-config='{"with_label": false}'></svg>
+                        <!--<svg class="knob-only" viewbox="0 0 100 100">-->
+                            <!--<use href="#knob-only"/>-->
+                        <!--</svg>-->
                         <div class="knob-label">Delay</div>
                     </div>
                 </div>
