@@ -452,6 +452,7 @@
     /**
      *
      */
+    /*
     function setupDials() {
 
         const CURSOR = 12;
@@ -502,6 +503,62 @@
         console.groupEnd();
 
     } // setupDials
+    */
+
+    /**
+     *
+     */
+    function setupKnobs() {
+
+        const CURSOR = 12;
+
+        $(".dial").knob({
+            // release : function (v) { console.log('release', this, v); },
+            angleOffset: -135,
+            angleArc: 270,
+            bgColor: THEME[settings.theme].bgColor,
+            fgColor: THEME[settings.theme].fgColor,
+            innerColor: THEME[settings.theme].innerColor,
+            positiveColor: THEME[settings.theme].positiveColor,
+            negativeColor: THEME[settings.theme].negativeColor
+        });
+
+        function _setup(controls) {
+
+            for (let i=0; i < controls.length; i++) {
+
+                let c = controls[i];
+                if (typeof c === 'undefined') continue;
+
+                let e = $(`#${c.cc_type}-${i}`);
+
+                if (!e.hasClass('dial')) continue;
+
+                console.log(`configure #${c.cc_type}-${i}: max=${c.max_raw}`);
+
+                e.trigger('configure', {
+                    min: 0,
+                    max: c.max_raw,
+                    step: 1,
+                    cursor: Math.min(...c.range) < 0 ? CURSOR : false,
+                    format: v => c.human(v),
+                    change : function (v) {
+                        handleUIChange(c.cc_type, i, v);
+                    }   //,
+                    //parse: v => c.parse(v)
+                });
+            }
+        }
+
+        console.groupCollapsed('setupDials');
+
+        _setup(DEVICE.control);
+        _setup(DEVICE.nrpn);
+
+        console.groupEnd();
+
+    } // setupDials
+
 
     /**
      *
@@ -1051,13 +1108,23 @@
         [].forEach.call(document.querySelectorAll('svg.envelope'), function(element) {
             envelopes[element.id] = new envelope(element, {});
         });
+        //
+        // var k1 = new knob(document.getElementById('knob1'), {});
+        // var k2 = new knob(document.getElementById('knob2'), {
+        //     with_label: false,
+        //     default_value: 50,
+        //     cursor: 50
+        // });
 
-        var k1 = new knob(document.getElementById('knob1'), {});
-        var k2 = new knob(document.getElementById('knob2'), {
-            with_label: false,
-            default_value: 50,
-            cursor: 50
+        var my_knobs = {};
+        var knobs = document.querySelectorAll('svg.knob-only');
+        [].forEach.call(knobs, function(element) {
+            my_knobs[element.id] = new knob(element, {with_label: false, cursor: 50});
+            // element.addEventListener("change", function(event) {
+            //     document.getElementById('v-' + element.id).innerHTML = event.detail;
+            // });
         });
+
 /*
         var k = new knob(document.getElementById('knob1'), {
             // arcMin: 30,

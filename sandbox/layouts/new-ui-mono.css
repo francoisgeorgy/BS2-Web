@@ -3,6 +3,8 @@
         --inset-width: 1px;
 
         --value: yellow;
+    --knob-path-bg: #1c1c1c;
+    --knob-value: #d3d347;
 
         --lfo1: #BA7B0B;
         --lfo2: #976308;
@@ -502,19 +504,19 @@
             grid-row: 1;
         }
 
-        .wheel-pitch {
+    #wheel-pitch {
             grid-column: 1;
             grid-row: 2;
             display: flex;
         }
 
-        .wheel-osc2 {
+    #wheel-osc1-2 {
             grid-column: 2;
             grid-row: 2;
             display: flex;
         }
 
-        .wheel-osc1-2 {
+    #wheel-osc2 {
             grid-column: 3;
             grid-row: 2;
             display: flex;
@@ -642,29 +644,54 @@
         color: var(--label);
     }
 
+/* knob.js classes: */
+
+
+.knob-bg {
+    fill: url("#grad");
+}
+
+.knob-back {
+    stroke-width: 5;
+    stroke: var(--knob-path-bg);
+}
+
+.knob-arc {
+    stroke-width: 5;
+    stroke: var(--knob-value);
+}
+
+.knob-value {
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 130%;
+    font-weight: 300;
+    stroke: none;
+    fill: var(--knob-value);
+}
+
+/* --- */
+
     .no-margin {
         margin: 0;
     }
 
-    .path {
+.path {     /* TO BE DELETED / replaced by .knob-arc */
         stroke: #1c1c1c;
         stroke-width: 5;
     }
 
-    .label {
+.label {    /* TO BE DELETED */
         font-size: 1rem;
         stroke: none;
         fill: #fff;
     }
 
-    .value {
+.value {    /* TO BE DELETED / replaced by .knob-value */
         font-family: "Roboto Condensed", sans-serif;        
         font-size: 130%;
         font-weight: 300;
         stroke: none;
-        /*fill: #A39038;*/
-        /*fill: #ffffff;*/
-        fill: var(--value);
+    fill: var(--knob-value);
     }
 
     div.bt {
@@ -713,9 +740,24 @@
     }
 
     .adsr-graph {
+    /*margin-top: calc(0.5vh + 1rem + 4px);*/
         margin-top: 0.5vh;
+    margin-right: 0.5vh;
+    padding: 0;
         height: 8.4vh;
-        border: 1px solid #6B432B;
+    border: none;
+    border-left: 1px solid #666600;
+    border-bottom: 1px solid #666600;
+}
+
+.envelope {
+    height: 8.4vh;
+    width: 18vh;
+}
+
+.envelope-path {
+    stroke: #aaaa39;
+    stroke-width: 2;
     }
 
     .vslider {
