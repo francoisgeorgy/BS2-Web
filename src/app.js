@@ -561,6 +561,8 @@
 
                 if (elem === null) continue;
 
+                if (!elem.classList.contains("knob-only")) continue;
+
                 console.log(`configure #${id}: max=${c.max_raw}`);
 
                 knobs[id] = new knob(elem, {
@@ -603,18 +605,50 @@
      */
     function setupSelects() {
 
-        $('#cc-80').append(DEVICE.SUB_WAVE_FORMS.map((o,i) => { return $("<option>").val(i).text(o); }));
+        // SUB
+        $('#cc-80').append(DEVICE.SUB_WAVE_FORMS.map((o,i) => {
+            return $("<div>").attr("id", `cc-80-${i}`).data("control", "cc-80").data("value", i).text(o).addClass("bt");
+        }));
+        $('#cc-81').append(Object.entries(DEVICE.SUB_OCTAVE).map((o,i) => {
+            return $("<div>").attr("id", `cc-81-${i}`).data("control", "cc-81").data("value", o[0]).text(o[1]).addClass("bt");
+        }));
 
-        $('#cc-88,#cc-89').append(DEVICE.LFO_WAVE_FORMS.map((o,i) => { return $("<option>").val(i).text(o); }));
+        // OSC 1
+        $('#cc-70').append(Object.entries(DEVICE.OSC_RANGES).map((o,i) => {
+            return $("<div>").attr("id", `cc-70-${i}`).data("control", "cc-70").data("value", o[0]).text(o[1]).addClass("bt");
+        }));
+        $('#nrpn-72').append(DEVICE.OSC_WAVE_FORMS.map((o,i) => {
+            return $("<div>").attr("id", `nrpn-82-${i}`).data("control", "nrpn-82").data("value", i).text(o).addClass("bt");
+        }));
+
+        // OSC 2
+        $('#cc-75').append(Object.entries(DEVICE.OSC_RANGES).map((o,i) => {
+            return $("<div>").attr("id", `cc-75-${i}`).data("control", "cc-75").data("value", o[0]).text(o[1]).addClass("bt");
+        }));
+        $('#nrpn-82').append(DEVICE.OSC_WAVE_FORMS.map((o,i) => {
+            return $("<div>").attr("id", `nrpn-82-${i}`).data("control", "nrpn-82").data("value", i).text(o).addClass("bt");
+        }));
+
+        // LFO 1
+        $('#cc-88').append(DEVICE.LFO_WAVE_FORMS.map((o,i) => {
+            return $("<div>").attr("id", `cc-88-${i}`).data("control", "cc-88").data("value", i).text(o).addClass("bt");
+        }));
+
+        // LFO 2
+        $('#cc-89').append(DEVICE.LFO_WAVE_FORMS.map((o,i) => {
+            return $("<div>").attr("id", `cc-89-${i}`).data("control", "cc-89").data("value", i).text(o).addClass("bt");
+        }));
+
+/*
+        // $('#cc-88,#cc-89').append(DEVICE.LFO_WAVE_FORMS.map((o,i) => { return $("<option>").val(i).text(o); }));
         $('#nrpn-88,#nrpn-92').append(DEVICE.LFO_SPEED_SYNC.map((o,i) => { return $("<option>").val(i).text(o); }));
         $('#nrpn-87,#nrpn-91').append(DEVICE.LFO_SYNC.map((o,i) => { return $("<option>").val(i).html(o); }));
 
-        $('#cc-81').append(Object.entries(DEVICE.SUB_OCTAVE).map((o,i) => {return $("<option>").val(o[0]).text(o[1]); }));
 
         //$('#cc-70,#cc-75').append(DEVICE.OSC_RANGES.map((o,i) => {return $("<option>").val(i).text(o); }));
-        $('#cc-70,#cc-75').append(Object.entries(DEVICE.OSC_RANGES).map((o,i) => {return $("<option>").val(o[0]).text(o[1]); }));
 
-        $('#nrpn-72,#nrpn-82').append(DEVICE.OSC_WAVE_FORMS.map((o,i) => { return $("<option>").val(i).text(o); }));
+        // $('#nrpn-72,#nrpn-82').append(
+
 
         $('#cc-83').append(DEVICE.FILTER_TYPE.map((o,i) => { return $("<option>").val(i).text(o); }));
         $('#cc-106').append(DEVICE.FILTER_SLOPE.map((o,i) => { return $("<option>").val(i).text(o); }));
@@ -638,6 +672,20 @@
         // LFO: "sync" drop down is displayed only when speed/sync is set to sync
         $('#nrpn-88').change(function (e) { this.value == DEVICE.LFO_SPEED_SYNC.indexOf('sync') ? enable('#nrpn-87') : disable('#nrpn-87'); });
         $('#nrpn-92').change(function (e) { this.value == DEVICE.LFO_SPEED_SYNC.indexOf('sync') ? enable('#nrpn-91') : disable('#nrpn-91'); });
+*/
+
+        $('div.bt').click(function(e) {
+            let d = $(this).data();
+            let c = d['control'];
+            let v = d['value'];
+            //console.log(`click on ${c} with value ${v}`, this.classList);
+            //let e = $(this);
+            if (this.classList.contains("on")) {
+                this.classList.remove("on");
+            } else {
+                this.classList.add("on");
+            }
+        });
 
     } // setupSelects
 

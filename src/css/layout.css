@@ -699,6 +699,7 @@ div.bt {
     margin: 0;
     color: var(--bt-text);
     font-family: 'Roboto Condensed', sans-serif;
+    cursor: pointer;
 }
 
 div.bt.on {

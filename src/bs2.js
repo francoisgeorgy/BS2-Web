@@ -1299,15 +1299,15 @@ var BS2 = (function BassStationII() {
     };
 
     var OSC_WAVE_FORMS = [
-        "sin", "triangle", "saw", "pulse"
+        "sine", "triangle", "saw", "pulse"   // 0..3
     ];
 
     var LFO_WAVE_FORMS = [
-        "triangle", "saw", "square", "S+H"
+        "triangle", "saw", "square", "S+H"  // 0..3
     ];
 
     var LFO_SPEED_SYNC = [
-        "speed", "sync"
+        "speed", "sync"     // 0..1
     ];
     /*
     var LFO_SYNC = [
@@ -1335,12 +1335,12 @@ var BS2 = (function BassStationII() {
     ];
 
     var SUB_WAVE_FORMS = [
-        "sin", "pulse", "square"
+        "sine", "pulse", "square"
     ];
 
     var SUB_OCTAVE = {
-        63: -1,
-        62: -2
+        63: "octave -1",
+        62: "octave -2"
     };
 
     var FILTER_SHAPES = [
