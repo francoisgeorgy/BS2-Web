@@ -73,6 +73,7 @@
     function drawADSR(env, container_id) {
 
         // console.log('drawADSR', env, container_id);
+/*
 
         let canvas = document.getElementById(container_id);
         let ctx = canvas.getContext("2d");
@@ -111,6 +112,7 @@
         ctx.strokeStyle = THEME[settings.theme].positiveColor;
         ctx.stroke();
         ctx.closePath();
+*/
     }
 
     //==================================================================================================================
@@ -123,6 +125,7 @@
     var value_lsb = 0;    // lsb to compute value
     var nrpn = false;
 
+    var knobs = [];
     /**
      * Handle all control change messages received
      * @param e
@@ -434,8 +437,16 @@
                 if (typeof controls[i] === 'undefined') continue;
                 console.log(`update #${controls[i].cc_type}-${i}`);
                 let e = $(`#${controls[i].cc_type}-${i}`);
-                if (e.is('.dial')) {
-                    e.trigger('blur', { value: DEVICE.getControlValue(controls[i]) });
+                if (e.is('.knob-only')) {
+                    //e.trigger('blur', { value: DEVICE.getControlValue(controls[i]) });
+
+                    let id = `${controls[i].cc_type}-${i}`;
+                    if (knobs.hasOwnProperty(id)) {
+                        knobs[id].value = DEVICE.getControlValue(controls[i]);
+                    } else {
+                        console.error(`expected knob ${id} not found`);
+                    }
+
                 } else {
                     e.val(DEVICE.getControlValue(controls[i])).trigger('blur');
                 }
@@ -511,17 +522,27 @@
     function setupKnobs() {
 
         const CURSOR = 12;
+        //
+        // [].forEach.call(document.querySelectorAll('svg.knob-only'), function(element) {
+        //
+        //     // console.log(element.id);
+        //
+        //     knobs[element.id] = new knob(element, {with_label: false, cursor: 50});
+        //     // element.addEventListener("change", function(event) {
+        //     //     document.getElementById('v-' + element.id).innerHTML = event.detail;
+        //     // });
+        // });
 
-        $(".dial").knob({
-            // release : function (v) { console.log('release', this, v); },
-            angleOffset: -135,
-            angleArc: 270,
-            bgColor: THEME[settings.theme].bgColor,
-            fgColor: THEME[settings.theme].fgColor,
-            innerColor: THEME[settings.theme].innerColor,
-            positiveColor: THEME[settings.theme].positiveColor,
-            negativeColor: THEME[settings.theme].negativeColor
-        });
+        // $(".dial").knob({
+        //     // release : function (v) { console.log('release', this, v); },
+        //     angleOffset: -135,
+        //     angleArc: 270,
+        //     bgColor: THEME[settings.theme].bgColor,
+        //     fgColor: THEME[settings.theme].fgColor,
+        //     innerColor: THEME[settings.theme].innerColor,
+        //     positiveColor: THEME[settings.theme].positiveColor,
+        //     negativeColor: THEME[settings.theme].negativeColor
+        // });
 
         function _setup(controls) {
 
@@ -530,12 +551,28 @@
                 let c = controls[i];
                 if (typeof c === 'undefined') continue;
 
-                let e = $(`#${c.cc_type}-${i}`);
+                // let e = $(`#${c.cc_type}-${i}`);
+                //
+                // if (!e.hasClass('dial')) continue;
 
-                if (!e.hasClass('dial')) continue;
+                let id = `${c.cc_type}-${i}`;
 
-                console.log(`configure #${c.cc_type}-${i}: max=${c.max_raw}`);
+                let elem = document.getElementById(id);
 
+                if (elem === null) continue;
+
+                console.log(`configure #${id}: max=${c.max_raw}`);
+
+                knobs[id] = new knob(elem, {
+                    with_label: false,
+                    cursor: 50,
+                    value_min: 0,
+                    value_max: c.max_raw,
+                    value_resolution: 1,
+                    cursor_only: Math.min(...c.range) < 0,
+                    format: v => c.human(v)
+                });
+/*
                 e.trigger('configure', {
                     min: 0,
                     max: c.max_raw,
@@ -547,17 +584,18 @@
                     }   //,
                     //parse: v => c.parse(v)
                 });
+*/
             }
         }
 
-        console.groupCollapsed('setupDials');
+        console.groupCollapsed('setupKnobs');
 
         _setup(DEVICE.control);
         _setup(DEVICE.nrpn);
 
         console.groupEnd();
 
-    } // setupDials
+    } // setupKnobs
 
 
     /**
@@ -697,10 +735,10 @@
         setupSettings();    // must be done before loading the settings
         loadSettings();
 
-        $("link#themesheet").attr("href", THEME[settings.theme].href);
-        $("#theme-choice").val(settings.theme);
+        // $("link#themesheet").attr("href", THEME[settings.theme].href);
+        // $("#theme-choice").val(settings.theme);
 
-        setupDials();
+        setupKnobs();
         setupSelects();
         setupSwitches(SWITCHES);
         setupCommands();
@@ -901,7 +939,7 @@
 
     //==================================================================================================================
     // Settings
-
+/*
     const THEME = {
         "dark": {
             href: "css/dark-theme.css",
@@ -920,10 +958,10 @@
             negativeColor: "#0080b3"
         }
     };
-
+*/
     var settings = {
-        randomize: [],
-        theme: "light"
+        randomize: [] //,
+  //      theme: "light"
     };
 
     function loadSettings() {
@@ -956,6 +994,7 @@
                 Cookies.set('settings', settings);
             }
         );
+/*
         $('#theme-choice').change(
             function() {
                 settings.theme = this.value;
@@ -964,6 +1003,7 @@
                 Cookies.set('settings', settings);
             }
         );
+*/
 
         console.groupEnd();
 
@@ -1095,6 +1135,10 @@
     var ignore_next_sysex = false;
     var sysex_received_callback = false;
     var last_sysex_data = null;     // last sysex dump received
+    //
+    // var knobs = {};
+    var envelopes = {};
+
 
     /**
      *
@@ -1103,7 +1147,6 @@
 
         console.log('app starting...');
 
-        var envelopes = {};
 
         [].forEach.call(document.querySelectorAll('svg.envelope'), function(element) {
             envelopes[element.id] = new envelope(element, {});
@@ -1116,14 +1159,13 @@
         //     cursor: 50
         // });
 
-        var my_knobs = {};
-        var knobs = document.querySelectorAll('svg.knob-only');
-        [].forEach.call(knobs, function(element) {
-            my_knobs[element.id] = new knob(element, {with_label: false, cursor: 50});
-            // element.addEventListener("change", function(event) {
-            //     document.getElementById('v-' + element.id).innerHTML = event.detail;
-            // });
-        });
+        // var knobs = {};
+        // [].forEach.call(document.querySelectorAll('svg.knob-only'), function(element) {
+        //     knobs[element.id] = new knob(element, {with_label: false, cursor: 50});
+        //     // element.addEventListener("change", function(event) {
+        //     //     document.getElementById('v-' + element.id).innerHTML = event.detail;
+        //     // });
+        // });
 
 /*
         var k = new knob(document.getElementById('knob1'), {
@@ -1134,11 +1176,13 @@
             default_value: 50
         });
 */
-        console.log(k1);
-        console.log(k2);
+        // console.log(k1);
+        // console.log(k2);
+
+
+        setupUI();
 
 /*
-        setupUI();
 
         setStatus("Waiting for MIDI interface...");
 

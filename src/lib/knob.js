@@ -42,7 +42,10 @@
             value_max: 100.0,
             value_resolution: 1,      // null means ignore
             snap_to_steps: false,        // TODO
-            value_formatting: null      // TODO; callback function
+            value_formatting: null,      // TODO; callback function
+            format: function(v) {
+                return v;
+            }
         };
 
         let data_config = JSON.parse(element.dataset.config || '{}');
@@ -115,6 +118,11 @@
 
             console.groupEnd();
 
+        }
+
+        function getDisplayValue(polar) {
+            let v = getValue(polar);
+            return config.format(v);
         }
 
         function getValue(polar) {
@@ -244,11 +252,12 @@
 
             let arcDirection = config.rotation === CW ? 1 : 0;
 
+            let path;
             if (config.cursor_only) {
-                // TODO
+                path = ` M${endX},${endY}`;
+            } else {
+                path = path_start + ` 0 ${largeArc},${arcDirection} ${endX},${endY}`;
             }
-
-            let path = path_start + ` 0 ${largeArc},${arcDirection} ${endX},${endY}`;
 
             if (withEndCursor) {
                 if (config.cursor_end > 0) {
@@ -317,7 +326,8 @@
             valueText.setAttribute("text-anchor", "middle");
             valueText.setAttribute("cursor", "default");
             valueText.setAttribute("class", "knob-value");
-            valueText.textContent = getValue().toFixed(2);
+            // valueText.textContent = getValue().toFixed(2);
+            valueText.textContent = getDisplayValue();
             element.appendChild(valueText);
 
             let path = document.createElementNS(NS, "path");
@@ -357,7 +367,8 @@
          */
         function redraw() {
 
-            element.childNodes[2].textContent = getValue(); //.toFixed(2);
+            //element.childNodes[2].textContent = getValue(); //.toFixed(2);
+            element.childNodes[2].textContent = getDisplayValue();
             element.childNodes[3].setAttributeNS(null, "d", getPath(getPolarAngle(), false));
 
             if (config.cursor_dot_size > 0) {
