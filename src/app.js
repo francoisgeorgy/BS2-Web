@@ -600,10 +600,7 @@
     } // setupKnobs
 
 
-    /**
-     *
-     */
-    function setupSelects() {
+    function setupSwitches() {
 
         // SUB
         $('#cc-80').append(DEVICE.SUB_WAVE_FORMS.map((o,i) => {
@@ -618,7 +615,7 @@
             return $("<div>").attr("id", `cc-70-${i}`).data("control", "cc-70").data("value", o[0]).text(o[1]).addClass("bt");
         }));
         $('#nrpn-72').append(DEVICE.OSC_WAVE_FORMS.map((o,i) => {
-            return $("<div>").attr("id", `nrpn-82-${i}`).data("control", "nrpn-82").data("value", i).text(o).addClass("bt");
+            return $("<div>").attr("id", `nrpn-72-${i}`).data("control", "nrpn-72").data("value", i).text(o).addClass("bt");
         }));
 
         // OSC 2
@@ -639,31 +636,22 @@
             return $("<div>").attr("id", `cc-89-${i}`).data("control", "cc-89").data("value", i).text(o).addClass("bt");
         }));
 
+        // FILTER
+        $('#cc-83').append(DEVICE.FILTER_TYPE.map((o,i) => {
+            return $("<div>").attr("id", `cc-83-${i}`).data("control", "cc-83").data("value", i).text(o).addClass("bt");
+        }));
+        $('#cc-84').append(DEVICE.FILTER_SHAPES.map((o,i) => {
+            return $("<div>").attr("id", `cc-84-${i}`).data("control", "cc-84").data("value", i).text(o).addClass("bt");
+        }));
+        $('#cc-106').append(DEVICE.FILTER_SLOPE.map((o,i) => {
+            return $("<div>").attr("id", `cc-106-${i}`).data("control", "cc-106").data("value", i).text(o).addClass("bt");
+        }));
+
 /*
-        // $('#cc-88,#cc-89').append(DEVICE.LFO_WAVE_FORMS.map((o,i) => { return $("<option>").val(i).text(o); }));
         $('#nrpn-88,#nrpn-92').append(DEVICE.LFO_SPEED_SYNC.map((o,i) => { return $("<option>").val(i).text(o); }));
         $('#nrpn-87,#nrpn-91').append(DEVICE.LFO_SYNC.map((o,i) => { return $("<option>").val(i).html(o); }));
 
-
-        //$('#cc-70,#cc-75').append(DEVICE.OSC_RANGES.map((o,i) => {return $("<option>").val(i).text(o); }));
-
-        // $('#nrpn-72,#nrpn-82').append(
-
-
-        $('#cc-83').append(DEVICE.FILTER_TYPE.map((o,i) => { return $("<option>").val(i).text(o); }));
-        $('#cc-106').append(DEVICE.FILTER_SLOPE.map((o,i) => { return $("<option>").val(i).text(o); }));
-        $('#cc-84').append(DEVICE.FILTER_SHAPES.map((o,i) => { return $("<option>").val(i).text(o); }));
-
         $('#nrpn-73,#nrpn-105').append(DEVICE.ENV_TRIGGERING.map((o,i) => { return $("<option>").val(i).text(o); }));
-
-        $('#cc-111').append(DEVICE.ARP_OCTAVES.map((o,i) => { return $("<option>").val(i).text(o); }));
-        $('#cc-118').append(DEVICE.ARP_NOTES_MODE.map((o,i) => { return $("<option>").val(i).text(o); }));
-
-        for (let i=0; i<32; i++) {
-            $('#cc-119').append($("<option>").val(i).text(i+1));
-        }
-
-        $('select.cc').change(function (){ handleUIChange(...this.id.split('-'), this.value) });
 
         // Osc 1+2: PS controls are only displayed when wave form is pulse
         $('#nrpn-72').change(function (e) { this.value == DEVICE.OSC_WAVE_FORMS.indexOf('pulse') ? enable('#osc1-pw-controls') : disable('#osc1-pw-controls'); });
@@ -674,20 +662,68 @@
         $('#nrpn-92').change(function (e) { this.value == DEVICE.LFO_SPEED_SYNC.indexOf('sync') ? enable('#nrpn-91') : disable('#nrpn-91'); });
 */
 
+        // "radio button"-like behavior:
         $('div.bt').click(function(e) {
             let d = $(this).data();
             let c = d['control'];
             let v = d['value'];
-            //console.log(`click on ${c} with value ${v}`, this.classList);
+            console.log(`click on ${c} with value ${v}`, this, $(this).siblings());
             //let e = $(this);
+            if (!this.classList.contains("on")) {   // if not already on...
+                $(this).siblings(".bt").removeClass("on");
+                this.classList.add("on");
+                handleUIChange(...c.split('-'), v);
+            }
+        });
+
+        // "checkbox"-like behavior:
+        $('div.btc').click(function(e) {
+            // let d = $(this).data();
+            // let c = d['control'];
+            // let v = d['value'];
+            // console.log(`click on ${c} with value ${v}`, this, $(this).siblings());
+
+            let v = 0;
+
             if (this.classList.contains("on")) {
                 this.classList.remove("on");
             } else {
                 this.classList.add("on");
+                v = 1;
             }
+            handleUIChange(...this.id.split('-'), v);
+
         });
 
+
+    }
+
+
+    /**
+     *
+     */
+    function setupSelects() {
+
+
+
+        // ARP OCTAVE
+        $('#cc-111').append(DEVICE.ARP_OCTAVES.map((o,i) => { return $("<option>").val(i).text(o); }));
+
+        // ARP NOTES
+        $('#cc-118').append(DEVICE.ARP_NOTES_MODE.map((o,i) => { return $("<option>").val(i).text(o); }));
+
+        // ARP RHYTHM
+        for (let i=0; i<32; i++) {
+            $('#cc-119').append($("<option>").val(i).text(i+1));
+        }
+
+        $('select.cc').change(function (){ handleUIChange(...this.id.split('-'), this.value) });
+
+
+
+
     } // setupSelects
+
 
 
     /**
@@ -708,6 +744,7 @@
      * Add the click handler to the switches represented by the ids array
      * @param ids
      */
+    /*
     function setupSwitches(ids) {
         for (let i=0; i<ids.length; i++) {
             let dom_id = ids[i];
@@ -724,6 +761,7 @@
             });
         }
     }
+    */
 
     /**
      * Update the "custom" or "linked" UI controls
@@ -787,8 +825,9 @@
         // $("#theme-choice").val(settings.theme);
 
         setupKnobs();
+        setupSwitches();
         setupSelects();
-        setupSwitches(SWITCHES);
+        // setupSwitches(SWITCHES);
         setupCommands();
         updateCommands();
 

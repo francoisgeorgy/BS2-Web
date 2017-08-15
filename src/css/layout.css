@@ -60,6 +60,7 @@
 html {
     /* html is the root element for "rem" unit */
     font-size: 1.7vh;
+    user-select: none;
 }
 
 body {
@@ -694,7 +695,8 @@ select {
     fill: var(--knob-value);
 }
 
-div.bt {
+div.bt,     /* "radio button"-like switches */
+div.btc {   /* "checkbox"-like switches: */
     padding: 0 0.2rem 0 0;
     margin: 0;
     color: var(--bt-text);
@@ -702,7 +704,8 @@ div.bt {
     cursor: pointer;
 }
 
-div.bt.on {
+div.bt.on,
+div.btc.on {
     color: var(--value);
 }
 

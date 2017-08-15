@@ -321,6 +321,8 @@
 
 <!--
     OSC 2
+
+    TODO: 1-2 sync
 -->
         <div id="osc2">
 
@@ -415,19 +417,23 @@
 
                         <div id="filter-options">
                             <div style="display:flex;align-items: flex-start">
-                                <div>
-                                    <div class="bt" id="-bt" data-value="">classic</div>
-                                    <div class="bt float on">acid</div>
+                                <div id="cc-83">
+                                    <!--<div class="bt" id="-bt" data-value="">classic</div>-->
+                                    <!--<div class="bt float on">acid</div>-->
                                 </div>
-                                <div style="margin-left:1vw">
+                                <div id="cc-84" style="margin-left:1vw">
+<!--
                                     <div class="bt on" id="-bt" data-value="">low-pass</div>
                                     <div class="bt ">band-pass</div>
                                     <div class="bt ">hi-pass</div>
+-->
                                 </div>
                             </div>
-                            <div>
+                            <div id="cc-106">
+<!--
                                 <div class="bt on" id="-bt" data-value="">12dB</div>
                                 <div class="bt" id="-bt" data-value="">24dB</div>
+-->
                             </div>
                         </div>
                     </div>
@@ -725,21 +731,30 @@
 
                     <div style="margin-right: 1.5vw;">
                         <div style="margin-top:0.3rem">
-                            <div class="bt" id="-bt" data-value="">ARP OFF</div>
-                            <div class="bt on" id="-bt" data-value="">Latch</div>
-                            <div class="bt" id="-bt" data-value="">Retrig</div>
+                            <div class="btc" id="cc-108" data-value="">ARP</div>
+                            <div class="btc" id="cc-109" data-value="">Latch</div>
+                            <div class="btc" id="nrpn-106" data-value="">Retrig</div>
                         </div>
                     </div>
 
                     <div class="arp-options">
                         <div style="justify-self:end">Rhythm</div>
-                        <div><select style="background: transparent"><option>32</option></select></div>
+                        <div>
+                            <select id="cc-119" style="background: transparent" class="cc">
+                            </select>
+                        </div>
 
                         <div style="justify-self:end">Octaves</div>
-                        <div><select style="background: transparent"><option>1</option></select></div>
+                        <div>
+                            <select id="cc-111" style="background: transparent" class="cc">
+                            </select>
+                        </div>
 
                         <div style="justify-self:end">Note mode</div>
-                        <div><select style="background: transparent"><option>up-down 2</option></select></div>
+                        <div>
+                            <select id="cc-118" style="background: transparent" class="cc">
+                            </select>
+                        </div>
                     </div>
 
                     <div class="knob-combo">

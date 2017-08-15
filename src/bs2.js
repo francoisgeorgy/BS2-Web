@@ -1344,7 +1344,7 @@ var BS2 = (function BassStationII() {
     };
 
     var FILTER_SHAPES = [
-        "LP", "BP", "HP"
+        "low-pass", "band-pass", "hi-pass"
     ];
 
     var FILTER_SLOPE = [
