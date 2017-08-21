@@ -24,7 +24,7 @@ var envelope = (function(elem, conf) {
         width_A: 0.25,
         width_D: 0.25,
         width_R: 0.25,
-        env: {          // default envelope
+        env: {          // default envelope; structure comnpatible with BS2.getADSREnv()
             attack: 1,
             decay: 1,
             sustain: 0.5,
@@ -54,7 +54,7 @@ var envelope = (function(elem, conf) {
      *
      * env is {attack:0..1, decay:0..1, sustain:0..1, release: 0..1}
      */
-    function getPath(e) {
+    function getPath() {
 
         let p = '';
 
@@ -64,23 +64,23 @@ var envelope = (function(elem, conf) {
         p += `M${x * 100.0},${100.0 - y}`; // start at lower left corner
 
         // Attack
-        x += e.attack * config.width_A;
+        x += env.attack * config.width_A;
         y = 100.0 - (config.env_width / 2);
         p += `L${x * 100.0},${100.0 - y}`;
 
         // Decay
-        x += e.decay * config.width_D;
-        y = e.sustain * 100.0 - (config.env_width / 2);
+        x += env.decay * config.width_D;
+        y = env.sustain * 100.0 - (config.env_width / 2);
         p += `L${x * 100.0},${100.0 - y + 2}`;
 
         // Sustain
-        x = 1.0 - (e.release * config.width_R);
-        y = e.sustain * 100.0 - (config.env_width / 2);
+        x = 1.0 - (env.release * config.width_R);
+        y = env.sustain * 100.0 - (config.env_width / 2);
         p += `L${x * 100.0},${100.0 - y + 2}`;
 
         // Release
         x = 1.0;
-        y = 0.0 + (config.env_width / 2);
+        y = config.env_width / 2;
         p += `L${x * 100.0},${100.0 - y + 2}`;
 
         // console.log(p);
@@ -114,7 +114,7 @@ var envelope = (function(elem, conf) {
     }  // draw()
 
     function redraw() {
-        element.childNodes[0].setAttributeNS(null, "d", getPath(getPolarAngle()));
+        element.childNodes[0].setAttributeNS(null, "d", getPath());
     }
 
     /**

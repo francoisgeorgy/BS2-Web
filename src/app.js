@@ -77,53 +77,9 @@
 
     /**
      * Draw a read-only (illustrative) ADSR envelope.
-     * @param env
-     * @param container_id
      */
-    function drawADSR(env, container_id) {
-
-        // console.log('drawADSR', env, container_id);
-/*
-
-        let canvas = document.getElementById(container_id);
-        let ctx = canvas.getContext("2d");
-
-        const width = canvas.width;
-        const height = canvas.height;
-
-        const width_A = 0.25;
-        const width_D = 0.25;
-        const width_R = 0.25;
-
-        // start position
-        let x = 0;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.beginPath();
-        ctx.moveTo(0, height); // start at lower left corner
-
-        // Attack
-        x += env.attack * width_A * width;
-        ctx.lineTo(x, 0);
-
-        // Decay
-        x += env.decay * width_D * width;
-        ctx.lineTo(x, height - env.sustain * height);
-
-        // Sustain
-        x = width - (env.release * width_R * width);
-        ctx.lineTo(x, height - env.sustain * height);
-
-        // Release
-        ctx.lineTo(width, height);
-
-        // stroke
-        ctx.lineWidth = 2;
-        // ctx.strokeStyle = "#ffec03";
-        ctx.strokeStyle = THEME[settings.theme].positiveColor;
-        ctx.stroke();
-        ctx.closePath();
-*/
-    }
+    // function drawADSR(env, container_id) {
+    // }
 
     //==================================================================================================================
     // Midi messages handling
@@ -135,7 +91,7 @@
     var value_lsb = 0;    // lsb to compute value
     var nrpn = false;
 
-    var knobs = [];
+
     /**
      * Handle all control change messages received
      * @param e
@@ -351,13 +307,18 @@
      */
     function handleUIChange(control_type, control_number, value) {
 
+        console.log(`handleUIChange(${control_type}, ${control_number}, ${value})`);
+
         updateDevice(control_type, control_number, value);
 
         if (control_type === 'cc') {
-            if ([102, 103, 104, 105].includes(control_number)) {
-                drawADSR(DEVICE.getADSREnv('mod'), 'mod-ADSR');
-            } else if ([90, 91, 92, 93].includes(control_number)) {
-                drawADSR(DEVICE.getADSREnv('amp'), 'amp-ADSR');
+            if (['102', '103', '104', '105'].includes(control_number)) {
+                //drawADSR(DEVICE.getADSREnv('mod'), 'mod-ADSR');
+                envelopes['mod-envelope'].envelope = DEVICE.getADSREnv('mod');
+            } else if (['90', '91', '92', '93'].includes(control_number)) {
+                console.log('redraw amp env', envelopes);
+                //drawADSR(DEVICE.getADSREnv('amp'), 'amp-ADSR');
+                envelopes['amp-envelope'].envelope = DEVICE.getADSREnv('amp');
             }
         }
     }
@@ -812,6 +773,11 @@
         });
     }
 
+    function setupADSR() {
+        [].forEach.call(document.querySelectorAll('svg.envelope'), function(element) {
+            envelopes[element.id] = new envelope(element, {});
+        });
+    }
 
     function updateOptionSwitch(id, value) {
         // "radio button"-like behavior
@@ -961,6 +927,7 @@
         setupSelects();
         // setupSwitches(SWITCHES);
         setupSliders();
+        setupADSR();
         setupCommands();
         updateCommands();
 
@@ -1355,9 +1322,10 @@
     var ignore_next_sysex = false;
     var sysex_received_callback = false;
     var last_sysex_data = null;     // last sysex dump received
-    //
-    // var knobs = {};
-    var envelopes = {};
+
+    var knobs = {};
+
+    var envelopes = {};     // Visual ADSR envelopes
 
 
     /**
@@ -1366,38 +1334,6 @@
     $(function () {
 
         console.log('app starting...');
-
-
-        [].forEach.call(document.querySelectorAll('svg.envelope'), function(element) {
-            envelopes[element.id] = new envelope(element, {});
-        });
-        //
-        // var k1 = new knob(document.getElementById('knob1'), {});
-        // var k2 = new knob(document.getElementById('knob2'), {
-        //     with_label: false,
-        //     default_value: 50,
-        //     cursor: 50
-        // });
-
-        // var knobs = {};
-        // [].forEach.call(document.querySelectorAll('svg.knob-only'), function(element) {
-        //     knobs[element.id] = new knob(element, {with_label: false, cursor: 50});
-        //     // element.addEventListener("change", function(event) {
-        //     //     document.getElementById('v-' + element.id).innerHTML = event.detail;
-        //     // });
-        // });
-
-/*
-        var k = new knob(document.getElementById('knob1'), {
-            // arcMin: 30,
-            // cursor_dot_size: 10,
-            // cursor_start: 10,
-            // cursor_end: 20,
-            default_value: 50
-        });
-*/
-        // console.log(k1);
-        // console.log(k2);
 
 
         setupUI();
