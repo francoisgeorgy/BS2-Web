@@ -188,7 +188,9 @@
         /**
          * Angle in degrees in polar coordinates (0 degrees at 3 o'clock)
          */
-        function setPolarAngle(angle) {
+        function setPolarAngle(angle, fireEvent) {
+
+            // let fire = firereEvent || false;
 
             let previous = polarAngle;
 
@@ -202,7 +204,7 @@
             }
             polarAngle = a;
 
-            if (polarAngle !== previous) {
+            if (fireEvent && (polarAngle !== previous)) {
                 if (getValue(previous) !== getValue()) {
                     notifyChange();
                 }
@@ -211,7 +213,7 @@
         }
 
         function incPolarAngle(increment) {
-            setPolarAngle(polarAngle + increment);
+            setPolarAngle(polarAngle + increment, true);
         }
 
         /**
@@ -646,6 +648,7 @@
             }
 
             p = getTrackCursor();
+            console.log(p);
             if (p) {
                 if (cursor) {
                     cursor.setAttributeNS(null, "d", p);
@@ -707,7 +710,7 @@
 
             // console.log(`mouseUpdate: position in svg = ${dxPixels}, ${dyPixels} pixels; ${dx.toFixed(3)}, ${dy.toFixed(3)} rel.; angle ${angle_rad.toFixed(3)} rad`);
 
-            setPolarAngle(angle_rad * 180.0 / Math.PI);     // rads to degs
+            setPolarAngle(angle_rad * 180.0 / Math.PI, true);     // rads to degs
 
             // distance from arc center to mouse position
             distance = Math.sqrt(dx*(HALF_WIDTH/config.radius)*dx*(HALF_WIDTH/config.radius) + dy*(HALF_HEIGHT/config.radius)*dy*(HALF_HEIGHT/config.radius));

@@ -13,15 +13,25 @@
     }
 
     function setMidiStatus(status) {
-        toggleOnOff('#midi-status', status);
+        // toggleOnOff('#midi-status', status);
+        if (status) {
+            $('#neon').addClass("glow");
+        } else {
+            $('#neon').removeClass("glow");
+        }
     }
 
     function setMidiInStatus(status) {
-        toggleOnOff('#midi-in-status', status);
+        // toggleOnOff('#midi-in-status', status);
+        if (status) {
+            $('#neon').addClass("glow");
+        } else {
+            $('#neon').removeClass("glow");
+        }
     }
 
     function setMidiOutStatus(status) {
-        toggleOnOff('#midi-out-status', status);
+        // toggleOnOff('#midi-out-status', status);
     }
 
     function setStatus(msg) {
@@ -198,11 +208,18 @@
         DEVICE.setControlValue(control_type, control_number, value);
 
         // the "blur" event will force a redraw of the dial. Do not send the "change" event as this will ping-pong between BS2 and this application.
-        let e = $('#' + control_type + '-' + control_number);
-        if (e.is('.dial')) {
-            e.trigger('blur', { value });
+        // let e = $('#' + control_type + '-' + control_number);
+        // if (e.is('.dial')) {
+        //     e.trigger('blur', { value });
+        // } else {
+        //     e.val(value).trigger('blur');
+        // }
+
+        let id = control_type + '-' + control_number;
+        if (knobs.hasOwnProperty(id)) {
+            knobs[id].value = value;
         } else {
-            e.val(value).trigger('blur');
+            console.error(`expected knob ${id} not found`);
         }
 
         // update the customs UI elements. Any input|select element has already been updated by the above instruction.
@@ -574,6 +591,23 @@
                     center_zero: Math.min(...c.range) < 0,
                     format: v => c.human(v)
                 });
+
+                elem.addEventListener("change", function(event) {
+                    //document.getElementById('v-' + element.id).innerHTML = event.detail;
+                    console.log(event);
+                    handleUIChange(c.cc_type, i, event.detail);
+                });
+
+                // knobs[id].addEventListener("change", function(event) {
+                //     // let v = parseFloat(this.value);
+                //     // if (!isNaN(v)) {
+                //     //     my_knobs['knob7'].value = v;
+                //     // }
+                //     handleUIChange(c.cc_type, i, v);
+                // });
+
+
+
 /*
                 e.trigger('configure', {
                     min: 0,
@@ -1269,8 +1303,6 @@
 
         setupUI();
 
-/*
-
         setStatus("Waiting for MIDI interface...");
 
         WebMidi.enable(function (err) {
@@ -1282,6 +1314,8 @@
                 setStatusError("ERROR: WebMidi could not be enabled.");
 
             } else {
+
+                console.log('webmidi ok');
 
                 setStatus("WebMidi enabled.");
                 setMidiStatus(true);
@@ -1314,7 +1348,7 @@
             }
 
         }, true);   // pass true to enable sysex support
-*/
+
     });
 
 })(); // Call the anonymous function once, then throw it away!
