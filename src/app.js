@@ -571,7 +571,7 @@
                     value_min: 0,
                     value_max: c.max_raw,
                     value_resolution: 1,
-                    cursor_only: Math.min(...c.range) < 0,
+                    center_zero: Math.min(...c.range) < 0,
                     format: v => c.human(v)
                 });
 /*

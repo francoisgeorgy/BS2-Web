@@ -3,8 +3,10 @@
     --inset-width: 1px;
 
     --value: yellow;
-    --knob-path-bg: #1c1c1c;
+    --knob-back-border: #777;
+    /*--knob-path-bg: #1c1c1c;*/
     --knob-value: #d3d347;
+    --knob-back-track-color: #303030;
 
     --lfo1: #BA7B0B;
     --lfo2: #976308;
@@ -648,19 +650,24 @@ select {
 /* knob.js classes: */
 
 
-.knob-bg {
-    fill: url("#grad");
-}
-
 .knob-back {
-    stroke-width: 5;
-    stroke: var(--knob-path-bg);
+    fill: url("#grad");
+    stroke: var(--knob-back-border);
 }
 
-.knob-arc {
-    stroke-width: 5;
-    stroke: var(--knob-value);
+.knob-back-track {
+    stroke: var(--knob-back-track-color);
 }
+
+/*.xknob-back {*/
+    /*stroke-width: 5;*/
+    /*stroke: var(--knob-path-bg);*/
+/*}*/
+
+/*.xknob-arc {*/
+    /*stroke-width: 5;*/
+    /*stroke: var(--knob-value);*/
+/*}*/
 
 .knob-value {
     font-family: "Roboto Condensed", sans-serif;
