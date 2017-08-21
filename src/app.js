@@ -214,16 +214,56 @@
         // } else {
         //     e.val(value).trigger('blur');
         // }
+/*
+        let id = control_type + '-' + control_number;
+        if (knobs.hasOwnProperty(id)) {
+            knobs[id].value = value;
+        } else {
+            // id = id + '-' + value;value
+            let sw = $(`#${id}-${value}`);
+            console.log(sw);
+            if (sw.is('.bt')) {
+                updateOptionSwitch(id + '-' + value, value);
+            } else if (sw.is('.btc')) {
+                updateToggleSwitch(id, value);
+            } else {
+                console.error(`unknown control ${id}`);
+            }
+            //console.error(`expected knob ${id} not found`);
+        }
+*/
+        updateControl(control_type, control_number, value);
+        // update the customs UI elements. Any input|select element has already been updated by the above instruction.
+        // updateCustoms(/*false*/);   //TODO: pass the current CC number and in updateCustoms() only update controls linked to this CC number
+    }
+
+    function updateControl(control_type, control_number, value) {
+
+        console.log(`updateControl(${control_type}, ${control_number}, ${value})`);
 
         let id = control_type + '-' + control_number;
         if (knobs.hasOwnProperty(id)) {
             knobs[id].value = value;
         } else {
-            console.error(`expected knob ${id} not found`);
+            let c = $(`#${id}`);
+            if (c) {
+                if (c.is('.slider')) {
+                    updateSlider(id, value);
+                }
+            } else {
+                // id = id + '-' + value;value
+                c = $(`#${id}-${value}`);
+                // console.log(sw);
+                if (c.is('.bt')) {
+                    updateOptionSwitch(id + '-' + value, value);
+                } else if (c.is('.btc')) {
+                    updateToggleSwitch(id, value);
+                } else {
+                    console.error(`unknown control ${id}`);
+                }
+                //console.error(`expected knob ${id} not found`);
+            }
         }
-
-        // update the customs UI elements. Any input|select element has already been updated by the above instruction.
-        updateCustoms(/*false*/);   //TODO: pass the current CC number and in updateCustoms() only update controls linked to this CC number
     }
 
     //==================================================================================================================
@@ -453,6 +493,11 @@
             for (let i=0; i < controls.length; i++) {
                 if (typeof controls[i] === 'undefined') continue;
                 console.log(`update #${controls[i].cc_type}-${i}`);
+
+
+                updateControl(controls[i].cc_type, i, DEVICE.getControlValue(controls[i]));
+
+/*
                 let e = $(`#${controls[i].cc_type}-${i}`);
                 if (e.is('.knob-only')) {
                     //e.trigger('blur', { value: DEVICE.getControlValue(controls[i]) });
@@ -467,6 +512,7 @@
                 } else {
                     e.val(DEVICE.getControlValue(controls[i])).trigger('blur');
                 }
+*/
             }
         }
 
@@ -636,17 +682,19 @@
 
     function setupSwitches() {
 
+        //TODO: remove .data(...)
+
         // SUB
         $('#cc-80').append(DEVICE.SUB_WAVE_FORMS.map((o,i) => {
             return $("<div>").attr("id", `cc-80-${i}`).data("control", "cc-80").data("value", i).text(o).addClass("bt");
         }));
         $('#cc-81').append(Object.entries(DEVICE.SUB_OCTAVE).map((o,i) => {
-            return $("<div>").attr("id", `cc-81-${i}`).data("control", "cc-81").data("value", o[0]).text(o[1]).addClass("bt");
+            return $("<div>").attr("id", `cc-81-${o[0]}`).data("control", "cc-81").data("value", o[0]).text(o[1]).addClass("bt");
         }));
 
         // OSC 1
         $('#cc-70').append(Object.entries(DEVICE.OSC_RANGES).map((o,i) => {
-            return $("<div>").attr("id", `cc-70-${i}`).data("control", "cc-70").data("value", o[0]).text(o[1]).addClass("bt");
+            return $("<div>").attr("id", `cc-70-${o[0]}`).data("control", "cc-70").data("value", o[0]).text(o[1]).addClass("bt");
         }));
         $('#nrpn-72').append(DEVICE.OSC_WAVE_FORMS.map((o,i) => {
             return $("<div>").attr("id", `nrpn-72-${i}`).data("control", "nrpn-72").data("value", i).text(o).addClass("bt");
@@ -654,7 +702,7 @@
 
         // OSC 2
         $('#cc-75').append(Object.entries(DEVICE.OSC_RANGES).map((o,i) => {
-            return $("<div>").attr("id", `cc-75-${i}`).data("control", "cc-75").data("value", o[0]).text(o[1]).addClass("bt");
+            return $("<div>").attr("id", `cc-75-${o[0]}`).data("control", "cc-75").data("value", o[0]).text(o[1]).addClass("bt");
         }));
         $('#nrpn-82').append(DEVICE.OSC_WAVE_FORMS.map((o,i) => {
             return $("<div>").attr("id", `nrpn-82-${i}`).data("control", "nrpn-82").data("value", i).text(o).addClass("bt");
@@ -698,15 +746,17 @@
 
         // "radio button"-like behavior:
         $('div.bt').click(function(e) {
-            let d = $(this).data();
-            let c = d['control'];
-            let v = d['value'];
-            console.log(`click on ${c} with value ${v}`, this, $(this).siblings());
+            // let d = $(this).data();
+            // let c = d['control'];
+            // let v = d['value'];
+            // console.log(`click on ${this.id} with value ${v}`, this, $(this).siblings());
+            console.log(`click on ${this.id}`);
             //let e = $(this);
             if (!this.classList.contains("on")) {   // if not already on...
                 $(this).siblings(".bt").removeClass("on");
                 this.classList.add("on");
-                handleUIChange(...c.split('-'), v);
+                // handleUIChange(...c.split('-'), v);
+                handleUIChange(...this.id.split('-'));
             }
         });
 
@@ -733,12 +783,11 @@
     }
 
 
+
     /**
      *
      */
     function setupSelects() {
-
-
 
         // ARP OCTAVE
         $('#cc-111').append(DEVICE.ARP_OCTAVES.map((o,i) => { return $("<option>").val(i).text(o); }));
@@ -753,11 +802,57 @@
 
         $('select.cc').change(function (){ handleUIChange(...this.id.split('-'), this.value) });
 
-
-
-
     } // setupSelects
 
+
+    function setupSliders() {
+        $(".slider").on('input', function() {   // "input:range" not yet supported by jquery; on(drag) not supported by chrome?
+            // console.log(event, event.currentTarget.value);
+            handleUIChange(...this.id.split('-'), this.value)
+        });
+    }
+
+
+    function updateOptionSwitch(id, value) {
+        // "radio button"-like behavior
+        console.log(`updateOptionSwitch(${id}, ${value})`);
+        let e = $('#' + id);
+        console.log(e);
+        if (!e.is("on")) {   // if not already on...
+            e.siblings(".bt").removeClass("on");
+            e.addClass("on");
+            // handleUIChange(...c.split('-'), v);
+            // handleUIChange(...this.id.split('-'));
+        }
+    }
+
+    function updateToggleSwitch(id, value) {
+        console.log(`updateToggleSwitch(${id}, ${value})`);
+        // "checkbox"-like behavior:
+        //let e = document.getElementById(id);
+        let e = $(id);
+        // let v = 0;
+        if (value) {
+            e.addClass('on');
+        } else {
+            e.removeClass('on');
+        }
+        // handleUIChange(...this.id.split('-'), v);
+    }
+
+    function updateSlider(id, value) {
+        console.log(`updateSlider(${id}, ${value})`);
+        // "checkbox"-like behavior:
+        //let e = document.getElementById(id);
+        $('#' + id).val(value);
+        // // let v = 0;
+        // if (value) {
+        //     e.addClass('on');
+        // } else {
+        //     e.removeClass('on');
+        // }
+        // handleUIChange(...this.id.split('-'), v);
+    }
 
 
     /**
@@ -765,14 +860,16 @@
      * @param dom_id
      * @param sendUpdate
      */
+/*
     function updateSwitch(dom_id, send_to_device = false) {
         let e = $('#' + dom_id);                                // get the hidden input field of this switch
         toggleOnOff('#' + dom_id + '-handle', e.val() != 0);    // update the switch UI
-        console.log('updateSwitch', send_to_device);
+        console.log(`updateSwitch ${dom_id}`, send_to_device);
         if (send_to_device) handleUIChange(...dom_id.split('-'), e.val());  // update switch UI and the device too
     }
 
     const SWITCHES = ['cc-110', 'nrpn-89', 'nrpn-93', 'cc-108', 'cc-109', 'nrpn-106'];
+*/
 
     /**
      * Add the click handler to the switches represented by the ids array
@@ -800,6 +897,7 @@
     /**
      * Update the "custom" or "linked" UI controls
      */
+/*
     function updateCustoms() {
 
         console.groupCollapsed(`updateCustoms()`);
@@ -820,7 +918,7 @@
         console.groupEnd();
 
     }
-
+*/
     /**
      * Update the patch number and patch name displayed in the header.
      */
@@ -833,7 +931,7 @@
      */
     function updateUI() {
         updateControls();
-        updateCustoms();
+        // updateCustoms();
         updateMeta();
         updateCommands();
     }
@@ -862,6 +960,7 @@
         setupSwitches();
         setupSelects();
         // setupSwitches(SWITCHES);
+        setupSliders();
         setupCommands();
         updateCommands();
 

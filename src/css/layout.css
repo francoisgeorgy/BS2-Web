@@ -211,7 +211,9 @@ div.controls {
 }
 
 .glow {
-    text-shadow: 0 0 16px #ffff00;
+    color: #1DBEFB!important;
+    text-shadow: 0 0 15px #98DBF5;
+    /*text-shadow: 0 0 16px #ffff00;*/
 }
 
 #title > div.menu {
