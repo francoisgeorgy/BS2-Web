@@ -62,24 +62,18 @@
     var midi_in_messages = 0;
 
     function logOutgoingMidiMessage(type, control, value) {
-        midi_out_messages++;
-        $('#midi-messages-out').prepend(`<div>${type.toUpperCase()} ${control} ${value}</div>`);
-        if (midi_out_messages > 100) $("#midi-messages-out div:last-child").remove();
+        //TODO
+        // midi_out_messages++;
+        // $('#midi-messages-out').prepend(`<div>${type.toUpperCase()} ${control} ${value}</div>`);
+        // if (midi_out_messages > 100) $("#midi-messages-out div:last-child").remove();
     }
 
     function logIncomingMidiMessage(type, control, value) {
-        midi_in_messages++;
-        $('#midi-messages-in').prepend(`<div>${type.toUpperCase()} ${control} ${value}</div>`);
-        if (midi_in_messages > 100) $("#midi-messages-in div:last-child").remove();
+        //TODO
+        // midi_in_messages++;
+        // $('#midi-messages-in').prepend(`<div>${type.toUpperCase()} ${control} ${value}</div>`);
+        // if (midi_in_messages > 100) $("#midi-messages-in div:last-child").remove();
     }
-
-    //==================================================================================================================
-
-    /**
-     * Draw a read-only (illustrative) ADSR envelope.
-     */
-    // function drawADSR(env, container_id) {
-    // }
 
     //==================================================================================================================
     // Midi messages handling
@@ -90,7 +84,6 @@
     var value_msb = 0;    // msb to compute value
     var value_lsb = 0;    // lsb to compute value
     var nrpn = false;
-
 
     /**
      * Handle all control change messages received
@@ -170,29 +163,19 @@
         // } else {
         //     e.val(value).trigger('blur');
         // }
-/*
-        let id = control_type + '-' + control_number;
-        if (knobs.hasOwnProperty(id)) {
-            knobs[id].value = value;
-        } else {
-            // id = id + '-' + value;value
-            let sw = $(`#${id}-${value}`);
-            console.log(sw);
-            if (sw.is('.bt')) {
-                updateOptionSwitch(id + '-' + value, value);
-            } else if (sw.is('.btc')) {
-                updateToggleSwitch(id, value);
-            } else {
-                console.error(`unknown control ${id}`);
-            }
-            //console.error(`expected knob ${id} not found`);
-        }
-*/
+
         updateControl(control_type, control_number, value);
+
         // update the customs UI elements. Any input|select element has already been updated by the above instruction.
         // updateCustoms(/*false*/);   //TODO: pass the current CC number and in updateCustoms() only update controls linked to this CC number
     }
 
+    /**
+     *
+     * @param control_type
+     * @param control_number
+     * @param value
+     */
     function updateControl(control_type, control_number, value) {
 
         console.log(`updateControl(${control_type}, ${control_number}, ${value})`);
@@ -453,27 +436,7 @@
         function _updateControls(controls) {
             for (let i=0; i < controls.length; i++) {
                 if (typeof controls[i] === 'undefined') continue;
-                console.log(`update #${controls[i].cc_type}-${i}`);
-
-
                 updateControl(controls[i].cc_type, i, DEVICE.getControlValue(controls[i]));
-
-/*
-                let e = $(`#${controls[i].cc_type}-${i}`);
-                if (e.is('.knob-only')) {
-                    //e.trigger('blur', { value: DEVICE.getControlValue(controls[i]) });
-
-                    let id = `${controls[i].cc_type}-${i}`;
-                    if (knobs.hasOwnProperty(id)) {
-                        knobs[id].value = DEVICE.getControlValue(controls[i]);
-                    } else {
-                        console.error(`expected knob ${id} not found`);
-                    }
-
-                } else {
-                    e.val(DEVICE.getControlValue(controls[i])).trigger('blur');
-                }
-*/
             }
         }
 
@@ -487,86 +450,7 @@
     /**
      *
      */
-    /*
-    function setupDials() {
-
-        const CURSOR = 12;
-
-        $(".dial").knob({
-            // release : function (v) { console.log('release', this, v); },
-            angleOffset: -135,
-            angleArc: 270,
-            bgColor: THEME[settings.theme].bgColor,
-            fgColor: THEME[settings.theme].fgColor,
-            innerColor: THEME[settings.theme].innerColor,
-            positiveColor: THEME[settings.theme].positiveColor,
-            negativeColor: THEME[settings.theme].negativeColor
-        });
-
-        function _setup(controls) {
-
-            for (let i=0; i < controls.length; i++) {
-
-                let c = controls[i];
-                if (typeof c === 'undefined') continue;
-
-                let e = $(`#${c.cc_type}-${i}`);
-
-                if (!e.hasClass('dial')) continue;
-
-                console.log(`configure #${c.cc_type}-${i}: max=${c.max_raw}`);
-
-                e.trigger('configure', {
-                    min: 0,
-                    max: c.max_raw,
-                    step: 1,
-                    cursor: Math.min(...c.range) < 0 ? CURSOR : false,
-                    format: v => c.human(v),
-                    change : function (v) {
-                        handleUIChange(c.cc_type, i, v);
-                    }   //,
-                    //parse: v => c.parse(v)
-                });
-            }
-        }
-
-        console.groupCollapsed('setupDials');
-
-        _setup(DEVICE.control);
-        _setup(DEVICE.nrpn);
-
-        console.groupEnd();
-
-    } // setupDials
-    */
-
-    /**
-     *
-     */
     function setupKnobs() {
-
-        const CURSOR = 12;
-        //
-        // [].forEach.call(document.querySelectorAll('svg.knob-only'), function(element) {
-        //
-        //     // console.log(element.id);
-        //
-        //     knobs[element.id] = new knob(element, {with_label: false, cursor: 50});
-        //     // element.addEventListener("change", function(event) {
-        //     //     document.getElementById('v-' + element.id).innerHTML = event.detail;
-        //     // });
-        // });
-
-        // $(".dial").knob({
-        //     // release : function (v) { console.log('release', this, v); },
-        //     angleOffset: -135,
-        //     angleArc: 270,
-        //     bgColor: THEME[settings.theme].bgColor,
-        //     fgColor: THEME[settings.theme].fgColor,
-        //     innerColor: THEME[settings.theme].innerColor,
-        //     positiveColor: THEME[settings.theme].positiveColor,
-        //     negativeColor: THEME[settings.theme].negativeColor
-        // });
 
         function _setup(controls) {
 
@@ -604,30 +488,6 @@
                     console.log(event);
                     handleUIChange(c.cc_type, i, event.detail);
                 });
-
-                // knobs[id].addEventListener("change", function(event) {
-                //     // let v = parseFloat(this.value);
-                //     // if (!isNaN(v)) {
-                //     //     my_knobs['knob7'].value = v;
-                //     // }
-                //     handleUIChange(c.cc_type, i, v);
-                // });
-
-
-
-/*
-                e.trigger('configure', {
-                    min: 0,
-                    max: c.max_raw,
-                    step: 1,
-                    cursor: Math.min(...c.range) < 0 ? CURSOR : false,
-                    format: v => c.human(v),
-                    change : function (v) {
-                        handleUIChange(c.cc_type, i, v);
-                    }   //,
-                    //parse: v => c.parse(v)
-                });
-*/
             }
         }
 
@@ -743,8 +603,6 @@
 
     }
 
-
-
     /**
      *
      */
@@ -769,7 +627,8 @@
     function setupSliders() {
         $(".slider").on('input', function() {   // "input:range" not yet supported by jquery; on(drag) not supported by chrome?
             // console.log(event, event.currentTarget.value);
-            handleUIChange(...this.id.split('-'), this.value)
+            handleUIChange(...this.id.split('-'), this.value);
+            $('#' + this.id + '-value').text(this.value);
         });
     }
 
@@ -811,6 +670,7 @@
         // "checkbox"-like behavior:
         //let e = document.getElementById(id);
         $('#' + id).val(value);
+        $('#' + id + '-value').text(value);
         // // let v = 0;
         // if (value) {
         //     e.addClass('on');
@@ -1106,12 +966,14 @@
     }
 */
 
-    var midi_window = null;
 
+/*
+    var midi_window = null;
     function openMidiWindow() {
         // midi_window = window.open("midi.html", '_midi', 'location=no,height=480,width=640,scrollbars=yes,status=no');
         $("#midi-popup").dialog("open");
     }
+*/
 
 
     /**
@@ -1135,49 +997,24 @@
         $('h1.reset-handler').click(resetGroup);
 */
 
-
+/*
         $('#menu-midi').click(openMidiWindow);
 
         $( "#midi-popup" ).dialog({
             // dialogClass: "no-close",
             autoOpen: false,
-            buttons: [
-                {
-                    text: "OK",
-                    click: function() {
-                        $( this ).dialog( "close" );
-                    }
-                }
-            ]
+            title: "MIDI messages",
+            buttons: []
         });
+*/
 
     }
 
     //==================================================================================================================
     // Settings
-/*
-    const THEME = {
-        "dark": {
-            href: "css/dark-theme.css",
-            bgColor: "#606060",
-            fgColor: "#fff",
-            innerColor: "#272727",
-            positiveColor: "#ffea00",
-            negativeColor: "#ccbb00"
-        },
-        "light": {
-            href: "css/light-theme.css",
-            bgColor: "#ddd",
-            fgColor: "#333",
-            innerColor: "#eee",
-            positiveColor: "#005b80",
-            negativeColor: "#0080b3"
-        }
-    };
-*/
+
     var settings = {
-        randomize: [] //,
-  //      theme: "light"
+        randomize: []
     };
 
     function loadSettings() {
@@ -1210,19 +1047,8 @@
                 Cookies.set('settings', settings);
             }
         );
-/*
-        $('#theme-choice').change(
-            function() {
-                settings.theme = this.value;
-                $("link#themesheet").attr("href", THEME[settings.theme].href);
-                window.location.reload();
-                Cookies.set('settings', settings);
-            }
-        );
-*/
 
         console.groupEnd();
-
     }
 
     function displayRandomizerSettings() {
