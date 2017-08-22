@@ -899,7 +899,7 @@
         updateControls();
         // updateCustoms();
         updateMeta();
-        updateCommands();
+        // updateCommands();
     }
 
     /**
@@ -928,8 +928,8 @@
         // setupSwitches(SWITCHES);
         setupSliders();
         setupADSR();
-        setupCommands();
-        updateCommands();
+        setupMenu();
+        // updateCommands();
 
         init(false);    // init DEVICE then UI without sending any CC to the DEVICE
 
@@ -1098,16 +1098,27 @@
     /**
      *
      */
+/*
     function updateCommands() {
         toggleOnOff('#cmd-sync', !!midi_output);
         toggleOnOff('#cmd-send', !!midi_output);
         // toggleOnOff('#cmd-export', !!midi_output);
     }
+*/
+
+    var midi_window = null;
+
+    function openMidiWindow() {
+        // midi_window = window.open("midi.html", '_midi', 'location=no,height=480,width=640,scrollbars=yes,status=no');
+        $("#midi-popup").dialog("open");
+    }
+
 
     /**
      *
      */
-    function setupCommands() {
+    function setupMenu() {
+/*
         console.log('setupCommands');
         $('#cmd-sync').click(syncUIwithBS2);
         $('#cmd-send').click(updateConnectedDevice);
@@ -1122,6 +1133,24 @@
         $('#midi-channel').change(setMidiChannel);
         $('#patch-file').change(readFile);
         $('h1.reset-handler').click(resetGroup);
+*/
+
+
+        $('#menu-midi').click(openMidiWindow);
+
+        $( "#midi-popup" ).dialog({
+            // dialogClass: "no-close",
+            autoOpen: false,
+            buttons: [
+                {
+                    text: "OK",
+                    click: function() {
+                        $( this ).dialog( "close" );
+                    }
+                }
+            ]
+        });
+
     }
 
     //==================================================================================================================

@@ -6,6 +6,8 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,500,700|Roboto+Condensed:300,400,700" rel="stylesheet" />
     <link href="css/layout.css" rel="stylesheet" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src="lib/js.cookie.js"></script>
     <script src="lib/webmidi.min.js"></script>
     <script src="lib/envelope.js?ck"></script>
@@ -27,7 +29,9 @@
                 <span><a href="#">Load patch</a></span>
                 <span><a href="#">Print patch</a></span>
                 <span><a href="#">Sync &#8651;</a></span>
+                <span><a id="menu-midi" href="#">Midi</a></span>
                 <span><a href="#">Settings &#x2699;</a></span>
+                <span><a href="#">Help &#x3f;</a></span>
             </div>
         </div>
 
@@ -780,6 +784,23 @@
         </div>
 
     </div>
+
+    <div id="midi-popup" style="display: none">
+    <h1>midi</h1>
+        <div id="midi">
+        <div class="midi-messages">
+            midi in
+            <div id="midi-messages-in">
+            </div>
+        </div>
+        <div class="midi-messages">
+            midi out
+            <div id="midi-messages-out">
+            </div>
+        </div>
+    </div>
+    </div>
+
     <svg xmlns="http://www.w3.org/2000/svg" width="1" height="0" style="display:block">
         <defs>
             <linearGradient id="grad" gradientTransform="rotate(65)">
