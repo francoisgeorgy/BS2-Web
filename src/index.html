@@ -6,8 +6,10 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,500,700|Roboto+Condensed:300,400,700" rel="stylesheet" />
     <link href="css/layout.css" rel="stylesheet" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <!--<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">-->
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>-->
+    <link href="lib/lity.min.css" rel="stylesheet" />
+    <script src="lib/lity.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="lib/js.cookie.js"></script>
     <script src="lib/webmidi.min.js"></script>
     <script src="lib/envelope.js?ck"></script>
@@ -783,6 +785,12 @@
             </div>
         </div>
 
+        <div id="status-bar">
+            <a id="credits-link" href="#credits-dialog" data-lity><span class="version">2.0.0</span> - About</a>
+            <div id="status">
+            </div>
+        </div>
+
     </div>
 
 <!--
@@ -800,6 +808,35 @@
         </div>
     </div>
 -->
+
+    <div id="credits-dialog" style="overflow:auto;background:#FDFDF6;color:#000;padding:20px;min-width:400px;max-width:800px;border-radius:6px"  class="lity-hide">
+        <a href="https://github.com/francoisgeorgy/BS2-Web">
+            <img style="position: absolute; top: 0; right: 0; border: 0;"
+                 src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67"
+                 alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
+        <div class="novation-blue" style="font-weight: bold">
+            Bass Station II Web Interface <span class="version">2.0.0</span>
+        </div>
+        <p>Bass Station II Web Interface is under <strong>GNU General Public License v3.0</strong>. <a href="https://github.com/francoisgeorgy/BS2-Web/blob/master/LICENSE" target="_blank" >View license</a>.</p>
+        <h1 style="margin-top:20px">Credits</h1>
+        <p>This application uses the following Open Source components:</p>
+        <p>
+        <ul>
+            <li>WebMidi.js helps you tame the Web MIDI API. <a href="https://github.com/cotejp/webmidi" target="_blank">https://github.com/cotejp/webmidi</a></li>
+            <li>Nice, downward compatible, touchable, jQuery dial. <a href="https://github.com/aterrien/jQuery-Knob" target="_blank">https://github.com/aterrien/jQuery-Knob</a></li>
+            <li>Lity: Lightweight, accessible and responsive lightbox. <a href="http://sorgalla.com/lity/">http://sorgalla.com/lity/</a></li>
+            <li>A simple, lightweight JavaScript API for handling browser cookies. <a href="https://github.com/js-cookie/js-cookie" target="_blank">https://github.com/js-cookie/js-cookie</a></li>
+            <li>jQuery is a fast, small, and feature-rich JavaScript library. <a href="https://jquery.com/" target="_blank">https://jquery.com/</a></li>
+            <li>Roboto font by Google. <a href="https://fonts.google.com/specimen/Roboto" target="_blank">https://fonts.google.com/specimen/Roboto</a></li>
+
+        </ul>
+        </p>
+        <p>I acknowledge and am grateful to these developers for their contributions to open source.</p>
+        <p class="trademarks">
+            Novation is a registered trade mark of Focusrite Audio Engineering Limited.<br />
+            Bass Station II is a trade mark of Focusrite Audio Engineering Limited.
+        </p>
+    </div>
 
     <svg xmlns="http://www.w3.org/2000/svg" width="1" height="0" style="display:block">
         <defs>
