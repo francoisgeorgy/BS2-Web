@@ -66,6 +66,10 @@
         // midi_out_messages++;
         // $('#midi-messages-out').prepend(`<div>${type.toUpperCase()} ${control} ${value}</div>`);
         // if (midi_out_messages > 100) $("#midi-messages-out div:last-child").remove();
+        if (midi_window) {
+            console.log('write in midi_window');
+            $('#midi-messages-out', midi_window.document).prepend(`<div>${type.toUpperCase()} ${control} ${value}</div>`);
+        }
     }
 
     function logIncomingMidiMessage(type, control, value) {
@@ -198,7 +202,8 @@
                 } else if (c.is('.btc')) {
                     updateToggleSwitch(id, value);
                 } else {
-                    console.error(`unknown control ${id}`);
+                    c.val(value).trigger('blur');
+                    //console.error(`unknown control ${id}`);
                 }
                 //console.error(`expected knob ${id} not found`);
             }
@@ -222,6 +227,8 @@
                     logOutgoingMidiMessage('cc', a[i][0], a[i][1]);
                     midi_output.sendControlChange(a[i][0], a[i][1], midi_channel);
                 } else {
+                    logOutgoingMidiMessage('cc', a[i][0], a[i][1]);
+
                     console.log(`(send CC ${a[i][0]} ${a[i][1]} (${control.name}) on channel ${midi_channel})`);
                 }
             }
@@ -967,13 +974,14 @@
 */
 
 
-/*
+
     var midi_window = null;
     function openMidiWindow() {
-        // midi_window = window.open("midi.html", '_midi', 'location=no,height=480,width=640,scrollbars=yes,status=no');
-        $("#midi-popup").dialog("open");
+        midi_window = window.open("midi.html", '_midi', 'location=no,height=480,width=640,scrollbars=yes,status=no');
+        // $("#midi-popup").dialog("open");
+        // $("midi", midi_window)
     }
-*/
+
 
 
     /**
@@ -997,9 +1005,9 @@
         $('h1.reset-handler').click(resetGroup);
 */
 
-/*
-        $('#menu-midi').click(openMidiWindow);
 
+        $('#menu-midi').click(openMidiWindow);
+/*
         $( "#midi-popup" ).dialog({
             // dialogClass: "no-close",
             autoOpen: false,

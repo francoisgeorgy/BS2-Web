@@ -31,7 +31,7 @@
                 <span><a href="#">Load patch</a></span>
                 <span><a href="#">Print patch</a></span>
                 <span><a href="#">Sync &#8651;</a></span>
-                <!--<span><a id="menu-midi" href="#">Midi</a></span>-->
+                <span><a id="menu-midi" href="#">Midi</a></span>
                 <span><a href="#">Settings &#x2699;</a></span>
                 <span><a href="#">Help &#x3f;</a></span>
             </div>
@@ -177,7 +177,7 @@
                     <div class="knob-combo">
                         <svg class="knob-only" id="cc-18" ></svg>
                         <div class="knob-label" style="padding: 0px 1px 0px 1px;">
-                            <select>
+                            <select id="nrpn-88">
                                 <option>Speed</option>
                                 <option>Sync</option>
                             </select>
@@ -786,7 +786,10 @@
         </div>
 
         <div id="status-bar">
-            <a id="credits-link" href="#credits-dialog" data-lity><span class="version">2.0.0</span> - About</a>
+            <!--<a id="credits-link" href="#credits-dialog" data-lity><span class="version">2.0.0</span> - About</a>-->
+            MIDI:
+            <span id="midi-in-led">in</span>
+            <span id="midi-out-led">out</span>
             <div id="status">
             </div>
         </div>
