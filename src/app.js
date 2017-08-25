@@ -194,18 +194,20 @@
                     updateSlider(id, value);
                 }
             } else {
-                // id = id + '-' + value;value
                 c = $(`#${id}-${value}`);
-                // console.log(sw);
-                if (c.is('.bt')) {
-                    updateOptionSwitch(id + '-' + value, value);
-                } else if (c.is('.btc')) {
-                    updateToggleSwitch(id, value);
+                if (c) {
+                    // console.log(sw);
+                    if (c.is('.bt')) {
+                        updateOptionSwitch(id + '-' + value, value);
+                    } else if (c.is('.btc')) {
+                        updateToggleSwitch(id, value);
+                    } else {
+                        c.val(value).trigger('blur');
+                        //console.error(`unknown control ${id}`);
+                    }
                 } else {
-                    c.val(value).trigger('blur');
-                    //console.error(`unknown control ${id}`);
+                    log.warn(`no control for ${id}-${value}`);
                 }
-                //console.error(`expected knob ${id} not found`);
             }
         }
     }
@@ -459,6 +461,33 @@
      */
     function setupKnobs() {
 
+        function _setupKnob(id, c) {
+
+            let elem = document.getElementById(id);
+
+            if (elem === null) return;
+
+            if (!elem.classList.contains("knob")) return;
+
+            console.log(`configure #${id}: max=${c.max_raw}`);
+
+            knobs[id] = new knob(elem, {
+                with_label: false,
+                cursor: 50,
+                value_min: 0,
+                value_max: c.max_raw,
+                value_resolution: 1,
+                center_zero: Math.min(...c.range) < 0,
+                format: v => c.human(v)
+            });
+
+            elem.addEventListener("change", function(event) {
+                //document.getElementById('v-' + element.id).innerHTML = event.detail;
+                console.log(event);
+                handleUIChange(c.cc_type, c.cc_number /*i*/, event.detail);
+            });
+        }
+
         function _setup(controls) {
 
             for (let i=0; i < controls.length; i++) {
@@ -470,31 +499,10 @@
                 //
                 // if (!e.hasClass('dial')) continue;
 
-                let id = `${c.cc_type}-${i}`;
+                console.log(`${c.cc_type}-${c.cc_number} (${i})`);
 
-                let elem = document.getElementById(id);
-
-                if (elem === null) continue;
-
-                if (!elem.classList.contains("knob-only")) continue;
-
-                console.log(`configure #${id}: max=${c.max_raw}`);
-
-                knobs[id] = new knob(elem, {
-                    with_label: false,
-                    cursor: 50,
-                    value_min: 0,
-                    value_max: c.max_raw,
-                    value_resolution: 1,
-                    center_zero: Math.min(...c.range) < 0,
-                    format: v => c.human(v)
-                });
-
-                elem.addEventListener("change", function(event) {
-                    //document.getElementById('v-' + element.id).innerHTML = event.detail;
-                    console.log(event);
-                    handleUIChange(c.cc_type, i, event.detail);
-                });
+                let id = `${c.cc_type}-${c.cc_number}`;
+                _setupKnob(id, c);
             }
         }
 
@@ -502,6 +510,10 @@
 
         _setup(DEVICE.control);
         _setup(DEVICE.nrpn);
+
+        // setup dual knobs:
+        // _setupKnob('cc-18_nrpn-87', DEVICE.control[18]);    // LFO1 Speed/Sync
+        // _setupKnob('cc-19_nrpn-91', DEVICE.control[19]);    // LFO2 Speed/Sync
 
         console.groupEnd();
 
@@ -627,6 +639,26 @@
         }
 
         $('select.cc').change(function (){ handleUIChange(...this.id.split('-'), this.value) });
+
+        // LFO speed/sync selects:
+        $('#nrpn-88').change(function(){
+            if (this.value === '1') {
+                $('#cc-18').hide();
+                $('#nrpn-87').show();
+            } else {
+                $('#nrpn-87').hide();
+                $('#cc-18').show();
+            }
+        });
+        $('#nrpn-92').change(function(){
+            if (this.value === '1') {
+                $('#cc-19').hide();
+                $('#nrpn-91').show();
+            } else {
+                $('#nrpn-91').hide();
+                $('#cc-19').show();
+            }
+        });
 
     } // setupSelects
 

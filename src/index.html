@@ -136,7 +136,7 @@
             <div class="control-row">
                 <div></div>
                 <div class="knob-combo">
-                    <svg class="knob-only" id="cc-95" ></svg>
+                    <svg class="knob" id="cc-95" ></svg>
                     <div class="knob-label">Limiter</div>
                 </div>
             </div>
@@ -144,6 +144,8 @@
 
 <!--
     LFO1
+
+    TODO: key sync nrpn-89
 -->
         <div id="lfo1">
 
@@ -157,36 +159,31 @@
 
                 <div class="lfo-options" style="margin-right: 1.5vw;">
                     <div style="margin-top:0.3rem" id="cc-88">
-<!--
-                        <div class="bt" id="-bt" data-value="">triangle</div>
-                        <div class="bt on" id="-bt" data-value="">saw</div>
-                        <div class="bt" id="-bt" data-value="">square</div>
-                        <div class="bt" id="-bt" data-value="">S+H</div>
--->
                     </div>
                 </div>
 
                 <div class="lfo-delay">
                     <div class="knob-combo">
-                        <svg class="knob-only" id="cc-86" ></svg>
+                        <svg class="knob" id="cc-86" ></svg>
                         <div class="knob-label">Delay</div>
                     </div>
                 </div>
 
                 <div class="lfo-speed">
                     <div class="knob-combo">
-                        <svg class="knob-only" id="cc-18" ></svg>
+                        <svg class="knob" id="cc-18" ></svg>
+                        <svg class="knob" id="nrpn-87" style="display:none"></svg>
                         <div class="knob-label" style="padding: 0px 1px 0px 1px;">
-                            <select id="nrpn-88">
-                                <option>Speed</option>
-                                <option>Sync</option>
+                            <select id="nrpn-88">   <!-- FN key "Speed/Sync LFO 1" -->
+                                <option value="0">Speed</option>
+                                <option value="1">Sync</option>
                             </select>
                         </div>
                     </div>
                 </div>
                 <div class="lfo-slew">
                     <div class="knob-combo">
-                        <svg class="knob-only" id="nrpn-86" ></svg>
+                        <svg class="knob" id="nrpn-86" ></svg>
                         <div class="knob-label">Slew</div>
                     </div>
                 </div>
@@ -196,6 +193,8 @@
 
 <!--
     LFO2
+
+    TODO: key sync nrpn-93
 -->
         <div id="lfo2">
 
@@ -209,29 +208,24 @@
 
                 <div class="lfo-options" style="margin-right: 1.5vw;">
                     <div style="margin-top:0.3rem" id="cc-89">
-<!--
-                        <div class="bt" id="-bt" data-value="">triangle</div>
-                        <div class="bt on" id="-bt" data-value="">saw</div>
-                        <div class="bt" id="-bt" data-value="">square</div>
-                        <div class="bt" id="-bt" data-value="">S+H</div>
--->
                     </div>
                 </div>
 
                 <div class="lfo-delay">
                     <div class="knob-combo">
-                        <svg class="knob-only" id="cc-87" ></svg>
+                        <svg class="knob" id="cc-87" ></svg>
                         <div class="knob-label">Delay</div>
                     </div>
                 </div>
 
                 <div class="lfo-speed">
                     <div class="knob-combo">
-                        <svg class="knob-only" id="cc-19" ></svg>
+                        <svg class="knob" id="cc-19" ></svg>
+                        <svg class="knob" id="nrpn-91" style="display:none"></svg>
                         <div class="knob-label">
-                            <select>
-                                <option>Speed</option>
-                                <option selected>Sync</option>
+                            <select id="nrpn-92">   <!-- FN key "Speed/Sync LFO 2" -->
+                                <option value="0">Speed</option>
+                                <option value="1">Sync</option>
                             </select>
                         </div>
                     </div>
@@ -239,7 +233,7 @@
 
                 <div class="lfo-slew">
                     <div class="knob-combo">
-                        <svg class="knob-only" id="nrpn-90" ></svg>
+                        <svg class="knob" id="nrpn-90" ></svg>
                         <div class="knob-label">Slew</div>
                     </div>
                 </div>
@@ -289,37 +283,37 @@
 
                 <div class="osc-pitch">
                     <div class="knob-combo">
-                        <svg class="knob-only" id="cc-27" ></svg>
+                        <svg class="knob" id="cc-27" ></svg>
                         <div class="knob-label">Coarse</div>
                     </div>
                     <div class="knob-combo">
-                        <svg class="knob-only" id="cc-26" ></svg>
+                        <svg class="knob" id="cc-26" ></svg>
                         <div class="knob-label">Fine</div>
                     </div>
                 </div>
 
                 <div class="osc-mod">
                     <div class="knob-combo">
-                        <svg class="knob-only" id="cc-28" ></svg>
+                        <svg class="knob" id="cc-28" ></svg>
                         <div class="knob-label lfo1">LFO 1</div>
                     </div>
                     <div class="knob-combo">
-                        <svg class="knob-only" id="cc-71" ></svg>
+                        <svg class="knob" id="cc-71" ></svg>
                         <div class="knob-label modenv">Env</div>
                     </div>
                 </div>
 
                 <div class="osc-pw">
                     <div class="knob-combo">
-                        <svg class="knob-only" id="cc-74" ></svg>
+                        <svg class="knob" id="cc-74" ></svg>
                         <div class="knob-label">Man.</div>
                     </div>
                     <div class="knob-combo">
-                        <svg class="knob-only" id="cc-73" ></svg>
+                        <svg class="knob" id="cc-73" ></svg>
                         <div class="knob-label lfo2">LFO 2</div>
                     </div>
                     <div class="knob-combo">
-                        <svg class="knob-only" id="cc-72" ></svg>
+                        <svg class="knob" id="cc-72" ></svg>
                         <div class="knob-label modenv">Env</div>
                     </div>
                 </div>
@@ -370,37 +364,37 @@
 
                 <div class="osc-pitch">
                     <div class="knob-combo">
-                        <svg class="knob-only" id="cc-30" ></svg>
+                        <svg class="knob" id="cc-30" ></svg>
                         <div class="knob-label">Coarse</div>
                     </div>
                     <div class="knob-combo">
-                        <svg class="knob-only" id="cc-29" ></svg>
+                        <svg class="knob" id="cc-29" ></svg>
                         <div class="knob-label">Fine</div>
                     </div>
                 </div>
 
                 <div class="osc-mod">
                     <div class="knob-combo">
-                        <svg class="knob-only" id="cc-31" ></svg>
+                        <svg class="knob" id="cc-31" ></svg>
                         <div class="knob-label lfo1">LFO 1</div>
                     </div>
                     <div class="knob-combo">
-                        <svg class="knob-only" id="cc-76" ></svg>
+                        <svg class="knob" id="cc-76" ></svg>
                         <div class="knob-label modenv">Env</div>
                     </div>
                 </div>
 
                 <div class="osc-pw">
                     <div class="knob-combo">
-                        <svg class="knob-only" id="cc-79" ></svg>
+                        <svg class="knob" id="cc-79" ></svg>
                         <div class="knob-label">Man.</div>
                     </div>
                     <div class="knob-combo">
-                        <svg class="knob-only" id="cc-78" ></svg>
+                        <svg class="knob" id="cc-78" ></svg>
                         <div class="knob-label lfo2">LFO 2</div>
                     </div>
                     <div class="knob-combo">
-                        <svg class="knob-only" id="cc-77" ></svg>
+                        <svg class="knob" id="cc-77" ></svg>
                         <div class="knob-label modenv">Env</div>
                     </div>
                 </div>
@@ -453,13 +447,13 @@
 
                         <div id="filter-reso">
                             <div class="knob-combo">
-                                <svg class="knob-only" id="cc-82" ></svg>
+                                <svg class="knob" id="cc-82" ></svg>
                                 <div class="knob-label">Resonance</div>
                             </div>
                         </div>
                         <div id="filter-freq">
                             <div class="knob-combo">
-                                <svg class="knob-only" id="cc-16" style="height: 10.9vh;" ></svg>
+                                <svg class="knob" id="cc-16" style="height: 10.9vh;" ></svg>
                                 <div class="knob-label">Frequency</div>
                             </div>
                         </div>
@@ -468,17 +462,17 @@
                         </div>
                         <div id="filter-mod">
                             <div class="knob-combo">
-                                <svg class="knob-only" id="cc-17" ></svg>
+                                <svg class="knob" id="cc-17" ></svg>
                                 <div class="knob-label lfo2">LFO 2</div>
                             </div>
                             <div class="knob-combo">
-                                <svg class="knob-only" id="cc-85" ></svg>
+                                <svg class="knob" id="cc-85" ></svg>
                                 <div class="knob-label modenv">Env</div>
                             </div>
                         </div>
                         <div id="filter-overdrive">
                             <div class="knob-combo">
-                                <svg class="knob-only" id="cc-114" ></svg>
+                                <svg class="knob" id="cc-114" ></svg>
                                 <div class="knob-label">Overdrive</div>
                             </div>
                         </div>
@@ -618,30 +612,30 @@
 
                 <div id="wheel-pitch">
                     <div class="knob-combo">
-                        <svg class="knob-only" id="cc-107" ></svg>
+                        <svg class="knob" id="cc-107" ></svg>
                         <div class="knob-label">Pitch</div>
                     </div>
                 </div>
                 <div id="wheel-osc1-2">
                     <div class="knob-combo">
-                        <svg class="knob-only" id="nrpn-70" ></svg>
+                        <svg class="knob" id="nrpn-70" ></svg>
                         <div class="knob-label lfo1">LFO 1 Pitch</div>
                     </div>
                 </div>
                 <div id="wheel-osc2">
                     <div class="knob-combo">
-                        <svg class="knob-only" id="nrpn-78" ></svg>
+                        <svg class="knob" id="nrpn-78" ></svg>
                         <div class="knob-label">Pitch</div>
                     </div>
                 </div>
 
                 <div class="wheel-filter">
                     <div class="knob-combo">
-                        <svg class="knob-only" id="nrpn-94" ></svg>
+                        <svg class="knob" id="nrpn-94" ></svg>
                         <div class="knob-label"></div>
                     </div>
                     <div class="knob-combo">
-                        <svg class="knob-only" id="nrpn-71" ></svg>
+                        <svg class="knob" id="nrpn-71" ></svg>
                         <div class="knob-label lfo2">LFO 2</div>
                     </div>
                 </div>
@@ -668,35 +662,35 @@
 
                 <div class="keyboard-start">
                     <div class="knob-combo">
-                        <svg class="knob-only" id="cc-64" ></svg>
+                        <svg class="knob" id="cc-64" ></svg>
                         <div class="knob-label">Sustain</div>
                     </div>
                     <div class="knob-combo">
-                        <svg class="knob-only" id="cc-5" ></svg>
+                        <svg class="knob" id="cc-5" ></svg>
                         <div class="knob-label">Glide</div>
                     </div>
                 </div>
                 <div class="keyboard-aftertouch">
                     <div class="knob-combo">
-                        <svg class="knob-only" id="nrpn-75" ></svg>
+                        <svg class="knob" id="nrpn-75" ></svg>
                         <div class="knob-label lfo1">LFO 1 Osc1+2</div>
                     </div>
                     <div class="knob-combo">
-                        <svg class="knob-only" id="nrpn-76" ></svg>
+                        <svg class="knob" id="nrpn-76" ></svg>
                         <div class="knob-label lfo2">LFO 2 Speed</div>
                     </div>
                     <div class="knob-combo">
-                        <svg class="knob-only" id="nrpn-74" ></svg>
+                        <svg class="knob" id="nrpn-74" ></svg>
                         <div class="knob-label">Filter freq.</div>
                     </div>
                 </div>
                 <div class="keyboard-velocity">
                     <div class="knob-combo">
-                        <svg class="knob-only" id="cc-112" ></svg>
+                        <svg class="knob" id="cc-112" ></svg>
                         <div class="knob-label">Amp env.</div>
                     </div>
                     <div class="knob-combo">
-                        <svg class="knob-only" id="cc-113" ></svg>
+                        <svg class="knob" id="cc-113" ></svg>
                         <div class="knob-label modenv">Mod env.</div>
                     </div>
                 </div>
@@ -712,11 +706,11 @@
             </div>
             <div class="controls">
                 <div class="knob-combo">
-                    <svg class="knob-only" id="cc-94" ></svg>
+                    <svg class="knob" id="cc-94" ></svg>
                     <div class="knob-label">Distorsion</div>
                 </div>
                 <div class="knob-combo">
-                    <svg class="knob-only" id="cc-115" ></svg>
+                    <svg class="knob" id="cc-115" ></svg>
                     <div class="knob-label">Osc 2 Filter Mod</div>
                 </div>
             </div>
@@ -766,7 +760,7 @@
                     </div>
 
                     <div class="knob-combo">
-                        <svg class="knob-only" id="cc-116" ></svg>
+                        <svg class="knob" id="cc-116" ></svg>
                         <div class="knob-label">Swing</div>
                     </div>
 
@@ -859,12 +853,12 @@
                 <text class="label" text-anchor="middle" x="50" y="110">Label</text>
             </g>
 -->
-            <g id="knob-only">
+            <g id="knob">
                 <circle fill="url(#grad)" class="path" cx="50" cy="50" r="40"/>
                 <text class="value" text-anchor="middle" x="50" y="58">123.0</text>
             </g>
 <!--
-            <g id="knob-only-lfo1">
+            <g id="knob-lfo1">
                 <circle fill="url(#grad-lfo1)" class="path" cx="50" cy="50" r="40"/>
                 <text class="value" text-anchor="middle" x="50" y="58">123.0</text>
             </g>

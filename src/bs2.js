@@ -1177,6 +1177,7 @@ var BS2 = (function BassStationII() {
             name: "LFO1 Sync Value",
             msb: -1,
             cc_range: [0, 34],
+            max_raw: 34,
             human: v => LFO_SYNC[v],
             sysex: {
                 offset: 67,
@@ -1222,6 +1223,7 @@ var BS2 = (function BassStationII() {
         nrpn[nrpn_id.lfo2_sync_value] = { // 0 (MSB), 91 (LSB)
             name: "LFO2 Sync Value",
             cc_range: [0, 34],
+            max_raw: 34,
             human: v => LFO_SYNC[v],
             sysex: {
                 offset: 74,
@@ -1322,6 +1324,7 @@ var BS2 = (function BassStationII() {
         "16th trip", "32nd", "32nd trip"
     ];
     */
+/*
     var LFO_SYNC = [
         "64", "48", "42", "36",
         "32", "30", "28", "24",
@@ -1332,6 +1335,18 @@ var BS2 = (function BassStationII() {
         "1+1/3", "1/4", "1/8 &bull;", "1/4 tr",
         "1/8", "1/16 &bull;", "1/8 tr", "1/16",
         "1/16 tr", "1/32", "1/32 tr"
+    ];
+*/
+    var LFO_SYNC = [
+        "64", "48", "42", "36",   // html entities are not supported in SVG text element
+        "32", "30", "28", "24",
+        "21 ⅔", "20", "18 ⅔", "18",
+        "16", "13 ⅓", "12", "10 ⅔",
+        "8", "6", "5 ⅓", "4",
+        "3", "2 ⅔", "1/2", "1/4.",
+        "1 ⅓", "1/4", "1/8.", "1/4 tr",
+        "1/8", "1/16.", "1/8tr", "1/16",
+        "1/16tr", "1/32", "1/32tr"
     ];
 
     var SUB_WAVE_FORMS = [

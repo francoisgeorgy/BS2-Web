@@ -126,7 +126,7 @@
 
         function init() {
 
-            console.group('INIT');
+            // console.group('INIT');
 
             // compute min and max angles:
             minAngle = knobToPolarAngle(config.arc_min);
@@ -160,7 +160,7 @@
 
             mouseWheelDirection = _isMacOS() ? -1 : 1;
 
-            console.groupEnd();
+            // console.groupEnd();
 
         }
 
@@ -181,7 +181,7 @@
         function setValue(v) {
             value = v;
             let a = ((v - config.value_min) / (config.value_max - config.value_min)) * (config.arc_max - config.arc_min) + config.arc_min;
-            console.log(`changeValue(${v}) --> angle ${a}`);
+            // console.log(`changeValue(${v}) --> angle ${a}`);
             setPolarAngle(knobToPolarAngle(a));
         }
 
@@ -323,7 +323,7 @@
             //     }
             // }
 
-            console.log(p);
+            // console.log(p);
 
             return p;
         }
@@ -336,7 +336,7 @@
          */
         function getArc(fromAngle, toAngle, radius) {
 
-            console.log(`getArc(${fromAngle}, ${toAngle}, ${radius})`);
+            // console.log(`getArc(${fromAngle}, ${toAngle}, ${radius})`);
 
             // SVG d: "A rx,ry xAxisRotate LargeArcFlag,SweepFlag x,y".
             // SweepFlag is either 0 or 1, and determines if the arc should be swept in a clockwise (1), or anti-clockwise (0) direction
@@ -351,7 +351,7 @@
             let deltaAngle = (fromAngle - toAngle + 2 * Math.PI) % (2 * Math.PI);
 
 
-            console.log("deltaAngle: " + deltaAngle);
+            // console.log("deltaAngle: " + deltaAngle);
 
             // let largeArc = deltaAngle < 180.0 ? 0 : 1;
             let largeArc = deltaAngle < Math.PI ? 0 : 1;
@@ -359,7 +359,7 @@
 
             let p = `M ${x0},${y0} A ${radius},${radius} 0 ${largeArc},${arcDirection} ${x1},${y1}`; //TODO: add terminator
 
-            console.log("arc: " + p);
+            // console.log("arc: " + p);
 
             return p;
         }
@@ -388,10 +388,10 @@
                 //     rad = split_track_min_right;
                 // }
                 if ((v < split_track_zero_value) && (rad > split_track_zero) && (rad < split_track_min_left)) {
-                    console.log('set rad to min left');
+                    // console.log('set rad to min left');
                     rad = split_track_min_left;
                 } else if ((v > split_track_zero_value) && (rad < split_track_zero) && (rad > split_track_min_right)) {
-                    console.log('set rad to min right');
+                    // console.log('set rad to min right');
                     rad = split_track_min_right;
                 }
                 // if ((rad > split_track_zero_left) && (rad < split_track_min_left)) {
@@ -404,7 +404,7 @@
 
                 if ((rad >= split_track_min_left) && (rad < split_track_middle)) {
 
-                    console.log('left');
+                    // console.log('left');
 
                     // if (rad < split_track_min_left) return null;
 
@@ -412,7 +412,7 @@
 
                 } else if ((rad <= split_track_min_right) || (rad > split_track_middle)) {
 
-                    console.log('right');
+                    // console.log('right');
 
                     // if ((rad < split_track_min_left) && (rad > split_track_min_right)) return '';
 
@@ -423,7 +423,7 @@
                 p = getArc(minAngle * Math.PI / 180.0, rad, config.track_radius);
             }
 
-            console.log('track path = ' + p);
+            // console.log('track path = ' + p);
             return p;
 
         }
@@ -463,8 +463,8 @@
                 //
                 // split_track_min_left = Math.acos(-(config.back_track_width*1.5)/100.0);
                 // split_track_min_right = Math.acos((config.back_track_width*1.5)/100.0);
-                console.log(split_track_min_left*180.0/Math.PI);
-                console.log(split_track_min_right*180.0/Math.PI);
+                // console.log(split_track_min_left*180.0/Math.PI);
+                // console.log(split_track_min_right*180.0/Math.PI);
 // left
 //                 let ax = 50 + Math.cos(aminus) * config.back_track_radius;
 //                 let ay = 50 - Math.sin(aminus) * config.back_track_radius;
@@ -648,7 +648,7 @@
             }
 
             p = getTrackCursor();
-            console.log(p);
+            // console.log(p);
             if (p) {
                 if (cursor) {
                     cursor.setAttributeNS(null, "d", p);

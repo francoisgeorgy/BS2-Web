@@ -665,7 +665,7 @@ select {
     text-align: center;
 }
 
-.knob-only {
+.knob {
     height: 8vh;
     margin: 0;
 }
