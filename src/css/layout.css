@@ -309,14 +309,19 @@ select {
 /*#lfo1 .control-row > div {*/
 /*border: 1px solid green;*/
 /*}*/
-.lfo-speed-label {
+/*.lfo-speed-label {*/
+    /*grid-row: 1;*/
+    /*grid-column: 3;*/
+/*}*/
+.lfo-key-sync {
     grid-row: 1;
-    grid-column: 3;
+    grid-column: 5;
+    text-align: center;
 }
-.lfo-sync-select {
-    grid-row: 1;
-    grid-column: 4;
-}
+/*.lfo-sync-select {*/
+    /*grid-row: 1;*/
+    /*grid-column: 4;*/
+/*}*/
 .lfo-options {
     grid-row: 2;
     grid-column: 1;
@@ -869,3 +874,52 @@ input[type=range]::-webkit-slider-thumb {
     /*margin-top: -14px; !* You need to specify a margin in Chrome, but in Firefox and IE it is automatic *!*/
     /*box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d; !* Add cool effects to your sliders! *!*/
 }
+
+
+.dialog {
+    overflow:auto;
+    background:#f9d5d5;
+    background: #f9d5d5 linear-gradient(to bottom, #f9d5d5, #d3c6c6);
+
+    color:#000;
+    padding:20px;
+    min-width:400px;
+    max-width:90%;
+    border-radius:6px
+}
+
+.lity-container {
+    vertical-align: top;
+    margin-top: 2em;
+}
+
+.lity-close {
+    position: absolute!important;
+    color: #000!important;
+    text-shadow: none!important;
+}
+
+/*.lity.lity-opened {*/
+    /*opacity: 0.7!important;*/
+/*}*/
+
+.lity-content {
+}
+
+.lity {
+    /*z-index: 9990;*/
+    /*position: fixed;*/
+    /*top: 0;*/
+    /*right: 0;*/
+    /*bottom: 0;*/
+    /*left: 0;*/
+    /*white-space: nowrap;*/
+    /*background: #0b0b0b;*/
+    background: rgba(0, 0, 0, 0.65);
+    /*outline: none !important;*/
+    /*opacity: 0;*/
+    /*-webkit-transition: opacity .3s ease;*/
+    /*-o-transition: opacity .3s ease;*/
+    /*transition: opacity .3s ease;*/
+}
+

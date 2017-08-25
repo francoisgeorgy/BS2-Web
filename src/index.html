@@ -4,12 +4,14 @@
     <meta charset="UTF-8">
     <title>Bass Station II Web Interface</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,500,700|Roboto+Condensed:300,400,700" rel="stylesheet" />
-    <link href="css/layout.css" rel="stylesheet" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <!--<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">-->
     <!--<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>-->
     <link href="lib/lity.min.css" rel="stylesheet" />
     <script src="lib/lity.min.js" type="text/javascript" charset="utf-8"></script>
+    <!--<link href="lib/featherlight.min.css" rel="stylesheet" />-->
+    <!--<script src="lib/featherlight.min.js" type="text/javascript" charset="utf-8"></script>-->
+    <link href="css/layout.css" rel="stylesheet" />
     <script src="lib/js.cookie.js"></script>
     <script src="lib/webmidi.min.js"></script>
     <script src="lib/envelope.js?ck"></script>
@@ -28,9 +30,9 @@
             <!-- <span style="float:right"><img src="noun_583243_cc.svg" alt="Settings"></span> -->
             <div class="menu">
                 <span><a href="#">Randomize</a></span>
-                <span><a href="#">Load patch</a></span>
-                <span><a href="#">Print patch</a></span>
-                <span><a href="#">Sync &#8651;</a></span>
+                <span><a id="load-patch" href="#" title="Load a patch from a file">Load patch</a></span>
+                <span><a href="#" title="display the current patch for printing">Print patch</a></span>
+                <span><a href="#" title="Sync with the connected Bass Station">Sync &#8651;</a></span>
                 <span><a id="menu-midi" href="#">Midi</a></span>
                 <span><a href="#">Settings &#x2699;</a></span>
                 <span><a href="#">Help &#x3f;</a></span>
@@ -50,17 +52,8 @@
                 <div></div>
                 <div class="controls" style="padding-bottom: 1vh;">
                     <div id="cc-80">
-<!--
-                        <div class="bt" id="cc-70-bt0" data-value=" ">sine</div>
-                        <div class="bt" id="cc-70-bt1" data-value="">pulse</div>
-                        <div class="bt on" id="cc-70-bt2" data-value="">square</div>
--->
                     </div>
                     <div style="margin-left:12px" id="cc-81">
-<!--
-                        <div class="bt on" id="-bt" data-value="" data-control="">-1 octave</div>
-                        <div class="bt" id="-bt" data-value="">-2 octave</div>
--->
                     </div>
                 </div>
             </div>
@@ -162,6 +155,10 @@
                     </div>
                 </div>
 
+                <div class="lfo-key-sync" style="border-bottom: none">
+                    <div class="btc" id="nrpn-89" data-value="">key sync</div>
+                </div>
+
                 <div class="lfo-delay">
                     <div class="knob-combo">
                         <svg class="knob" id="cc-86" ></svg>
@@ -209,6 +206,10 @@
                 <div class="lfo-options" style="margin-right: 1.5vw;">
                     <div style="margin-top:0.3rem" id="cc-89">
                     </div>
+                </div>
+
+                <div class="lfo-key-sync" style="border-bottom: none">
+                    <div class="btc" id="nrpn-93" data-value="">key sync</div>
                 </div>
 
                 <div class="lfo-delay">
@@ -486,10 +487,7 @@
                     </div>
                 </div>
                 <div>
-                    <div>
-                        <div class="bt" id="-bt" data-value="">multi</div>
-                        <div class="bt" id="-bt" data-value="" style="margin-left:6px">single</div>
-                        <div class="bt on" id="-bt" data-value="" style="margin-left:6px">autoglide</div>
+                    <div id="nrpn-105">
                     </div>
                     <div class="adsr-graph">
                         <svg class="envelope" id="mod-envelope"></svg>
@@ -536,10 +534,7 @@
                     </div>
                 </div>
                 <div>
-                    <div>
-                        <div class="bt" id="-bt" data-value="">multi</div>
-                        <div class="bt" id="-bt" data-value="" style="margin-left:6px">single</div>
-                        <div class="bt on" id="-bt" data-value="" style="margin-left:6px">autoglide</div>
+                    <div id="nrpn-73">
                     </div>
                     <div class="adsr-graph">
                         <svg class="envelope" id="amp-envelope"></svg>
@@ -770,6 +765,17 @@
         </div>
     </div>
 -->
+    <div id="load-patch-dialog" class="dialog lity-hide">
+        <h1>Load patch from file</h1>
+        <div id="import-dialog-instructions">
+            Select a file containing a BS2 patch (sysex data).
+        </div>
+        <div style="margin:10px 0;">
+            <input type="file" id="patch-file" placeholder="patch file" />
+        </div>
+        <div id="load-patch-error" style="margin:10px 0;color:red">
+        </div>
+    </div>
 
     <div id="credits-dialog" style="overflow:auto;background:#FDFDF6;color:#000;padding:20px;min-width:400px;max-width:800px;border-radius:6px"  class="lity-hide">
         <a href="https://github.com/francoisgeorgy/BS2-Web">

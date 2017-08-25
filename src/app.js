@@ -569,20 +569,17 @@
             return $("<div>").attr("id", `cc-106-${i}`).data("control", "cc-106").data("value", i).text(o).addClass("bt");
         }));
 
-/*
-        $('#nrpn-88,#nrpn-92').append(DEVICE.LFO_SPEED_SYNC.map((o,i) => { return $("<option>").val(i).text(o); }));
-        $('#nrpn-87,#nrpn-91').append(DEVICE.LFO_SYNC.map((o,i) => { return $("<option>").val(i).html(o); }));
+        // MOD ENV
+        $('#nrpn-105').append(DEVICE.ENV_TRIGGERING.map((o,i) => {
+            return $("<div>").attr("id", `nrpn-105-${i}`).data("control", "nrpn-105").data("value", i).text(o).addClass("bt");
+        }));
 
-        $('#nrpn-73,#nrpn-105').append(DEVICE.ENV_TRIGGERING.map((o,i) => { return $("<option>").val(i).text(o); }));
+        // AMP ENV
+        $('#nrpn-73').append(DEVICE.ENV_TRIGGERING.map((o,i) => {
+            return $("<div>").attr("id", `nrpn-73-${i}`).data("control", "nrpn-73").data("value", i).text(o).addClass("bt");
+        }));
 
-        // Osc 1+2: PS controls are only displayed when wave form is pulse
-        $('#nrpn-72').change(function (e) { this.value == DEVICE.OSC_WAVE_FORMS.indexOf('pulse') ? enable('#osc1-pw-controls') : disable('#osc1-pw-controls'); });
-        $('#nrpn-82').change(function (e) { this.value == DEVICE.OSC_WAVE_FORMS.indexOf('pulse') ? enable('#osc2-pw-controls') : disable('#osc2-pw-controls'); });
-
-        // LFO: "sync" drop down is displayed only when speed/sync is set to sync
-        $('#nrpn-88').change(function (e) { this.value == DEVICE.LFO_SPEED_SYNC.indexOf('sync') ? enable('#nrpn-87') : disable('#nrpn-87'); });
-        $('#nrpn-92').change(function (e) { this.value == DEVICE.LFO_SPEED_SYNC.indexOf('sync') ? enable('#nrpn-91') : disable('#nrpn-91'); });
-*/
+        // TODO: Osc 1+2: PW controls are only displayed when wave form is pulse
 
         // "radio button"-like behavior:
         $('div.bt').click(function(e) {
@@ -847,15 +844,17 @@
         lightbox = lity('#settings-dialog');
     }
 
-
-    function importFromFile() {
-        $('#import-dialog-error').empty();
+    /**
+     *
+     */
+    function loadPatchFromFile() {
+        $('#load-patch-error').empty();
         $('#patch-file').val('');
-        lightbox = lity('#import-dialog');
+        lightbox = lity('#load-patch-dialog');
     }
 
     /**
-     * Handler for the #patch-file file input element in #import-dialog
+     * Handler for the #patch-file file input element in #load-patch
      */
     function readFile() {
 
@@ -883,7 +882,7 @@
 
                 } else {
                     console.log('unable to set value from file');
-                    $('#import-dialog-error').show().text('The file is invalid.');
+                    $('#load-patch-error').show().text('The file is invalid.');
                 }
             };
             reader.readAsArrayBuffer(f);
@@ -1027,18 +1026,23 @@
         $('#cmd-init').click(init);
         $('#cmd-randomize').click(randomize);
         // $('#cmd-save').click(saveInLocalStorage);
-        $('#cmd-import').click(importFromFile);
+
         // $('#cmd-export').click(exportToFile);    //TODO: fixme
         // $('#cmd-record').click(record);
         // $('#cmd-play').click(play);
+
         $('#cmd-settings').click(settingsDialog);
+
         $('#midi-channel').change(setMidiChannel);
-        $('#patch-file').change(readFile);
+
         $('h1.reset-handler').click(resetGroup);
 */
 
+        $('#load-patch').click(loadPatchFromFile);
+        $('#patch-file').change(readFile);
 
         $('#menu-midi').click(openMidiWindow);
+
 /*
         $( "#midi-popup" ).dialog({
             // dialogClass: "no-close",
