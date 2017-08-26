@@ -396,6 +396,7 @@ var BS2 = (function BassStationII() {
         control[control_id.osc1_fine] = { // 26 (MSB), 58 (LSB)
             name: "Osc1 Fine",
             lsb: 58,
+            cc_range: [27, 228],
             range: [-100,100],          // TODO: rename range to human_range or hrange
             human: _100,
             sysex: {
@@ -998,16 +999,30 @@ var BS2 = (function BassStationII() {
         control.forEach(function(obj) {
             obj.cc_number = control.indexOf(obj);   // is also the msb
             obj.cc_type = 'cc';
-            let max_raw;
+            let bits = 7;
+            if (obj.hasOwnProperty('lsb')) {
+                bits = 8;
+            } else {
+                obj.lsb = -1;  // define the prop.
+            }
+            // let max_raw;
+/*
             if (!obj.hasOwnProperty('lsb')) {
                 obj.lsb = -1;
-                max_raw = 127;
+                bits = 7;
+                // max_raw = 127;
             } else {
-                max_raw = 255;
+                bits = 8;
+                // max_raw = 255;
             }
-            if (!obj.hasOwnProperty('max_raw')) {
-                obj.max_raw = max_raw;
-            }
+*/
+            // if (!obj.hasOwnProperty('max_raw')) {
+            //     if (obj.hasOwnProperty('cc_range')) {
+            //         obj.max_raw = Math.max(...obj.cc_range);
+            //     } else {
+            //         obj.max_raw = max_raw;
+            //     }
+            // }
             if (!obj.hasOwnProperty('raw_value')) {
                 obj.raw_value = obj.init_value;
             }
@@ -1015,14 +1030,15 @@ var BS2 = (function BassStationII() {
                 obj.on_off = false;
             }
             if (!obj.hasOwnProperty('range')) {
-                obj.range = obj.on_off ? [0, 1] : [0, obj.max_raw];
+                obj.range = obj.on_off ? [0, 1] : [0, (1 << bits) - 1];
             }
             if (!obj.hasOwnProperty('cc_range')) {
-                obj.cc_range = [0, obj.max_raw];
+                obj.cc_range = [0, (1 << bits) - 1];
             }
             if (!obj.hasOwnProperty('init_value')) {
                 if ((Math.min(...obj.range) < 0) && (Math.max(...obj.range) > 0)) {
-                    obj.init_value = obj.max_raw >>> 1; // very simple rule: we take max/2 as default value
+                    // obj.init_value = obj.max_raw >>> 1; // very simple rule: we take max/2 as default value
+                    obj.init_value = (1 << (bits-1)) - 1; // very simple rule: we take max/2 as default value
                 } else {
                     obj.init_value = Math.min(...obj.range);
                 }
@@ -1177,7 +1193,7 @@ var BS2 = (function BassStationII() {
             name: "LFO1 Sync Value",
             msb: -1,
             cc_range: [0, 34],
-            max_raw: 34,
+            // max_raw: 34,
             human: v => LFO_SYNC[v],
             sysex: {
                 offset: 67,
@@ -1223,7 +1239,7 @@ var BS2 = (function BassStationII() {
         nrpn[nrpn_id.lfo2_sync_value] = { // 0 (MSB), 91 (LSB)
             name: "LFO2 Sync Value",
             cc_range: [0, 34],
-            max_raw: 34,
+            // max_raw: 34,
             human: v => LFO_SYNC[v],
             sysex: {
                 offset: 74,
@@ -1257,16 +1273,23 @@ var BS2 = (function BassStationII() {
         nrpn.forEach(function(obj) {
             obj.cc_number = nrpn.indexOf(obj);   // is also the lsb
             obj.cc_type = 'nrpn';
-            let max_raw;
-            if (obj.hasOwnProperty('msb')) {
-                max_raw = 255;
+            let bits = 7;
+            if (obj.hasOwnProperty('lsb')) {
+                bits = 8;
             } else {
-                obj.msb = 0;
-                max_raw = 127;
+                obj.lsb = -1;  // define the prop.
             }
-            if (!obj.hasOwnProperty('max_raw')) {
-                obj.max_raw = max_raw;
-            }
+
+            // let max_raw;
+            // if (obj.hasOwnProperty('msb')) {
+            //     max_raw = 255;
+            // } else {
+            //     obj.msb = 0;
+            //     max_raw = 127;
+            // }
+            // if (!obj.hasOwnProperty('max_raw')) {
+            //     obj.max_raw = max_raw;
+            // }
             if (!obj.hasOwnProperty('raw_value')) {
                 obj.raw_value = obj.init_value;
             }
@@ -1274,14 +1297,14 @@ var BS2 = (function BassStationII() {
                 obj.on_off = false;
             }
             if (!obj.hasOwnProperty('range')) {
-                obj.range = obj.on_off ? [0, 1] : [0, obj.max_raw];
+                obj.range = obj.on_off ? [0, 1] : [0, (1 << bits) - 1];
             }
             if (!obj.hasOwnProperty('cc_range')) {
-                obj.cc_range = [0, obj.max_raw];
+                obj.cc_range = [0, (1 << bits) - 1];
             }
             if (!obj.hasOwnProperty('init_value')) {
                 if ((Math.min(...obj.range) < 0) && (Math.max(...obj.range) > 0)) {
-                    obj.init_value = obj.max_raw >>> 1; // very simple rule: we take max/2 as default value
+                    obj.init_value = (1 << (bits-1)) - 1; // very simple rule: we take max/2 as default value
                 } else {
                     obj.init_value = Math.min(...obj.range);
                 }

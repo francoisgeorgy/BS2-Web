@@ -67,7 +67,6 @@
         // $('#midi-messages-out').prepend(`<div>${type.toUpperCase()} ${control} ${value}</div>`);
         // if (midi_out_messages > 100) $("#midi-messages-out div:last-child").remove();
         if (midi_window) {
-            console.log('write in midi_window');
             $('#midi-messages-out', midi_window.document).prepend(`<div>${type.toUpperCase()} ${control} ${value}</div>`);
         }
     }
@@ -75,8 +74,11 @@
     function logIncomingMidiMessage(type, control, value) {
         //TODO
         // midi_in_messages++;
-        // $('#midi-messages-in').prepend(`<div>${type.toUpperCase()} ${control} ${value}</div>`);
+        //
         // if (midi_in_messages > 100) $("#midi-messages-in div:last-child").remove();
+        if (midi_window) {
+            $('#midi-messages-in', midi_window.document).prepend(`<div>${type.toUpperCase()} ${control} ${value}</div>`);
+        }
     }
 
     //==================================================================================================================
@@ -188,25 +190,31 @@
         if (knobs.hasOwnProperty(id)) {
             knobs[id].value = value;
         } else {
+            console.log(`check #${id}`);
             let c = $(`#${id}`);
-            if (c) {
+            if (c.length) {
+                console.log(`#${id} found`, c);
                 if (c.is('.slider')) {
                     updateSlider(id, value);
+                } else if (c.is('.btc')) {
+                    updateToggleSwitch(id, value);
+                } else {
+                    c.val(value).trigger('blur');
+                    //console.error(`unknown control ${id}`);
                 }
             } else {
+                console.log(`check #${id}-${value}`);
                 c = $(`#${id}-${value}`);
-                if (c) {
-                    // console.log(sw);
+                if (c.length) {
+                    console.log(c);
                     if (c.is('.bt')) {
                         updateOptionSwitch(id + '-' + value, value);
-                    } else if (c.is('.btc')) {
-                        updateToggleSwitch(id, value);
                     } else {
                         c.val(value).trigger('blur');
                         //console.error(`unknown control ${id}`);
                     }
                 } else {
-                    log.warn(`no control for ${id}-${value}`);
+                    console.warn(`no control for ${id}-${value}`);
                 }
             }
         }
@@ -469,13 +477,15 @@
 
             if (!elem.classList.contains("knob")) return;
 
-            console.log(`configure #${id}: max=${c.max_raw}`);
+            console.log(`configure #${id}: range=${c.cc_range}`);
 
             knobs[id] = new knob(elem, {
                 with_label: false,
                 cursor: 50,
-                value_min: 0,
-                value_max: c.max_raw,
+                // value_min: 0,
+                // value_max: c.max_raw,
+                value_min: Math.min(...c.cc_range),
+                value_max: Math.max(...c.cc_range),
                 value_resolution: 1,
                 center_zero: Math.min(...c.range) < 0,
                 format: v => c.human(v)
@@ -525,58 +535,71 @@
         //TODO: remove .data(...)
 
         // SUB
-        $('#cc-80').append(DEVICE.SUB_WAVE_FORMS.map((o,i) => {
+        $('#cc-80-options').append(DEVICE.SUB_WAVE_FORMS.map((o,i) => {
             return $("<div>").attr("id", `cc-80-${i}`).data("control", "cc-80").data("value", i).text(o).addClass("bt");
         }));
-        $('#cc-81').append(Object.entries(DEVICE.SUB_OCTAVE).map((o,i) => {
+        // we display the value in reverse order to be like the real BS2
+        // m = DEVICE.SUB_OCTAVE.length - 1;
+        console.log(Object.entries(DEVICE.SUB_OCTAVE));
+        // $('#cc-81-options').append(Object.entries(DEVICE.SUB_OCTAVE).map((o,i) => {
+        //     return $("<div>").attr("id", `cc-81-${o[0]}`).data("control", "cc-81").data("value", o[0]).text(o[1]).addClass("bt");
+        $('#cc-81-options').append(Object.entries(DEVICE.SUB_OCTAVE).slice(0).reverse().map((o,i) => {
             return $("<div>").attr("id", `cc-81-${o[0]}`).data("control", "cc-81").data("value", o[0]).text(o[1]).addClass("bt");
         }));
 
         // OSC 1
-        $('#cc-70').append(Object.entries(DEVICE.OSC_RANGES).map((o,i) => {
+        $('#cc-70-options').append(Object.entries(DEVICE.OSC_RANGES).map((o,i) => {
             return $("<div>").attr("id", `cc-70-${o[0]}`).data("control", "cc-70").data("value", o[0]).text(o[1]).addClass("bt");
         }));
-        $('#nrpn-72').append(DEVICE.OSC_WAVE_FORMS.map((o,i) => {
+        $('#nrpn-72-options').append(DEVICE.OSC_WAVE_FORMS.map((o,i) => {
             return $("<div>").attr("id", `nrpn-72-${i}`).data("control", "nrpn-72").data("value", i).text(o).addClass("bt");
         }));
 
         // OSC 2
-        $('#cc-75').append(Object.entries(DEVICE.OSC_RANGES).map((o,i) => {
+        $('#cc-75-options').append(Object.entries(DEVICE.OSC_RANGES).map((o,i) => {
             return $("<div>").attr("id", `cc-75-${o[0]}`).data("control", "cc-75").data("value", o[0]).text(o[1]).addClass("bt");
         }));
-        $('#nrpn-82').append(DEVICE.OSC_WAVE_FORMS.map((o,i) => {
+        $('#nrpn-82-options').append(DEVICE.OSC_WAVE_FORMS.map((o,i) => {
             return $("<div>").attr("id", `nrpn-82-${i}`).data("control", "nrpn-82").data("value", i).text(o).addClass("bt");
         }));
 
         // LFO 1
-        $('#cc-88').append(DEVICE.LFO_WAVE_FORMS.map((o,i) => {
+        $('#cc-88-options').append(DEVICE.LFO_WAVE_FORMS.map((o,i) => {
             return $("<div>").attr("id", `cc-88-${i}`).data("control", "cc-88").data("value", i).text(o).addClass("bt");
         }));
 
         // LFO 2
-        $('#cc-89').append(DEVICE.LFO_WAVE_FORMS.map((o,i) => {
+        $('#cc-89-options').append(DEVICE.LFO_WAVE_FORMS.map((o,i) => {
             return $("<div>").attr("id", `cc-89-${i}`).data("control", "cc-89").data("value", i).text(o).addClass("bt");
         }));
 
         // FILTER
-        $('#cc-83').append(DEVICE.FILTER_TYPE.map((o,i) => {
+        $('#cc-83-options').append(DEVICE.FILTER_TYPE.map((o,i) => {
             return $("<div>").attr("id", `cc-83-${i}`).data("control", "cc-83").data("value", i).text(o).addClass("bt");
         }));
-        $('#cc-84').append(DEVICE.FILTER_SHAPES.map((o,i) => {
+        $('#cc-84-options').append(DEVICE.FILTER_SHAPES.map((o,i) => {
             return $("<div>").attr("id", `cc-84-${i}`).data("control", "cc-84").data("value", i).text(o).addClass("bt");
         }));
-        $('#cc-106').append(DEVICE.FILTER_SLOPE.map((o,i) => {
+        $('#cc-106-options').append(DEVICE.FILTER_SLOPE.map((o,i) => {
             return $("<div>").attr("id", `cc-106-${i}`).data("control", "cc-106").data("value", i).text(o).addClass("bt");
         }));
 
         // MOD ENV
-        $('#nrpn-105').append(DEVICE.ENV_TRIGGERING.map((o,i) => {
-            return $("<div>").attr("id", `nrpn-105-${i}`).data("control", "nrpn-105").data("value", i).text(o).addClass("bt");
+        // we display the value in reverse order to be like the real BS2
+        m = DEVICE.ENV_TRIGGERING.length - 1;
+        $('#nrpn-105-options').append(DEVICE.ENV_TRIGGERING.slice(0).reverse().map((o,i) => {
+            return $("<div>").attr("id", `nrpn-105-${m-i}`).data("control", "nrpn-105").data("value", m-i).text(o).addClass("bt");
         }));
 
+        //TODO: mod env triggering is overriden by (or the same as) amp env triggering?
+
         // AMP ENV
-        $('#nrpn-73').append(DEVICE.ENV_TRIGGERING.map((o,i) => {
-            return $("<div>").attr("id", `nrpn-73-${i}`).data("control", "nrpn-73").data("value", i).text(o).addClass("bt");
+        // we display the value in reverse order to be like the real BS2
+        m = DEVICE.ENV_TRIGGERING.length - 1;
+        // $('#nrpn-73-options').append(DEVICE.ENV_TRIGGERING.map((o,i) => {
+        $('#nrpn-73-options').append(DEVICE.ENV_TRIGGERING.slice(0).reverse().map((o,i) => {
+            return $("<div>").attr("id", `nrpn-73-${m-i}`).data("control", "nrpn-73").data("value", m-i).text(o).addClass("bt");
+            // return $("<div>").attr("id", `nrpn-73-${i}`).data("control", "nrpn-73").data("value", i).text(o).addClass("bt");
         }));
 
         // TODO: Osc 1+2: PW controls are only displayed when wave form is pulse
@@ -625,7 +648,7 @@
     function setupSelects() {
 
         // ARP OCTAVE
-        $('#cc-111').append(DEVICE.ARP_OCTAVES.map((o,i) => { return $("<option>").val(i).text(o); }));
+        $('#cc-111').append(DEVICE.ARP_OCTAVES.map((o,i) => { return $("<option>").val(i + 1).text(o); }));     // note: min CC is 1 (not 0)
 
         // ARP NOTES
         $('#cc-118').append(DEVICE.ARP_NOTES_MODE.map((o,i) => { return $("<option>").val(i).text(o); }));
@@ -691,7 +714,7 @@
         console.log(`updateToggleSwitch(${id}, ${value})`);
         // "checkbox"-like behavior:
         //let e = document.getElementById(id);
-        let e = $(id);
+        let e = $('#' + id);
         // let v = 0;
         if (value) {
             e.addClass('on');

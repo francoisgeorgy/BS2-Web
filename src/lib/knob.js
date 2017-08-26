@@ -376,9 +376,11 @@
 
             if (config.center_zero) {
 
-                // console.log(getValue());
+
 
                 let v = getValue();
+
+                console.log(`getTrackPath: v=${v}`);
 
                 // if (v < 0) {
                 //     console.log('set rad to min left');
