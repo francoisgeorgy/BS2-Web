@@ -29,12 +29,12 @@
             <!--<div>MIDI</div>-->
             <!-- <span style="float:right"><img src="noun_583243_cc.svg" alt="Settings"></span> -->
             <div class="menu">
-                <span><a href="#">Randomize</a></span>
+                <span><a id="randomize" href="#">Randomize</a></span>
                 <span><a id="load-patch" href="#" title="Load a patch from a file">Load patch</a></span>
                 <span><a href="#" title="display the current patch for printing">Print patch</a></span>
                 <span><a href="#" title="Sync with the connected Bass Station">Sync &#8651;</a></span>
                 <span><a id="menu-midi" href="#">Midi</a></span>
-                <span><a href="#">Settings &#x2699;</a></span>
+                <span><a id="settings" href="#">Settings &#x2699;</a></span>
                 <span><a href="#">Help &#x3f;</a></span>
             </div>
         </div>
@@ -775,6 +775,56 @@
         </div>
         <div id="load-patch-error" style="margin:10px 0;color:red">
         </div>
+    </div>
+
+    <div id="settings-dialog" style="overflow:auto;background:#FDFDF6;color:#000;padding:20px;min-width:500px;max-width:90%;border-radius:6px"  class="lity-hide">
+        <h1>Settings</h1>
+        <div id="settings-dialog-instructions">
+        </div>
+        <div style="margin:10px 0;">
+            <h3>Randomizer</h3>
+            <p>Only randomize the following groups of parameters:</p>
+            <div id="randomizer-settings">
+            </div>
+            <!--<table id="randomize-settings">-->
+            <!--<tr>-->
+            <!--<td><input type="checkbox" class="chk-rnd" name="sub" checked="checked" value="1" />Sub</td>-->
+            <!--<td><input type="checkbox" class="chk-rnd" name="mixer" checked="checked" value="1" />Mixer</td>-->
+            <!--<td><input type="checkbox" class="chk-rnd" name="wheels" value="1" />Wheels</td>-->
+            <!--</tr>-->
+            <!--<tr>-->
+            <!--<td><input type="checkbox" class="chk-rnd" name="lfo1" checked="checked" value="1" />LFO 1</td>-->
+            <!--<td><input type="checkbox" class="chk-rnd" name="filter" checked="checked" value="1" />Filter</td>-->
+            <!--<td><input type="checkbox" class="chk-rnd" name="keyboard" value="1" />Keyboard</td>-->
+            <!--</tr>-->
+            <!--<tr>-->
+            <!--<td><input type="checkbox" class="chk-rnd" name="lfo2" checked="checked" value="1" />LFO 2</td>-->
+            <!--<td><input type="checkbox" class="chk-rnd" name="mod-env" checked="checked" value="1" />Mod env</td>-->
+            <!--<td><input type="checkbox" class="chk-rnd" name="arp" value="1" />ARP</td>-->
+            <!--</tr>-->
+            <!--<tr>-->
+            <!--<td><input type="checkbox" class="chk-rnd" name="osc1" checked="checked" value="1" />Osc 1</td>-->
+            <!--<td><input type="checkbox" class="chk-rnd" name="amp-env" checked="checked" value="1" />Amp env</td>-->
+            <!--<td><input type="checkbox" class="chk-rnd" name="vca" value="1" />VCA</td>-->
+            <!--</tr>-->
+            <!--<tr>-->
+            <!--<td><input type="checkbox" class="chk-rnd" name="osc2" checked="checked" value="1" />Osc 2</td>-->
+            <!--<td><input type="checkbox" class="chk-rnd" name="effects" checked="checked" value="1" />Effects</td>-->
+            <!--<td></td>-->
+            <!--</tr>-->
+            <!--</table>-->
+        </div>
+        <!--<div style="margin:10px 0;">-->
+            <!--<h3>Theme:</h3>-->
+            <!--<select id="theme-choice">-->
+                <!--<option value="dark">Dark</option>-->
+                <!--<option value="light">Light</option>-->
+            <!--</select>-->
+        <!--</div>-->
+        <div id="settings-dialog-error" style="margin:10px 0;color:red">
+        </div>
+        <hr />
+        <p>All changes are immediately saved and applied.</p>
     </div>
 
     <div id="credits-dialog" style="overflow:auto;background:#FDFDF6;color:#000;padding:20px;min-width:400px;max-width:800px;border-radius:6px"  class="lity-hide">

@@ -1405,6 +1405,15 @@ var BS2 = (function BassStationII() {
         1, 2, 3, 4
     ];
 
+    var ARP_SEQUENCES = [
+        '',
+        '4 4 4 4  4 4 4 4',  // quarter notes
+        '8 r8 8 r8 8 r8 8 r8  8 r8 8 r8 8 r8 8 r8', // eighth notes and eighth rests
+        '4 8 r8 4 8 r8  4 8 r8 4 8 8'
+        //TODO: to be completed
+
+    ];
+
     // Mapping 0..255 to -12.0..12.0
     var COARSE_VALUES = [
         -120, // -12.0; -12.00000; 0

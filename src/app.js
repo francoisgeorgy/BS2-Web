@@ -173,7 +173,7 @@
         updateControl(control_type, control_number, value);
 
         // update the customs UI elements. Any input|select element has already been updated by the above instruction.
-        // updateCustoms(/*false*/);   //TODO: pass the current CC number and in updateCustoms() only update controls linked to this CC number
+        updateLinkedUIElements(/*false*/);   //TODO: pass the current CC number and in updateCustoms() only update controls linked to this CC number
     }
 
     /**
@@ -437,7 +437,7 @@
             // update the connected device
             handleUIChange(...dom_id.split('-'), value);
         });
-        updateCustoms(/*false*/);
+        updateLinkedUIElements(/*false*/);
         //updateUI();
     }
 
@@ -488,7 +488,8 @@
                 value_max: Math.max(...c.cc_range),
                 value_resolution: 1,
                 center_zero: Math.min(...c.range) < 0,
-                format: v => c.human(v)
+                format: v => c.human(v) //,
+                // track_color: '#999'    //'#bbb'
             });
 
             elem.addEventListener("change", function(event) {
@@ -780,30 +781,29 @@
     */
 
     /**
-     * Update the "custom" or "linked" UI controls
+     * Update the "custom" or "linked" UI elements, like the ADSR curves
      */
-/*
-    function updateCustoms() {
+    function updateLinkedUIElements() {
 
         console.groupCollapsed(`updateCustoms()`);
 
-        SWITCHES.forEach((currentValue, index, array) => updateSwitch(currentValue, false));
+        // SWITCHES.forEach((currentValue, index, array) => updateSwitch(currentValue, false));
+        //
+        // // Osc 1+2: PS controls are only displayed when wave form is pulse
+        // $('#nrpn-72').val() == DEVICE.OSC_WAVE_FORMS.indexOf('pulse') ? enable('#osc1-pw-controls') : disable('#osc1-pw-controls');
+        // $('#nrpn-82').val() == DEVICE.OSC_WAVE_FORMS.indexOf('pulse') ? enable('#osc2-pw-controls') : disable('#osc2-pw-controls');
+        //
+        // // LFO: "sync" drop down is displayed only when speed/sync is set to sync
+        // $('#nrpn-88').val() == DEVICE.LFO_SPEED_SYNC.indexOf('sync') ? enable('#nrpn-87') : disable('#nrpn-87');
+        // $('#nrpn-92').val() == DEVICE.LFO_SPEED_SYNC.indexOf('sync') ? enable('#nrpn-91') : disable('#nrpn-91');
 
-        // Osc 1+2: PS controls are only displayed when wave form is pulse
-        $('#nrpn-72').val() == DEVICE.OSC_WAVE_FORMS.indexOf('pulse') ? enable('#osc1-pw-controls') : disable('#osc1-pw-controls');
-        $('#nrpn-82').val() == DEVICE.OSC_WAVE_FORMS.indexOf('pulse') ? enable('#osc2-pw-controls') : disable('#osc2-pw-controls');
-
-        // LFO: "sync" drop down is displayed only when speed/sync is set to sync
-        $('#nrpn-88').val() == DEVICE.LFO_SPEED_SYNC.indexOf('sync') ? enable('#nrpn-87') : disable('#nrpn-87');
-        $('#nrpn-92').val() == DEVICE.LFO_SPEED_SYNC.indexOf('sync') ? enable('#nrpn-91') : disable('#nrpn-91');
-
-        drawADSR(DEVICE.getADSREnv('mod'), 'mod-ADSR');
-        drawADSR(DEVICE.getADSREnv('amp'), 'amp-ADSR');
+        envelopes['mod-envelope'].envelope = DEVICE.getADSREnv('mod');
+        envelopes['amp-envelope'].envelope = DEVICE.getADSREnv('amp');
 
         console.groupEnd();
 
     }
-*/
+
     /**
      * Update the patch number and patch name displayed in the header.
      */
@@ -816,7 +816,7 @@
      */
     function updateUI() {
         updateControls();
-        // updateCustoms();
+        updateLinkedUIElements();
         updateMeta();
         // updateCommands();
     }
@@ -1047,14 +1047,12 @@
         $('#cmd-sync').click(syncUIwithBS2);
         $('#cmd-send').click(updateConnectedDevice);
         $('#cmd-init').click(init);
-        $('#cmd-randomize').click(randomize);
         // $('#cmd-save').click(saveInLocalStorage);
 
         // $('#cmd-export').click(exportToFile);    //TODO: fixme
         // $('#cmd-record').click(record);
         // $('#cmd-play').click(play);
 
-        $('#cmd-settings').click(settingsDialog);
 
         $('#midi-channel').change(setMidiChannel);
 
@@ -1063,7 +1061,8 @@
 
         $('#load-patch').click(loadPatchFromFile);
         $('#patch-file').change(readFile);
-
+        $('#randomize').click(randomize);
+        $('#settings').click(settingsDialog);
         $('#menu-midi').click(openMidiWindow);
 
 /*
@@ -1084,6 +1083,9 @@
         randomize: []
     };
 
+    /**
+     *
+     */
     function loadSettings() {
         Object.assign(settings, Cookies.getJSON('settings'));
         // 1. reset all checkboxes:
@@ -1094,6 +1096,9 @@
         }
     }
 
+    /**
+     *
+     */
     function setupSettings() {
 
         console.group("setupSettings");
@@ -1118,6 +1123,9 @@
         console.groupEnd();
     }
 
+    /**
+     *
+     */
     function displayRandomizerSettings() {
         let groups = Object.getOwnPropertyNames(BS2.control_groups);
         const COLS = 5;
