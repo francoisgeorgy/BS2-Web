@@ -29,7 +29,7 @@
             <!--<div>MIDI</div>-->
             <!-- <span style="float:right"><img src="noun_583243_cc.svg" alt="Settings"></span> -->
             <div class="menu">
-                <span><a id="randomize" href="#">Randomize</a></span>
+                <span><a id="randomize" href="#">Randomize &#x1f500;</a></span>
                 <span><a id="load-patch" href="#" title="Load a patch from a file">Load patch</a></span>
                 <span><a href="#" title="display the current patch for printing">Print patch</a></span>
                 <span><a href="#" title="Sync with the connected Bass Station">Sync &#8651;</a></span>
@@ -137,8 +137,6 @@
 
 <!--
     LFO1
-
-    TODO: key sync nrpn-89
 -->
         <div id="lfo1">
 
@@ -190,8 +188,6 @@
 
 <!--
     LFO2
-
-    TODO: key sync nrpn-93
 -->
         <div id="lfo2">
 
@@ -318,6 +314,7 @@
         <div id="osc2">
 
             <div class="header">
+                <div class="btc" style="float:right;letter-spacing:normal;font-weight:400" id="cc-110">1-2 sync</div>
                 <div>OSC 2</div>
             </div>
 
@@ -693,9 +690,9 @@
 
                     <div style="margin-right: 1.5vw;">
                         <div style="margin-top:0.3rem">
-                            <div class="btc" id="cc-108" data-value="">ARP</div>
-                            <div class="btc" id="cc-109" data-value="">Latch</div>
-                            <div class="btc" id="nrpn-106" data-value="">Retrig</div>
+                            <div class="btc" id="cc-108">ARP</div>
+                            <div class="btc" id="cc-109">Latch</div>
+                            <div class="btc" id="nrpn-106">Retrig</div>
                         </div>
                     </div>
 

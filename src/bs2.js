@@ -1023,9 +1023,9 @@ var BS2 = (function BassStationII() {
             //         obj.max_raw = max_raw;
             //     }
             // }
-            if (!obj.hasOwnProperty('raw_value')) {
-                obj.raw_value = obj.init_value;
-            }
+            // if (!obj.hasOwnProperty('raw_value')) {
+            //     obj.raw_value = obj.init_value;
+            // }
             if (!obj.hasOwnProperty('on_off')) {
                 obj.on_off = false;
             }
@@ -1042,6 +1042,15 @@ var BS2 = (function BassStationII() {
                 } else {
                     obj.init_value = Math.min(...obj.range);
                 }
+            }
+            if (!obj.hasOwnProperty('raw_value')) {
+                obj.raw_value = obj.init_value;
+            }
+            // obj.changed = () => obj.raw_value !== obj.init_value;
+            obj.changed = function() {
+                let b = obj.raw_value !== obj.init_value;
+                console.log(`changed=${b}`);
+                return b;
             }
             // if (!obj.hasOwnProperty('parse')) {
             //     obj.parse = v => parseFloat(v);
@@ -1290,9 +1299,9 @@ var BS2 = (function BassStationII() {
             // if (!obj.hasOwnProperty('max_raw')) {
             //     obj.max_raw = max_raw;
             // }
-            if (!obj.hasOwnProperty('raw_value')) {
-                obj.raw_value = obj.init_value;
-            }
+            // if (!obj.hasOwnProperty('raw_value')) {
+            //     obj.raw_value = obj.init_value;
+            // }
             if (!obj.hasOwnProperty('on_off')) {
                 obj.on_off = false;
             }
@@ -1309,6 +1318,10 @@ var BS2 = (function BassStationII() {
                     obj.init_value = Math.min(...obj.range);
                 }
             }
+            if (!obj.hasOwnProperty('raw_value')) {
+                obj.raw_value = obj.init_value;
+            }
+            obj.changed = () => obj.raw_value !== obj.init_value;
             // if (!obj.hasOwnProperty('parse')) {
             //     obj.parse = v => parseFloat(v);
             // }

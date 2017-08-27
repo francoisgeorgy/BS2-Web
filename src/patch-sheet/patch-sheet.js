@@ -21,7 +21,9 @@
                 v = c.value == 0 ? 'off' : 'on';
             }
 
-            o += `<tr id="${id_prefix}-${list[i]}" title="${c.name}"><td>${c.name}</td><td>${v}</td></tr>`;
+            let bold = c.changed() ? 'style="font-weight:bold"' : '';
+
+            o += `<tr id="${id_prefix}-${list[i]}" title="${c.name}"><td>${c.name}</td><td ${bold}>${v}</td></tr>`;
 
         }
         // $('#sheet').append(`</table>`);
@@ -111,7 +113,6 @@
                     if (data[i] === 240) {
                         console.log('start sysex');
                         if (d) {
-                            console.log(d);
                             if (DEVICE.setValuesFromSysex(d)) {
                                 console.log('device updated from sysex');
                                 renderPatch(template);

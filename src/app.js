@@ -607,12 +607,7 @@
 
         // "radio button"-like behavior:
         $('div.bt').click(function(e) {
-            // let d = $(this).data();
-            // let c = d['control'];
-            // let v = d['value'];
-            // console.log(`click on ${this.id} with value ${v}`, this, $(this).siblings());
-            console.log(`click on ${this.id}`);
-            //let e = $(this);
+            // console.log(`click on ${this.id}`);
             if (!this.classList.contains("on")) {   // if not already on...
                 $(this).siblings(".bt").removeClass("on");
                 this.classList.add("on");
@@ -623,13 +618,7 @@
 
         // "checkbox"-like behavior:
         $('div.btc').click(function(e) {
-            // let d = $(this).data();
-            // let c = d['control'];
-            // let v = d['value'];
-            // console.log(`click on ${c} with value ${v}`, this, $(this).siblings());
-
             let v = 0;
-
             if (this.classList.contains("on")) {
                 this.classList.remove("on");
             } else {
@@ -637,9 +626,7 @@
                 v = 1;
             }
             handleUIChange(...this.id.split('-'), v);
-
         });
-
 
     }
 
@@ -683,7 +670,9 @@
 
     } // setupSelects
 
-
+    /**
+     *
+     */
     function setupSliders() {
         $(".slider").on('input', function() {   // "input:range" not yet supported by jquery; on(drag) not supported by chrome?
             // console.log(event, event.currentTarget.value);
@@ -692,12 +681,20 @@
         });
     }
 
+    /**
+     *
+     */
     function setupADSR() {
         [].forEach.call(document.querySelectorAll('svg.envelope'), function(element) {
             envelopes[element.id] = new envelope(element, {});
         });
     }
 
+    /**
+     *
+     * @param id
+     * @param value
+     */
     function updateOptionSwitch(id, value) {
         // "radio button"-like behavior
         console.log(`updateOptionSwitch(${id}, ${value})`);
@@ -711,96 +708,49 @@
         }
     }
 
+    /**
+     *
+     * @param id
+     * @param value
+     */
     function updateToggleSwitch(id, value) {
-        console.log(`updateToggleSwitch(${id}, ${value})`);
+        // console.log(`updateToggleSwitch(${id}, ${value})`);
         // "checkbox"-like behavior:
-        //let e = document.getElementById(id);
         let e = $('#' + id);
-        // let v = 0;
         if (value) {
             e.addClass('on');
         } else {
             e.removeClass('on');
         }
-        // handleUIChange(...this.id.split('-'), v);
     }
 
+    /**
+     *
+     * @param id
+     * @param value
+     */
     function updateSlider(id, value) {
-        console.log(`updateSlider(${id}, ${value})`);
-        // "checkbox"-like behavior:
-        //let e = document.getElementById(id);
+        // console.log(`updateSlider(${id}, ${value})`);
         $('#' + id).val(value);
         $('#' + id + '-value').text(value);
-        // // let v = 0;
-        // if (value) {
-        //     e.addClass('on');
-        // } else {
-        //     e.removeClass('on');
-        // }
-        // handleUIChange(...this.id.split('-'), v);
+
     }
-
-
-    /**
-     * Update the visual of the switch after an action by the user or a change transmitted by the connected device.
-     * @param dom_id
-     * @param sendUpdate
-     */
-/*
-    function updateSwitch(dom_id, send_to_device = false) {
-        let e = $('#' + dom_id);                                // get the hidden input field of this switch
-        toggleOnOff('#' + dom_id + '-handle', e.val() != 0);    // update the switch UI
-        console.log(`updateSwitch ${dom_id}`, send_to_device);
-        if (send_to_device) handleUIChange(...dom_id.split('-'), e.val());  // update switch UI and the device too
-    }
-
-    const SWITCHES = ['cc-110', 'nrpn-89', 'nrpn-93', 'cc-108', 'cc-109', 'nrpn-106'];
-*/
-
-    /**
-     * Add the click handler to the switches represented by the ids array
-     * @param ids
-     */
-    /*
-    function setupSwitches(ids) {
-        for (let i=0; i<ids.length; i++) {
-            let dom_id = ids[i];
-
-            // let e = $('#' + dom_id);                                // get the hidden input field of this switch
-            // toggleOnOff(`#${dom_id}-handle`, e.val() != 0);    // update the switch UI
-
-            $(`#${dom_id}-handle`).click(function () {
-                let elem = $(`#${dom_id}`);
-                let v = elem.val();
-                elem.val(v == 0 ? 1 : 0);
-                // console.log('switch click handler', dom_id, v, elem.val());
-                updateSwitch(dom_id, true);
-            });
-        }
-    }
-    */
 
     /**
      * Update the "custom" or "linked" UI elements, like the ADSR curves
      */
     function updateLinkedUIElements() {
 
-        console.groupCollapsed(`updateCustoms()`);
+        // console.groupCollapsed(`updateCustoms()`);
 
-        // SWITCHES.forEach((currentValue, index, array) => updateSwitch(currentValue, false));
-        //
         // // Osc 1+2: PS controls are only displayed when wave form is pulse
         // $('#nrpn-72').val() == DEVICE.OSC_WAVE_FORMS.indexOf('pulse') ? enable('#osc1-pw-controls') : disable('#osc1-pw-controls');
         // $('#nrpn-82').val() == DEVICE.OSC_WAVE_FORMS.indexOf('pulse') ? enable('#osc2-pw-controls') : disable('#osc2-pw-controls');
-        //
-        // // LFO: "sync" drop down is displayed only when speed/sync is set to sync
-        // $('#nrpn-88').val() == DEVICE.LFO_SPEED_SYNC.indexOf('sync') ? enable('#nrpn-87') : disable('#nrpn-87');
-        // $('#nrpn-92').val() == DEVICE.LFO_SPEED_SYNC.indexOf('sync') ? enable('#nrpn-91') : disable('#nrpn-91');
 
         envelopes['mod-envelope'].envelope = DEVICE.getADSREnv('mod');
         envelopes['amp-envelope'].envelope = DEVICE.getADSREnv('amp');
 
-        console.groupEnd();
+        // console.groupEnd();
 
     }
 
