@@ -769,7 +769,7 @@ var BS2 = (function BassStationII() {
             range: [0,255],
             lsb: 51,
             human: v => v,
-            init_value: 52,
+            init_value: 53,
             sysex: {
                 offset: 73,
                 mask: [0x7F, 0x40]
@@ -955,6 +955,7 @@ var BS2 = (function BassStationII() {
             name: "Velocity Amp Env",
             range: [-63, 63],
             cc_range: [1, 127],
+            init_value: 64,
             human: _64,
             // parse: _parse_63,
             sysex: {
@@ -966,6 +967,7 @@ var BS2 = (function BassStationII() {
             name: "Velocity Mod Env",
             range: [-63, 63],
             cc_range: [1, 127],
+            init_value: 64,
             human: _64,
             // parse: _parse_63,
             sysex: {
@@ -1115,7 +1117,7 @@ var BS2 = (function BassStationII() {
             range: [-63, 63],
             human: _63,  // TODO: make _64_63 because on the BS2 the values are -64..+63 (same for all mod wheel FN keys)
             // parse: _parse_63,
-            init_value: 64,
+            init_value: 74,
             sysex: {
                 offset: 83,
                 mask: [0x0F, 0x70]

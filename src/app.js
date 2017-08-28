@@ -330,7 +330,7 @@
      */
     function init(sendUpdate = true) {
 
-        console.log(`init(${sendUpdate})`);
+        console.group(`init(${sendUpdate})`);
 
         DEVICE.init();
 
@@ -339,6 +339,8 @@
         setStatus(`init done`);
 
         if (sendUpdate) updateConnectedDevice();
+
+        console.groupEnd();
     }
 
     /**
@@ -401,6 +403,7 @@
      * @param dom_id ID of the HTML element
      * @returns {*}
      */
+/*
     function getDefaultValue(dom_id) {
         let [control_type, control_number] = dom_id.replace('#', '').split('-');
         let c;
@@ -415,13 +418,16 @@
         //FIXME: check that c exists
         return c.init_value;
     }
+*/
 
     /**
      *
      * @param e
      */
+/*
     function resetGroup(e) {
-        $(e.target).parent().find('[id^=cc-],[id^=nrpn-]').each(function(){
+        $(e.target).parents('.group').find('[id^=cc-],[id^=nrpn-]').each(function(){
+
             let dom_id = this.id;
             if (dom_id.endsWith('-handle')) return;
             let value = getDefaultValue(dom_id);
@@ -437,10 +443,9 @@
             // update the connected device
             handleUIChange(...dom_id.split('-'), value);
         });
-        updateLinkedUIElements(/*false*/);
-        //updateUI();
+        updateLinkedUIElements();
     }
-
+*/
     //==================================================================================================================
 
     /**
@@ -469,7 +474,7 @@
      */
     function setupKnobs() {
 
-        function _setupKnob(id, c) {
+        function _setupKnob(id, c, v) {
 
             let elem = document.getElementById(id);
 
@@ -477,7 +482,7 @@
 
             if (!elem.classList.contains("knob")) return;
 
-            console.log(`configure #${id}: range=${c.cc_range}`);
+            console.log(`configure #${id}: range=${c.cc_range}, init-value=${v}`);
 
             knobs[id] = new knob(elem, {
                 with_label: false,
@@ -487,9 +492,11 @@
                 value_min: Math.min(...c.cc_range),
                 value_max: Math.max(...c.cc_range),
                 value_resolution: 1,
+                default_value: v,
                 center_zero: Math.min(...c.range) < 0,
-                format: v => c.human(v) //,
-                // track_color: '#999'    //'#bbb'
+                format: v => c.human(v),
+                track_color_init: '#999',
+                track_color: '#bbb'
             });
 
             elem.addEventListener("change", function(event) {
@@ -513,7 +520,7 @@
                 console.log(`${c.cc_type}-${c.cc_number} (${i})`);
 
                 let id = `${c.cc_type}-${c.cc_number}`;
-                _setupKnob(id, c);
+                _setupKnob(id, c, DEVICE.getControlValue(controls[i]));
             }
         }
 
@@ -996,7 +1003,7 @@
         console.log('setupCommands');
         $('#cmd-sync').click(syncUIwithBS2);
         $('#cmd-send').click(updateConnectedDevice);
-        $('#cmd-init').click(init);
+
         // $('#cmd-save').click(saveInLocalStorage);
 
         // $('#cmd-export').click(exportToFile);    //TODO: fixme
@@ -1006,14 +1013,15 @@
 
         $('#midi-channel').change(setMidiChannel);
 
-        $('h1.reset-handler').click(resetGroup);
 */
 
+        $('#randomize').click(randomize);
+        $('#init').click(init);
         $('#load-patch').click(loadPatchFromFile);
         $('#patch-file').change(readFile);
-        $('#randomize').click(randomize);
         $('#settings').click(settingsDialog);
         $('#menu-midi').click(openMidiWindow);
+        //$('.reset-handler').click(resetGroup);  // TODO
 
 /*
         $( "#midi-popup" ).dialog({

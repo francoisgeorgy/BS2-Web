@@ -52,6 +52,7 @@
             // value track:
             track_radius: 40,
             track_width: 8,
+            track_color_init: '#999',
             track_color: '#bbb',
 
             // arc_width: 20,   // 10% of radius
@@ -120,6 +121,8 @@
         // let split_track_zero_left  = Math.PI * 0.5 * 1.01; // 1%
         // let split_track_zero_right  = Math.PI * 0.5 * 0.99; // 1%
 
+        let has_changed = false;    // to spare some getValue() calls when testing if value has changed from default_value
+
         init();
         draw();
         attachEventHandlers();
@@ -180,6 +183,11 @@
 
         function setValue(v) {
             value = v;
+
+            // if (v !== config.default_value) {
+            //     console.log(`value changed from default ${config.default_value} --> ${v}`);
+            // }
+
             let a = ((v - config.value_min) / (config.value_max - config.value_min)) * (config.arc_max - config.arc_min) + config.arc_min;
             // console.log(`changeValue(${v}) --> angle ${a}`);
             setPolarAngle(knobToPolarAngle(a));
@@ -205,6 +213,7 @@
             polarAngle = a;
 
             if (fireEvent && (polarAngle !== previous)) {
+                // does the change of angle affect the value?
                 if (getValue(previous) !== getValue()) {
                     notifyChange();
                 }
@@ -516,7 +525,7 @@
             if (p) {
                 track = document.createElementNS(NS, "path");
                 track.setAttributeNS(null, "d", p);
-                track.setAttribute("stroke", `${config.track_color}`);
+                track.setAttribute("stroke", `${config.track_color_init}`);
                 track.setAttribute("stroke-width", `${config.track_width}`);
                 track.setAttribute("fill", "transparent");
                 track.setAttribute("stroke-linecap", "round");
@@ -646,6 +655,14 @@
             } else {
                 if (track) {
                     track.setAttributeNS(null, "d", "");    // we hide the track
+                }
+            }
+
+            if (!has_changed) {
+                has_changed = getValue() !== config.default_value;
+                if (has_changed) {
+                    // console.log(`value changed from default ${config.default_value} --> ${v}`);
+                    track.setAttribute("stroke", `${config.track_color}`);
                 }
             }
 
@@ -840,8 +857,13 @@
          */
         function notifyChange() {
             // console.log('knob value has changed');
-            // does the change of angle affect the value?
+
             let value = getValue();     // TODO: cache the value
+
+            // if (value !== config.default_value) {
+            //     console.log(`value changed from default ${config.default_value} --> ${value}`);
+            // }
+
             let event = new CustomEvent('change', { 'detail': value });
             element.dispatchEvent(event);
         }
