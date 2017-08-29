@@ -90,6 +90,7 @@
     var value_msb = 0;    // msb to compute value
     var value_lsb = 0;    // lsb to compute value
     var nrpn = false;
+    var last_note = null;
 
     /**
      * Handle all control change messages received
@@ -707,7 +708,7 @@
         console.log(`updateOptionSwitch(${id}, ${value})`);
         let e = $('#' + id);
         console.log(e);
-        if (!e.is("on")) {   // if not already on...
+        if (!e.is('.on')) {   // if not already on...
             e.siblings(".bt").removeClass("on");
             e.addClass("on");
             // handleUIChange(...c.split('-'), v);
@@ -973,6 +974,22 @@
         midi_channel = this.value;
     }
 
+
+    function playLastNote() {
+        console.log(`play last nore ${last_note}`);
+        if (last_note) {
+            let e = $('#played-note');
+            if (e.is('.on')) {
+                midi_output.stopNote(last_note, midi_channel);
+                e.removeClass('on');
+            } else {
+                midi_output.playNote(last_note, midi_channel);
+                e.addClass('on');
+            }
+        }
+    }
+
+
     /**
      *
      */
@@ -1022,6 +1039,8 @@
         $('#settings').click(settingsDialog);
         $('#menu-midi').click(openMidiWindow);
         //$('.reset-handler').click(resetGroup);  // TODO
+
+        $('#played-note').click(playLastNote);
 
 /*
         $( "#midi-popup" ).dialog({
@@ -1100,6 +1119,61 @@
     }
 
     //==================================================================================================================
+    // noteOn & noteOff events handling
+
+    function noteOn(e) {
+
+        // let msg = e.data;   // Uint8Array
+        // let cc = msg[1];
+        // logIncomingMidiMessage('CC', cc, msg[2]);
+
+        console.log('noteOn', e.data);
+        // console.log("Received 'noteon' message (" + e.note.name + e.note.octave + ").");
+
+        last_note = e.note.name + e.note.octave;
+
+        let note = last_note;   // local copy
+
+        // Get the enharmonics of a note. It returns an array of three elements: the below enharmonic, the note, and the upper enharmonic
+        // Tonal.note.enharmonics('Bb4') --> ["A#4", "Bb4", "Cbb5"]
+        // Tonal.note.enharmonics('A#4') --> ["G###4", "A#4", "Bb4"]
+        // Tonal.note.enharmonics('C')   --> ["B#", "C", "Dbb"]
+        // Tonal.note.enharmonics('A')   --> ["G##", "A", "Bbb"]
+        let enharmonics = Tonal.note.enharmonics(note);
+        // let enharmonic = Tonal.note.simplify(note);
+
+        let enharmonic;
+        if (note.length === 2) {
+            enharmonic = '';
+        } else {
+            if (note.charAt(1) === '#') {
+                enharmonic = enharmonics[2].replace('b', '&flat;');
+                note = note.replace('#', '&sharp;');
+            } else {
+                enharmonic = enharmonics[0].replace('#', '&sharp;');
+                note = note.replace('b', '&flat;');
+            }
+        }
+
+        // console.log(`noteOn: ${note}`, enharmonic, cc);
+
+        $('#played-note').addClass('on');
+
+        // console.log($('#note-name'));
+        $('#note-name').html(note);
+        $('#note-enharmonic').html(enharmonic);
+
+        // console.log('add on class to #played-note', $('#played-note'));
+
+        // $('#note-name').addClass('on');
+
+    }
+
+    function noteOff(e) {
+        $('#played-note').removeClass('on');
+    }
+
+    //==================================================================================================================
     // SysEx
 
     /**
@@ -1109,7 +1183,7 @@
     function requestSysExDump() {
         if (!midi_output) return;
         //ignore_next_sysex = true;
-        midi_output.sendSysex(DEVICE.meta.signature.sysex.value, [0x00, 0x33, 0x00, 0x40]);
+        // midi_output.sendSysex(DEVICE.meta.signature.sysex.value, [0x00, 0x33, 0x00, 0x40]);
     }
 
     //==================================================================================================================
@@ -1125,6 +1199,12 @@
         midi_input
             .on('controlchange', midi_channel, function(e) {
                 handleCC(e);
+            })
+            .on('noteon', midi_channel, function(e) {
+                noteOn(e);
+            })
+            .on('noteoff', midi_channel, function(e) {
+                noteOff(e);
             })
             .on('sysex', midi_channel, function(e) {
                 console.log('sysex handler');
@@ -1223,7 +1303,6 @@
 
         console.log('app starting...');
 
-
         setupUI();
 
         setStatus("Waiting for MIDI interface...");
@@ -1246,10 +1325,12 @@
                 // WebMidi.inputs.map(i => console.log("input: ", i));
                 // WebMidi.outputs.map(i => console.log("output: ", i));
 
-                WebMidi.addListener("connected", e => deviceConnect(e));
-                WebMidi.addListener("disconnected", e => deviceDisconnect(e));
+                // WebMidi.addListener("connected", e => deviceConnect(e));
+                // WebMidi.addListener("disconnected", e => deviceDisconnect(e));
 
-                let input = WebMidi.getInputByName(DEVICE.name_device_in);
+                //let input = WebMidi.getInputByName(DEVICE.name_device_in);
+                console.log(WebMidi.inputs);
+                let input = WebMidi.inputs[1];
                 if (input) {
                     connectInput(input);
                 } else {
@@ -1257,7 +1338,8 @@
                     setMidiInStatus(false);
                 }
 
-                let output = WebMidi.getOutputByName(DEVICE.name_device_out);
+                // let output = WebMidi.getOutputByName(DEVICE.name_device_out);
+                let output = WebMidi.outputs[0];
                 if (output) {
                     connectOutput(output);
                 } else {

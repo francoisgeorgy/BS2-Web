@@ -151,6 +151,10 @@ body {
     flex-grow: 1;
 }
 
+.on {
+    color: var(--value);
+}
+
 #main {
     margin: 0;
     padding: 0;
@@ -241,10 +245,25 @@ div.controls {
     /* min-width: 10vw; */
 }
 
-#mixer-top-right {
+#top-right {
     grid-row: 2;
     grid-column: 5;
+    color: var(--header-text);
 }
+
+    #played-note {
+        text-align: center;
+        margin-top: 2.5vh;
+        cursor: pointer;
+    }
+
+    #note-name {
+        font-size: 3rem;
+    }
+
+    #note-enharmonic {
+        font-size: 1rem;
+    }
 
 #mixer {
     grid-row: 3;
