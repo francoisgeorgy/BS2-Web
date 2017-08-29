@@ -52,6 +52,8 @@
     --combo-label: #aaaaaa;
     --combo-separator: #999;
 
+    --select-border: #777;
+
     --seq-bg: #5C5C66;
     --seq-off: #929181;
     --seq-on: #C1BFAF;
@@ -319,9 +321,9 @@ select {
     font-size: 1rem;
     color: var(--value);
     background-color: var(--default-bg-to);
-    /*border-color: var(--combo-separator);*/
-    /*border-radius: 4px;*/
-    border: none;
+    border-color: var(--select-border);
+    border-radius: 3px;
+    /*border: none;*/
     margin-top: -1px;
 }
 

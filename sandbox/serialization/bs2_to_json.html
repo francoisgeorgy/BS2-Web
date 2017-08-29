@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!--<title>Bass Station II Patch Sheet</title>-->
+    <!--<link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Condensed:400,700" rel="stylesheet">-->
+    <!--<link rel="stylesheet" media="all" href="patch.css?ck234" />-->
+    <!--<link rel="stylesheet" media="print" href="print.css?ck234" />-->
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>-->
+    <!--<script src="mustache.min.js"></script>-->
+    <script src="../../src/bs2.js"></script>
+    <script src="msgpack.min.js"></script>
+</head>
+<body>
+<pre id="json"></pre>
+<pre id="pack"></pre>
+<script>
+
+    document.addEventListener("DOMContentLoaded", function(event) {
+
+        BS2.init();
+
+        let v = BS2.getAllValues();
+
+        console.log(v);
+
+        let s = JSON.stringify(v, null, ' ');
+
+        let e = document.getElementById("json");
+        e.innerText = s.length;
+
+        s = msgpack.encode(v);
+
+        e = document.getElementById("pack");
+        e.innerText = s.length;
+
+    });
+
+</script>
+</body>

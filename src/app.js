@@ -758,6 +758,23 @@
         envelopes['mod-envelope'].envelope = DEVICE.getADSREnv('mod');
         envelopes['amp-envelope'].envelope = DEVICE.getADSREnv('amp');
 
+
+        // LFO speed/sync selects:
+            if ($('#nrpn-88').val() === '1') {
+                $('#cc-18').hide();
+                $('#nrpn-87').show();
+            } else {
+                $('#nrpn-87').hide();
+                $('#cc-18').show();
+            }
+            if ($('#nrpn-92').val() === '1') {
+                $('#cc-19').hide();
+                $('#nrpn-91').show();
+            } else {
+                $('#nrpn-91').hide();
+                $('#cc-19').show();
+            }
+
         // console.groupEnd();
 
     }
@@ -1193,8 +1210,9 @@
      */
     function requestSysExDump() {
         if (!midi_output) return;
+        console.log('requestSysExDump()');
         //ignore_next_sysex = true;
-        // midi_output.sendSysex(DEVICE.meta.signature.sysex.value, [0x00, 0x33, 0x00, 0x40]);
+        midi_output.sendSysex(DEVICE.meta.signature.sysex.value, [0x00, 0x33, 0x00, 0x40]);
     }
 
     //==================================================================================================================
@@ -1229,6 +1247,7 @@
                     setStatus("SysEx ignored.");
                     return;
                 }
+                console.log('set sysex value to BS2');
                 if (DEVICE.setValuesFromSysex(e.data)) {
                     updateUI();
                     setStatus("UI updated from SysEx.");
@@ -1260,13 +1279,22 @@
     function deviceConnect(info) {
         console.log('deviceConnect', info);
         if ((info.name !== DEVICE.name_device_in) && (info.name !== DEVICE.name_device_out)) {
+            console.log('ignore deviceConnect');
             return;
         }
         if (info.hasOwnProperty('input') && info.input && (info.name === DEVICE.name_device_in)) {
-            if (!midi_input) connectInput(info.input);
+            if (!midi_input) {
+                connectInput(info.input);
+            } else {
+                console.log('deviceConnect: input already connected');
+            }
         }
         if (info.hasOwnProperty('output') && info.output && (info.name === DEVICE.name_device_out)) {
-            if (!midi_output) connectOutput(info.output);
+            if (!midi_output) {
+                connectOutput(info.output);
+            } else {
+                console.log('deviceConnect: output already connected');
+            }
         }
     }
 

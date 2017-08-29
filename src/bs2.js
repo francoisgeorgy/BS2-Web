@@ -918,6 +918,7 @@ var BS2 = (function BassStationII() {
         control[control_id.arp_octaves] = { // 111
             name: "Arp Octaves",
             cc_range: [1, 4],
+            init_value: 1,
             human: v => v,
             sysex: {
                 offset: 78,
@@ -1934,6 +1935,27 @@ var BS2 = (function BassStationII() {
         return c;
     };
 
+    var getAllValues = function() {
+        let a = {
+            cc: [],
+            nrpn: []
+        };
+
+        for (let i=0; i < control.length; i++) {
+            let c = control[i];
+            if (typeof c === 'undefined') continue;
+            a.cc.push(c.raw_value);
+        }
+
+        for (let i=0; i < nrpn.length; i++) {
+            let c = nrpn[i];
+            if (typeof c === 'undefined') continue;
+            a.nrpn.push(c.raw_value);
+        }
+
+        return a;
+    };
+
     /**
      *
      */
@@ -2002,6 +2024,7 @@ var BS2 = (function BassStationII() {
         init,
         getControlValue,
         setControlValue,
+        getAllValues,
         getADSREnv,
         setValuesFromSysex,
         doubleByteValue,
