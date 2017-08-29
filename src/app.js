@@ -1134,12 +1134,17 @@
 
         let note = last_note;   // local copy
 
+        // Note: only handles single digit octave : -9..9
+
+        let neg_octave = note.indexOf('-') > 0;
+        if (neg_octave) note = note.replace('-', '');  // we'll put it back later; the tests are simpler without it
+
         // Get the enharmonics of a note. It returns an array of three elements: the below enharmonic, the note, and the upper enharmonic
         // Tonal.note.enharmonics('Bb4') --> ["A#4", "Bb4", "Cbb5"]
         // Tonal.note.enharmonics('A#4') --> ["G###4", "A#4", "Bb4"]
         // Tonal.note.enharmonics('C')   --> ["B#", "C", "Dbb"]
         // Tonal.note.enharmonics('A')   --> ["G##", "A", "Bbb"]
-        let enharmonics = Tonal.note.enharmonics(note);
+        let enharmonics = Tonal.note.enharmonics(last_note);
         // let enharmonic = Tonal.note.simplify(note);
 
         let enharmonic;
@@ -1147,12 +1152,18 @@
             enharmonic = '';
         } else {
             if (note.charAt(1) === '#') {
+                // note = note.replace('#', '&sharp;');                 // the sharp symbol is not good-looking (too wide)
                 enharmonic = enharmonics[2].replace('b', '&flat;');
-                note = note.replace('#', '&sharp;');
             } else {
-                enharmonic = enharmonics[0].replace('#', '&sharp;');
                 note = note.replace('b', '&flat;');
+                // enharmonic = enharmonics[0].replace('#', '&sharp;');
             }
+        }
+
+        if (neg_octave) {
+            // put back the minus sign we removed before
+            let i = note.length - 1;
+            note = note.substr(0, i) + '-' + note.substr(i);
         }
 
         // console.log(`noteOn: ${note}`, enharmonic, cc);
@@ -1271,7 +1282,7 @@
         }
         if (info.name === DEVICE.name_device_in) {
             midi_input = null;
-            setStatus(`${DEVICE.name_device_in} has been disconnected.`)
+            setStatus(`${DEVICE.name_device_in} has been disconnected.`);
             setMidiInStatus(false);
         }
         if (info.name === DEVICE.name_device_out) {
@@ -1325,12 +1336,12 @@
                 // WebMidi.inputs.map(i => console.log("input: ", i));
                 // WebMidi.outputs.map(i => console.log("output: ", i));
 
-                // WebMidi.addListener("connected", e => deviceConnect(e));
-                // WebMidi.addListener("disconnected", e => deviceDisconnect(e));
+                WebMidi.addListener("connected", e => deviceConnect(e));
+                WebMidi.addListener("disconnected", e => deviceDisconnect(e));
 
-                //let input = WebMidi.getInputByName(DEVICE.name_device_in);
-                console.log(WebMidi.inputs);
-                let input = WebMidi.inputs[1];
+                let input = WebMidi.getInputByName(DEVICE.name_device_in);
+                // console.log(WebMidi.inputs);
+                // let input = WebMidi.inputs[1];
                 if (input) {
                     connectInput(input);
                 } else {
@@ -1338,8 +1349,8 @@
                     setMidiInStatus(false);
                 }
 
-                // let output = WebMidi.getOutputByName(DEVICE.name_device_out);
-                let output = WebMidi.outputs[0];
+                let output = WebMidi.getOutputByName(DEVICE.name_device_out);
+                // let output = WebMidi.outputs[0];
                 if (output) {
                     connectOutput(output);
                 } else {

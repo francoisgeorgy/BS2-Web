@@ -258,7 +258,7 @@ div.controls {
     }
 
     #note-name {
-        font-size: 3rem;
+        font-size: 2.5rem;
     }
 
     #note-enharmonic {
@@ -617,17 +617,13 @@ select {
     }
 
     #seq {
-        /*width: 32vw;*/
-        /*height: 4vw;*/
         margin-left:2.5vw;
         display: grid;
         grid-template-rows: repeat(2, 2vw);
         grid-template-columns: repeat(16, 2vw);
         grid-row-gap: 0.4vw;
         grid-column-gap: 0.4vw;
-        /*justify-items: center;*/
         align-items: stretch;
-        /*align-content: stretch;*/
     }
 
     #seq div.l {
@@ -648,6 +644,11 @@ select {
     #seq div.s.on {
         background-color: var(--seq-on);
     }
+
+    #arp-editor {
+        margin-left:2.5vw;
+    }
+
 
 #status-bar {
     grid-row: 9;
