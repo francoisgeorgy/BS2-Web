@@ -102,157 +102,147 @@ var BS2 = (function BassStationII() {
         arp_seq_retrig: 106
     };
 
+    /**
+     * Group and order controls.
+     * This is useful for printing or using in some configuration dialog (e.g. randomizer).
+     */
     var control_groups = {
         sub: {
             name: 'Sub osc',
             controls: [
-                control_id.sub_osc_oct,
-                control_id.sub_osc_wave],
-            nrpns: []
+                {type: 'cc', number: control_id.sub_osc_oct},
+                {type: 'cc', number: control_id.sub_osc_wave}],
         },
         lfo1: {
             name: 'LFO 1',
-            controls: [,
-                control_id.lfo1_wave,
-                control_id.lfo1_delay,
-                control_id.lfo1_speed],
-            nrpns: [,
-                nrpn_id.lfo1_slew,
-                nrpn_id.lfo1_speed_sync,
-                nrpn_id.lfo1_sync_value,
-                nrpn_id.lfo1_key_sync]
+            controls: [
+                {type: 'cc', number: control_id.lfo1_wave},
+                {type: 'cc', number: control_id.lfo1_delay},
+                {type: 'cc', number: control_id.lfo1_speed},
+                {type: 'nrpn', number: nrpn_id.lfo1_slew},
+                {type: 'nrpn', number: nrpn_id.lfo1_speed_sync},
+                {type: 'nrpn', number: nrpn_id.lfo1_sync_value},
+                {type: 'nrpn', number: nrpn_id.lfo1_key_sync}]
         },
         lfo2: {
             name: 'LFO 2',
-            controls: [,
-                control_id.lfo2_wave,
-                control_id.lfo2_delay,
-                control_id.lfo2_speed],
-            nrpns: [,
-                nrpn_id.lfo2_slew,
-                nrpn_id.lfo2_key_sync,
-                nrpn_id.lfo2_sync_value,
-                nrpn_id.lfo2_key_sync]
+            controls: [
+                {type: 'cc', number: control_id.lfo2_wave},
+                {type: 'cc', number: control_id.lfo2_delay},
+                {type: 'cc', number: control_id.lfo2_speed},
+                {type: 'nrpn', number: nrpn_id.lfo2_slew},
+                {type: 'nrpn', number: nrpn_id.lfo2_key_sync},
+                {type: 'nrpn', number: nrpn_id.lfo2_sync_value},
+                {type: 'nrpn', number: nrpn_id.lfo2_key_sync}]
         },
         osc1: {
             name: 'Osc 1',
             controls: [
-                control_id.osc1_range,
-                control_id.osc1_fine,
-                control_id.osc1_coarse,
-                control_id.osc1_mod_env_depth,
-                control_id.osc1_lfo1_depth,
-                control_id.osc1_mod_env_pw_mod,
-                control_id.osc1_manual_pw,
-                control_id.osc1_lfo2_pw_mod],
-            nrpns: [
-                nrpn_id.osc1_waveform]
+                {type: 'nrpn', number: nrpn_id.osc1_waveform},
+                {type: 'cc', number: control_id.osc1_range},
+                {type: 'cc', number: control_id.osc1_fine},
+                {type: 'cc', number: control_id.osc1_coarse},
+                {type: 'cc', number: control_id.osc1_mod_env_depth},
+                {type: 'cc', number: control_id.osc1_lfo1_depth},
+                {type: 'cc', number: control_id.osc1_mod_env_pw_mod},
+                {type: 'cc', number: control_id.osc1_manual_pw},
+                {type: 'cc', number: control_id.osc1_lfo2_pw_mod}]
         },
         osc2: {
             name: 'Osc 2',
             controls: [
-                control_id.osc2_range,
-                control_id.osc2_fine,
-                control_id.osc2_coarse,
-                control_id.osc2_mod_env_depth,
-                control_id.osc2_lfo1_depth,
-                control_id.osc2_mod_env_pw_mod,
-                control_id.osc2_manual_pw,
-                control_id.osc2_lfo2_pw_mod,
-                control_id.osc_1_2_sync],
-            nrpns: [
-                nrpn_id.osc2_waveform]
+                {type: 'nrpn', number: nrpn_id.osc2_waveform},
+                {type: 'cc', number: control_id.osc2_range},
+                {type: 'cc', number: control_id.osc2_fine},
+                {type: 'cc', number: control_id.osc2_coarse},
+                {type: 'cc', number: control_id.osc2_mod_env_depth},
+                {type: 'cc', number: control_id.osc2_lfo1_depth},
+                {type: 'cc', number: control_id.osc2_mod_env_pw_mod},
+                {type: 'cc', number: control_id.osc2_manual_pw},
+                {type: 'cc', number: control_id.osc2_lfo2_pw_mod},
+                {type: 'cc', number: control_id.osc_1_2_sync}]
         },
         mixer: {
             name: 'Mixer',
             controls: [
-                control_id.mixer_osc_1_level,
-                control_id.mixer_osc_2_level,
-                control_id.mixer_sub_osc_level,
-                control_id.mixer_external_signal_level,
-                control_id.mixer_ring_mod_level,
-                control_id.mixer_noise_level],
-            nrpns: []
+                {type: 'cc', number: control_id.mixer_osc_1_level},
+                {type: 'cc', number: control_id.mixer_osc_2_level},
+                {type: 'cc', number: control_id.mixer_sub_osc_level},
+                {type: 'cc', number: control_id.mixer_external_signal_level},
+                {type: 'cc', number: control_id.mixer_ring_mod_level},
+                {type: 'cc', number: control_id.mixer_noise_level}]
         },
         filter: {
             name: 'Filter',
             controls: [
-                control_id.filter_type,
-                control_id.filter_slope,
-                control_id.filter_shape,
-                control_id.filter_resonance,
-                control_id.filter_frequency,
-                control_id.filter_mod_env_depth,
-                control_id.filter_lfo2_depth,
-                control_id.filter_overdrive],
-            nrpns: []
+                {type: 'cc', number: control_id.filter_type},
+                {type: 'cc', number: control_id.filter_slope},
+                {type: 'cc', number: control_id.filter_shape},
+                {type: 'cc', number: control_id.filter_resonance},
+                {type: 'cc', number: control_id.filter_frequency},
+                {type: 'cc', number: control_id.filter_mod_env_depth},
+                {type: 'cc', number: control_id.filter_lfo2_depth},
+                {type: 'cc', number: control_id.filter_overdrive}],
         },
         amp_env: {
             name: 'Amp Env',
             controls: [
-                control_id.amp_env_attack,
-                control_id.amp_env_decay,
-                control_id.amp_env_sustain,
-                control_id.amp_env_release],
-            nrpns: [
-                nrpn_id.amp_env_triggering]
+                {type: 'cc', number: control_id.amp_env_attack},
+                {type: 'cc', number: control_id.amp_env_decay},
+                {type: 'cc', number: control_id.amp_env_sustain},
+                {type: 'cc', number: control_id.amp_env_release},
+                {type: 'nrpn', number: nrpn_id.amp_env_triggering}]
         },
         mod_env: {
             name: 'Mod Env',
             controls: [
-                control_id.mod_env_attack,
-                control_id.mod_env_decay,
-                control_id.mod_env_sustain,
-                control_id.mod_env_release],
-            nrpns: [
-                nrpn_id.mod_env_triggering]
+                {type: 'cc', number: control_id.mod_env_attack},
+                {type: 'cc', number: control_id.mod_env_decay},
+                {type: 'cc', number: control_id.mod_env_sustain},
+                {type: 'cc', number: control_id.mod_env_release},
+                {type: 'nrpn', number: nrpn_id.mod_env_triggering}]
         },
         vca: {
             name: 'VCA',
             controls: [
-                control_id.vca_limit],
-            nrpns: []
+                {type: 'cc', number: control_id.vca_limit}],
         },
         effects: {
             name: 'Effects',
             controls: [
-                control_id.fx_distortion,
-                control_id.fx_osc_filter_mod],
-            nrpns: []
+                {type: 'cc', number: control_id.fx_distortion},
+                {type: 'cc', number: control_id.fx_osc_filter_mod}],
         },
         arp: {
             name: 'ARP',
-                controls: [
-                    control_id.arp_on,
-                    control_id.arp_latch,
-                    control_id.arp_rhythm,
-                    control_id.arp_note_mode,
-                    control_id.arp_octaves,
-                    control_id.arp_swing],
-            nrpns: [
-                nrpn_id.arp_seq_retrig]
+            controls: [
+                {type: 'cc', number: control_id.arp_on},
+                {type: 'cc', number: control_id.arp_latch},
+                {type: 'cc', number: control_id.arp_rhythm},
+                {type: 'cc', number: control_id.arp_note_mode},
+                {type: 'cc', number: control_id.arp_octaves},
+                {type: 'cc', number: control_id.arp_swing},
+                {type: 'nrpn', number: nrpn_id.arp_seq_retrig}]
         },
         keyboard: {
             name: 'Keyboard',
             controls: [
-                control_id.sustain,
-                control_id.portamento_time,
-                control_id.velocity_mod_env,
-                control_id.velocity_amp_env],
-            nrpns: [
-                nrpn_id.aftertouch_lfo1_to_osc_pitch,
-                nrpn_id.aftertouch_lfo2_speed,
-                nrpn_id.aftertouch_filter_freq]
+                {type: 'cc', number: control_id.sustain},
+                {type: 'cc', number: control_id.portamento_time},
+                {type: 'cc', number: control_id.velocity_mod_env},
+                {type: 'cc', number: control_id.velocity_amp_env},
+                {type: 'nrpn', number: nrpn_id.aftertouch_lfo1_to_osc_pitch},
+                {type: 'nrpn', number: nrpn_id.aftertouch_lfo2_speed},
+                {type: 'nrpn', number: nrpn_id.aftertouch_filter_freq}]
         },
         wheels: {
             name: 'Wheels',
             controls: [
-                control_id.osc_pitch_bend_range],
-            nrpns: [
-                nrpn_id.mod_wheel_lfo1_osc_pitch,
-                nrpn_id.mod_wheel_osc2_pitch,
-                nrpn_id.mod_wheel_filter_freq,
-                nrpn_id.mod_wheel_lfo2_filter_freq]
+                {type: 'cc', number: control_id.osc_pitch_bend_range},
+                {type: 'nrpn', number: nrpn_id.mod_wheel_lfo1_osc_pitch},
+                {type: 'nrpn', number: nrpn_id.mod_wheel_osc2_pitch},
+                {type: 'nrpn', number: nrpn_id.mod_wheel_filter_freq},
+                {type: 'nrpn', number: nrpn_id.mod_wheel_lfo2_filter_freq}]
         // },
         // others: {
         //     name: 'Others',

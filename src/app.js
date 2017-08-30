@@ -349,6 +349,7 @@
      */
     function randomize() {
 
+/*
         function _randomize(controls) {
 
             for (let i=0; i < controls.length; i++) {
@@ -372,9 +373,11 @@
                 c.raw_value = v;
             }
         }
+*/
 
         console.groupCollapsed(`randomize`);
 
+/*
         // concatenate the indexes of the controls/nrpns set for randomization:
         let randomize_controls = [];
         let randomize_nrpns = [];
@@ -385,6 +388,41 @@
 
         _randomize(DEVICE.control.filter((element, index) => randomize_controls.includes(index)));
         _randomize(DEVICE.nrpn.filter((element, index) => randomize_nrpns.includes(index)));
+*/
+
+        for (let i=0; i<settings.randomize.length; i++) {
+            console.log(settings.randomize[i]);
+            let g = DEVICE.control_groups[settings.randomize[i]];
+            for (let i=0; i < g.controls.length; i++) {
+
+                let c;
+                let t = g.controls[i].type;
+                let n = g.controls[i].number;
+                if (t === 'cc') {
+                    c = DEVICE.control[n];
+                } else if (t === 'nrpn') {
+                    c = DEVICE.nrpn[n];
+                } else {
+                    console.error(`invalid control type: ${g.controls[i].type}`)
+                }
+
+                let v;
+                if (c.hasOwnProperty('randomize')) {
+                    v = c.randomize;
+                } else {
+                    if (c.on_off) {
+                        v = Math.round(Math.random());
+                        console.log(`randomize #${c.cc_type}-${i}=${v} with 0|1 value = ${v}`);
+                    } else {
+                        let min = Math.min(...c.cc_range);
+                        v = Math.round(Math.random() * (Math.max(...c.cc_range) - min)) + min;  //TODO: step
+                        console.log(`randomize #${c.cc_type}-${i}=${v} with min=${min} c.max_raw=${Math.max(...c.cc_range)}, v=${v}`);
+                    }
+                }
+                c.raw_value = v;
+            }
+
+        }
 
         console.groupEnd();
 
@@ -976,7 +1014,7 @@
 
         console.log(url);
 
-        midi_window = window.open(url, '_blank', 'location=yes');
+        window.open(url, '_blank', 'width=800,height=600,location,resizable,scrollbars,status');
 
         // var blob = new Blob([data], {type: 'application/octet-binary'}); // pass a useful mime type here
         // console.log(blob);

@@ -4,11 +4,17 @@ body {
     font-size: 10pt;
 }
 
-#all-values, #only-changed {
-    float: right;
+a {
     text-decoration: none;
-    /*display: block;*/
-    /*margin: 0 0 1rem 0;*/
+}
+
+#cmds {
+    float: right;
+    text-align: right;
+}
+
+#print {
+    font-weight: bold;
 }
 
 h1, h2 {

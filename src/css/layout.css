@@ -901,14 +901,13 @@ input[type=range]::-webkit-slider-thumb {
 
 .dialog {
     overflow:auto;
-    background:#f9d5d5;
-    background: #f9d5d5 linear-gradient(to bottom, #f9d5d5, #d3c6c6);
-
+    /*background:#f9d5d5;*/
+    background: #D9D9E0 linear-gradient(to bottom, #D9D9E0, #ABABB6 /*#B2B2CC, #86868A*/);
     color:#000;
-    padding:20px;
-    min-width:400px;
-    max-width:90%;
-    border-radius:6px
+    padding:15px;
+    min-width:33vw;
+    max-width:80wv;
+    border-radius:4px
 }
 
 .lity-container {
