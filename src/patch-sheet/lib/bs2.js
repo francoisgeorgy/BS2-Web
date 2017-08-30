@@ -112,53 +112,53 @@ var BS2 = (function BassStationII() {
         },
         lfo1: {
             name: 'LFO 1',
-            controls: [
-                control_id.lfo1_speed,
+            controls: [,
+                control_id.lfo1_wave,
                 control_id.lfo1_delay,
-                control_id.lfo1_wave],
-            nrpns: [
-                nrpn_id.lfo1_key_sync,
+                control_id.lfo1_speed],
+            nrpns: [,
+                nrpn_id.lfo1_slew,
                 nrpn_id.lfo1_speed_sync,
                 nrpn_id.lfo1_sync_value,
-                nrpn_id.lfo1_slew]
+                nrpn_id.lfo1_key_sync]
         },
         lfo2: {
             name: 'LFO 2',
-            controls: [
-                control_id.lfo2_speed,
+            controls: [,
+                control_id.lfo2_wave,
                 control_id.lfo2_delay,
-                control_id.lfo2_wave],
-            nrpns: [
+                control_id.lfo2_speed],
+            nrpns: [,
+                nrpn_id.lfo2_slew,
                 nrpn_id.lfo2_key_sync,
-                nrpn_id.lfo2_speed_sync,
                 nrpn_id.lfo2_sync_value,
-                nrpn_id.lfo2_slew]
+                nrpn_id.lfo2_key_sync]
         },
         osc1: {
             name: 'Osc 1',
             controls: [
-                control_id.osc1_fine,
                 control_id.osc1_range,
+                control_id.osc1_fine,
                 control_id.osc1_coarse,
                 control_id.osc1_mod_env_depth,
                 control_id.osc1_lfo1_depth,
                 control_id.osc1_mod_env_pw_mod,
-                control_id.osc1_lfo2_pw_mod,
-                control_id.osc1_manual_pw],
+                control_id.osc1_manual_pw,
+                control_id.osc1_lfo2_pw_mod],
             nrpns: [
                 nrpn_id.osc1_waveform]
         },
         osc2: {
             name: 'Osc 2',
             controls: [
-                control_id.osc2_fine,
                 control_id.osc2_range,
+                control_id.osc2_fine,
                 control_id.osc2_coarse,
                 control_id.osc2_mod_env_depth,
                 control_id.osc2_lfo1_depth,
                 control_id.osc2_mod_env_pw_mod,
-                control_id.osc2_lfo2_pw_mod,
                 control_id.osc2_manual_pw,
+                control_id.osc2_lfo2_pw_mod,
                 control_id.osc_1_2_sync],
             nrpns: [
                 nrpn_id.osc2_waveform]
@@ -169,9 +169,9 @@ var BS2 = (function BassStationII() {
                 control_id.mixer_osc_1_level,
                 control_id.mixer_osc_2_level,
                 control_id.mixer_sub_osc_level,
-                control_id.mixer_noise_level,
+                control_id.mixer_external_signal_level,
                 control_id.mixer_ring_mod_level,
-                control_id.mixer_external_signal_level],
+                control_id.mixer_noise_level],
             nrpns: []
         },
         filter: {
@@ -180,8 +180,8 @@ var BS2 = (function BassStationII() {
                 control_id.filter_type,
                 control_id.filter_slope,
                 control_id.filter_shape,
-                control_id.filter_frequency,
                 control_id.filter_resonance,
+                control_id.filter_frequency,
                 control_id.filter_mod_env_depth,
                 control_id.filter_lfo2_depth,
                 control_id.filter_overdrive],
@@ -235,24 +235,24 @@ var BS2 = (function BassStationII() {
         keyboard: {
             name: 'Keyboard',
             controls: [
-                control_id.portamento_time,
                 control_id.sustain,
-                control_id.velocity_amp_env,
-                control_id.velocity_mod_env],
+                control_id.portamento_time,
+                control_id.velocity_mod_env,
+                control_id.velocity_amp_env],
             nrpns: [
-                nrpn_id.aftertouch_filter_freq,
                 nrpn_id.aftertouch_lfo1_to_osc_pitch,
-                nrpn_id.aftertouch_lfo2_speed]
+                nrpn_id.aftertouch_lfo2_speed,
+                nrpn_id.aftertouch_filter_freq]
         },
         wheels: {
             name: 'Wheels',
             controls: [
                 control_id.osc_pitch_bend_range],
             nrpns: [
-                nrpn_id.mod_wheel_filter_freq,
                 nrpn_id.mod_wheel_lfo1_osc_pitch,
-                nrpn_id.mod_wheel_lfo2_filter_freq,
-                nrpn_id.mod_wheel_osc2_pitch]
+                nrpn_id.mod_wheel_osc2_pitch,
+                nrpn_id.mod_wheel_filter_freq,
+                nrpn_id.mod_wheel_lfo2_filter_freq]
         // },
         // others: {
         //     name: 'Others',

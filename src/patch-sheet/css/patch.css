@@ -4,6 +4,13 @@ body {
     font-size: 10pt;
 }
 
+#all-values, #only-changed {
+    float: right;
+    text-decoration: none;
+    /*display: block;*/
+    /*margin: 0 0 1rem 0;*/
+}
+
 h1, h2 {
     font-family: 'Roboto Condensed', sans-serif;
     font-weight: normal;

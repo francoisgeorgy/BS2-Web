@@ -6,9 +6,12 @@
 
     const DEVICE = BS2;
 
-    function _p(controls, list, id_prefix) {
+    function _p(controls, list, id_prefix, changedonly) {
         // $('#sheet').append(`<!--<table class="values">-->`);
         // var o = `<table class="values">`;
+
+        console.log(`changedonly=${changedonly}`);
+
         let o = '';
         for (let i=0; i < list.length; i++) {
 
@@ -22,7 +25,9 @@
                 v = c.value == 0 ? 'off' : 'on';
             }
 
-            let bold = c.changed() ? 'style="font-weight:bold"' : '';
+            if (changedonly && !c.changed()) continue;
+
+            let bold = !changedonly && c.changed() ? 'style="font-weight:bold"' : '';
 
             o += `<tr id="${id_prefix}-${list[i]}" title="${c.name}"><td ${bold}>${c.name}</td><td ${bold}>${v}</td></tr>`;
 
@@ -68,7 +73,7 @@
     }
 */
 
-    function renderGroup(group) {
+    function renderGroup(group, changedonly) {
         var o = '';
         if (DEVICE.control_groups.hasOwnProperty(group)) {
 
@@ -78,8 +83,8 @@
 
             //o += `<h2>${DEVICE.control_groups[group].name}</h2>`;
 
-            o += _p(DEVICE.control, DEVICE.control_groups[group].controls, 'control');
-            o += _p(DEVICE.nrpn, DEVICE.control_groups[group].nrpns, 'nrpn');
+            o += _p(DEVICE.control, DEVICE.control_groups[group].controls, 'control', changedonly);
+            o += _p(DEVICE.nrpn, DEVICE.control_groups[group].nrpns, 'nrpn', changedonly);
 
             o += `</table>`;
 
@@ -89,27 +94,44 @@
         return o;
     }
 
-    function renderPatch(template) {
+    function renderPatch(template, changedonly) {
         console.log('renderPatch');
         // let pi = DEVICE.meta.patch_id.value;
         // let pv = DEVICE.meta.patch_name.value;
         // if (pi && pv) {
+
+        if (changedonly) {
+            $('body').append('<a href="#" id="all-values">Show all values</a>');
+        } else {
+            $('body').append('<a href="#" id="only-changed">Show only the changed values from an init patch</a>');
+        }
+
         let s = `<h1>Bass Station II Patch <span id="patch-number">${DEVICE.meta.patch_id.value}</span> <span id="patch-name">${DEVICE.meta.patch_name.value}</span></h1>`;
         $('body').append(s);
+
         var t = $(template).filter('#template-main').html();
         var p = {
             "name": "Tater",
             "v": function () {
                 return function (text, render) {
-                    return renderGroup(text.trim().toLowerCase());
+                    return renderGroup(text.trim().toLowerCase(), changedonly);
                 }
             }
         };
         var o = Mustache.render(t, p);
         $('body').append(o);
+
+        $("#all-values").click(function(){
+            window.location = window.location.href.replace(/&changedonly[^&]*/g, '') + "&changedonly=0";
+        });
+
+        $("#only-changed").click(function(){
+            window.location = window.location.href.replace(/&changedonly[^&]*/g, '') + "&changedonly=1";
+        });
+
     }
 
-    function loadTemplate(data) {
+    function loadTemplate(data, changedonly) {
 
         console.log('loadTemplate', data);
 
@@ -126,7 +148,7 @@
                         if (d) {
                             if (DEVICE.setValuesFromSysex(d)) {
                                 console.log('device updated from sysex');
-                                renderPatch(template);
+                                renderPatch(template, changedonly);
                             } else {
                                 console.log('unable to update device from sysex');
                             }
@@ -144,12 +166,12 @@
 
                 if (DEVICE.setValuesFromSysex(d)) {
                     console.log('device updated from sysex');
-                    renderPatch(template);
+                    renderPatch(template, changedonly);
                 } else {
                     console.log('unable to update device from sysex');
                 }
             }
-            renderPatch(template);
+            renderPatch(template, changedonly);
         });
     }
 
@@ -181,6 +203,9 @@
             }
         }
 
+        let changedonly = getParameterByName('changedonly') === '1';
+
+        console.log('changedonly', changedonly);
         console.log(data);
 
         if (data) {
@@ -212,7 +237,7 @@
         // } else {
         //     loadTemplate(null);
         // }
-        loadTemplate(null);
+        loadTemplate(null, changedonly);
 
         // printall();
         // loadTemplate();

@@ -35,3 +35,7 @@ h2 {
     border-radius: 1mm;
     padding: 2mm;
 }
+
+#all-values, #only-changed {
+    display: none;
+}
