@@ -887,6 +887,7 @@
         }
     }
 
+
     //==================================================================================================================
     // UI main commands (buttons in header)
 
@@ -953,6 +954,35 @@
 
     }
     */
+
+    function printPatch() {
+
+        let v = BS2.getAllValues();
+        console.log('printPatch', v);
+
+        data = msgpack.encode(v);
+        // data = msgpack.encode(BS2.getAllValues());
+
+        let b64 = base64js.fromByteArray(data);
+
+
+        // b64 = window.btoa(unescape(encodeURIComponent(data)));
+        console.log(b64);
+
+        // let decoded = msgpack.decode(base64js.toByteArray(b64));
+        // console.log(decoded);
+
+        let url = 'patch-sheet/index.html?pack=' + b64;
+
+        console.log(url);
+
+        midi_window = window.open(url, '_blank', 'location=yes');
+
+        // var blob = new Blob([data], {type: 'application/octet-binary'}); // pass a useful mime type here
+        // console.log(blob);
+        // var url = URL.createObjectURL(blob);
+        // console.log(url);
+    }
 
     /**
      * header's "sync" button handler
@@ -1052,6 +1082,7 @@
         $('#randomize').click(randomize);
         $('#init').click(init);
         $('#load-patch').click(loadPatchFromFile);
+        $('#print-patch').click(printPatch);
         $('#patch-file').change(readFile);
         $('#settings').click(settingsDialog);
         $('#menu-midi').click(openMidiWindow);

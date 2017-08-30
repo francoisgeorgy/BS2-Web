@@ -1,20 +1,21 @@
 (function(){
 
-    const VERSION = '0.0.1';
+    const VERSION = '1.0.0';
 
     console.log(`Bass Station II Patch Sheet ${VERSION}`);
 
     const DEVICE = BS2;
-
 
     function _p(controls, list, id_prefix) {
         // $('#sheet').append(`<!--<table class="values">-->`);
         // var o = `<table class="values">`;
         let o = '';
         for (let i=0; i < list.length; i++) {
+
             let c = controls[list[i]];
             if (typeof c === 'undefined') continue;
-            // console.log(c.name, c.init_value, c.raw_value, c.value);
+
+            console.log(i, list[i], c.name, c.init_value, c.raw_value, c.value);
 
             let v = c.value;
             if (c.on_off) {
@@ -23,7 +24,7 @@
 
             let bold = c.changed() ? 'style="font-weight:bold"' : '';
 
-            o += `<tr id="${id_prefix}-${list[i]}" title="${c.name}"><td>${c.name}</td><td ${bold}>${v}</td></tr>`;
+            o += `<tr id="${id_prefix}-${list[i]}" title="${c.name}"><td ${bold}>${c.name}</td><td ${bold}>${v}</td></tr>`;
 
         }
         // $('#sheet').append(`</table>`);
@@ -70,7 +71,8 @@
     function renderGroup(group) {
         var o = '';
         if (DEVICE.control_groups.hasOwnProperty(group)) {
-            // console.log('group', group, DEVICE.control_groups[group]);
+
+            console.groupCollapsed('group', group, DEVICE.control_groups[group]);
 
             o = `<table id="${group}" class="values">`;
 
@@ -80,6 +82,9 @@
             o += _p(DEVICE.nrpn, DEVICE.control_groups[group].nrpns, 'nrpn');
 
             o += `</table>`;
+
+            console.groupEnd();
+
         }
         return o;
     }
@@ -105,10 +110,16 @@
     }
 
     function loadTemplate(data) {
-        $.get('templates/patch-sheet-template.html?kc123', function(template) {
+
+        console.log('loadTemplate', data);
+
+        $.get('templates/patch-sheet-template.html', function(template) {
             console.log('patch-sheet-template.html loaded');
             let d = null;
             if (data) {
+
+                console.log('loadTemplate: read sysex data');
+
                 for (let i=0; i<data.length; i++) {
                     if (data[i] === 240) {
                         console.log('start sysex');
@@ -128,6 +139,9 @@
                 }
             }
             if (d) {
+
+                console.log('loadTemplate: set values from sysex data');
+
                 if (DEVICE.setValuesFromSysex(d)) {
                     console.log('device updated from sysex');
                     renderPatch(template);
@@ -151,15 +165,27 @@
     }
 
     $(function () {
-        let s = getParameterByName('sysex');
-
-        let data = null;
-        if (s) {
-            data = hexToBytes(s);
-        }
-        // console.log(data);
 
         DEVICE.init();
+
+        let data = null;
+
+        let s = getParameterByName('sysex');
+        if (s) {
+            data = hexToBytes(s);
+        } else {
+            s = getParameterByName('pack');
+            if (s) {
+                // let decoded = msgpack.decode(base64js.toByteArray(b64));
+                data = msgpack.decode(base64js.toByteArray(s));
+            }
+        }
+
+        console.log(data);
+
+        if (data) {
+            DEVICE.setAllValues(data);
+        }
 
         // if (data) {
         //
@@ -186,7 +212,7 @@
         // } else {
         //     loadTemplate(null);
         // }
-        loadTemplate(data);
+        loadTemplate(null);
 
         // printall();
         // loadTemplate();

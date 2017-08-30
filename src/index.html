@@ -14,6 +14,8 @@
     <link href="css/layout.css" rel="stylesheet" />
     <script src="lib/js.cookie.js"></script>
     <script src="lib/webmidi.min.js"></script>
+    <script src="lib/base64js.min.js"></script>
+    <script src="lib/msgpack.min.js"></script>
     <script src="lib/tonal.min.js"></script>
     <script src="lib/envelope.js?ck"></script>
     <script src="lib/knob.js?ck"></script>
@@ -33,7 +35,7 @@
                 <span><a id="randomize" href="#">Randomize!</a></span>
                 <span><a id="init" href="#">Init</a></span>
                 <span><a id="load-patch" href="#" title="Load a patch from a file">Load patch</a></span>
-                <span><a href="#" title="display the current patch for printing">Print patch</a></span>
+                <span><a id="print-patch" href="#" title="display the current patch for printing">Print patch</a></span>
                 <span><a href="#" title="Sync with the connected Bass Station">Sync &#8651;</a></span>
                 <span><a id="menu-midi" href="#">Midi</a></span>
                 <span><a id="settings" href="#">Settings &#x2699;</a></span>
@@ -850,17 +852,19 @@
         <h1 style="margin-top:20px">Credits</h1>
         <p>This application uses the following Open Source components:</p>
         <p>
-        <ul>
-            <li>WebMidi.js helps you tame the Web MIDI API. <a href="https://github.com/cotejp/webmidi" target="_blank">https://github.com/cotejp/webmidi</a></li>
-            <li>Tonal: a functional music theory library for Javascript. <a href="https://github.com/danigb/tonal" target="_blank">https://github.com/danigb/tonal</a></li>
-            <li>Nice, downward compatible, touchable, jQuery dial. <a href="https://github.com/aterrien/jQuery-Knob" target="_blank">https://github.com/aterrien/jQuery-Knob</a></li>
-            <li>Lity: Lightweight, accessible and responsive lightbox. <a href="http://sorgalla.com/lity/">http://sorgalla.com/lity/</a></li>
-            <li>A simple, lightweight JavaScript API for handling browser cookies. <a href="https://github.com/js-cookie/js-cookie" target="_blank">https://github.com/js-cookie/js-cookie</a></li>
-            <li>jQuery is a fast, small, and feature-rich JavaScript library. <a href="https://jquery.com/" target="_blank">https://jquery.com/</a></li>
-            <li>Roboto font by Google. <a href="https://fonts.google.com/specimen/Roboto" target="_blank">https://fonts.google.com/specimen/Roboto</a></li>
-        </ul>
+            <ul>
+                <li>WebMidi.js helps you tame the Web MIDI API. <a href="https://github.com/cotejp/webmidi" target="_blank">https://github.com/cotejp/webmidi</a></li>
+                <li>Tonal: a functional music theory library for Javascript. <a href="https://github.com/danigb/tonal" target="_blank">https://github.com/danigb/tonal</a></li>
+                <!--<li>Nice, a downward compatible, touchable, jQuery dial. <a href="https://github.com/aterrien/jQuery-Knob" target="_blank">https://github.com/aterrien/jQuery-Knob</a></li>-->
+                <li>synth-ui-controls: web UI components for building synthesizer and midi tools and applications. <a href="https://github.com/francoisgeorgy/synth-ui-controls">https://github.com/francoisgeorgy/synth-ui-controls</a></li>
+                <li>Lity: a lightweight, accessible and responsive lightbox. <a href="http://sorgalla.com/lity/">http://sorgalla.com/lity/</a></li>
+                <li>js-cookie: a simple, lightweight JavaScript API for handling browser cookies. <a href="https://github.com/js-cookie/js-cookie" target="_blank">https://github.com/js-cookie/js-cookie</a></li>
+                <li>jQuery: a fast, small, and feature-rich JavaScript library. <a href="https://jquery.com/" target="_blank">https://jquery.com/</a></li>
+                <li>MessagePack: an efficient binary serialization format. <a href="http://msgpack.org/index.html" target="_blank">http://msgpack.org/index.html/</a></li>
+                <li>Roboto font by Google. <a href="https://fonts.google.com/specimen/Roboto" target="_blank">https://fonts.google.com/specimen/Roboto</a></li>
+            </ul>
         </p>
-        <p>I acknowledge and am grateful to these developers for their contributions to open source.</p>
+        <!--<p>I acknowledge and am grateful to these developers for their contributions to open source.</p>-->
         <p class="trademarks">
             Novation is a registered trade mark of Focusrite Audio Engineering Limited.<br />
             Bass Station II is a trade mark of Focusrite Audio Engineering Limited.
