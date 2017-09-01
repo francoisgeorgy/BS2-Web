@@ -13,6 +13,8 @@
     <!--<script src="lib/featherlight.min.js" type="text/javascript" charset="utf-8"></script>-->
     <link href="css/layout.css" rel="stylesheet" />
     <script src="lib/js.cookie.js"></script>
+    <link href="css/justcontext.css" rel="stylesheet" />
+    <script src="lib/justcontext.js"></script>
     <script src="lib/webmidi.min.js"></script>
     <script src="lib/base64js.min.js"></script>
     <script src="lib/msgpack.min.js"></script>
@@ -259,7 +261,7 @@
                 </div>
 
                 <div class="osc-pitch">
-                    <div class="knob-combo">
+                    <div class="knob-combo jctx-host jctx-id-cc-27">
                         <svg class="knob" id="cc-27" ></svg>
                         <div class="knob-label">Coarse</div>
                     </div>
@@ -268,6 +270,16 @@
                         <div class="knob-label">Fine</div>
                     </div>
                 </div>
+
+                <ul class="jctx jctx-id-cc-27 jctx-black jctx-black-shadow">
+                    <li data-action="cut">Cut</li>
+                    <li data-action="copy">Copy</li>
+                    <li data-action="paste">Paste</li>
+                    <hr>
+                    <li data-action="new_pkg">New package</li>
+                    <li data-action="new_cls">New class</li>
+                    <li data-action="new_intf" class="disabled">New interface (a disabled entry)</li>
+                </ul>
 
                 <div class="osc-mod">
                     <div class="knob-combo">
