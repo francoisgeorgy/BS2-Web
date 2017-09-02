@@ -301,17 +301,13 @@
             if (s) {
                 // let decoded = msgpack.decode(base64js.toByteArray(b64));
                 data = msgpack.decode(base64js.toByteArray(s));
+                if (data) {
+                    DEVICE.setAllValues(data);
+                }
             }
         }
 
         let changedonly = getParameterByName('changedonly') === '1';
-
-        console.log('changedonly', changedonly);
-        console.log(data);
-
-        if (data) {
-            DEVICE.setAllValues(data);
-        }
 
         // if (data) {
         //
