@@ -84,3 +84,20 @@ not possible anymore to enter a value with the keyboard. Only the mouse is suppo
 Novation is a registered trade mark of Focusrite Audio Engineering Limited.
 
 Bass Station II is a trade mark of Focusrite Audio Engineering Limited.
+
+# Useful links
+
+- http://beta.novationmusic.com/releases/bass_station_ii/
+- https://support.novationmusic.com/hc/en-gb/articles/206861739-How-do-I-Control-the-Arp-on-the-Bass-Station-II-from-an-external-Controller-
+- https://support.novationmusic.com/hc/en-gb/articles/207561465-How-to-export-User-presets-on-Bass-Station-II-
+- https://www.reddit.com/r/synthesizers/comments/3nh3pc/your_bass_station_2_tips_and_tricks/
+
+## Other BS2 editors
+
+- https://cycling74.com/projects/bass-station-ii-patch-editor
+
+
+# Recommended tools
+
+- https://github.com/gbevin/SendMIDI
+- https://github.com/gbevin/ReceiveMIDI
