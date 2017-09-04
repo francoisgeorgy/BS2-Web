@@ -911,8 +911,45 @@
     function savePatchToFile() {
         // DEVICE.control[DEVICE.control_id.osc1_coarse].raw_value = 0b10011001; // 153
         // DEVICE.control[DEVICE.control_id.osc2_coarse].raw_value = 0b10101010; // 170
-        let data = DEVICE.getSysExDump();
-        console.log(toHexString(data, ' '));
+
+        DEVICE.meta.patch_name.value = 'Yo Mama';
+
+        let data = DEVICE.getSysExDump();   // return Uint8Array
+
+        console.log(data, toHexString(data, ' '));
+        // console.log(encodeURIComponent(data));
+
+        // https://stackoverflow.com/questions/3665115/create-a-file-in-memory-for-user-to-download-not-through-server
+        // <a href="data:application/octet-stream;charset=utf-16le;base64,//5mAG8AbwAgAGIAYQByAAoA">text file</a>
+        // $('a.download').attr('href', 'data:application/csv;charset=utf-8,' + encodeURI(data));
+
+        let shadownlink = document.createElement('a');
+        // shadownlink.setAttribute('href', 'data:application/octet-stream,' + data);
+        // shadownlink.setAttribute('download', 'bs2-patch.syx');
+
+        let now = new Date();
+        let timestamp =
+            now.getUTCFullYear() + "-" +
+            ("0" + (now.getUTCMonth()+1)).slice(-2) + "-" +
+            ("0" + now.getUTCDate()).slice(-2) + "-" +
+            ("0" + now.getUTCHours()).slice(-2) + "" +
+            ("0" + now.getUTCMinutes()).slice(-2) + "" +
+            ("0" + now.getUTCSeconds()).slice(-2);
+
+        shadownlink.download = 'bs2-patch.' + timestamp + '.syx';
+        shadownlink.style.display = 'none';
+
+        let blob = new Blob([data], {type: "application/octet-stream"});
+        let url = window.URL.createObjectURL(blob);
+        shadownlink.href = url;
+
+        document.body.appendChild(shadownlink);
+        shadownlink.click();
+        document.body.removeChild(shadownlink);
+        setTimeout(function() {
+            return window.URL.revokeObjectURL(url);
+        }, 1000);
+
     }
 
 
@@ -975,6 +1012,7 @@
     /**
      * header's "export" button handler
      */
+/*
     function exportToFile() {
 
         //TODO: export as sysex
@@ -997,6 +1035,7 @@
         requestSysExDump();
 
     }
+*/
 
     /*
     function exportToJSOONFile() {

@@ -1894,6 +1894,23 @@ var BS2 = (function BassStationII() {
         data[2] = 0x20;
         data[3] = 0x29;
 
+        // - byte 05 is always 0x33
+        // - bytes 30..35 are always 0x01 0x00 0x43 0x40 0x20 0x00
+        // - byte 96 is always 0x40
+        // - byte 104 is always 0x40
+
+        console.log('init constant sysex bytes');
+        data[5] = 0x33;
+        data[30] = 0x01;
+        data[31] = 0x00;
+        data[32] = 0x43;
+        data[33] = 0x40;
+        data[34] = 0x20;
+        data[35] = 0x00;
+        data[96] = 0x40;
+        data[104] = 0x40;
+
+
         // CC
         for (let i=0; i < control.length; i++) {
 
@@ -1997,6 +2014,14 @@ var BS2 = (function BassStationII() {
             }
 
         } // NRPN
+
+        // Meta
+        if (meta.patch_name.value) {
+            //TODO: could probably be simplified
+            for (let i=0; i<meta.patch_name.sysex.mask.length; i++) {
+                data[meta.patch_name.sysex.offset + i] = meta.patch_name.value.charCodeAt(i) & meta.patch_name.sysex.mask[i];
+            }
+        }
 
         data[153] = 0xF7;
 
