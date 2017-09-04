@@ -82,6 +82,14 @@
     }
 
     //==================================================================================================================
+
+    function toHexString(byteArray, sep) {
+        return Array.from(byteArray, function(byte) {
+            return ('0' + (byte & 0xFF).toString(16)).slice(-2);
+        }).join(sep || '')
+    }
+
+    //==================================================================================================================
     // Midi messages handling
 
     var cc_expected = -1;
@@ -338,10 +346,14 @@
         updateUI();
 
         setStatus(`init done`);
+        console.log('init done');
 
         if (sendUpdate) updateConnectedDevice();
 
         console.groupEnd();
+
+        console.log(DEVICE.control);
+
     }
 
     /**
@@ -505,6 +517,8 @@
         _updateControls(DEVICE.nrpn);
 
         console.groupEnd();
+
+        console.log('updateControls() done');
 
     } // updateControls()
 
@@ -831,6 +845,7 @@
         updateControls();
         updateLinkedUIElements();
         updateMeta();
+        console.log('updateUI done');
         // updateCommands();
     }
 
@@ -866,6 +881,7 @@
         init(false);    // init DEVICE then UI without sending any CC to the DEVICE
 
         console.groupEnd();
+        console.log('setupUI done');
 
     }
 
@@ -888,6 +904,17 @@
         $('#patch-file').val('');
         lightbox = lity('#load-patch-dialog');
     }
+
+    /**
+     *
+     */
+    function savePatchToFile() {
+        // DEVICE.control[DEVICE.control_id.osc1_coarse].raw_value = 0b10011001; // 153
+        // DEVICE.control[DEVICE.control_id.osc2_coarse].raw_value = 0b10101010; // 170
+        let data = DEVICE.getSysExDump();
+        console.log(toHexString(data, ' '));
+    }
+
 
     /**
      * Handler for the #patch-file file input element in #load-patch
@@ -1120,6 +1147,7 @@
         $('#randomize').click(randomize);
         $('#init').click(init);
         $('#load-patch').click(loadPatchFromFile);
+        $('#save-patch').click(savePatchToFile);
         $('#print-patch').click(printPatch);
         $('#patch-file').change(readFile);
         $('#settings').click(settingsDialog);

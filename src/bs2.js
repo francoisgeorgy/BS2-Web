@@ -373,6 +373,7 @@ var BS2 = (function BassStationII() {
 
     var control = new Array(127);
     control.cc_type = 'cc';
+
     var nrpn = new Array(127);
     nrpn.cc_type = 'nrpn';
 
@@ -1033,16 +1034,18 @@ var BS2 = (function BassStationII() {
                     // obj.init_value = obj.max_raw >>> 1; // very simple rule: we take max/2 as default value
                     obj.init_value = (1 << (bits-1)) - 1; // very simple rule: we take max/2 as default value
                 } else {
-                    obj.init_value = Math.min(...obj.range);
+                    obj.init_value = Math.min(...obj.range);    // TODO: range or cc_range ???
                 }
             }
             if (!obj.hasOwnProperty('raw_value')) {
+                // console.log(`${obj.name}: raw ${obj.raw_value} = ${obj.init_value}`);
                 obj.raw_value = obj.init_value;
+                // console.log(`${obj.name}: raw=${obj.raw_value}`, control);
             }
             // obj.changed = () => obj.raw_value !== obj.init_value;
             obj.changed = function() {
                 let b = obj.raw_value !== obj.init_value;
-                console.log(`changed=${b}`);
+                // console.log(`changed=${b}`);
                 return b;
             }
             // if (!obj.hasOwnProperty('parse')) {
@@ -1687,7 +1690,7 @@ var BS2 = (function BassStationII() {
     function getRightShift(v) {
         if (!v) return -1;  //means there isn't any 1-bit
         let i = 0;
-        while ((v & 1) == 0) {
+        while ((v & 1) === 0) {
             i++;
             v = v>>1;
         }
@@ -1695,6 +1698,13 @@ var BS2 = (function BassStationII() {
     }
 
     /**
+     * getSetBits(0b10000000)
+     * 1
+     * getSetBits(0b10000001)
+     * 2
+     * getSetBits(0b11111111)
+     * 8
+     *
      * return the number of bit set
      */
     function getSetBits(v) {
@@ -1705,6 +1715,12 @@ var BS2 = (function BassStationII() {
     }
 
     /**
+     * getRightShift(0b00000001)
+     * 0
+     * getRightShift(0b10000000)
+     * 7
+     * getRightShift(0b00111000)
+     * 3
      *
      * @param lsb
      * @param mask_lsb
@@ -1815,17 +1831,17 @@ var BS2 = (function BassStationII() {
                 raw_value = v8(data[sysex.offset], sysex.mask[0]);
             }
 
-            // console.log(`${i} raw_value=${raw_value}`);
+            console.log(`${i} raw_value=${raw_value}`);
 
             if (sysex.hasOwnProperty('f')) {
                 raw_value = sysex.f(raw_value);
-                // console.log('${i} sysex.f(raw_value) =' + raw_value);
+                console.log('${i} sysex.f(raw_value) =' + raw_value);
             }
 
             let final_value = 0;
             final_value = controls[i].human(raw_value);
 
-            // console.log(`${i} finale_value(${raw_value}) = ${final_value}`);
+            console.log(`${i} finale_value(${raw_value}) = ${final_value} (${controls[i].name})`);
 
             controls[i]['raw_value'] = raw_value;
             controls[i]['value'] = final_value;
@@ -1859,11 +1875,148 @@ var BS2 = (function BassStationII() {
         return true;
     };
 
-    /*
-     var getValuesAsSysex = function() {
-     //TODO: export as sysex data
-     };
+    /**
+     * Create a SysEx dump data structure
      */
+    var getSysExDump = function() {
+
+        // MSB: most significant byte
+        // LSB: least significant byte
+        // msb: most significant bit
+        // lsb: least significant bit
+
+        console.group("getSysExDump", control);
+
+        let data = new Uint8Array(154); // TODO: create CONST for sysex length  // By default, the bytes are initialized to 0
+
+        data[0] = 0xF0;
+        data[1] = 0x00;
+        data[2] = 0x20;
+        data[3] = 0x29;
+
+        // CC
+        for (let i=0; i < control.length; i++) {
+
+            if (typeof control[i] === 'undefined') continue;
+            if (!control[i].hasOwnProperty('sysex')) continue;
+            let sysex = control[i].sysex;
+            if (!sysex.hasOwnProperty('mask')) continue;
+
+            let v = control[i].raw_value;
+
+            // console.log(`SYSEX [${i}] ${v} ${v.toString(2)}`);
+
+            if (sysex.mask.length === 2) {
+
+                // console.log(`mask[0]=${sysex.mask[0].toString(2)} mask[1]=${sysex.mask[1].toString(2)}`);
+
+                // the MSB always starts at the lsb (is always right aligned)
+
+                // left shift the value to apply the LSB mask
+                let r = getRightShift(sysex.mask[1]);
+                let v = control[i].raw_value << r;
+                let sysex_lsb = v & sysex.mask[1];
+
+                // console.log(`r=${r}, v=${v.toString(2)} lsb=${sysex_lsb.toString(2)}`);
+
+                // how many bits has gone into the sysex_lsb:
+                let n_bits_lsb = 7 - r;
+
+                // throw away those bits:
+                // let w = v;  //debug
+                v = control[i].raw_value >>> n_bits_lsb;       // Shift to the right, discarding bits shifted off, and shifting in zeroes from the left.
+
+                // console.log(`${control[i].raw_value.toString(2)} >>>${n_bits_lsb}>>> ${v.toString(2)}`);
+
+                // apply the MSB mask:
+                let sysex_msb = v & sysex.mask[0];
+
+                // console.log(`cc ${i}: sysex data[${sysex.offset}]: ${sysex_msb.toString(2)} ${sysex_lsb.toString(2)} (${control[i].name}, ${control[i].raw_value} ${control[i].raw_value.toString(2)})`);
+
+                // put the values in the sysex data:
+                data[sysex.offset]   |= sysex_msb;
+                data[sysex.offset+1] |= sysex_lsb;
+
+            } else {
+                let r = getRightShift(sysex.mask[0]);
+                v = v << r;     // shifts r bits to the left, shifting in zeroes from the right.
+                // console.log(`cc ${i}: sysex data[${sysex.offset}]: ${v.toString(2)} (${control[i].name})`);
+                data[sysex.offset] |= v;
+            }
+
+        } // CC
+
+        // NRPN
+        for (let i=0; i < nrpn.length; i++) {
+
+            if (typeof nrpn[i] === 'undefined') continue;
+            if (!nrpn[i].hasOwnProperty('sysex')) continue;
+            let sysex = nrpn[i].sysex;
+            if (!sysex.hasOwnProperty('mask')) continue;
+
+            let v = nrpn[i].raw_value;
+
+            // console.log(`SYSEX [${i}] ${v} ${v.toString(2)}`);
+
+            if (sysex.mask.length === 2) {
+
+                // console.log(`mask[0]=${sysex.mask[0].toString(2)} mask[1]=${sysex.mask[1].toString(2)}`);
+
+                // the MSB always starts at the lsb (is always right aligned)
+
+                // left shift the value to apply the LSB mask
+                let r = getRightShift(sysex.mask[1]);
+                let v = nrpn[i].raw_value << r;
+                let sysex_lsb = v & sysex.mask[1];
+
+                // console.log(`r=${r}, v=${v.toString(2)} lsb=${sysex_lsb.toString(2)}`);
+
+                // how many bits has gone into the sysex_lsb:
+                let n_bits_lsb = 7 - r;
+
+                // throw away those bits:
+                // let w = v;  //debug
+                v = nrpn[i].raw_value >>> n_bits_lsb;       // Shift to the right, discarding bits shifted off, and shifting in zeroes from the left.
+
+                // console.log(`${nrpn[i].raw_value.toString(2)} >>>${n_bits_lsb}>>> ${v.toString(2)}`);
+
+                // apply the MSB mask:
+                let sysex_msb = v & sysex.mask[0];
+
+                // console.log(`cc ${i}: sysex data[${sysex.offset}]: ${sysex_msb.toString(2)} ${sysex_lsb.toString(2)} (${nrpn[i].name}, ${nrpn[i].raw_value} ${nrpn[i].raw_value.toString(2)})`);
+
+                // put the values in the sysex data:
+                data[sysex.offset]   |= sysex_msb;
+                data[sysex.offset+1] |= sysex_lsb;
+
+            } else {
+                let r = getRightShift(sysex.mask[0]);
+                v = v << r;     // shifts r bits to the left, shifting in zeroes from the right.
+                // console.log(`cc ${i}: sysex data[${sysex.offset}]: ${v.toString(2)} (${nrpn[i].name})`);
+                data[sysex.offset] |= v;
+            }
+
+        } // NRPN
+
+        data[153] = 0xF7;
+
+        console.groupEnd();
+
+        // let s = '';
+        // for (let i=0; i<data.length; i++) {
+        //     s += data[i].toString(16) + ' ';
+        // }
+        // console.log(s);
+
+        // debug
+        // let v = validateSysEx(data);
+        // console.log('valid: ' + v);
+        // decodeSysExMeta(data);
+        // decodeSysExControls(data, control);
+        // decodeSysExControls(data, nrpn);
+
+        return data;
+    };
 
     /**
      *
@@ -2048,6 +2201,7 @@ var BS2 = (function BassStationII() {
         setAllValues,
         getADSREnv,
         setValuesFromSysex,
+        getSysExDump,
         doubleByteValue,
         getMidiMessagesForNormalCC
     };
