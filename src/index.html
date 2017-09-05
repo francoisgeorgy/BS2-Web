@@ -11,6 +11,7 @@
     <script src="lib/lity.min.js" type="text/javascript" charset="utf-8"></script>
     <!--<link href="lib/featherlight.min.css" rel="stylesheet" />-->
     <!--<script src="lib/featherlight.min.js" type="text/javascript" charset="utf-8"></script>-->
+    <link href="https://use.fontawesome.com/f0483cf390.css" rel="stylesheet" />
     <link href="css/layout.css" rel="stylesheet" />
     <script src="lib/js.cookie.js"></script>
     <script src="lib/webmidi.min.js"></script>
@@ -32,15 +33,18 @@
             <!--<div>MIDI</div>-->
             <!-- <span style="float:right"><img src="noun_583243_cc.svg" alt="Settings"></span> -->
             <div class="menu">
-                <span><a id="randomize" href="#">Randomize!</a></span>
-                <span><a id="init" href="#">Init</a></span>
-                <span><a id="load-patch" href="#" title="Load a patch from a file">Load patch</a></span>
-                <span><a id="save-patch" href="#" title="Save the current patch to a file">Save patch</a></span>
-                <span><a id="print-patch" href="#" title="display the current patch for printing">Print patch</a></span>
-                <span><a href="#" title="Sync with the connected Bass Station">Sync &#8651;</a></span>
-                <span><a id="menu-midi" href="#">Midi</a></span>
-                <span><a id="settings" href="#">Settings &#x2699;</a></span>
-                <span><a href="#">Help &#x3f;</a></span>
+                <i class="fa fa-heart-o" aria-hidden="true" alt="save as favorite" title="save as favorite"></i>
+                <i class="fa fa-history" aria-hidden="true" alt="view favorites" title="view favorites"></i>
+                <i class="fa fa-comment-o" aria-hidden="true" alt="add a comments" title="add a comments"></i>
+                <span><a id="randomize" href="#"><i class="fa fa-random" aria-hidden="true"></i> Randomize</a></span>
+                <span><a id="init" href="#"><i class="fa fa-bolt" aria-hidden="true"></i> Init</a></span>
+                <span><a id="load-patch" href="#" title="Load a patch from a file"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Load patch</a></span>
+                <span><a id="save-patch" href="#" title="Save the current patch to a file"><i class="fa fa-save" aria-hidden="true"></i> Save patch</a></span>
+                <span><a id="print-patch" href="#" title="display the current patch for printing"><i class="fa fa-print" aria-hidden="true"></i> Print patch</a></span>
+                <span><a href="#" title="Sync with the connected Bass Station"><i class="fa fa-refresh" aria-hidden="true"></i> Sync</a></span> <!--&#8651;-->
+                <span><a id="menu-midi" href="#"><i class="fa fa-exchange" aria-hidden="true"></i> Midi</a></span>
+                <span><a id="settings" href="#"><i class="fa fa-cog" aria-hidden="true"></i> Settings</a></span>    <!--&#x2699;-->
+                <span><a href="#"><i class="fa fa-question" aria-hidden="true"></i> Help</a></span>      <!--&#x3f;-->
             </div>
         </div>
 
