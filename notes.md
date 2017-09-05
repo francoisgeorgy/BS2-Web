@@ -34,3 +34,15 @@ _FUNCTION_ button + _LATCH_ button:
     0000070: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
     0000080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
     0000090: 00 00 00 00 00 00 00 00 00 f7                    ..........
+
+
+# Resources
+
+### Icons
+
+- http://fontawesome.io/icons/
+
+### HTML5 storage
+
+- http://opensourceforu.com/2012/04/html5-localstorage-offline-web-applications/
+- https://developer.mozilla.org/en-US/docs/Web/API/Storage
