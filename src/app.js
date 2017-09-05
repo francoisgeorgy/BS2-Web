@@ -2,6 +2,8 @@
 
     const VERSION = '2.0.0';
 
+    const URL_PARAM_SYSEX = 'sysex';    // name of sysex parameter in the query-string
+
     console.log(`Bass Station II Web Interface ${VERSION}`);
 
     function toggleOnOff(selector, bool) {
@@ -87,6 +89,15 @@
         return Array.from(byteArray, function(byte) {
             return ('0' + (byte & 0xFF).toString(16)).slice(-2);
         }).join(sep || '')
+    }
+
+    /**
+     * Get a link for the current patch
+     *
+     */
+    function getCurrentPatchAsLink() {
+        // window.location.href.split('?')[0] is the current URL without the query-string if any
+        return window.location.href.split('?')[0] + '?' + URL_PARAM_SYSEX + '=' + toHexString(DEVICE.getSysExDump());
     }
 
     //==================================================================================================================
@@ -355,6 +366,7 @@
         console.log(DEVICE.control);
 
     }
+
 
     /**
      *
@@ -886,6 +898,45 @@
     }
 
     //==================================================================================================================
+    // Favorites dialog
+
+    function getFavorites() {
+        let fav = localStorage.getItem('favorites');
+        console.log('loaded favorites:', fav);
+        return fav ? JSON.parse(fav) : [];
+    }
+
+    /**
+     * Add the current preset to the list of favorites preset in the local storage
+     */
+    function addToFavorites() {
+        let name = $('#add-favorite-patch-name').val();
+        let u = getCurrentPatchAsLink();
+        console.log(`add to favorites: name=${name}, url=${u}`);
+        let favorites = getFavorites();
+        favorites.push({
+            name: name,
+            url: u
+        });
+        localStorage.setItem('favorites', JSON.stringify(favorites));
+    }
+
+    function openFavoritesDialog() {
+
+        let favorites = getFavorites();
+        $('#favorites-dialog-list').append(favorites.map((o, i) => {
+            console.log(o, i);
+            return $("<option>").val(o.name).text(o.name);
+        }));
+
+        lightbox = lity('#favorites-dialog');
+    }
+
+    function closeFavoritesDialog() {
+        lightbox.close();
+    }
+
+    //==================================================================================================================
     // Patch file handling
 
     var lightbox = null;
@@ -1182,7 +1233,7 @@
         $('#midi-channel').change(setMidiChannel);
 
 */
-
+        $('#add-favorite').click(openFavoritesDialog);
         $('#randomize').click(randomize);
         $('#init').click(init);
         $('#load-patch').click(loadPatchFromFile);
@@ -1204,6 +1255,10 @@
         });
 */
 
+        $('#bt-add-favorite').click(function(){
+            addToFavorites();
+            closeFavoritesDialog();
+        });
     }
 
     //==================================================================================================================

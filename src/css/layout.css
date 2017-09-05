@@ -77,6 +77,7 @@ body {
     font-weight: 400;
 }
 
+
 /*
     h1,
     h2 {
@@ -174,6 +175,17 @@ body {
     border-bottom: var(--inset-width) solid black;
     border-left: var(--inset-width) solid gray;
     border-right: var(--inset-width) solid black;
+}
+
+#main select {
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 1rem;
+    color: var(--value);
+    background-color: var(--default-bg-to);
+    border-color: var(--select-border);
+    border-radius: 3px;
+    /*border: none;*/
+    margin-top: -1px;
 }
 
 .control-row {
@@ -314,17 +326,6 @@ div.controls {
 #lfo2 {
     grid-column: 1;
     grid-row: 3;
-}
-
-select {
-    font-family: 'Roboto Condensed', sans-serif;
-    font-size: 1rem;
-    color: var(--value);
-    background-color: var(--default-bg-to);
-    border-color: var(--select-border);
-    border-radius: 3px;
-    /*border: none;*/
-    margin-top: -1px;
 }
 
 
