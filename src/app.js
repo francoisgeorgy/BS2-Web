@@ -924,12 +924,12 @@
     function openFavoritesDialog() {
 
         let favorites = getFavorites();
-        $('#favorites-dialog-list').append(favorites.map((o, i) => {
+        $('#fav-dialog-list').append(favorites.map((o, i) => {
             console.log(o, i);
             return $("<option>").val(o.name).text(o.name);
         }));
 
-        lightbox = lity('#favorites-dialog');
+        lightbox = lity('#fav-dialog');
     }
 
     function closeFavoritesDialog() {
@@ -1255,7 +1255,7 @@
         });
 */
 
-        $('#bt-add-favorite').click(function(){
+        $('#add-favorite-bt').click(function(){
             addToFavorites();
             closeFavoritesDialog();
         });
