@@ -1127,7 +1127,7 @@
         // let decoded = msgpack.decode(base64js.toByteArray(b64));
         // console.log(decoded);
 
-        let url = 'patch-sheet/index.html?pack=' + b64;
+        let url = 'print.html?pack=' + b64;
 
         console.log(url);
 
