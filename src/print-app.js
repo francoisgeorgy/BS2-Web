@@ -6,6 +6,8 @@
 
     const DEVICE = BS2;
 
+    const URL_PARAM_SYSEX = 'sysex';    // name of sysex parameter in the query-string
+
 /*
     function _p(controls, list, id_prefix, changedonly) {
         // $('#sheet').append(`<!--<table class="values">-->`);
@@ -276,16 +278,7 @@
         });
     }
 
-    function getParameterByName(name) {
-        var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
-        return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
-    }
 
-    function hexToBytes(hex) {
-        for (var bytes = [], c = 0; c < hex.length; c += 2)
-            bytes.push(parseInt(hex.substr(c, 2), 16));
-        return bytes;
-    }
 
     $(function () {
 
@@ -293,13 +286,13 @@
 
         let data = null;
 
-        let s = getParameterByName('sysex');
+        let s = Utils.getParameterByName('sysex');
         if (s) {
-            data = hexToBytes(s);
+            data = Utils.fromHexString(s);
+            DEVICE.setValuesFromSysex(data);
         } else {
             s = getParameterByName('pack');
             if (s) {
-                // let decoded = msgpack.decode(base64js.toByteArray(b64));
                 data = msgpack.decode(base64js.toByteArray(s));
                 if (data) {
                     DEVICE.setAllValues(data);
@@ -309,35 +302,8 @@
 
         let changedonly = getParameterByName('changedonly') === '1';
 
-        // if (data) {
-        //
-        //     let d = null;
-        //     for (let i=0; i<data.length; i++) {
-        //         if (data[i] == 240) {
-        //             if (d) {
-        //                 console.log(d);
-        //
-        //                 if (DEVICE.setValuesFromSysex(d)) {
-        //                     console.log('device updated from sysex');
-        //                     loadTemplate(d);
-        //                 } else {
-        //                     console.log('unable to update device from sysex');
-        //                 }
-        //
-        //             }
-        //             d = [];
-        //         }
-        //         d.push(data[i]);
-        //     }
-        //     console.log('data', d);
-        //
-        // } else {
-        //     loadTemplate(null);
-        // }
         loadTemplate(null, changedonly);
 
-        // printall();
-        // loadTemplate();
     });
 
-})(); // Call the anonymous function once, then throw it away!
+})();

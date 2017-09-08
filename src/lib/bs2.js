@@ -1196,13 +1196,14 @@ var BS2 = (function BassStationII() {
         };
         nrpn[nrpn_id.lfo1_sync_value] = { // 87
             name: "LFO1 Sync Value",
-            msb: -1,
+            // msb: -1,
             cc_range: [0, 34],
             // max_raw: 34,
             human: v => LFO_SYNC[v],
             sysex: {
                 offset: 67,
-                mask: [0x07, 0xE0]  // OK
+                // mask: [0x07, 0xE0]
+                mask: [0x07, 0x70]  // OK
             }
         };
         // FN key "Slew LFO 1"
@@ -1684,50 +1685,13 @@ var BS2 = (function BassStationII() {
     ];
 
     /**
-     * Returns the number of bit 0 before the rightmost bit set to 1.
-     * @param {*} v
-     */
-    function getRightShift(v) {
-        if (!v) return -1;  //means there isn't any 1-bit
-        let i = 0;
-        while ((v & 1) === 0) {
-            i++;
-            v = v>>1;
-        }
-        return i;
-    }
-
-    /**
-     * getSetBits(0b10000000)
-     * 1
-     * getSetBits(0b10000001)
-     * 2
-     * getSetBits(0b11111111)
-     * 8
-     *
-     * return the number of bit set
-     */
-    function getSetBits(v) {
-        for (var c = 0; v; c++) {
-            v &= v - 1; // clear the least significant bit set
-        }
-        return c;
-    }
-
-    /**
-     * getRightShift(0b00000001)
-     * 0
-     * getRightShift(0b10000000)
-     * 7
-     * getRightShift(0b00111000)
-     * 3
      *
      * @param lsb
      * @param mask_lsb
      * @returns {number}
      */
     function v8(lsb, mask_lsb) {
-        let r = getRightShift(mask_lsb);
+        let r = Utils.getRightShift(mask_lsb);
         let b = (lsb & mask_lsb) >> r;
         return b;
     }
@@ -1741,8 +1705,8 @@ var BS2 = (function BassStationII() {
      * @returns {number}
      */
     function v16(msb, lsb, mask_msb, mask_lsb) {
-        let r = getRightShift(mask_lsb);
-        let s = getSetBits(mask_lsb);
+        let r = Utils.getRightShift(mask_lsb);
+        let s = Utils.getSetBits(mask_lsb);
         let a = (msb & mask_msb) << s;
         let b = (lsb & mask_lsb) >> r;
         return a + b;
@@ -1806,7 +1770,7 @@ var BS2 = (function BassStationII() {
      */
     var decodeSysExControls = function(data, controls) {
 
-        console.groupCollapsed('decodeSysExControls');
+        // console.groupCollapsed('decodeSysExControls');
 
         for (let i=0; i < controls.length; i++) {
 
@@ -1831,17 +1795,17 @@ var BS2 = (function BassStationII() {
                 raw_value = v8(data[sysex.offset], sysex.mask[0]);
             }
 
-            console.log(`${i} raw_value=${raw_value}`);
+            // console.log(`${i} raw_value=${raw_value}`);
 
             if (sysex.hasOwnProperty('f')) {
                 raw_value = sysex.f(raw_value);
-                console.log('${i} sysex.f(raw_value) =' + raw_value);
+                // console.log('${i} sysex.f(raw_value) =' + raw_value);
             }
 
             let final_value = 0;
             final_value = controls[i].human(raw_value);
 
-            console.log(`${i} finale_value(${raw_value}) = ${final_value} (${controls[i].name})`);
+            // console.log(`${i} ${controls[i].cc_type}-${controls[i].cc_number} raw_value=${raw_value} human=${final_value} (${controls[i].name})`);
 
             controls[i]['raw_value'] = raw_value;
             controls[i]['value'] = final_value;
@@ -1885,7 +1849,7 @@ var BS2 = (function BassStationII() {
         // msb: most significant bit
         // lsb: least significant bit
 
-        console.group("getSysExDump", control);
+        // console.group("getSysExDump", control);
 
         let data = new Uint8Array(154); // TODO: create CONST for sysex length  // By default, the bytes are initialized to 0
 
@@ -1930,7 +1894,7 @@ var BS2 = (function BassStationII() {
                 // the MSB always starts at the lsb (is always right aligned)
 
                 // left shift the value to apply the LSB mask
-                let r = getRightShift(sysex.mask[1]);
+                let r = Utils.getRightShift(sysex.mask[1]);
                 let v = control[i].raw_value << r;
                 let sysex_lsb = v & sysex.mask[1];
 
@@ -1955,7 +1919,7 @@ var BS2 = (function BassStationII() {
                 data[sysex.offset+1] |= sysex_lsb;
 
             } else {
-                let r = getRightShift(sysex.mask[0]);
+                let r = Utils.getRightShift(sysex.mask[0]);
                 v = v << r;     // shifts r bits to the left, shifting in zeroes from the right.
                 // console.log(`cc ${i}: sysex data[${sysex.offset}]: ${v.toString(2)} (${control[i].name})`);
                 data[sysex.offset] |= v;
@@ -1982,7 +1946,7 @@ var BS2 = (function BassStationII() {
                 // the MSB always starts at the lsb (is always right aligned)
 
                 // left shift the value to apply the LSB mask
-                let r = getRightShift(sysex.mask[1]);
+                let r = Utils.getRightShift(sysex.mask[1]);
                 let v = nrpn[i].raw_value << r;
                 let sysex_lsb = v & sysex.mask[1];
 
@@ -2007,7 +1971,7 @@ var BS2 = (function BassStationII() {
                 data[sysex.offset+1] |= sysex_lsb;
 
             } else {
-                let r = getRightShift(sysex.mask[0]);
+                let r = Utils.getRightShift(sysex.mask[0]);
                 v = v << r;     // shifts r bits to the left, shifting in zeroes from the right.
                 // console.log(`cc ${i}: sysex data[${sysex.offset}]: ${v.toString(2)} (${nrpn[i].name})`);
                 data[sysex.offset] |= v;
@@ -2155,6 +2119,50 @@ var BS2 = (function BassStationII() {
     };
 
     /**
+     * @param groups Array of group names. Specify which control groups to randomize. Exemple: ["sub", "lfo1", "lfo2", "osc1", "osc2"]
+     */
+    var randomize = function(groups) {
+
+        console.log('randomize()', groups);
+
+        for (let i=0; i<groups.length; i++) {
+
+            // console.log(groups[i]);
+
+            let g = control_groups[groups[i]];
+            for (let i=0; i < g.controls.length; i++) {
+
+                let c;
+                let t = g.controls[i].type;
+                let n = g.controls[i].number;
+                if (t === 'cc') {
+                    c = control[n];
+                } else if (t === 'nrpn') {
+                    c = nrpn[n];
+                } else {
+                    console.error(`invalid control type: ${g.controls[i].type}`)
+                }
+
+                let v;
+                if (c.hasOwnProperty('randomize')) {
+                    v = c.randomize;
+                } else {
+                    if (c.on_off) {
+                        v = Math.round(Math.random());
+                        // console.log(`randomize #${c.cc_type}-${i}=${v} with 0|1 value = ${v}`);
+                    } else {
+                        let min = Math.min(...c.cc_range);
+                        v = Math.round(Math.random() * (Math.max(...c.cc_range) - min)) + min;  //TODO: step
+                        // console.log(`randomize #${c.cc_type}-${c.cc_number}=${v} with min=${min} c.max_raw=${Math.max(...c.cc_range)}, v=${v}`);
+                    }
+                }
+                c.raw_value = v;
+            }
+        }
+
+    }
+
+    /**
      *
      */
     var init = function() {
@@ -2220,6 +2228,7 @@ var BS2 = (function BassStationII() {
         ARP_NOTES_MODE,
         ARP_OCTAVES,
         init,
+        randomize,
         getControlValue,
         setControlValue,
         getAllValues,

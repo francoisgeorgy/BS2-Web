@@ -38,6 +38,7 @@
 
     function setStatus(msg) {
         $('#status').removeClass("error").text(msg);
+        console.log(msg);
     }
 
     function setStatusError(msg) {
@@ -85,11 +86,6 @@
 
     //==================================================================================================================
 
-    function toHexString(byteArray, sep) {
-        return Array.from(byteArray, function(byte) {
-            return ('0' + (byte & 0xFF).toString(16)).slice(-2);
-        }).join(sep || '')
-    }
 
     /**
      * Get a link for the current patch
@@ -97,7 +93,7 @@
      */
     function getCurrentPatchAsLink() {
         // window.location.href.split('?')[0] is the current URL without the query-string if any
-        return window.location.href.split('?')[0] + '?' + URL_PARAM_SYSEX + '=' + toHexString(DEVICE.getSysExDump());
+        return window.location.href.split('?')[0] + '?' + URL_PARAM_SYSEX + '=' + Utils.toHexString(DEVICE.getSysExDump());
     }
 
     //==================================================================================================================
@@ -349,113 +345,24 @@
      *
      */
     function init(sendUpdate = true) {
-
         console.group(`init(${sendUpdate})`);
-
         DEVICE.init();
-
         updateUI();
-
         setStatus(`init done`);
-        console.log('init done');
-
         if (sendUpdate) updateConnectedDevice();
-
         console.groupEnd();
-
-        console.log(DEVICE.control);
-
     }
-
 
     /**
      *
      */
     function randomize() {
-
-/*
-        function _randomize(controls) {
-
-            for (let i=0; i < controls.length; i++) {
-
-                let c = controls[i];
-                if (typeof c === 'undefined') continue;
-
-                let v;
-                if (c.hasOwnProperty('randomize')) {
-                    v = c.randomize;
-                } else {
-                    if (c.on_off) {
-                        v = Math.round(Math.random());
-                        console.log(`randomize #${c.cc_type}-${i}=${v} with 0|1 value = ${v}`);
-                    } else {
-                        let min = Math.min(...c.cc_range);
-                        v = Math.round(Math.random() * (Math.max(...c.cc_range) - min)) + min;  //TODO: step
-                        console.log(`randomize #${c.cc_type}-${i}=${v} with min=${min} c.max_raw=${Math.max(...c.cc_range)}, v=${v}`);
-                    }
-                }
-                c.raw_value = v;
-            }
-        }
-*/
-
         console.groupCollapsed(`randomize`);
-
-/*
-        // concatenate the indexes of the controls/nrpns set for randomization:
-        let randomize_controls = [];
-        let randomize_nrpns = [];
-        for (let i=0; i<settings.randomize.length; i++) {
-            randomize_controls.push(...BS2.control_groups[settings.randomize[i]].controls);
-            randomize_nrpns.push(...BS2.control_groups[settings.randomize[i]].nrpns);
-        }
-
-        _randomize(DEVICE.control.filter((element, index) => randomize_controls.includes(index)));
-        _randomize(DEVICE.nrpn.filter((element, index) => randomize_nrpns.includes(index)));
-*/
-
-        for (let i=0; i<settings.randomize.length; i++) {
-            console.log(settings.randomize[i]);
-            let g = DEVICE.control_groups[settings.randomize[i]];
-            for (let i=0; i < g.controls.length; i++) {
-
-                let c;
-                let t = g.controls[i].type;
-                let n = g.controls[i].number;
-                if (t === 'cc') {
-                    c = DEVICE.control[n];
-                } else if (t === 'nrpn') {
-                    c = DEVICE.nrpn[n];
-                } else {
-                    console.error(`invalid control type: ${g.controls[i].type}`)
-                }
-
-                let v;
-                if (c.hasOwnProperty('randomize')) {
-                    v = c.randomize;
-                } else {
-                    if (c.on_off) {
-                        v = Math.round(Math.random());
-                        console.log(`randomize #${c.cc_type}-${i}=${v} with 0|1 value = ${v}`);
-                    } else {
-                        let min = Math.min(...c.cc_range);
-                        v = Math.round(Math.random() * (Math.max(...c.cc_range) - min)) + min;  //TODO: step
-                        console.log(`randomize #${c.cc_type}-${i}=${v} with min=${min} c.max_raw=${Math.max(...c.cc_range)}, v=${v}`);
-                    }
-                }
-                c.raw_value = v;
-            }
-
-        }
-
+        DEVICE.randomize(settings.randomize);
         console.groupEnd();
-
         updateUI();
-
         setStatus(`randomize done`);
-
         updateConnectedDevice();
-
     }
 
     //==================================================================================================================
@@ -890,8 +797,6 @@
         setupMenu();
         // updateCommands();
 
-        init(false);    // init DEVICE then UI without sending any CC to the DEVICE
-
         console.groupEnd();
         console.log('setupUI done');
 
@@ -963,11 +868,11 @@
         // DEVICE.control[DEVICE.control_id.osc1_coarse].raw_value = 0b10011001; // 153
         // DEVICE.control[DEVICE.control_id.osc2_coarse].raw_value = 0b10101010; // 170
 
-        DEVICE.meta.patch_name.value = 'Yo Mama';
+        // DEVICE.meta.patch_name.value = 'Yo Mama';
 
         let data = DEVICE.getSysExDump();   // return Uint8Array
 
-        console.log(data, toHexString(data, ' '));
+        console.log(data, Utils.toHexString(data, ' '));
         // console.log(encodeURIComponent(data));
 
         // https://stackoverflow.com/questions/3665115/create-a-file-in-memory-for-user-to-download-not-through-server
@@ -1111,32 +1016,14 @@
     */
 
     function printPatch() {
-
         let v = BS2.getAllValues();
-        console.log('printPatch', v);
-
-        data = msgpack.encode(v);
-        // data = msgpack.encode(BS2.getAllValues());
-
-        let b64 = base64js.fromByteArray(data);
-
-
-        // b64 = window.btoa(unescape(encodeURIComponent(data)));
-        console.log(b64);
-
+        console.log('printPatch');
+        // data = msgpack.encode(v);
+        // let b64 = base64js.fromByteArray(data);
         // let decoded = msgpack.decode(base64js.toByteArray(b64));
-        // console.log(decoded);
-
-        let url = 'print.html?pack=' + b64;
-
-        console.log(url);
-
+        // let url = 'print.html?pack=' + b64;
+        let url = 'print.html?' + URL_PARAM_SYSEX + '=' + Utils.toHexString(DEVICE.getSysExDump());
         window.open(url, '_blank', 'width=800,height=600,location,resizable,scrollbars,status');
-
-        // var blob = new Blob([data], {type: 'application/octet-binary'}); // pass a useful mime type here
-        // console.log(blob);
-        // var url = URL.createObjectURL(blob);
-        // console.log(url);
     }
 
     /**
@@ -1191,10 +1078,6 @@
         }
     }
 
-
-    /**
-     *
-     */
 /*
     function updateCommands() {
         toggleOnOff('#cmd-sync', !!midi_output);
@@ -1203,8 +1086,6 @@
     }
 */
 
-
-
     var midi_window = null;
     function openMidiWindow() {
         midi_window = window.open("midi.html", '_midi', 'location=no,height=480,width=640,scrollbars=yes,status=no');
@@ -1212,26 +1093,16 @@
         // $("midi", midi_window)
     }
 
-
-
     /**
      *
      */
     function setupMenu() {
 /*
-        console.log('setupCommands');
         $('#cmd-sync').click(syncUIwithBS2);
         $('#cmd-send').click(updateConnectedDevice);
-
-        // $('#cmd-save').click(saveInLocalStorage);
-
-        // $('#cmd-export').click(exportToFile);    //TODO: fixme
         // $('#cmd-record').click(record);
         // $('#cmd-play').click(play);
-
-
         $('#midi-channel').change(setMidiChannel);
-
 */
         $('#add-favorite').click(openFavoritesDialog);
         $('#randomize').click(randomize);
@@ -1243,18 +1114,7 @@
         $('#settings').click(settingsDialog);
         $('#menu-midi').click(openMidiWindow);
         //$('.reset-handler').click(resetGroup);  // TODO
-
         $('#played-note').click(playLastNote);
-
-/*
-        $( "#midi-popup" ).dialog({
-            // dialogClass: "no-close",
-            autoOpen: false,
-            title: "MIDI messages",
-            buttons: []
-        });
-*/
-
         $('#add-favorite-bt').click(function(){
             addToFavorites();
             closeFavoritesDialog();
@@ -1518,7 +1378,7 @@
     var midi_output = null;
     var midi_channel = 1;
     var ignore_next_sysex = false;
-    var sysex_received_callback = false;
+    // var sysex_received_callback = false;
     var last_sysex_data = null;     // last sysex dump received
 
     var knobs = {};
@@ -1535,6 +1395,8 @@
 
         setupUI();
 
+        init(false);    // init DEVICE then UI without sending any CC to the DEVICE
+
         setStatus("Waiting for MIDI interface...");
 
         WebMidi.enable(function (err) {
@@ -1544,6 +1406,21 @@
                 console.log('webmidi err', err);
 
                 setStatusError("ERROR: WebMidi could not be enabled.");
+
+
+                let s = Utils.getParameterByName('sysex');
+                if (s) {
+                    console.log('sysex param present');
+                    let data = Utils.fromHexString(s);
+                    if (DEVICE.setValuesFromSysex(data)) {
+                        console.log('sysex param OK');
+                        updateUI();
+                    } else {
+                        console.log('unable to set value from sysex param');
+                    }
+                }
+
+
 
             } else {
 
@@ -1577,8 +1454,25 @@
                     setMidiOutStatus(false);
                 }
 
-                // ask the BS2 to send us its current patch:
-                requestSysExDump(); //FIXME: what if the mdi_input is not yet ready?
+
+
+                let s = Utils.getParameterByName('sysex');
+                if (s) {
+                    console.log('sysex param present');
+                    let data = Utils.fromHexString(s);
+                    if (DEVICE.setValuesFromSysex(data)) {
+                        console.log('sysex param OK');
+                        updateUI();
+                        updateConnectedDevice();
+                    } else {
+                        console.log('unable to set value from sysex param');
+                    }
+                } else {
+                    // ask the BS2 to send us its current patch:
+                    requestSysExDump(); //FIXME: what if the mdi_input is not yet ready?
+                }
+
+
 
             }
 
@@ -1586,4 +1480,4 @@
 
     });
 
-})(); // Call the anonymous function once, then throw it away!
+})();
