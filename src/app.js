@@ -1088,7 +1088,7 @@
 
     var midi_window = null;
     function openMidiWindow() {
-        midi_window = window.open("midi.html", '_midi', 'location=no,height=480,width=640,scrollbars=yes,status=no');
+        midi_window = window.open("midi.html", '_midi', 'location=no,height=480,width=300,scrollbars=yes,status=no');
         // $("#midi-popup").dialog("open");
         // $("midi", midi_window)
     }

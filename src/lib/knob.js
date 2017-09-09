@@ -118,6 +118,9 @@
         // between this values the track will be hidden:
         let split_track_zero  = Math.PI * 0.5;
         let split_track_zero_value = Math.floor(((config.value_max - config.value_min) / 2.0) / config.value_resolution) * config.value_resolution;
+
+        console.log(`${element.id}: split_track_zero_value=${split_track_zero_value}`);
+
         // let split_track_zero_left  = Math.PI * 0.5 * 1.01; // 1%
         // let split_track_zero_right  = Math.PI * 0.5 * 0.99; // 1%
 

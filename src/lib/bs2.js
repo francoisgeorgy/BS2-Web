@@ -469,6 +469,7 @@ var BS2 = (function BassStationII() {
         control[control_id.osc2_fine] = { // 29 (MSB), 61 (LSB)
             name: "Osc2 Fine",
             lsb: 61,
+            cc_range: [27, 228],
             range: [-100,100],
             human: _100,
             sysex: {

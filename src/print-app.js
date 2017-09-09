@@ -291,7 +291,7 @@
             data = Utils.fromHexString(s);
             DEVICE.setValuesFromSysex(data);
         } else {
-            s = getParameterByName('pack');
+            s = Utils.getParameterByName('pack');
             if (s) {
                 data = msgpack.decode(base64js.toByteArray(s));
                 if (data) {
@@ -300,7 +300,7 @@
             }
         }
 
-        let changedonly = getParameterByName('changedonly') === '1';
+        let changedonly = Utils.getParameterByName('changedonly') === '1';
 
         loadTemplate(null, changedonly);
 
