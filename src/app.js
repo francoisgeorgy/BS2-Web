@@ -1,10 +1,5 @@
 (function(){
 
-    const VERSION = '2.0.0';
-
-    const URL_PARAM_SYSEX = 'sysex';    // name of sysex parameter in the query-string
-
-    console.log(`Bass Station II Web Interface ${VERSION}`);
 
     function toggleOnOff(selector, bool) {
         if (bool) {
@@ -351,6 +346,7 @@
         setStatus(`init done`);
         if (sendUpdate) updateConnectedDevice();
         console.groupEnd();
+        return false;   // disable the normal href behavior
     }
 
     /**
@@ -363,6 +359,7 @@
         updateUI();
         setStatus(`randomize done`);
         updateConnectedDevice();
+        return false;   // disable the normal href behavior
     }
 
     //==================================================================================================================
@@ -807,8 +804,30 @@
 
     function getFavorites() {
         let fav = localStorage.getItem('favorites');
-        console.log('loaded favorites:', fav);
+        // console.log('loaded favorites:', fav);
         return fav ? JSON.parse(fav) : [];
+    }
+
+    function loadFavorite(name) {
+        let fav = localStorage.getItem('favorites');
+        fav = fav ? JSON.parse(fav) : [];
+        if (!fav || fav.length < 1) return false; // todo: log a warning
+        let url = null;
+        for (let i=0; i<fav.length; i++) {
+            if (fav[i].name === name) {
+                url = fav[i].url;
+                break;
+            }
+        }
+        if (url) {
+            // if (url.match(/^http:\/\/[a-z0-9._]+/)) {
+                window.location = url;  // todo: check url format
+            // } else {
+            //     log.error(`invalid favorites url: {url}`);
+            // }
+        } else {
+            // todo: log a warning
+        }
     }
 
     /**
@@ -816,25 +835,26 @@
      */
     function addToFavorites() {
         let name = $('#add-favorite-patch-name').val();
-        let u = getCurrentPatchAsLink();
-        console.log(`add to favorites: name=${name}, url=${u}`);
+        let description = $('#add-favorite-patch-description').val();
+        let url = getCurrentPatchAsLink();
+        console.log(`add to favorites: name=${name}, url=${url}`);
         let favorites = getFavorites();
         favorites.push({
-            name: name,
-            url: u
+            name,
+            description,
+            url
         });
         localStorage.setItem('favorites', JSON.stringify(favorites));
     }
 
     function openFavoritesDialog() {
-
         let favorites = getFavorites();
-        $('#fav-dialog-list').append(favorites.map((o, i) => {
-            console.log(o, i);
+        $('#load-favorite-list').append(favorites.map((o, i) => {
+            // console.log(o, i);
             return $("<option>").val(o.name).text(o.name);
         }));
-
         lightbox = lity('#fav-dialog');
+        return false;   // disable the normal href behavior
     }
 
     function closeFavoritesDialog() {
@@ -850,6 +870,7 @@
         $('#settings-dialog-error').empty();
         // $('#patch-file').val('');
         lightbox = lity('#settings-dialog');
+        return false;   // disable the normal href behavior
     }
 
     /**
@@ -859,6 +880,7 @@
         $('#load-patch-error').empty();
         $('#patch-file').val('');
         lightbox = lity('#load-patch-dialog');
+        return false;   // disable the normal href behavior
     }
 
     /**
@@ -906,6 +928,7 @@
             return window.URL.revokeObjectURL(url);
         }, 1000);
 
+        return false;   // disable the normal href behavior
     }
 
 
@@ -946,74 +969,14 @@
     }
 
 
+
+    function openCreditsDialog() {
+        lightbox = lity('#credits-dialog');
+        return false;   // disable the normal href behavior
+    }
+
     //==================================================================================================================
     // UI main commands (buttons in header)
-
-    /*
-    function exportLastDumpToFile() {
-
-        var element = document.createElement('a');
-        element.setAttribute('href', 'data:application/octet-stream,' + encodeURIComponent(last_sysex_data));
-        element.setAttribute('download', 'bs2-patch.syx');
-
-        element.style.display = 'none';
-        document.body.appendChild(element);
-
-        element.click();
-
-        document.body.removeChild(element);
-    }
-    */
-
-    /**
-     * header's "export" button handler
-     */
-/*
-    function exportToFile() {
-
-        //TODO: export as sysex
-
-        ignore_next_sysex = true;   // we want a sysex to get the data but we don't want to update the UI
-        var sysex_received_callback = function (data) {
-
-            var element = document.createElement('a');
-            element.setAttribute('href', 'data:application/octet-stream,' + encodeURIComponent(data));
-            element.setAttribute('download', 'bs2-patch.syx');
-
-            element.style.display = 'none';
-            document.body.appendChild(element);
-
-            element.click();
-
-            document.body.removeChild(element);
-        };
-
-        requestSysExDump();
-
-    }
-*/
-
-    /*
-    function exportToJSOONFile() {
-
-        //TODO: export as sysex
-
-        var data = JSON.stringify(BS2);
-
-        var element = document.createElement('a');
-        //element.setAttribute('href', 'data:application/octet-stream,' + encodeURIComponent(data));
-        element.setAttribute('href', 'data:application/json,' + encodeURIComponent(data));
-        element.setAttribute('download', 'bs2-patch.json');
-
-        element.style.display = 'none';
-        document.body.appendChild(element);
-
-        element.click();
-
-        document.body.removeChild(element);
-
-    }
-    */
 
     function printPatch() {
         let v = BS2.getAllValues();
@@ -1032,6 +995,7 @@
     function syncUIwithBS2() {
         // ask the BS2 to send us its current patch:
         requestSysExDump(); //FIXME: what if the mdi_input is not yet ready?
+        return false;
     }
 
     /**
@@ -1059,8 +1023,11 @@
      * header's "midi channel" select handler
      */
     function setMidiChannel() {
+        console.log('setMidiChannel: remove listeners');
+        disconnectInput();
         console.log(`set midi channel to ${this.value}`);
         midi_channel = this.value;
+        connectInput();
     }
 
 
@@ -1089,8 +1056,7 @@
     var midi_window = null;
     function openMidiWindow() {
         midi_window = window.open("midi.html", '_midi', 'location=no,height=480,width=300,scrollbars=yes,status=no');
-        // $("#midi-popup").dialog("open");
-        // $("midi", midi_window)
+        return false;   // disable the normal href behavior
     }
 
     /**
@@ -1098,21 +1064,22 @@
      */
     function setupMenu() {
 /*
-        $('#cmd-sync').click(syncUIwithBS2);
         $('#cmd-send').click(updateConnectedDevice);
         // $('#cmd-record').click(record);
         // $('#cmd-play').click(play);
-        $('#midi-channel').change(setMidiChannel);
 */
-        $('#add-favorite').click(openFavoritesDialog);
-        $('#randomize').click(randomize);
-        $('#init').click(init);
+        $('#menu-favorites').click(openFavoritesDialog);
+        $('#menu-randomize').click(randomize);
+        $('#menu-init').click(init);
+        $('#menu-sync').click(syncUIwithBS2);
         $('#load-patch').click(loadPatchFromFile);
         $('#save-patch').click(savePatchToFile);
         $('#print-patch').click(printPatch);
         $('#patch-file').change(readFile);
-        $('#settings').click(settingsDialog);
+        $('#menu-settings').click(settingsDialog);
+        $('#midi-channel').change(setMidiChannel);
         $('#menu-midi').click(openMidiWindow);
+        $('#menu-help').click(openCreditsDialog);
         //$('.reset-handler').click(resetGroup);  // TODO
         $('#played-note').click(playLastNote);
         $('#add-favorite-bt').click(function(){
@@ -1125,6 +1092,7 @@
     // Settings
 
     var settings = {
+        midi_channel: 1,
         randomize: []
     };
 
@@ -1269,13 +1237,17 @@
     //==================================================================================================================
     // WebMidi events handling
 
+    function disconnectInput() {
+        midi_input.removeListener();    // remove all listeners for all channels
+    }
+
     /**
      *
      * @param input
      */
     function connectInput(input) {
-        console.log('connect input', input);
-        midi_input = input;
+        console.log(`connect input to channel ${midi_channel}`, input);
+        if (input) midi_input = input;
         midi_input
             .on('controlchange', midi_channel, function(e) {
                 handleCC(e);
@@ -1288,16 +1260,16 @@
             })
             .on('sysex', midi_channel, function(e) {
                 console.log('sysex handler');
-                last_sysex_data = e.data;   // we keep it here because we may use it as data for the "export" command
+                // last_sysex_data = e.data;   // we keep it here because we may use it as data for the "export" command
                 // if (sysex_received_callback) {
                 //     console.log('sysex_received_callback is defined');
                 //     sysex_received_callback(last_sysex_data);   // FIXME: not a very good solution
                 //     sysex_received_callback = null;
                 // }
-                if (ignore_next_sysex) {
-                    setStatus("SysEx ignored.");
-                    return;
-                }
+                // if (ignore_next_sysex) {
+                //     setStatus("SysEx ignored.");
+                //     return;
+                // }
                 console.log('set sysex value to BS2');
                 if (DEVICE.setValuesFromSysex(e.data)) {
                     updateUI();
@@ -1306,7 +1278,7 @@
                     setStatusError("Unable to set value from SysEx.")
                 }
             });
-        setStatus(`"${input.name}" input connected.`)
+        setStatus(`"${midi_input.name}" input connected.`)
         setMidiInStatus(true);
     }
 
@@ -1373,16 +1345,17 @@
     //==================================================================================================================
     // Main
 
+    const VERSION = '2.0.0';
+    const URL_PARAM_SYSEX = 'sysex';    // name of sysex parameter in the query-string
     const DEVICE = BS2;
+
     var midi_input = null;
     var midi_output = null;
     var midi_channel = 1;
-    var ignore_next_sysex = false;
+    // var ignore_next_sysex = false;
     // var sysex_received_callback = false;
-    var last_sysex_data = null;     // last sysex dump received
-
+    // var last_sysex_data = null;     // last sysex dump received
     var knobs = {};
-
     var envelopes = {};     // Visual ADSR envelopes
 
 
@@ -1391,6 +1364,7 @@
      */
     $(function () {
 
+        console.log(`Bass Station II Web Interface ${VERSION}`);
         console.log('app starting...');
 
         setupUI();

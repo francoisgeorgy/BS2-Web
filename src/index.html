@@ -5,14 +5,10 @@
     <title>Bass Station II Web Interface</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,500,700|Roboto+Condensed:300,400,700" rel="stylesheet" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <!--<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">-->
-    <!--<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>-->
     <link href="lib/lity.min.css" rel="stylesheet" />
     <script src="lib/lity.min.js" type="text/javascript" charset="utf-8"></script>
-    <!--<link href="lib/featherlight.min.css" rel="stylesheet" />-->
-    <!--<script src="lib/featherlight.min.js" type="text/javascript" charset="utf-8"></script>-->
     <link href="https://use.fontawesome.com/f0483cf390.css" rel="stylesheet" />
-    <link href="css/layout.css" rel="stylesheet" />
+    <link href="css/main.css" rel="stylesheet" />
     <script src="lib/js.cookie.js"></script>
     <script src="lib/webmidi.min.js"></script>
     <script src="lib/base64js.min.js"></script>
@@ -29,23 +25,17 @@
 
         <div id="title">
             <h1 id="neon">Bass Station II</h1>
-
-            <!-- TODO: add a play key like in blofeld rocket -->
-            <!--<div>MIDI</div>-->
-            <!-- <span style="float:right"><img src="noun_583243_cc.svg" alt="Settings"></span> -->
             <div class="menu">
-                <a id="add-favorite" href="#"><i class="fa fa-heart-o" aria-hidden="true" alt="favorites" title="favorites"></i> Favoritesg</a>
-                <!--<i class="fa fa-history" aria-hidden="true" alt="view favorites" title="view favorites"></i>-->
-                <!--<i class="fa fa-comment-o" aria-hidden="true" alt="add a comments" title="add a comments"></i>-->
-                <span><a id="randomize" href="#"><i class="fa fa-random" aria-hidden="true"></i> Randomize</a></span>
-                <span><a id="init" href="#"><i class="fa fa-bolt" aria-hidden="true"></i> Init</a></span>
+                <a id="menu-favorites" href="#"><i class="fa fa-heart-o" aria-hidden="true" alt="favorites" title="favorites"></i> Favorites</a>
+                <span><a id="menu-randomize" href="#"><i class="fa fa-random" aria-hidden="true"></i> Randomize</a></span>
+                <span><a id="menu-init" href="#"><i class="fa fa-bolt" aria-hidden="true"></i> Init</a></span>
                 <span><a id="load-patch" href="#" title="Load a patch from a file"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Load patch</a></span>
                 <span><a id="save-patch" href="#" title="Save the current patch to a file"><i class="fa fa-save" aria-hidden="true"></i> Save patch</a></span>
                 <span><a id="print-patch" href="#" title="display the current patch for printing"><i class="fa fa-print" aria-hidden="true"></i> Print patch</a></span>
-                <span><a href="#" title="Sync with the connected Bass Station"><i class="fa fa-refresh" aria-hidden="true"></i> Sync</a></span> <!--&#8651;-->
+                <span><a id="menu-sync" href="#" title="Sync with the connected Bass Station"><i class="fa fa-refresh" aria-hidden="true"></i> Sync</a></span> <!--&#8651;-->
                 <span><a id="menu-midi" href="#"><i class="fa fa-exchange" aria-hidden="true"></i> Midi</a></span>
-                <span><a id="settings" href="#"><i class="fa fa-cog" aria-hidden="true"></i> Settings</a></span>    <!--&#x2699;-->
-                <span><a href="#"><i class="fa fa-question" aria-hidden="true"></i> Help</a></span>      <!--&#x3f;-->
+                <span><a id="menu-settings" href="#"><i class="fa fa-cog" aria-hidden="true"></i> Settings</a></span>    <!--&#x2699;-->
+                <span><a id="help-cmd" href="#"><i class="fa fa-question" aria-hidden="true"></i> Help</a></span>      <!--&#x3f;-->
             </div>
         </div>
 
@@ -53,11 +43,9 @@
     SUB
 -->
         <div id="sub">
-
             <div class="header">
                 <div>SUB OSC</div>
             </div>
-
             <div class="control-row">
                 <div></div>
                 <div class="controls" style="padding-bottom: 1vh;">
@@ -739,22 +727,14 @@
 
 
                     <div id="arp-editor">
+                        <div style="margin-left:10vw;color:#999">Coming soon in this space: ARP and SEQ tools.</div>
+<!--
                         ARP editor<br />
                         memory: 1..4
                         key A..G : note
                         key 0..9 : octave (def=4)
                         key R : rest
-
-                        <!--
-                        <div class="s off"></div><div class="s"></div><div class="s"></div><div class="s on">4</div>
-                        <div class="s off"></div><div class="s"></div><div class="s"></div><div class="s">8</div>
-                        <div class="s"></div><div class="s off"></div><div class="s"></div><div class="s off">12</div>
-                        <div class="s"></div><div class="s"></div><div class="s"></div><div class="s">16</div>
-                        <div class="s"></div><div class="s"></div><div class="s"></div><div class="s">20</div>
-                        <div class="s"></div><div class="s"></div><div class="s"></div><div class="s">24</div>
-                        <div class="s"></div><div class="s"></div><div class="s"></div><div class="s">28</div>
-                        <div class="s"></div><div class="s"></div><div class="s"></div><div class="s">32</div>
-                        -->
+-->
                     </div>
 
                 </div>
@@ -762,10 +742,13 @@
         </div>
 
         <div id="status-bar">
-            <!--<a id="credits-link" href="#credits-dialog" data-lity><span class="version">2.0.0</span> - About</a>-->
-            MIDI:
-            <span id="midi-in-led">in</span>
-            <span id="midi-out-led">out</span>
+<!--
+            <div style="float:right">
+                MIDI:
+                <span id="midi-in-led">in</span>
+                <span id="midi-out-led">out</span>
+            </div>
+-->
             <div id="status">
             </div>
         </div>
@@ -778,10 +761,9 @@
         <div>
             <h3>Add the current patch to your favorites</h3>
             Name:<br />
-            <input type="text" name="patch-name" id="add-favorite-patch-name" placeholder="BS2-2017-09-06-1537"><br />
+            <input type="text" name="patch-name" id="add-favorite-patch-name" placeholder="BS2-2017-09-06-1537" size="50"><br />
             Description:<br />
-            <textarea name="patch-description" id="add-favorite-patch-description" rows="4">
-            </textarea><br />
+            <textarea name="patch-description" id="add-favorite-patch-description" rows="4" cols="50"></textarea><br />
             <button type="button" id="add-favorite-bt">Add to favorites</button>
         </div>
         <div>
@@ -799,22 +781,6 @@
         </div>
     </div>
 
-
-    <!--
-        <div id="midi-popup" style="display: none">
-        <h1>midi</h1>
-            <div id="midi">
-                <div class="midi-messages">
-                    <div id="midi-messages-in">
-                    </div>
-                </div>
-                <div class="midi-messages">
-                    <div id="midi-messages-out">
-                    </div>
-                </div>
-            </div>
-        </div>
-    -->
     <div id="load-patch-dialog" class="dialog lity-hide">
         <h1>Load patch from file</h1>
         <div id="import-dialog-instructions">
@@ -837,10 +803,35 @@
             <div id="randomizer-settings">
             </div>
         </div>
+        <div style="margin:10px 0;">
+            <h3>MIDI channel</h3>
+            Use MIDI channel <select id="midi-channel">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+                <option value="13">13</option>
+                <option value="14">14</option>
+                <option value="15">15</option>
+                <option value="16">16</option>
+                <option value="all">All</option>
+            </select> to communicate with the Bass Station II.
+        </div>
+
         <div id="settings-dialog-error" style="margin:10px 0;color:red">
         </div>
-        <hr />
-        <p>All changes are immediately saved and applied.</p>
+        <div class="dialog-info">
+            <span style="float:right">ESC to close</span>
+            All changes are immediately saved and applied.
+        </div>
     </div>
 
     <div id="credits-dialog" class="dialog lity-hide">
@@ -858,7 +849,6 @@
             <ul>
                 <li>WebMidi.js helps you tame the Web MIDI API. <a href="https://github.com/cotejp/webmidi" target="_blank">https://github.com/cotejp/webmidi</a></li>
                 <li>Tonal: a functional music theory library for Javascript. <a href="https://github.com/danigb/tonal" target="_blank">https://github.com/danigb/tonal</a></li>
-                <!--<li>Nice, a downward compatible, touchable, jQuery dial. <a href="https://github.com/aterrien/jQuery-Knob" target="_blank">https://github.com/aterrien/jQuery-Knob</a></li>-->
                 <li>synth-ui-controls: web UI components for building synthesizer and midi tools and applications. <a href="https://github.com/francoisgeorgy/synth-ui-controls">https://github.com/francoisgeorgy/synth-ui-controls</a></li>
                 <li>Lity: a lightweight, accessible and responsive lightbox. <a href="http://sorgalla.com/lity/">http://sorgalla.com/lity/</a></li>
                 <li>js-cookie: a simple, lightweight JavaScript API for handling browser cookies. <a href="https://github.com/js-cookie/js-cookie" target="_blank">https://github.com/js-cookie/js-cookie</a></li>
@@ -867,7 +857,6 @@
                 <li>Roboto font by Google. <a href="https://fonts.google.com/specimen/Roboto" target="_blank">https://fonts.google.com/specimen/Roboto</a></li>
             </ul>
         </p>
-        <!--<p>I acknowledge and am grateful to these developers for their contributions to open source.</p>-->
         <p class="trademarks">
             Novation is a registered trade mark of Focusrite Audio Engineering Limited.<br />
             Bass Station II is a trade mark of Focusrite Audio Engineering Limited.
@@ -880,28 +869,10 @@
                 <stop offset="0%" stop-color="#555" />
                 <stop offset="95%" stop-color="#222" />
             </linearGradient>
-<!--
-            <linearGradient id="grad-lfo1" gradientTransform="rotate(65)">
-                <stop offset="0%" stop-color="#986200" />
-                <stop offset="95%" stop-color="#6e4700" />
-            </linearGradient>
--->
-<!--
-            <g id="knob">
-                <circle class="path" cx="50" cy="50" r="34"/>
-                <text class="label" text-anchor="middle" x="50" y="110">Label</text>
-            </g>
--->
             <g id="knob">
                 <circle fill="url(#grad)" class="path" cx="50" cy="50" r="40"/>
                 <text class="value" text-anchor="middle" x="50" y="58">123.0</text>
             </g>
-<!--
-            <g id="knob-lfo1">
-                <circle fill="url(#grad-lfo1)" class="path" cx="50" cy="50" r="40"/>
-                <text class="value" text-anchor="middle" x="50" y="58">123.0</text>
-            </g>
--->
         </defs>
     </svg>
 </body>
