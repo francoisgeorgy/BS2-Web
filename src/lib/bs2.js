@@ -1864,7 +1864,7 @@ var BS2 = (function BassStationII() {
         // - byte 96 is always 0x40
         // - byte 104 is always 0x40
 
-        console.log('init constant sysex bytes');
+        // console.log('init constant sysex bytes');
         data[5] = 0x33;
         data[30] = 0x01;
         data[31] = 0x00;
@@ -1992,19 +1992,6 @@ var BS2 = (function BassStationII() {
 
         console.groupEnd();
 
-        // let s = '';
-        // for (let i=0; i<data.length; i++) {
-        //     s += data[i].toString(16) + ' ';
-        // }
-        // console.log(s);
-
-        // debug
-        // let v = validateSysEx(data);
-        // console.log('valid: ' + v);
-        // decodeSysExMeta(data);
-        // decodeSysExControls(data, control);
-        // decodeSysExControls(data, nrpn);
-
         return data;
     };
 
@@ -2124,7 +2111,7 @@ var BS2 = (function BassStationII() {
      */
     var randomize = function(groups) {
 
-        console.log('randomize()', groups);
+        // console.log('randomize()', groups);
 
         for (let i=0; i<groups.length; i++) {
 

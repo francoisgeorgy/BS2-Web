@@ -3,6 +3,8 @@
 
     var knob = (function(elem, conf) {
 
+        const TRACE = false;    // when true, will log more details in the console
+
         // It faster to access a property than to access a variable...
         // See https://jsperf.com/vars-vs-props-speed-comparison/1
 
@@ -119,7 +121,7 @@
         let split_track_zero  = Math.PI * 0.5;
         let split_track_zero_value = Math.floor(((config.value_max - config.value_min) / 2.0) / config.value_resolution) * config.value_resolution;
 
-        console.log(`${element.id}: split_track_zero_value=${split_track_zero_value}`);
+        if (TRACE) console.log(`${element.id}: split_track_zero_value=${split_track_zero_value}`);
 
         // let split_track_zero_left  = Math.PI * 0.5 * 1.01; // 1%
         // let split_track_zero_right  = Math.PI * 0.5 * 0.99; // 1%
@@ -162,7 +164,7 @@
 
             track_start += `${arcStartX},${arcStartY} A ${config.radius},${config.radius}`;
 
-            // console.log(`track_start = ${track_start}`);
+            if (TRACE) console.log(`track_start = ${track_start}`);
 
             mouseWheelDirection = _isMacOS() ? -1 : 1;
 
@@ -186,13 +188,7 @@
 
         function setValue(v) {
             value = v;
-
-            // if (v !== config.default_value) {
-            //     console.log(`value changed from default ${config.default_value} --> ${v}`);
-            // }
-
             let a = ((v - config.value_min) / (config.value_max - config.value_min)) * (config.arc_max - config.arc_min) + config.arc_min;
-            // console.log(`changeValue(${v}) --> angle ${a}`);
             setPolarAngle(knobToPolarAngle(a));
         }
 
@@ -241,7 +237,7 @@
         function knobToPolarAngle(angle) {
             let a = config.zero_at - angle;
             if (a < 0) a = a + 360.0;
-            // console.log(`knobToPolarAngle ${angle} -> ${a}`);
+            if (TRACE) console.log(`knobToPolarAngle ${angle} -> ${a}`);
             return a;
         }
 
@@ -299,7 +295,7 @@
             // SVG d: "A rx,ry xAxisRotate LargeArcFlag,SweepFlag x,y".
             // SweepFlag is either 0 or 1, and determines if the arc should be swept in a clockwise (1), or anti-clockwise (0) direction
 
-            // console.log(`getPath from ${minAngle} to ${endAngle}`);     // 240 330; 240-330=-90 + 360=270
+            if (TRACE) console.log(`getPath from ${minAngle} to ${endAngle}`);     // 240 330; 240-330=-90 + 360=270
 
             let a_rad = endAngle * Math.PI / 180.0;
             let endX = getViewboxX(Math.cos(a_rad) * config.radius);
@@ -308,7 +304,7 @@
             let deltaAngle = (minAngle - endAngle + 360.0) % 360.0;
             let largeArc = deltaAngle < 180.0 ? 0 : 1;
 
-//        console.log(`deltaAngle ${deltaAngle} largeArc ${largeArc}`);
+            if (TRACE) console.log(`deltaAngle ${deltaAngle} largeArc ${largeArc}`);
 
             let arcDirection = config.rotation === CW ? 1 : 0;
 
@@ -335,7 +331,7 @@
             //     }
             // }
 
-            // console.log(p);
+            if (TRACE) console.log(p);
 
             return p;
         }
@@ -348,7 +344,7 @@
          */
         function getArc(fromAngle, toAngle, radius) {
 
-            // console.log(`getArc(${fromAngle}, ${toAngle}, ${radius})`);
+            if (TRACE) console.log(`getArc(${fromAngle}, ${toAngle}, ${radius})`);
 
             // SVG d: "A rx,ry xAxisRotate LargeArcFlag,SweepFlag x,y".
             // SweepFlag is either 0 or 1, and determines if the arc should be swept in a clockwise (1), or anti-clockwise (0) direction
@@ -362,8 +358,7 @@
             // let deltaAngle = (fromAngle - toAngle + 360.0) % 360.0;
             let deltaAngle = (fromAngle - toAngle + 2 * Math.PI) % (2 * Math.PI);
 
-
-            // console.log("deltaAngle: " + deltaAngle);
+            if (TRACE) console.log("deltaAngle: " + deltaAngle);
 
             // let largeArc = deltaAngle < 180.0 ? 0 : 1;
             let largeArc = deltaAngle < Math.PI ? 0 : 1;
@@ -371,65 +366,39 @@
 
             let p = `M ${x0},${y0} A ${radius},${radius} 0 ${largeArc},${arcDirection} ${x1},${y1}`; //TODO: add terminator
 
-            // console.log("arc: " + p);
+            if (TRACE) console.log("arc: " + p);
 
             return p;
         }
 
+        /**
+         *
+         * @returns {*}
+         */
         function getTrackPath() {
 
             let p = null;
 
-            //let rad = getPolarAngle() * Math.PI / 180.0;
-
             let a = getPolarAngle();
             let rad = a * Math.PI / 180.0;
-            // console.log(`getTrackPath, value=${value}, a=${a}, rad=${rad}, ml=${split_track_min_left}, mr=${split_track_min_right}, mid=${split_track_middle}, zl=${split_track_zero_left}, zr=${split_track_zero_right}`);
+
+            if (TRACE) console.log(`getTrackPath, value=${value}, a=${a}, rad=${rad}, ml=${split_track_min_left}, mr=${split_track_min_right}, mid=${split_track_middle}, zl=${split_track_zero_left}, zr=${split_track_zero_right}`);
 
             if (config.center_zero) {
 
-
-
                 let v = getValue();
 
-                console.log(`getTrackPath: v=${v}`);
+                if (TRACE) console.log(`getTrackPath: v=${v}`);
 
-                // if (v < 0) {
-                //     console.log('set rad to min left');
-                //     rad = split_track_min_left;
-                // } else if (v > 0) {
-                //     console.log('set rad to min right');
-                //     rad = split_track_min_right;
-                // }
                 if ((v < split_track_zero_value) && (rad > split_track_zero) && (rad < split_track_min_left)) {
-                    // console.log('set rad to min left');
                     rad = split_track_min_left;
                 } else if ((v > split_track_zero_value) && (rad < split_track_zero) && (rad > split_track_min_right)) {
-                    // console.log('set rad to min right');
                     rad = split_track_min_right;
                 }
-                // if ((rad > split_track_zero_left) && (rad < split_track_min_left)) {
-                //     console.log('set rad to min left');
-                //     rad = split_track_min_left;
-                // } else if ((rad < split_track_zero_right) && (rad > split_track_min_right)) {
-                //     console.log('set rad to min right');
-                //     rad = split_track_min_right;
-                // }
 
                 if ((rad >= split_track_min_left) && (rad < split_track_middle)) {
-
-                    // console.log('left');
-
-                    // if (rad < split_track_min_left) return null;
-
                     p = getArc(rad, split_track_min_left, config.track_radius);
-
                 } else if ((rad <= split_track_min_right) || (rad > split_track_middle)) {
-
-                    // console.log('right');
-
-                    // if ((rad < split_track_min_left) && (rad > split_track_min_right)) return '';
-
                     p = getArc(split_track_min_right, rad, config.track_radius);
                 }
 
@@ -437,27 +406,18 @@
                 p = getArc(minAngle * Math.PI / 180.0, rad, config.track_radius);
             }
 
-            // console.log('track path = ' + p);
+            if (TRACE) console.log('track path = ' + p);
             return p;
 
         }
 
-        //
-        // var parts_indexes = {
-        //     'back_disk': 0,
-        //     'back_track_left': 0,
-        //     'back_track': 0,
-        //     'track': 0,
-        // };
-        // var part_index = 0;
-
+        /**
+         *
+         */
         function draw_back() {
-
-            // part_index = 0;
 
             element.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink");
             element.setAttributeNS(null, "viewBox", config.with_label ? "0 0 100 120" : "0 0 100 100");
-            // element.setAttribute("class", "knob");
 
             back_disk = document.createElementNS(NS, "circle");
             back_disk.setAttributeNS(null, "cx", "50");
@@ -470,25 +430,10 @@
             back_disk.setAttribute("class", "knob-back");
             element.appendChild(back_disk);
 
-            // parts_indexes.push()['back_disk'] = part_index;
-            // part_index++;
-
             if (config.center_zero) {
-                //
-                // split_track_min_left = Math.acos(-(config.back_track_width*1.5)/100.0);
-                // split_track_min_right = Math.acos((config.back_track_width*1.5)/100.0);
-                // console.log(split_track_min_left*180.0/Math.PI);
-                // console.log(split_track_min_right*180.0/Math.PI);
-// left
-//                 let ax = 50 + Math.cos(aminus) * config.back_track_radius;
-//                 let ay = 50 - Math.sin(aminus) * config.back_track_radius;
-// right
-//                 let bx = 50 + Math.cos(aplus) * config.back_track_radius;
-//                 let by = 50 - Math.sin(aplus) * config.back_track_radius;
 
                 back_track_left = document.createElementNS(NS, "path");
                 back_track_left.setAttributeNS(null, "d", getArc(minAngle * Math.PI / 180.0, split_track_min_left, config.track_radius));
-                // back_track_left.setAttributeNS(null, "d", getPath(aminus*180.0/Math.PI, false));
                 back_track_left.setAttribute("stroke", `${config.back_track_color}`);
                 back_track_left.setAttribute("stroke-width", `${config.back_track_width}`);
                 back_track_left.setAttribute("stroke-linecap", "round");
@@ -498,7 +443,6 @@
 
                 back_track_right = document.createElementNS(NS, "path");
                 back_track_right.setAttributeNS(null, "d", getArc(split_track_min_right, maxAngle * Math.PI / 180.0, config.track_radius));
-                // back_track_left.setAttributeNS(null, "d", getPath(aminus*180.0/Math.PI, false));
                 back_track_right.setAttribute("stroke", `${config.back_track_color}`);
                 back_track_right.setAttribute("stroke-width", `${config.back_track_width}`);
                 back_track_right.setAttribute("stroke-linecap", "round");
@@ -517,12 +461,12 @@
                 back_track.setAttribute("class", "knob-back-track");
                 element.appendChild(back_track);
 
-                // parts_indexes['back_track'] = part_index;
-                // part_index++;
             }
-
         }
 
+        /**
+         *
+         */
         function draw_track() {
             let p = getTrackPath();
             if (p) {
@@ -537,6 +481,10 @@
             }
         }
 
+        /**
+         *
+         * @returns {string}
+         */
         function getTrackCursor() {
             let a = getPolarAngle() * Math.PI / 180.0;
             let x0 = getViewboxX(Math.cos(a) * (HALF_HEIGHT - config.cursor_radius));
@@ -546,7 +494,9 @@
             return `M ${x0},${y0} L ${x1},${y1}`;   //TODO: add termintor
         }
 
-
+        /**
+         *
+         */
         function draw_cursor() {
 
             // let p = '';
@@ -579,7 +529,7 @@
                 // let x1 = getViewboxX(Math.cos(a) * (HALF_HEIGHT - config.cursor_radius + config.cursor_length));
                 // let y1 = getViewboxY(Math.sin(a) * (HALF_HEIGHT - config.cursor_radius + config.cursor_length));
                 // p = `M ${x0},${y0} L ${x1},${y1}`;
-                // console.log('cursor', a, p);
+                // if (TRACE) console.log('cursor', a, p);
                 let p = getTrackCursor();
                 if (p) {
                     cursor = document.createElementNS(NS, "path");
@@ -594,6 +544,9 @@
             // }
         }
 
+        /**
+         *
+         */
         function draw_value() {
             valueText = document.createElementNS(NS, "text");
             valueText.setAttributeNS(null, "x", "50");
@@ -601,52 +554,23 @@
             valueText.setAttribute("text-anchor", "middle");
             valueText.setAttribute("cursor", "default");
             valueText.setAttribute("class", "knob-value");
-            // valueText.textContent = getValue().toFixed(2);
             valueText.textContent = getDisplayValue();
             element.appendChild(valueText);
         }
 
+        /**
+         *
+         */
         function draw() {
             draw_back();
             draw_track();
             draw_cursor();
             draw_value();
         }
-/*
-        function Xdraw() {
 
-            console.log('draw', element);
-
-            // https://www.w3.org/TR/SVG/render.html#RenderingOrder:
-            // Elements in an SVG document fragment have an implicit drawing order, with the first elements in the SVG document
-            // fragment getting "painted" first. Subsequent elements are painted on top of previously painted elements.
-            // ==> first element -> "painted" first
-
-            if (config.cursor_dot_size > 0) {
-                let d = getDotCursor(getPolarAngle());
-                let dot = document.createElementNS(NS, "circle");
-                dot.setAttributeNS(null, "cx", d.cx);
-                dot.setAttributeNS(null, "cy", d.cy);
-                dot.setAttributeNS(null, "r", d.r);
-                // dot.setAttribute("fill", config.arc_color);
-                dot.setAttribute("class", "knob-arc");
-                element.appendChild(dot);
-            }
-
-            if (config.with_label) {
-                let labelText = document.createElementNS(NS, "text");
-                labelText.setAttributeNS(null, "x", "50");
-                labelText.setAttributeNS(null, "y", "110");
-                labelText.setAttribute("text-anchor", "middle");
-                labelText.setAttribute("cursor", "default");
-                labelText.setAttribute("class", "knob-label");
-                labelText.textContent = config.label;
-                element.appendChild(labelText);
-            }
-
-        }  // draw()
-*/
-
+        /**
+         *
+         */
         function redraw() {
             let p = getTrackPath();
             if (p) {
@@ -664,18 +588,16 @@
             if (!has_changed) {
                 has_changed = getValue() !== config.default_value;
                 if (has_changed) {
-                    // console.log(`value changed from default ${config.default_value} --> ${v}`);
+                    if (TRACE) console.log(`value changed from default ${config.default_value} --> ${v}`);
                     track.setAttribute("stroke", `${config.track_color}`);
                 }
             }
 
             p = getTrackCursor();
-            // console.log(p);
+            if (TRACE) console.log(p);
             if (p) {
                 if (cursor) {
                     cursor.setAttributeNS(null, "d", p);
-                // } else {
-                //     draw_track();
                 }
             }
 
@@ -683,21 +605,6 @@
                 valueText.textContent = getDisplayValue();
             }
         }
-
-/*
-        function Xredraw() {
-
-            //element.childNodes[2].textContent = getValue(); //.toFixed(2);
-            element.childNodes[2].textContent = getDisplayValue();
-            element.childNodes[3].setAttributeNS(null, "d", getPath(getPolarAngle(), false));
-
-            if (config.cursor_dot_size > 0) {
-                let d = getDotCursor(getPolarAngle());
-                element.childNodes[4].setAttributeNS(null, "cx", d.cx);
-                element.childNodes[4].setAttributeNS(null, "cy", d.cy);
-            }
-        }
-*/
 
         /**
          * startDrag() must have been called before to init the targetRect variable.
@@ -730,7 +637,7 @@
 
             if (angle_rad < 0) angle_rad = 2.0*Math.PI + angle_rad;
 
-            // console.log(`mouseUpdate: position in svg = ${dxPixels}, ${dyPixels} pixels; ${dx.toFixed(3)}, ${dy.toFixed(3)} rel.; angle ${angle_rad.toFixed(3)} rad`);
+            if (TRACE) console.log(`mouseUpdate: position in svg = ${dxPixels}, ${dyPixels} pixels; ${dx.toFixed(3)}, ${dy.toFixed(3)} rel.; angle ${angle_rad.toFixed(3)} rad`);
 
             setPolarAngle(angle_rad * 180.0 / Math.PI, true);     // rads to degs
 
@@ -830,9 +737,6 @@
                 }
             }
 
-            // important!
-            // currentTarget = e.currentTarget;
-
             incPolarAngle(mouseWheelDirection * (dy / minDeltaY));     // TODO: make mousewheel direction configurable
 
             // TODO: timing --> speed
@@ -859,14 +763,8 @@
          *
          */
         function notifyChange() {
-            // console.log('knob value has changed');
-
+            if (TRACE) console.log('knob value has changed');
             let value = getValue();     // TODO: cache the value
-
-            // if (value !== config.default_value) {
-            //     console.log(`value changed from default ${config.default_value} --> ${value}`);
-            // }
-
             let event = new CustomEvent('change', { 'detail': value });
             element.dispatchEvent(event);
         }

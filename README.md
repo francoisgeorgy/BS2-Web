@@ -15,7 +15,9 @@ Currently, only Chrome 43+ and Opera 44+ support this standard. This app will th
 
 Still under active development. Feel free to log bugs/issues.
 
-Coming soon: randomizer configuration. Only randomize what you want to be randomized.
+### Limitations
+
+- Can only be used with one Bass Station II at a time. 
 
 ![light theme](/images/BS2-Web-light-theme.png "Light theme")
 
