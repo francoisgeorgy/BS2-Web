@@ -30,7 +30,7 @@ The logo glows when the Bass Station is connected and recognized by the applicat
 
 Bass Station II is disconnected:
 
-![disconnected](/images/BS2-Web-connected.png "Bass Station II disconnected")
+![disconnected](/images/BS2-Web-disconnected.png "Bass Station II disconnected")
 
 # Bass Station II MIDI messages
 
