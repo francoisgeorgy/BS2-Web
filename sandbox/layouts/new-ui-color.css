@@ -185,7 +185,7 @@
         /* min-width: 10vw; */
     }
 
-    #mixer-top-right {
+    #top-right {
         grid-row: 2;
         grid-column: 5;
     }
