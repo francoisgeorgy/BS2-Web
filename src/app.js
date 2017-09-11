@@ -1218,7 +1218,7 @@
             note = note.substr(0, i) + '-' + note.substr(i);
         }
 
-        if (TRACE) console.log(`noteOn: ${note}`, enharmonic, cc);
+        if (TRACE) console.log(`noteOn: ${note} (${enharmonic})`);
 
         $('#played-note').addClass('on');
 
