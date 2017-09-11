@@ -71,7 +71,7 @@ html {
 
 body {
     margin: 0;
-    padding: 1vh 0 0 0;
+    padding: 0 0 0 0;
     background: var(--body-bg-from); /* linear-gradient(to bottom, #202023, #3E3E46); */
     font-family: 'Roboto Condensed', sans-serif;
     font-weight: 400;
@@ -160,7 +160,7 @@ body {
 
 #main {
     margin: 0;
-    padding: 0;
+    padding: 1vh 0 0 0;
     display: grid;
     justify-content: center;
     align-items: start;
@@ -968,3 +968,38 @@ input[type=range]::-webkit-slider-thumb {
     /*transition: opacity .3s ease;*/
 }
 
+.drawer {
+    background-color: rgba(40, 40, 40, 0.90);
+    padding: 1vh 1vw;
+    color: #ddd;
+}
+
+.drawer h2, .drawer h3 {
+    font-weight: normal;
+}
+
+.drawer h2 {
+    border-bottom: 1px solid #bbb;
+}
+
+.drawer h2 span {
+    cursor: pointer;
+}
+
+.drawer input,
+.drawer select,
+.drawer textarea {
+    background-color: #eee;
+    width: 100%;
+    margin: 0.5vh 0 1vh 0;
+}
+
+#favorites-drawer {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 20vw;
+    border-right: 2px solid #222;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 1);
+}

@@ -1,6 +1,6 @@
 (function(){
 
-    const TRACE = false;    // when true, will log more details in the console
+    const TRACE = true;    // when true, will log more details in the console
 
     // function toggleOnOff(selector, bool) {
     //     if (bool) {
@@ -245,23 +245,21 @@
             for (let i=0; i<a.length; i++) {
                 if (midi_output) {
                     if (TRACE) console.log(`send CC ${a[i][0]} ${a[i][1]} (${control.name}) on channel ${midi_channel}`);
-                    logOutgoingMidiMessage('cc', a[i][0], a[i][1]);
                     midi_output.sendControlChange(a[i][0], a[i][1], midi_channel);
                 } else {
-                    logOutgoingMidiMessage('cc', a[i][0], a[i][1]);
-
                     if (TRACE) console.log(`(send CC ${a[i][0]} ${a[i][1]} (${control.name}) on channel ${midi_channel})`);
                 }
+                logOutgoingMidiMessage('cc', a[i][0], a[i][1]);
             }
         } else if (control.cc_type === 'nrpn') {
             let value = DEVICE.getControlValue(control);
             if (midi_output) {
                 if (TRACE) console.log(`send NRPN ${control.cc_number} ${value} (${control.name}) on channel ${midi_channel}`);
-                logOutgoingMidiMessage('nrpn', control.cc_number, value);
                 midi_output.setNonRegisteredParameter([0, control.cc_number], value, midi_channel);  // for the BS2, the NRPN MSB is always 0
             } else {
                 if (TRACE) console.log(`(send NRPN ${control.cc_number} ${value} (${control.name}) on channel ${midi_channel})`);
             }
+            logOutgoingMidiMessage('nrpn', control.cc_number, value);
         }
 
     }
@@ -340,12 +338,12 @@
      *
      */
     function init(sendUpdate = true) {
-        console.group(`init(${sendUpdate})`);
+        if (TRACE) console.log(`init(${sendUpdate})`);
         DEVICE.init();
         updateUI();
         setStatus(`init done`);
         if (sendUpdate) updateConnectedDevice();
-        console.groupEnd();
+        if (TRACE) console.log(`init done`);
         return false;   // disable the normal href behavior
     }
 
@@ -732,6 +730,8 @@
             $('#cc-19').show();
         }
 
+        if (TRACE) console.groupEnd();
+
     }
 
     /**
@@ -787,32 +787,12 @@
     //==================================================================================================================
     // Favorites dialog
 
+    let default_favorite_name = '';
+
     function getFavorites() {
         let fav = localStorage.getItem('favorites');
         if (TRACE) console.log('loaded favorites:', fav);
         return fav ? JSON.parse(fav) : [];
-    }
-
-    function loadFavorite(name) {
-        let fav = localStorage.getItem('favorites');
-        fav = fav ? JSON.parse(fav) : [];
-        if (!fav || fav.length < 1) return false; // todo: log a warning
-        let url = null;
-        for (let i=0; i<fav.length; i++) {
-            if (fav[i].name === name) {
-                url = fav[i].url;
-                break;
-            }
-        }
-        if (url) {
-            // if (url.match(/^http:\/\/[a-z0-9._]+/)) {
-                window.location = url;  // todo: check url format
-            // } else {
-            //     log.error(`invalid favorites url: {url}`);
-            // }
-        } else {
-            // todo: log a warning
-        }
     }
 
     /**
@@ -820,6 +800,7 @@
      */
     function addToFavorites() {
         let name = $('#add-favorite-patch-name').val();
+        if (!name) name = default_favorite_name;
         let description = $('#add-favorite-patch-description').val();
         let url = getCurrentPatchAsLink();
         if (TRACE) console.log(`add to favorites: name=${name}, url=${url}`);
@@ -833,17 +814,55 @@
     }
 
     function openFavoritesDialog() {
+
+        if (TRACE) console.groupCollapsed('openFavoritesDialog()');
+
+        default_favorite_name = moment().format("BS2-YYYY-MM-DD-HHmmSS");
+        $('#add-favorite-patch-name').attr('placeholder', default_favorite_name);
+
         let favorites = getFavorites();
         $('#load-favorite-list').append(favorites.map((o, i) => {
             if (TRACE) console.log(o, i);
             return $("<option>").val(o.name).text(o.name);
         }));
         lightbox = lity('#fav-dialog');
+
+        if (TRACE) console.groupEnd();
+
         return false;   // disable the normal href behavior
     }
 
     function closeFavoritesDialog() {
         lightbox.close();
+    }
+
+    /**
+     * Load the favorite selected in #load-favorite-list
+     */
+    function loadSelectedFavorite() {
+        let name = $('#load-favorite-list').val();
+        if (TRACE) console.log(`selected favorite is ${name}`);
+
+        let fav = getFavorites();
+        if (!fav || fav.length < 1) return false; // todo: log a warning
+
+        let url = null;
+        for (let i=0; i<fav.length; i++) {
+            if (fav[i].name === name) {
+                url = fav[i].url;
+                break;
+            }
+        }
+        if (url) {
+            // if (url.match(/^http:\/\/[a-z0-9._]+/)) {
+            window.location = url;  // todo: check url format
+            // } else {
+            //     log.error(`invalid favorites url: {url}`);
+            // }
+        } else {
+            // todo: log a warning
+            closeFavoritesDialog();
+        }
     }
 
     //==================================================================================================================
@@ -872,23 +891,13 @@
      *
      */
     function savePatchToFile() {
-        // DEVICE.control[DEVICE.control_id.osc1_coarse].raw_value = 0b10011001; // 153
-        // DEVICE.control[DEVICE.control_id.osc2_coarse].raw_value = 0b10101010; // 170
-
-        // DEVICE.meta.patch_name.value = 'Yo Mama';
 
         let data = DEVICE.getSysExDump();   // return Uint8Array
 
         if (TRACE) console.log(data, Utils.toHexString(data, ' '));
         if (TRACE) console.log(encodeURIComponent(data));
 
-        // https://stackoverflow.com/questions/3665115/create-a-file-in-memory-for-user-to-download-not-through-server
-        // <a href="data:application/octet-stream;charset=utf-16le;base64,//5mAG8AbwAgAGIAYQByAAoA">text file</a>
-        // $('a.download').attr('href', 'data:application/csv;charset=utf-8,' + encodeURI(data));
-
-        let shadownlink = document.createElement('a');
-        // shadownlink.setAttribute('href', 'data:application/octet-stream,' + data);
-        // shadownlink.setAttribute('download', 'bs2-patch.syx');
+        let shadowlink = document.createElement('a');
 
         let now = new Date();
         let timestamp =
@@ -899,16 +908,16 @@
             ("0" + now.getUTCMinutes()).slice(-2) + "" +
             ("0" + now.getUTCSeconds()).slice(-2);
 
-        shadownlink.download = 'bs2-patch.' + timestamp + '.syx';
-        shadownlink.style.display = 'none';
+        shadowlink.download = 'bs2-patch.' + timestamp + '.syx';
+        shadowlink.style.display = 'none';
 
         let blob = new Blob([data], {type: "application/octet-stream"});
         let url = window.URL.createObjectURL(blob);
-        shadownlink.href = url;
+        shadowlink.href = url;
 
-        document.body.appendChild(shadownlink);
-        shadownlink.click();
-        document.body.removeChild(shadownlink);
+        document.body.appendChild(shadowlink);
+        shadowlink.click();
+        document.body.removeChild(shadowlink);
         setTimeout(function() {
             return window.URL.revokeObjectURL(url);
         }, 1000);
@@ -953,7 +962,10 @@
     }
 
 
-
+    /**
+     *
+     * @returns {boolean}
+     */
     function openCreditsDialog() {
         lightbox = lity('#credits-dialog');
         return false;   // disable the normal href behavior
@@ -1050,7 +1062,9 @@
         // $('#cmd-record').click(record);
         // $('#cmd-play').click(play);
 */
-        $('#menu-favorites').click(openFavoritesDialog);
+        // $('#menu-favorites').click(openFavoritesDialog);
+        $('#menu-favorites').click(openFavoritesDrawer);
+
         $('#menu-randomize').click(randomize);
         $('#menu-init').click(init);
         $('#menu-sync').click(syncUIwithBS2);
@@ -1070,10 +1084,11 @@
             closeFavoritesDialog();
         });
 
-        $('#load-favorite-bt').click(function(){
-            //TODO
-            closeFavoritesDialog();
-        });
+        $('#load-favorite-bt').click(loadSelectedFavorite);
+
+
+
+        $('.close-favorites-drawer').click(closeFavoritesDrawer);
 
     }
 
@@ -1141,6 +1156,18 @@
         }
         html += '</tr></table>';
         $('#randomizer-settings').html(html);
+    }
+
+    //==================================================================================================================
+
+    function openFavoritesDrawer() {
+        // $('#left-drawer').show({duration:400,easing:"slide"});
+        $('#favorites-drawer').toggle('slide', { direction: 'left' }, 500);
+    }
+
+    function closeFavoritesDrawer() {
+        // $('#left-drawer').show({duration:400,easing:"slide"});
+        $('#favorites-drawer').hide('slide', { direction: 'left' }, 500);
     }
 
     //==================================================================================================================
@@ -1383,7 +1410,7 @@
                     if (TRACE) console.log('sysex param present');
                     let data = Utils.fromHexString(s);
                     if (DEVICE.setValuesFromSysex(data)) {
-                        console.log('sysex param OK');
+                        console.log('sysex loaded in device');
                         updateUI();
                     } else {
                         console.log('unable to set value from sysex param');
@@ -1406,8 +1433,6 @@
                 WebMidi.addListener("disconnected", e => deviceDisconnect(e));
 
                 let input = WebMidi.getInputByName(DEVICE.name_device_in);
-                if (TRACE) console.log(WebMidi.inputs);
-                // let input = WebMidi.inputs[1];
                 if (input) {
                     connectInput(input);
                 } else {
@@ -1416,7 +1441,6 @@
                 }
 
                 let output = WebMidi.getOutputByName(DEVICE.name_device_out);
-                // let output = WebMidi.outputs[0];
                 if (output) {
                     connectOutput(output);
                 } else {
@@ -1429,7 +1453,7 @@
                     console.log('sysex param present');
                     let data = Utils.fromHexString(s);
                     if (DEVICE.setValuesFromSysex(data)) {
-                        console.log('sysex param OK');
+                        console.log('sysex loaded in device');
                         updateUI();
                         updateConnectedDevice();
                     } else {

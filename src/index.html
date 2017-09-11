@@ -5,6 +5,8 @@
     <title>Bass Station II Web Interface</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,500,700|Roboto+Condensed:300,400,700" rel="stylesheet" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!--<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <link href="lib/lity.min.css" rel="stylesheet" />
     <script src="lib/lity.min.js" type="text/javascript" charset="utf-8"></script>
     <link href="https://use.fontawesome.com/f0483cf390.css" rel="stylesheet" />
@@ -13,6 +15,7 @@
     <script src="lib/webmidi.min.js"></script>
     <script src="lib/base64js.min.js"></script>
     <script src="lib/msgpack.min.js"></script>
+    <script src="lib/moment.min.js"></script>
     <script src="lib/tonal.min.js"></script>
     <script src="lib/utils.js"></script>
     <script src="lib/envelope.js"></script>
@@ -21,6 +24,7 @@
     <script src="app.js"></script>
 </head>
 <body>
+
     <div id="main">
 
         <div id="title">
@@ -755,13 +759,12 @@
 
     </div>
 
-
     <div id="fav-dialog" class="dialog lity-hide">
         <h1>Favorites</h1>
         <div>
             <h3>Add the current patch to your favorites</h3>
             Name:<br />
-            <input type="text" name="patch-name" id="add-favorite-patch-name" placeholder="BS2-2017-09-06-1537" size="50"><br />
+            <input type="text" name="patch-name" id="add-favorite-patch-name" placeholder="" size="50"><br />
             Description:<br />
             <textarea name="patch-description" id="add-favorite-patch-description" rows="4" cols="50"></textarea><br />
             <button type="button" id="add-favorite-bt">Add to favorites</button>
@@ -825,7 +828,6 @@
                 <option value="all">All</option>
             </select> to communicate with the Bass Station II.
         </div>
-
         <div id="settings-dialog-error" style="margin:10px 0;color:red">
         </div>
         <div class="dialog-info">
@@ -833,6 +835,7 @@
             All changes are immediately saved and applied.
         </div>
     </div>
+
 
     <div id="credits-dialog" class="dialog lity-hide">
         <a href="https://github.com/francoisgeorgy/BS2-Web">
@@ -854,6 +857,7 @@
                 <li>js-cookie: a simple, lightweight JavaScript API for handling browser cookies. <a href="https://github.com/js-cookie/js-cookie" target="_blank">https://github.com/js-cookie/js-cookie</a></li>
                 <li>jQuery: a fast, small, and feature-rich JavaScript library. <a href="https://jquery.com/" target="_blank">https://jquery.com/</a></li>
                 <li>MessagePack: an efficient binary serialization format. <a href="http://msgpack.org/index.html" target="_blank">http://msgpack.org/index.html/</a></li>
+                <li>Moment.js: parse, validate, manipulate, and display dates and times in JavaScript. <a href="http://momentjs.com/" target="_blank">http://momentjs.com//</a></li>
                 <li>Roboto font by Google. <a href="https://fonts.google.com/specimen/Roboto" target="_blank">https://fonts.google.com/specimen/Roboto</a></li>
             </ul>
         </p>
@@ -875,5 +879,37 @@
             </g>
         </defs>
     </svg>
+
+
+
+    <div id="favorites-drawer" class="drawer" style="display:none">
+        <h2><span style="float:right" class="close-favorites-drawer">&#x2715;</span>Favorites</h2>
+        <div style="margin-top:5vh">
+            <h3>Add the current patch to your favorites:</h3>
+            Name:<br />
+            <input type="text" name="patch-name" id="add-favorite-patch-name" placeholder="" ><br />
+            Description:<br />
+            <textarea name="patch-description" id="add-favorite-patch-description" ></textarea><br />
+            <button type="button" id="add-favorite-bt" style="float:right">Add to favorites</button>
+            <div style="clear:both"></div>
+        </div>
+        <div style="margin-top:5vh">
+            <h3>Load a patch from your favorites:</h3>
+            <select id="load-favorite-list" size="4"></select>
+            <div>
+                <!--<div id="load-favorite-name"></div>-->
+                <!--<div id="load-favorite-descr"></div>-->
+                <button type="button" id="load-favorite-bt" style="float:right">Load favorite</button>
+                <div style="clear:both"></div>
+            </div>
+        </div>
+    </div>
+    <!--
+        <div id="settings-drawer" class="drawer" style="display:none">
+            <h2>Favorites</h2>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        </div>
+    -->
+
 </body>
 </html>
