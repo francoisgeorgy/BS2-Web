@@ -7,6 +7,8 @@ of controls and parameters available is huge. I want to understand how some patc
 parameters are hidden behind "FN  Keys" and I wanted to be able to change them in a more direct, visual way.
 The introduction of the Web MIDI API seemed just a perfect match for this kind of development. So, here is the result.
 
+!(/images/BS2-Web_v2.0.0.png)
+
 # Requirements &amp; Limitations
 
 This application requires a browser that support the [Web MIDI API](http://webaudio.github.io/web-midi-api/).
@@ -19,14 +21,12 @@ Still under active development. Feel free to log bugs/issues.
 
 - Can only be used with one Bass Station II at a time. 
 
-![light theme](/images/BS2-Web-light-theme.png "Light theme")
-
 # How to use
 
 1. Open https://francoisgeorgy.github.io/BS2-Web/
 2. Allow the browser to use your MIDI devices
 3. If it's not already done, connect your Bass Station II to your computer.
-4. On the top-right corner of the application, "midi", "IN" and "OUT" must be ON (highlighted). 
+4. When the Bass Station II is connected the logo will glow. 
 5. Move a dial or a slider on your Bass Station II, the corresponding on-screen control must move accordingly.
 
 # Bass Station II MIDI messages
