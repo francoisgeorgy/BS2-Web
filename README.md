@@ -1,13 +1,11 @@
 # Novation Bass Station II Web interface
 
-# What is this?
+Control your Bass Station II synthesizer from your web browser. 
+No more hidden parameters. All of the Bass Station II parameters are visible on screen.
+Save, load and even print your patches!
+And, for the fun, leave the application create a patch with the _randomizer_!
 
-The Bass Station II is my first synthesizer. I bought one a couple of weeks ago. For a beginner like me the number
-of controls and parameters available is huge. I want to understand how some patches and sound are done. Quite a lot of 
-parameters are hidden behind "FN  Keys" and I wanted to be able to change them in a more direct, visual way.
-The introduction of the Web MIDI API seemed just a perfect match for this kind of development. So, here is the result.
-
-!(/images/BS2-Web_v2.0.0.png)
+![screenshot](/images/BS2-Web_v2.0.0.png "screenshot of current version running in Chrome")
 
 # Requirements &amp; Limitations
 
