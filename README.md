@@ -11,13 +11,10 @@ And, for the fun, leave the application create a patch with the _randomizer_!
 
 This application requires a browser that support the [Web MIDI API](http://webaudio.github.io/web-midi-api/).
 
-Currently, only Chrome 43+ and Opera 44+ support this standard. This app will therefore _not_ works in Firefox, Safari or IE. 
+Currently, only Chrome 43+ and Opera 44+ support this standard. This app will therefore _not_ work in Firefox, Safari or IE. 
 
 Still under active development. Feel free to log bugs/issues.
 
-### Limitations
-
-- Can only be used with one Bass Station II at a time. 
 
 # How to use
 
@@ -26,6 +23,14 @@ Still under active development. Feel free to log bugs/issues.
 3. If it's not already done, connect your Bass Station II to your computer.
 4. When the Bass Station II is connected the logo will glow. 
 5. Move a dial or a slider on your Bass Station II, the corresponding on-screen control must move accordingly.
+
+The logo glows when the Bass Station is connected and recognized by the application:
+
+![connected](/images/BS2-Web-connected.png "Bass Station II connected")
+
+Bass Station II is disconnected:
+
+![disconnected](/images/BS2-Web-connected.png "Bass Station II disconnected")
 
 # Bass Station II MIDI messages
 
