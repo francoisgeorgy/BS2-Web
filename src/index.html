@@ -39,7 +39,7 @@
                 <span><a id="menu-sync" href="#" title="Sync with the connected Bass Station"><i class="fa fa-refresh" aria-hidden="true"></i> Sync</a></span> <!--&#8651;-->
                 <span><a id="menu-midi" href="#"><i class="fa fa-exchange" aria-hidden="true"></i> Midi</a></span>
                 <span><a id="menu-settings" href="#"><i class="fa fa-cog" aria-hidden="true"></i> Settings</a></span>    <!--&#x2699;-->
-                <span><a id="help-cmd" href="#"><i class="fa fa-question" aria-hidden="true"></i> Help</a></span>      <!--&#x3f;-->
+                <span><a id="menu-about" href="#">About</a></span>      <!--&#x3f;-->
             </div>
         </div>
 
@@ -796,6 +796,7 @@
         </div>
     </div>
 
+<!--
     <div id="settings-dialog" class="dialog lity-hide">
         <h1>Settings</h1>
         <div id="settings-dialog-instructions">
@@ -835,6 +836,7 @@
             All changes are immediately saved and applied.
         </div>
     </div>
+-->
 
 
     <div id="credits-dialog" class="dialog lity-hide">
@@ -880,6 +882,45 @@
         </defs>
     </svg>
 
+    <div id="settings-drawer" class="drawer" style="display:none">
+        <h2><span style="float:right" class="close-settings-drawer">&#x2715;</span>Settings</h2>
+        <div id="settings-dialog-instructions">
+        </div>
+        <div style="margin:10px 0;">
+            <h3>MIDI channel</h3>
+            Use MIDI channel <select id="midi-channel">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            <option value="all">All</option>
+        </select> to communicate with the Bass Station II.
+        </div>
+        <div style="margin:10px 0;">
+            <h3>Randomizer</h3>
+            <p>Randomize the following groups of parameters:</p>
+            <div id="randomizer-settings">
+            </div>
+        </div>
+        <div id="settings-dialog-error" style="margin:10px 0;color:red">
+        </div>
+        <div class="dialog-info">
+            <span style="float:right">ESC to close</span>
+            All changes are immediately saved and applied.
+        </div>
+    </div>
 
 
     <div id="favorites-drawer" class="drawer" style="display:none">
@@ -895,21 +936,21 @@
         </div>
         <div style="margin-top:5vh">
             <h3>Load a patch from your favorites:</h3>
-            <select id="load-favorite-list" size="4"></select>
-            <div>
+            <!--<select id="load-favorite-list" size="4"></select>-->
+            <div id="favorites-list"></div>
+            <!--<div>-->
                 <!--<div id="load-favorite-name"></div>-->
                 <!--<div id="load-favorite-descr"></div>-->
-                <button type="button" id="load-favorite-bt" style="float:right">Load favorite</button>
-                <div style="clear:both"></div>
-            </div>
+                <!--<button type="button" id="load-favorite-bt" style="float:right">Load favorite</button>-->
+                <!--<div style="clear:both"></div>-->
+            <!--</div>-->
+            <!--<div>Click to load</div>-->
+        </div>
+        <div class="dialog-info">
+            <span style="float:right">ESC to close</span>
         </div>
     </div>
-    <!--
-        <div id="settings-drawer" class="drawer" style="display:none">
-            <h2>Favorites</h2>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-        </div>
-    -->
+
 
 </body>
 </html>

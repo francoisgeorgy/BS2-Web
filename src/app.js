@@ -825,6 +825,7 @@
             if (TRACE) console.log(o, i);
             return $("<option>").val(o.name).text(o.name);
         }));
+
         lightbox = lity('#fav-dialog');
 
         if (TRACE) console.groupEnd();
@@ -839,6 +840,7 @@
     /**
      * Load the favorite selected in #load-favorite-list
      */
+/*
     function loadSelectedFavorite() {
         let name = $('#load-favorite-list').val();
         if (TRACE) console.log(`selected favorite is ${name}`);
@@ -864,9 +866,74 @@
             closeFavoritesDialog();
         }
     }
+*/
+
+    /**
+     * Load the favorite selected in #load-favorite-list
+     */
+    function loadFavorite(index) {
+        // let name = $('#load-favorite-list').val();
+        if (TRACE) console.log(`selected favorite is number ${index}`);
+
+        let fav = getFavorites();
+        if (!fav || fav.length < 1) return false; // todo: log a warning
+
+        if (index < 0 || index > fav.length) return false;  // todo: log a warning
+
+        let url = fav[index];
+        if (url) {
+            if (TRACE) console.log(`selected favorite is ${url}`);
+            // if (url.match(/^http:\/\/[a-z0-9._]+/)) {
+            // window.location = url;  // todo: check url format
+            // } else {
+            //     log.error(`invalid favorites url: {url}`);
+            // }
+        } else {
+            // todo: log a warning
+            // closeFavoritesDialog();
+        }
+    }
+
+    function openFavoritesDrawer() {
+        // $('#left-drawer').show({duration:400,easing:"slide"});
+        $('#favorites-drawer').toggle('slide', { direction: 'left' }, 500);
+
+
+        let favorites = getFavorites();
+        $('#favorites-list').append(favorites.map((o, i) => {
+            if (TRACE) console.log(o, i);
+            // return $("<div>").attr("id", `fav-${i}`).addClass('fav-handle').text(o.name).append($("<div>").text(o.description));
+            return $("<div>").append($("<a>")
+                .attr("href", o.url)
+                .attr("id", `fav-${i}`).text(o.name), $("<div>").text(o.description));
+        }));
+
+        // $(".fav-handle").click(function(){
+        //     loadFavorite(parseInt(this.id.substr(4)));
+        // });
+
+    }
+
+    function closeFavoritesDrawer() {
+        // $('#left-drawer').show({duration:400,easing:"slide"});
+
+        // $(".fav-handle").off("click");
+
+        $('#favorites-drawer').hide('slide', { direction: 'left' }, 500);
+    }
 
     //==================================================================================================================
-    // Patch file handling
+    // Settings
+
+    function openSettingsDrawer() {
+        // $('#left-drawer').show({duration:400,easing:"slide"});
+        $('#settings-drawer').toggle('slide', { direction: 'left' }, 500);
+    }
+
+    function closeSettingsDrawer() {
+        // $('#left-drawer').show({duration:400,easing:"slide"});
+        $('#settings-drawer').hide('slide', { direction: 'left' }, 500);
+    }
 
     var lightbox = null;
 
@@ -876,6 +943,9 @@
         lightbox = lity('#settings-dialog');
         return false;   // disable the normal href behavior
     }
+
+    //==================================================================================================================
+    // Patch file handling
 
     /**
      *
@@ -1072,10 +1142,12 @@
         $('#save-patch').click(savePatchToFile);
         $('#print-patch').click(printPatch);
         $('#patch-file').change(readFile);
-        $('#menu-settings').click(settingsDialog);
+        // $('#menu-settings').click(settingsDialog);
+        $('#menu-settings').click(openSettingsDrawer);
         $('#midi-channel').change(setMidiChannel);
         $('#menu-midi').click(openMidiWindow);
-        $('#menu-help').click(openCreditsDialog);
+        // $('#menu-help').click(openCreditsDialog);
+        $('#menu-about').click(openCreditsDialog);
         //$('.reset-handler').click(resetGroup);  // TODO
         $('#played-note').click(playLastNote);
 
@@ -1084,11 +1156,22 @@
             closeFavoritesDialog();
         });
 
-        $('#load-favorite-bt').click(loadSelectedFavorite);
+        // $('#load-favorite-bt').click(loadSelectedFavorite);
 
 
 
         $('.close-favorites-drawer').click(closeFavoritesDrawer);
+        $('.close-settings-drawer').click(closeSettingsDrawer);
+
+        //TODO: move into an ad-hoc function
+        $(document).keyup(function(e) {
+            if (e.keyCode === 27) { // ESC key
+                closeFavoritesDrawer();
+                closeSettingsDrawer();
+            }
+        });
+
+
 
     }
 
@@ -1159,16 +1242,6 @@
     }
 
     //==================================================================================================================
-
-    function openFavoritesDrawer() {
-        // $('#left-drawer').show({duration:400,easing:"slide"});
-        $('#favorites-drawer').toggle('slide', { direction: 'left' }, 500);
-    }
-
-    function closeFavoritesDrawer() {
-        // $('#left-drawer').show({duration:400,easing:"slide"});
-        $('#favorites-drawer').hide('slide', { direction: 'left' }, 500);
-    }
 
     //==================================================================================================================
     // noteOn & noteOff events handling
