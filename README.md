@@ -7,11 +7,12 @@ And, for the fun, leave the application create a patch with the _randomizer_!
 
 ![screenshot](/images/BS2-Web_v2.0.0.png "screenshot of current version running in Chrome")
 
+
 # Requirements &amp; Limitations
 
-This application requires a browser that support the [Web MIDI API](http://webaudio.github.io/web-midi-api/).
+:warning: This application requires a browser that support the [Web MIDI API](http://webaudio.github.io/web-midi-api/).
 
-Currently, only Chrome 43+ and Opera 44+ support this standard. This app will therefore _not_ work in Firefox, Safari or IE. 
+Currently, only **Chrome 43+** and **Opera 44+** support this standard. This app will therefore _not_ work in Firefox, Safari or IE. 
 
 Still under active development. Feel free to log bugs/issues.
 
@@ -73,22 +74,18 @@ In summary:
 
     value = byte1*2 + byte2/64
 
+
 # Credits
 
-- jQuery Knob: http://anthonyterrien.com/knob/ (https://github.com/aterrien/jQuery-Knob)
-- Lity Lightbox: http://sorgalla.com/lity/
-- js-cookie: https://github.com/js-cookie/js-cookie
-- maybe in a future release: Store.js: https://github.com/marcuswestin/store.js/
-- Roboto font by Google: https://fonts.google.com/specimen/Roboto
+Click on __About__ to view the list of libs used to build BS2-Web.  
 
-I quite heavily modified the jQuery Knob lib. In particular I swapped the `input` element by a `span` element. It is therefore
-not possible anymore to enter a value with the keyboard. Only the mouse is supported. 
 
 # Trademarks
 
-Novation is a registered trade mark of Focusrite Audio Engineering Limited.
+_Novation_ is a registered trade mark of Focusrite Audio Engineering Limited.
 
-Bass Station II is a trade mark of Focusrite Audio Engineering Limited.
+_Bass Station II_ is a trade mark of Focusrite Audio Engineering Limited.
+
 
 # Useful links
 
