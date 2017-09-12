@@ -396,6 +396,7 @@ var BS2 = (function BassStationII() {
         control[control_id.osc1_fine] = { // 26 (MSB), 58 (LSB)
             name: "Osc1 Fine",
             lsb: 58,
+            cc_range: [27, 228],
             range: [-100,100],          // TODO: rename range to human_range or hrange
             human: _100,
             sysex: {
@@ -477,6 +478,7 @@ var BS2 = (function BassStationII() {
         control[control_id.osc2_fine] = { // 29 (MSB), 61 (LSB)
             name: "Osc2 Fine",
             lsb: 61,
+            cc_range: [27, 228],
             range: [-100,100],
             human: _100,
             sysex: {
@@ -691,7 +693,6 @@ var BS2 = (function BassStationII() {
             name: "Filter Mod Env Depth",
             range: [-63, 63],
             human: _63,
-            // parse: _parse_63,
             sysex: {
                 offset: 105,
                 mask: [0x3F, 0x40]
@@ -704,7 +705,7 @@ var BS2 = (function BassStationII() {
             human: _127,
             sysex: {
                 offset: 97,
-                mask: [0x3F, 0x40]
+                mask: [0x7F, 0x40]
             }
         };
         control[control_id.filter_overdrive] = { // 114
@@ -768,7 +769,7 @@ var BS2 = (function BassStationII() {
             range: [0,255],
             lsb: 51,
             human: v => v,
-            init_value: 52,
+            init_value: 53,
             sysex: {
                 offset: 73,
                 mask: [0x7F, 0x40]
@@ -917,6 +918,7 @@ var BS2 = (function BassStationII() {
         control[control_id.arp_octaves] = { // 111
             name: "Arp Octaves",
             cc_range: [1, 4],
+            init_value: 1,
             human: v => v,
             sysex: {
                 offset: 78,
@@ -954,6 +956,7 @@ var BS2 = (function BassStationII() {
             name: "Velocity Amp Env",
             range: [-63, 63],
             cc_range: [1, 127],
+            init_value: 64,
             human: _64,
             // parse: _parse_63,
             sysex: {
@@ -965,6 +968,7 @@ var BS2 = (function BassStationII() {
             name: "Velocity Mod Env",
             range: [-63, 63],
             cc_range: [1, 127],
+            init_value: 64,
             human: _64,
             // parse: _parse_63,
             sysex: {

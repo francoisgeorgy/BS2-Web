@@ -134,8 +134,8 @@ var BS2 = (function BassStationII() {
             controls: [
                 {type: 'nrpn', number: nrpn_id.osc1_waveform},
                 {type: 'cc', number: control_id.osc1_range},
-                {type: 'cc', number: control_id.osc1_fine},
                 {type: 'cc', number: control_id.osc1_coarse},
+                {type: 'cc', number: control_id.osc1_fine},
                 {type: 'cc', number: control_id.osc1_mod_env_depth},
                 {type: 'cc', number: control_id.osc1_lfo1_depth},
                 {type: 'cc', number: control_id.osc1_mod_env_pw_mod},
@@ -147,8 +147,8 @@ var BS2 = (function BassStationII() {
             controls: [
                 {type: 'nrpn', number: nrpn_id.osc2_waveform},
                 {type: 'cc', number: control_id.osc2_range},
-                {type: 'cc', number: control_id.osc2_fine},
                 {type: 'cc', number: control_id.osc2_coarse},
+                {type: 'cc', number: control_id.osc2_fine},
                 {type: 'cc', number: control_id.osc2_mod_env_depth},
                 {type: 'cc', number: control_id.osc2_lfo1_depth},
                 {type: 'cc', number: control_id.osc2_mod_env_pw_mod},
@@ -184,15 +184,6 @@ var BS2 = (function BassStationII() {
                 {type: 'cc', number: control_id.filter_lfo2_depth},
                 {type: 'cc', number: control_id.filter_overdrive}],
         },
-        amp_env: {
-            name: 'Amp Env',
-            controls: [
-                {type: 'cc', number: control_id.amp_env_attack},
-                {type: 'cc', number: control_id.amp_env_decay},
-                {type: 'cc', number: control_id.amp_env_sustain},
-                {type: 'cc', number: control_id.amp_env_release},
-                {type: 'nrpn', number: nrpn_id.amp_env_triggering}]
-        },
         mod_env: {
             name: 'Mod Env',
             controls: [
@@ -201,6 +192,15 @@ var BS2 = (function BassStationII() {
                 {type: 'cc', number: control_id.mod_env_sustain},
                 {type: 'cc', number: control_id.mod_env_release},
                 {type: 'nrpn', number: nrpn_id.mod_env_triggering}]
+        },
+        amp_env: {
+            name: 'Amp Env',
+            controls: [
+                {type: 'cc', number: control_id.amp_env_attack},
+                {type: 'cc', number: control_id.amp_env_decay},
+                {type: 'cc', number: control_id.amp_env_sustain},
+                {type: 'cc', number: control_id.amp_env_release},
+                {type: 'nrpn', number: nrpn_id.amp_env_triggering}]
         },
         vca: {
             name: 'VCA',
@@ -252,6 +252,20 @@ var BS2 = (function BassStationII() {
     };
 
     /**
+     * 0..127 to -63..63
+     */
+    var _63 = function(v) {
+        return v < 64 ? (v - 63) : (v - 64);
+    };
+
+    /**
+     * 0..127 to -64..63
+     */
+    var _64 = function(v) {
+        return v - 64;
+    };
+
+    /**
      * 0..255 to -127..127
      */
     var _127 = function(v) {
@@ -269,20 +283,6 @@ var BS2 = (function BassStationII() {
             x = 100;
         }
         return x;
-    };
-
-    /**
-     * 0..127 to -63..63
-     */
-    var _63 = function(v) {
-        return v < 64 ? (v - 63) : (v - 64);
-    };
-
-    /**
-     * 0..127 to -64..63
-     */
-    var _64 = function(v) {
-        return v - 64;
     };
 
     /**
@@ -684,7 +684,6 @@ var BS2 = (function BassStationII() {
             name: "Filter Mod Env Depth",
             range: [-63, 63],
             human: _63,
-            // parse: _parse_63,
             sysex: {
                 offset: 105,
                 mask: [0x3F, 0x40]
@@ -697,7 +696,7 @@ var BS2 = (function BassStationII() {
             human: _127,
             sysex: {
                 offset: 97,
-                mask: [0x3F, 0x40]
+                mask: [0x7F, 0x40]      // OK
             }
         };
         control[control_id.filter_overdrive] = { // 114
