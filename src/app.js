@@ -87,7 +87,7 @@
      */
     function getCurrentPatchAsLink() {
         // window.location.href.split('?')[0] is the current URL without the query-string if any
-        return window.location.href.split('?')[0] + '?' + URL_PARAM_SYSEX + '=' + Utils.toHexString(DEVICE.getSysExDump());
+        return window.location.href.replace('#', '').split('?')[0] + '?' + URL_PARAM_SYSEX + '=' + Utils.toHexString(DEVICE.getSysExDump());
     }
 
     //==================================================================================================================
@@ -795,24 +795,7 @@
         return fav ? JSON.parse(fav) : [];
     }
 
-    /**
-     * Add the current preset to the list of favorites preset in the local storage
-     */
-    function addToFavorites() {
-        let name = $('#add-favorite-patch-name').val();
-        if (!name) name = default_favorite_name;
-        let description = $('#add-favorite-patch-description').val();
-        let url = getCurrentPatchAsLink();
-        if (TRACE) console.log(`add to favorites: name=${name}, url=${url}`);
-        let favorites = getFavorites();
-        favorites.push({
-            name,
-            description,
-            url
-        });
-        localStorage.setItem('favorites', JSON.stringify(favorites));
-    }
-
+/*
     function openFavoritesDialog() {
 
         if (TRACE) console.groupCollapsed('openFavoritesDialog()');
@@ -832,10 +815,13 @@
 
         return false;   // disable the normal href behavior
     }
+*/
 
+/*
     function closeFavoritesDialog() {
         lightbox.close();
     }
+*/
 
     /**
      * Load the favorite selected in #load-favorite-list
@@ -871,6 +857,7 @@
     /**
      * Load the favorite selected in #load-favorite-list
      */
+/*
     function loadFavorite(index) {
         // let name = $('#load-favorite-list').val();
         if (TRACE) console.log(`selected favorite is number ${index}`);
@@ -893,12 +880,72 @@
             // closeFavoritesDialog();
         }
     }
+*/
 
+    function deleteFavorite(index) {
+        if (TRACE) console.log(`deleteFavorite(${index})`);
+        let favorites = getFavorites();
+        // console.log(favorites);
+        favorites.splice((favorites.length - 1) - index, 1);
+        // console.log(favorites);
+        localStorage.setItem('favorites', JSON.stringify(favorites));
+    }
+
+    /**
+     *
+     */
+    function refreshFavoritesList() {
+        let favorites = getFavorites();
+        $("#favorites-list").empty().append(favorites.slice(0).reverse().map((o, i) => {
+            if (TRACE) console.log(o, i);
+            // return $("<div>").attr("id", `fav-${i}`).addClass('fav-handle').text(o.name).append($("<div>").text(o.description));
+            return $("<div>").append($("<a>")
+                            .attr("href", o.url)
+                            .attr("id", `fav-${i}`).text(o.name),
+                    $("<span>").attr("id", `del-${i}`).html("&#x2715;"),
+                    $("<div>").text(o.description));
+        }));
+
+
+        // $("#favorites-list > div").click(function(){
+        //     console.log(this);
+        // });
+        $("#favorites-list > div span").click(function(){
+            deleteFavorite(parseInt(this.id.substr(4)));
+            refreshFavoritesList();
+        });
+
+    }
+
+    /**
+     * Add the current preset to the list of favorites preset in the local storage
+     */
+    function addToFavorites() {
+        let name = $('#add-favorite-patch-name').val();
+        if (!name) name = default_favorite_name;
+        let description = $('#add-favorite-patch-description').val();
+        let url = getCurrentPatchAsLink();
+        if (TRACE) console.log(`add to favorites: name=${name}, url=${url}`);
+        let favorites = getFavorites();
+        favorites.push({
+            name,
+            description,
+            url
+        });
+        localStorage.setItem('favorites', JSON.stringify(favorites));
+        refreshFavoritesList();
+        return false;   // disable the normal href behavior
+    }
+
+    /**
+     *
+     */
     function openFavoritesDrawer() {
         // $('#left-drawer').show({duration:400,easing:"slide"});
         $('#favorites-drawer').toggle('slide', { direction: 'left' }, 500);
 
-
+        refreshFavoritesList();
+/*
         let favorites = getFavorites();
         $('#favorites-list').append(favorites.map((o, i) => {
             if (TRACE) console.log(o, i);
@@ -907,19 +954,26 @@
                 .attr("href", o.url)
                 .attr("id", `fav-${i}`).text(o.name), $("<div>").text(o.description));
         }));
+*/
 
         // $(".fav-handle").click(function(){
         //     loadFavorite(parseInt(this.id.substr(4)));
         // });
 
+        return false;   // disable the normal href behavior
     }
 
+    /**
+     *
+     */
     function closeFavoritesDrawer() {
         // $('#left-drawer').show({duration:400,easing:"slide"});
-
         // $(".fav-handle").off("click");
-
         $('#favorites-drawer').hide('slide', { direction: 'left' }, 500);
+
+
+        $("#favorites-list > div").off("click");
+        $("#favorites-list > div span").off("click");
     }
 
     //==================================================================================================================
@@ -937,12 +991,14 @@
 
     var lightbox = null;
 
+/*
     function settingsDialog() {
         $('#settings-dialog-error').empty();
         // $('#patch-file').val('');
         lightbox = lity('#settings-dialog');
         return false;   // disable the normal href behavior
     }
+*/
 
     //==================================================================================================================
     // Patch file handling
@@ -1152,10 +1208,11 @@
         $('#played-note').click(playLastNote);
 
         $('#add-favorite-bt').click(function(){
+            // console.log('add-favorite-bt');
             addToFavorites();
-            closeFavoritesDialog();
+            // closeFavoritesDialog();
         });
-
+        console.log('add-to-fav bt handler setup');
         // $('#load-favorite-bt').click(loadSelectedFavorite);
 
 

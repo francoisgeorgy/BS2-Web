@@ -759,6 +759,7 @@
 
     </div>
 
+<!--
     <div id="fav-dialog" class="dialog lity-hide">
         <h1>Favorites</h1>
         <div>
@@ -783,6 +784,7 @@
             </div>
         </div>
     </div>
+-->
 
     <div id="load-patch-dialog" class="dialog lity-hide">
         <h1>Load patch from file</h1>
@@ -924,8 +926,10 @@
 
 
     <div id="favorites-drawer" class="drawer" style="display:none">
-        <h2><span style="float:right" class="close-favorites-drawer">&#x2715;</span>Favorites</h2>
-        <div style="margin-top:5vh">
+        <div id="favorites-header">
+            <h2><span style="float:right" class="close-favorites-drawer">&#x2715;</span>Favorites</h2>
+        </div>
+        <div id="favorites-add">
             <h3>Add the current patch to your favorites:</h3>
             Name:<br />
             <input type="text" name="patch-name" id="add-favorite-patch-name" placeholder="" ><br />
@@ -934,7 +938,7 @@
             <button type="button" id="add-favorite-bt" style="float:right">Add to favorites</button>
             <div style="clear:both"></div>
         </div>
-        <div style="margin-top:5vh">
+        <div id="favorites-load">
             <h3>Load a patch from your favorites:</h3>
             <!--<select id="load-favorite-list" size="4"></select>-->
             <div id="favorites-list"></div>
@@ -946,7 +950,7 @@
             <!--</div>-->
             <!--<div>Click to load</div>-->
         </div>
-        <div class="dialog-info">
+        <div id="favorites-footer" class="dialog-info">
             <span style="float:right">ESC to close</span>
         </div>
     </div>
