@@ -2107,7 +2107,7 @@ var BS2 = (function BassStationII() {
     };
 
     /**
-     * @param groups Array of group names. Specify which control groups to randomize. Exemple: ["sub", "lfo1", "lfo2", "osc1", "osc2"]
+     * @param groups Array of group names. Specify which control groups to randomize. Example: ["sub", "lfo1", "lfo2", "osc1", "osc2"]
      */
     var randomize = function(groups) {
 
@@ -2148,7 +2148,7 @@ var BS2 = (function BassStationII() {
             }
         }
 
-    }
+    };
 
     /**
      *
@@ -2177,7 +2177,7 @@ var BS2 = (function BassStationII() {
      */
     var getMidiMessagesForNormalCC = function(ctrl) {
         // console.log('BS2.getMidiMessagesForControl', control_number, value);
-        if (ctrl.cc_type != 'cc') return [];
+        if (ctrl.cc_type !== 'cc') return [];
         let CC = [];
         let value = getControlValue(ctrl);
         if (ctrl.lsb < 0) {

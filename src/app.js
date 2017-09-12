@@ -169,7 +169,7 @@
 
         control_type = control_type.toLowerCase();
 
-        if ((control_type != 'cc') && (control_type != 'nrpn')) return; //TODO: signal an error
+        if ((control_type !== 'cc') && (control_type !== 'nrpn')) return; //TODO: signal an error
 
         DEVICE.setControlValue(control_type, control_number, value);
 
@@ -353,7 +353,7 @@
     function randomize() {
         console.groupCollapsed(`randomize`);
         if (settings.randomize.length < 1) {
-            alert('nothint to randomize');
+            alert('nothing to randomize');
         } else {
             DEVICE.randomize(settings.randomize);
             updateUI();
@@ -556,12 +556,12 @@
 
         // MOD ENV
         // we display the value in reverse order to be like the real BS2
-        m = DEVICE.ENV_TRIGGERING.length - 1;
+        let m = DEVICE.ENV_TRIGGERING.length - 1;
         $('#nrpn-105-options').append(DEVICE.ENV_TRIGGERING.slice(0).reverse().map((o,i) => {
             return $("<div>").attr("id", `nrpn-105-${m-i}`).data("control", "nrpn-105").data("value", m-i).text(o).addClass("bt");
         }));
 
-        //TODO: mod env triggering is overriden by (or the same as) amp env triggering?
+        //TODO: mod env triggering is overridden by (or the same as) amp env triggering?
 
         // AMP ENV
         // we display the value in reverse order to be like the real BS2
@@ -1060,7 +1060,7 @@
                 let view   = new Uint8Array(e.target.result);
                 for (let i=0; i<view.length; i++) {
                     data.push(view[i]);
-                    if (view[i] == SYSEX_END) break;
+                    if (view[i] === SYSEX_END) break;
                 }
                 if (DEVICE.setValuesFromSysex(data)) {
                     if (TRACE) console.log('file read OK', DEVICE.meta.patch_name['value']);
@@ -1092,7 +1092,7 @@
     // UI main commands (buttons in header)
 
     function printPatch() {
-        let v = BS2.getAllValues();
+        // let v = BS2.getAllValues();
         if (TRACE) console.log('printPatch');
         // data = msgpack.encode(v);
         // let b64 = base64js.fromByteArray(data);
@@ -1205,7 +1205,7 @@
 
         // close all opened drawer on outside click:
         $(document).mousedown(function(e) {
-            $(".drawer").each(function(index) {
+            $(".drawer").each(function() {
                 let element = $(this);
                 if (element.is(':visible')) {
                     // if the target of the click isn't the container nor a descendant of the container
@@ -1257,7 +1257,7 @@
      *
      */
     function saveRandomizerSettings() {
-        let checked = []
+        let checked = [];
         $("input.chk-rnd:checked").each(function () {
             checked.push(this.name);
         });
@@ -1587,7 +1587,7 @@
                 if (input) {
                     connectInput(input);
                 } else {
-                    setStatusError(`${DEVICE.name_device_in} not found.`)
+                    setStatusError(`${DEVICE.name_device_in} not found.`);
                     setMidiInStatus(false);
                 }
 
