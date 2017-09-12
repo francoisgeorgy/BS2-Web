@@ -46,3 +46,10 @@ _FUNCTION_ button + _LATCH_ button:
 
 - http://opensourceforu.com/2012/04/html5-localstorage-offline-web-applications/
 - https://developer.mozilla.org/en-US/docs/Web/API/Storage
+
+
+# Update gh-pages branch
+
+    git subtree push --prefix src origin gh-pages
+    
+    
