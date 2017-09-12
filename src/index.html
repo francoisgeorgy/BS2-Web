@@ -33,9 +33,9 @@
                 <a id="menu-favorites" href="#"><i class="fa fa-heart-o" aria-hidden="true" alt="favorites" title="favorites"></i> Favorites</a>
                 <span><a id="menu-randomize" href="#"><i class="fa fa-random" aria-hidden="true"></i> Randomize</a></span>
                 <span><a id="menu-init" href="#"><i class="fa fa-bolt" aria-hidden="true"></i> Init</a></span>
-                <span><a id="load-patch" href="#" title="Load a patch from a file"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Load patch</a></span>
-                <span><a id="save-patch" href="#" title="Save the current patch to a file"><i class="fa fa-save" aria-hidden="true"></i> Save patch</a></span>
-                <span><a id="print-patch" href="#" title="display the current patch for printing"><i class="fa fa-print" aria-hidden="true"></i> Print patch</a></span>
+                <span><a id="menu-load-patch" href="#" title="Load a patch from a file"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Load patch</a></span>
+                <span><a id="menu-save-patch" href="#" title="Save the current patch to a file"><i class="fa fa-save" aria-hidden="true"></i> Save patch</a></span>
+                <span><a id="menu-print-patch" href="#" title="display the current patch for printing"><i class="fa fa-print" aria-hidden="true"></i> Print patch</a></span>
                 <span><a id="menu-sync" href="#" title="Sync with the connected Bass Station"><i class="fa fa-refresh" aria-hidden="true"></i> Sync</a></span> <!--&#8651;-->
                 <span><a id="menu-midi" href="#"><i class="fa fa-exchange" aria-hidden="true"></i> Midi</a></span>
                 <span><a id="menu-settings" href="#"><i class="fa fa-cog" aria-hidden="true"></i> Settings</a></span>    <!--&#x2699;-->
@@ -846,7 +846,7 @@
             <img style="position: absolute; top: 0; right: 0; border: 0;"
                  src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67"
                  alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
-        <div class="novation-blue" style="font-weight: bold">
+        <div class="novation-blue" style="font-size:2rem;font-weight:bold">
             Bass Station II Web Interface <span class="version">2.0.0</span>
         </div>
         <p>Bass Station II Web Interface is under <strong>GNU General Public License v3.0</strong>. <a href="https://github.com/francoisgeorgy/BS2-Web/blob/master/LICENSE" target="_blank" >View license</a>.</p>
@@ -854,15 +854,16 @@
         <p>This application uses the following Open Source components:</p>
         <p>
             <ul>
-                <li>WebMidi.js helps you tame the Web MIDI API. <a href="https://github.com/cotejp/webmidi" target="_blank">https://github.com/cotejp/webmidi</a></li>
-                <li>Tonal: a functional music theory library for Javascript. <a href="https://github.com/danigb/tonal" target="_blank">https://github.com/danigb/tonal</a></li>
-                <li>synth-ui-controls: web UI components for building synthesizer and midi tools and applications. <a href="https://github.com/francoisgeorgy/synth-ui-controls">https://github.com/francoisgeorgy/synth-ui-controls</a></li>
-                <li>Lity: a lightweight, accessible and responsive lightbox. <a href="http://sorgalla.com/lity/">http://sorgalla.com/lity/</a></li>
-                <li>js-cookie: a simple, lightweight JavaScript API for handling browser cookies. <a href="https://github.com/js-cookie/js-cookie" target="_blank">https://github.com/js-cookie/js-cookie</a></li>
-                <li>jQuery: a fast, small, and feature-rich JavaScript library. <a href="https://jquery.com/" target="_blank">https://jquery.com/</a></li>
-                <li>MessagePack: an efficient binary serialization format. <a href="http://msgpack.org/index.html" target="_blank">http://msgpack.org/index.html/</a></li>
-                <li>Moment.js: parse, validate, manipulate, and display dates and times in JavaScript. <a href="http://momentjs.com/" target="_blank">http://momentjs.com//</a></li>
-                <li>Roboto font by Google. <a href="https://fonts.google.com/specimen/Roboto" target="_blank">https://fonts.google.com/specimen/Roboto</a></li>
+                <li><a href="https://github.com/cotejp/webmidi" target="_blank">WebMidi.js</a> helps you tame the <a href="https://www.w3.org/TR/webmidi/" target="_blank">Web MIDI API</a>.</li>
+                <li><a href="https://github.com/danigb/tonal" target="_blank">Tonal</a>: a functional music theory library for Javascript.</li>
+                <li><a href="https://github.com/francoisgeorgy/synth-ui-controls">Synth-UI-Controls</a>: web UI components for building synthesizer and midi tools and applications.</li>
+                <li><a href="http://sorgalla.com/lity/">Lity</a>: a lightweight, accessible and responsive lightbox.</li>
+                <li><a href="https://github.com/js-cookie/js-cookie" target="_blank">JS-Cookie</a>: a simple, lightweight JavaScript API for handling browser cookies.</li>
+                <li><a href="https://jquery.com/" target="_blank">jQuery</a>: a fast, small, and feature-rich JavaScript library.</li>
+                <li><a href="http://msgpack.org/index.html" target="_blank">MessagePack</a>: an efficient binary serialization format.</li>
+                <li><a href="http://momentjs.com/" target="_blank">Moment.js</a>: parse, validate, manipulate, and display dates and times in JavaScript.</li>
+                <li><a href="http://fontawesome.io/" target="_blank">Font Awesome</a>: the iconic font and CSS toolkit.</li>
+                <li><a href="https://fonts.google.com/specimen/Roboto" target="_blank">Roboto font</a> by Google. </li>
             </ul>
         </p>
         <p class="trademarks">
@@ -930,7 +931,7 @@
             <h2><span style="float:right" class="close-favorites-drawer">&#x2715;</span>Favorites</h2>
         </div>
         <div id="favorites-add">
-            <h3>Add the current patch to your favorites:</h3>
+            <h3>Add the current patch to your favorites</h3>
             Name:<br />
             <input type="text" name="patch-name" id="add-favorite-patch-name" placeholder="" ><br />
             Description:<br />
@@ -939,7 +940,7 @@
             <div style="clear:both"></div>
         </div>
         <div id="favorites-load">
-            <h3>Load a patch from your favorites:</h3>
+            <h3>Load a patch from your favorites</h3>
             <!--<select id="load-favorite-list" size="4"></select>-->
             <div id="favorites-list"></div>
             <!--<div>-->

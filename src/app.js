@@ -902,19 +902,14 @@
             return $("<div>").append($("<a>")
                             .attr("href", o.url)
                             .attr("id", `fav-${i}`).text(o.name),
-                    $("<span>").attr("id", `del-${i}`).html("&#x2715;"),
+                    $("<span>").attr("id", `del-${i}`).html("&#x2715;"),    // delete handle
                     $("<div>").text(o.description));
         }));
 
-
-        // $("#favorites-list > div").click(function(){
-        //     console.log(this);
-        // });
         $("#favorites-list > div span").click(function(){
             deleteFavorite(parseInt(this.id.substr(4)));
             refreshFavoritesList();
         });
-
     }
 
     /**
@@ -944,21 +939,11 @@
         // $('#left-drawer').show({duration:400,easing:"slide"});
         $('#favorites-drawer').toggle('slide', { direction: 'left' }, 500);
 
-        refreshFavoritesList();
-/*
-        let favorites = getFavorites();
-        $('#favorites-list').append(favorites.map((o, i) => {
-            if (TRACE) console.log(o, i);
-            // return $("<div>").attr("id", `fav-${i}`).addClass('fav-handle').text(o.name).append($("<div>").text(o.description));
-            return $("<div>").append($("<a>")
-                .attr("href", o.url)
-                .attr("id", `fav-${i}`).text(o.name), $("<div>").text(o.description));
-        }));
-*/
+        // init input field:
+        default_favorite_name = moment().format("BS2-YYYY-MM-DD-HHmmSS");
+        $('#add-favorite-patch-name').attr('placeholder', default_favorite_name);
 
-        // $(".fav-handle").click(function(){
-        //     loadFavorite(parseInt(this.id.substr(4)));
-        // });
+        refreshFavoritesList();
 
         return false;   // disable the normal href behavior
     }
@@ -967,13 +952,11 @@
      *
      */
     function closeFavoritesDrawer() {
-        // $('#left-drawer').show({duration:400,easing:"slide"});
-        // $(".fav-handle").off("click");
-        $('#favorites-drawer').hide('slide', { direction: 'left' }, 500);
-
-
+        // remove events handlers set on dialog elements:
         $("#favorites-list > div").off("click");
         $("#favorites-list > div span").off("click");
+        // close the drawer:
+        $('#favorites-drawer').hide('slide', { direction: 'left' }, 500);
     }
 
     //==================================================================================================================
@@ -982,6 +965,8 @@
     function openSettingsDrawer() {
         // $('#left-drawer').show({duration:400,easing:"slide"});
         $('#settings-drawer').toggle('slide', { direction: 'left' }, 500);
+        return false;   // disable the normal href behavior
+
     }
 
     function closeSettingsDrawer() {
@@ -1109,6 +1094,7 @@
         // let url = 'print.html?pack=' + b64;
         let url = 'print.html?' + URL_PARAM_SYSEX + '=' + Utils.toHexString(DEVICE.getSysExDump());
         window.open(url, '_blank', 'width=800,height=600,location,resizable,scrollbars,status');
+        return false;   // disable the normal href behavior
     }
 
     /**
@@ -1117,14 +1103,7 @@
     function syncUIwithBS2() {
         // ask the BS2 to send us its current patch:
         requestSysExDump(); //FIXME: what if the mdi_input is not yet ready?
-        return false;
-    }
-
-    /**
-     * header's "save" button handler
-     */
-    function saveInLocalStorage() {
-        alert('Sorry, this feature is not yet implemented.');
+        return false;   // disable the normal href behavior
     }
 
     /**
@@ -1167,7 +1146,6 @@
         }
     }
 
-
     var midi_window = null;
 
     /**
@@ -1183,53 +1161,38 @@
      *
      */
     function setupMenu() {
-/*
-        $('#cmd-send').click(updateConnectedDevice);
-        // $('#cmd-record').click(record);
-        // $('#cmd-play').click(play);
-*/
-        // $('#menu-favorites').click(openFavoritesDialog);
-        $('#menu-favorites').click(openFavoritesDrawer);
 
+        $('#menu-favorites').click(openFavoritesDrawer);
         $('#menu-randomize').click(randomize);
         $('#menu-init').click(init);
-        $('#menu-sync').click(syncUIwithBS2);
-        $('#load-patch').click(loadPatchFromFile);
-        $('#save-patch').click(savePatchToFile);
-        $('#print-patch').click(printPatch);
+        $('#menu-load-patch').click(loadPatchFromFile);
+        $('#menu-save-patch').click(savePatchToFile);
+        $('#menu-print-patch').click(printPatch);
         $('#patch-file').change(readFile);
-        // $('#menu-settings').click(settingsDialog);
-        $('#menu-settings').click(openSettingsDrawer);
-        $('#midi-channel').change(setMidiChannel);
+        $('#menu-sync').click(syncUIwithBS2);
         $('#menu-midi').click(openMidiWindow);
-        // $('#menu-help').click(openCreditsDialog);
+        $('#menu-settings').click(openSettingsDrawer);
         $('#menu-about').click(openCreditsDialog);
-        //$('.reset-handler').click(resetGroup);  // TODO
         $('#played-note').click(playLastNote);
 
+        // in settings dialog:
+        $('#midi-channel').change(setMidiChannel);
+        $('.close-settings-drawer').click(closeSettingsDrawer);
+
+        // in favorites dialog:
         $('#add-favorite-bt').click(function(){
-            // console.log('add-favorite-bt');
             addToFavorites();
             // closeFavoritesDialog();
         });
-        console.log('add-to-fav bt handler setup');
-        // $('#load-favorite-bt').click(loadSelectedFavorite);
-
-
-
         $('.close-favorites-drawer').click(closeFavoritesDrawer);
-        $('.close-settings-drawer').click(closeSettingsDrawer);
 
-        //TODO: move into an ad-hoc function
-        $(document).keyup(function(e) {
+        // close all opened drawer with ESC key:
+        $(document).keyup(function(e) {         //TODO: move into an ad-hoc function
             if (e.keyCode === 27) { // ESC key
                 closeFavoritesDrawer();
                 closeSettingsDrawer();
             }
         });
-
-
-
     }
 
     //==================================================================================================================
@@ -1285,7 +1248,7 @@
      */
     function displayRandomizerSettings() {
         let groups = Object.getOwnPropertyNames(BS2.control_groups);
-        const COLS = 5;
+        const COLS = 4;
         let i = 0;
         let html = '<table><tr>';
         for (group of groups) {
@@ -1374,18 +1337,21 @@
      * F0 00 20 29 00 33 00 40  F7
      */
     function requestSysExDump() {
-        if (!midi_output) return;
-        console.log('requestSysExDump()');
-        //ignore_next_sysex = true;
-        midi_output.sendSysex(DEVICE.meta.signature.sysex.value, [0x00, 0x33, 0x00, 0x40]);
+        if (midi_output) {
+            console.log('requestSysExDump()');
+            //ignore_next_sysex = true;
+            midi_output.sendSysex(DEVICE.meta.signature.sysex.value, [0x00, 0x33, 0x00, 0x40]);
+        }
     }
 
     //==================================================================================================================
     // WebMidi events handling
 
     function disconnectInput() {
-        midi_input.removeListener();    // remove all listeners for all channels
-        console.log("midi_input not listening");
+        if (midi_input) {
+            midi_input.removeListener();    // remove all listeners for all channels
+            console.log("midi_input not listening");
+        }
     }
 
     /**
@@ -1393,12 +1359,13 @@
      * @param input
      */
     function connectInput(input) {
+        if (!input) return;
         if (TRACE) console.log(`connect input to channel ${midi_channel}`);
-        if (input) {
+        // if (input) {
             midi_input = input;
             // setStatus(`"${midi_input.name}" input connected.`);
             console.log(`midi_input assigned to "${midi_input.name}"`);
-        }
+        // }
         midi_input
             .on('controlchange', midi_channel, function(e) {
                 handleCC(e);
