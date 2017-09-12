@@ -107,12 +107,6 @@ var BS2 = (function BassStationII() {
      * This is useful for printing or using in some configuration dialog (e.g. randomizer).
      */
     var control_groups = {
-        sub: {
-            name: 'Sub osc',
-            controls: [
-                {type: 'cc', number: control_id.sub_osc_oct},
-                {type: 'cc', number: control_id.sub_osc_wave}],
-        },
         lfo1: {
             name: 'LFO 1',
             controls: [
@@ -161,6 +155,12 @@ var BS2 = (function BassStationII() {
                 {type: 'cc', number: control_id.osc2_manual_pw},
                 {type: 'cc', number: control_id.osc2_lfo2_pw_mod},
                 {type: 'cc', number: control_id.osc_1_2_sync}]
+        },
+        sub: {
+            name: 'Sub osc',
+            controls: [
+                {type: 'cc', number: control_id.sub_osc_oct},
+                {type: 'cc', number: control_id.sub_osc_wave}],
         },
         mixer: {
             name: 'Mixer',

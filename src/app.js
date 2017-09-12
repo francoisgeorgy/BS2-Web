@@ -352,10 +352,14 @@
      */
     function randomize() {
         console.groupCollapsed(`randomize`);
-        DEVICE.randomize(settings.randomize);
-        updateUI();
-        setStatus(`randomize done`);
-        updateConnectedDevice();
+        if (settings.randomize.length < 1) {
+            alert('nothint to randomize');
+        } else {
+            DEVICE.randomize(settings.randomize);
+            updateUI();
+            setStatus(`randomize done`);
+            updateConnectedDevice();
+        }
         console.groupEnd();
         return false;   // disable the normal href behavior
     }
@@ -936,7 +940,8 @@
      *
      */
     function openFavoritesDrawer() {
-        // $('#left-drawer').show({duration:400,easing:"slide"});
+
+        if (TRACE) console.log("toggle favorites-drawer");
         $('#favorites-drawer').toggle('slide', { direction: 'left' }, 500);
 
         // init input field:
@@ -963,13 +968,14 @@
     // Settings
 
     function openSettingsDrawer() {
-        // $('#left-drawer').show({duration:400,easing:"slide"});
+        if (TRACE) console.log("toggle settings-drawer");
         $('#settings-drawer').toggle('slide', { direction: 'left' }, 500);
         return false;   // disable the normal href behavior
 
     }
 
     function closeSettingsDrawer() {
+        if (TRACE) console.log("closeSettingsDrawer");
         // $('#left-drawer').show({duration:400,easing:"slide"});
         $('#settings-drawer').hide('slide', { direction: 'left' }, 500);
     }
@@ -1168,12 +1174,15 @@
         $('#menu-load-patch').click(loadPatchFromFile);
         $('#menu-save-patch').click(savePatchToFile);
         $('#menu-print-patch').click(printPatch);
-        $('#patch-file').change(readFile);
         $('#menu-sync').click(syncUIwithBS2);
         $('#menu-midi').click(openMidiWindow);
         $('#menu-settings').click(openSettingsDrawer);
         $('#menu-about').click(openCreditsDialog);
+
         $('#played-note').click(playLastNote);
+
+        // in load-patch-dialog:
+        $('#patch-file').change(readFile);
 
         // in settings dialog:
         $('#midi-channel').change(setMidiChannel);
@@ -1193,6 +1202,22 @@
                 closeSettingsDrawer();
             }
         });
+
+        // close all opened drawer on outside click:
+        $(document).mousedown(function(e) {
+            $(".drawer").each(function(index) {
+                let element = $(this);
+                if (element.is(':visible')) {
+                    // if the target of the click isn't the container nor a descendant of the container
+                    if (!element.is(e.target)) {
+                        if (element.has(e.target).length === 0) {
+                            element.hide('slide', {direction: 'left'}, 500);
+                        }
+                    }
+                }
+            });
+        });
+
     }
 
     //==================================================================================================================
@@ -1208,12 +1233,38 @@
      */
     function loadSettings() {
         Object.assign(settings, Cookies.getJSON('settings'));
+
         // 1. reset all checkboxes:
         $('input.chk-rnd').prop('checked', false);
+
         // 2. then, select those that need to be:
         for (let i=0; i<settings.randomize.length; i++) {
             $(`input:checkbox[name=${settings.randomize[i]}]`).prop('checked', true);
         }
+
+        // select-all and select-none links:
+        $("#randomizer-select-all").click(function(){
+            $('input.chk-rnd').prop('checked', true);
+            saveRandomizerSettings();
+        });
+        $("#randomizer-select-none").click(function(){
+            $('input.chk-rnd').prop('checked', false);
+            saveRandomizerSettings();
+        });
+    }
+
+    /**
+     *
+     */
+    function saveRandomizerSettings() {
+        let checked = []
+        $("input.chk-rnd:checked").each(function () {
+            checked.push(this.name);
+        });
+        // let checked = $("input.chk-rnd:checked").map(function() { return $(this).name }).get();
+        settings.randomize = checked;
+        if (TRACE) console.log('save settings', settings);
+        Cookies.set('settings', settings);
     }
 
     /**
@@ -1227,7 +1278,8 @@
 
         if (TRACE) console.log("settings cookie", Cookies.getJSON());
 
-        $('input.chk-rnd').change(
+        $('input.chk-rnd').change(saveRandomizerSettings);
+/*
             function() {
                 let checked = []
                 $("input.chk-rnd:checked").each(function () {
@@ -1239,6 +1291,7 @@
                 Cookies.set('settings', settings);
             }
         );
+*/
 
         console.groupEnd();
     }
@@ -1247,6 +1300,7 @@
      *
      */
     function displayRandomizerSettings() {
+        if (TRACE) console.log("displayRandomizerSettings()");
         let groups = Object.getOwnPropertyNames(BS2.control_groups);
         const COLS = 4;
         let i = 0;

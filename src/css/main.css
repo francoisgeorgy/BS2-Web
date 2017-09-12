@@ -1012,6 +1012,7 @@ input[type=range]::-webkit-slider-thumb {
     font-size: 1rem;
 }
 
+
 #favorites-drawer input,
 #favorites-drawer select,
 #favorites-drawer textarea {
@@ -1079,6 +1080,17 @@ input[type=range]::-webkit-slider-thumb {
 #settings-drawer {
 }
 
+#settings-drawer a,
+#settings-drawer a:active,
+#settings-drawer a:visited {
+    color: #8585FF!important;
+}
+
+#randomizer-select-all,
+#randomizer-select-none {
+    margin-right: 1vw;
+}
+
 #midi-channel {
     font-size: 1rem;
 }
@@ -1092,3 +1104,5 @@ input[type=range]::-webkit-slider-thumb {
     margin-right: 6px;
     transform: scale(1.4);
 }
+
+
