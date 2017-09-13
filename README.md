@@ -39,6 +39,57 @@ Double-click on any knob's label to reset the knob to its default value.
 
 ![reset](/images/BS2-Web-double-click-to-reset.png "Double-click the label to reset the value")
 
+## Application Menu
+
+### Favorites
+
+Open the Favorites panel. You can save and recall your favorites patches here. Your favorites are saved in your
+browser's local storage. No files are created. 
+
+A favorite is simply a URL with the following format:
+
+    http://<domain>/bs2?sysex=<sysex-data>
+
+Example:
+
+    http://<domain>/bs2?sysex=f00020290033000000000000000000006000004804037d7e0220100f777801004340200000ff7c00000000000f78000008200000077800004000000f700000000000126000000000001a4000202004001f190f6923797c7e3f1f5f6f70017c7e403f4f6770017c7e401f4000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000f7
+
+### Randomize
+
+Randomize the parameters according to the _Randomizer settings_ defined in the _Settings_ panel.
+
+### Init
+
+Reset the application and the Bass Station II with the default values.
+
+### Sync
+
+Sync the application with the Bass Station II. This is done by sending a request-for-sysex to the Bass Station II.
+
+### Load patch
+
+Open a dialog allowing you to select a sysex patch file (file with `.syx` extension). One loaded the patch is sent to the Bass Station II.
+
+### Save patch
+
+Open your browser's Save File dialog to save the current patch as a sysex dump file (file with `.syx` extension). 
+
+### Print patch Midi
+
+Open a new window with the current patch displayed in a ready-to-print layout. 
+
+:bulb: With Chrome you can even easily create a _PDF_ file. 
+
+### Settings
+
+Open the Settings panel. Within this panel you can configure:
+- the **MIDI channel** to use to communicate with your Bass Station II 
+- the **randomizer**
+
+### About
+
+Display the _About_ dialog.
+
 # Bass Station II MIDI messages
 
 The MIDI parameters are documented in the official Novation Bass Station II user manual. 
