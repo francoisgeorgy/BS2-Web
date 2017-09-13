@@ -969,10 +969,10 @@
     /**
      *
      */
-    function openFavoritesDrawer() {
+    function openFavoritesPanel() {
 
-        if (TRACE) console.log("toggle favorites-drawer");
-        $('#favorites-drawer').toggle('slide', { direction: 'left' }, 500);
+        if (TRACE) console.log("toggle favorites-panel");
+        $('#favorites-panel').toggle('slide', { direction: 'left' }, 500);
 
         // init input field:
         default_favorite_name = moment().format("BS2-YYYY-MM-DD-HHmmSS");
@@ -986,28 +986,28 @@
     /**
      *
      */
-    function closeFavoritesDrawer() {
+    function closeFavoritesPanel() {
         // remove events handlers set on dialog elements:
         $("#favorites-list > div").off("click");
         $("#favorites-list > div span").off("click");
-        // close the drawer:
-        $('#favorites-drawer').hide('slide', { direction: 'left' }, 500);
+        // close the panel:
+        $('#favorites-panel').hide('slide', { direction: 'left' }, 500);
     }
 
     //==================================================================================================================
     // Settings
 
-    function openSettingsDrawer() {
-        if (TRACE) console.log("toggle settings-drawer");
-        $('#settings-drawer').toggle('slide', { direction: 'left' }, 500);
+    function openSettingsPanel() {
+        if (TRACE) console.log("toggle settings-panel");
+        $('#settings-panel').toggle('slide', { direction: 'left' }, 500);
         return false;   // disable the normal href behavior
 
     }
 
-    function closeSettingsDrawer() {
-        if (TRACE) console.log("closeSettingsDrawer");
-        // $('#left-drawer').show({duration:400,easing:"slide"});
-        $('#settings-drawer').hide('slide', { direction: 'left' }, 500);
+    function closeSettingsPanel() {
+        if (TRACE) console.log("closeSettingsPanel");
+        // $('#left-panel').show({duration:400,easing:"slide"});
+        $('#settings-panel').hide('slide', { direction: 'left' }, 500);
     }
 
     var lightbox = null;
@@ -1198,7 +1198,7 @@
      */
     function setupMenu() {
 
-        $('#menu-favorites').click(openFavoritesDrawer);
+        $('#menu-favorites').click(openFavoritesPanel);
         $('#menu-randomize').click(randomize);
         $('#menu-init').click(init);
         $('#menu-load-patch').click(loadPatchFromFile);
@@ -1206,7 +1206,7 @@
         $('#menu-print-patch').click(printPatch);
         $('#menu-sync').click(syncUIwithBS2);
         $('#menu-midi').click(openMidiWindow);
-        $('#menu-settings').click(openSettingsDrawer);
+        $('#menu-settings').click(openSettingsPanel);
         $('#menu-about').click(openCreditsDialog);
 
         $('#played-note').click(playLastNote);
@@ -1216,26 +1216,26 @@
 
         // in settings dialog:
         $('#midi-channel').change(setMidiChannel);
-        $('.close-settings-drawer').click(closeSettingsDrawer);
+        $('.close-settings-panel').click(closeSettingsPanel);
 
         // in favorites dialog:
         $('#add-favorite-bt').click(function(){
             addToFavorites();
             // closeFavoritesDialog();
         });
-        $('.close-favorites-drawer').click(closeFavoritesDrawer);
+        $('.close-favorites-panel').click(closeFavoritesPanel);
 
-        // close all opened drawer with ESC key:
+        // close all opened panel with ESC key:
         $(document).keyup(function(e) {         //TODO: move into an ad-hoc function
             if (e.keyCode === 27) { // ESC key
-                closeFavoritesDrawer();
-                closeSettingsDrawer();
+                closeFavoritesPanel();
+                closeSettingsPanel();
             }
         });
 
-        // close all opened drawer on outside click:
+        // close all opened panel on outside click:
         $(document).mousedown(function(e) {
-            $(".drawer").each(function() {
+            $(".panel").each(function() {
                 let element = $(this);
                 if (element.is(':visible')) {
                     // if the target of the click isn't the container nor a descendant of the container
@@ -1617,7 +1617,7 @@
                 if (input) {
                     connectInput(input);
                 } else {
-                    setStatusError(`${DEVICE.name_device_in} not found.`);
+                    setStatusError(`${DEVICE.name_device_in} not found. Please connect your Bass Station II with your computer.`);
                     setMidiInStatus(false);
                 }
 
