@@ -498,6 +498,35 @@
     } // setupKnobs
 
     /**
+     * Add double-click handlers on .knob-label elements. A double-click will reset the linked knob.
+     */
+    function setupResets() {
+        $(".knob-label:not(.no-reset)").attr("alt", "Double-click to reset").attr("title", "Double-click to reset");
+        $(".knob-label:not(.no-reset)").dblclick(function() {
+            let knob = $(this).siblings(".knob");
+            if (knob.length < 1) {
+                if (TRACE) console.log('setupResets: no sibbling knob found');
+                return;
+            }
+            if (TRACE) console.log("setupResets knob", knob);
+            let [control_type, control_number] = knob[0].id.split('-');
+            if (TRACE) console.log(`setupResets ${control_type} ${control_number}`);
+            let c;
+            if (control_type === 'cc') {
+                c = DEVICE.control[control_number];
+            } else if (control_type === 'nrpn') {
+                c = DEVICE.nrpn[control_number];
+            } else {
+                // ERROR
+                console.error(`setupResets invalid control id: ${control_type} ${control_number}`);
+                return;
+            }
+            c.raw_value = c.init_value;
+            updateControl(control_type, control_number, c.init_value);
+        });
+    }
+
+    /**
      *
      */
     function setupSwitches() {
@@ -777,6 +806,7 @@
         // $("#theme-choice").val(settings.theme);
 
         setupKnobs();
+        setupResets();
         setupSwitches();
         setupSelects();
         // setupSwitches(SWITCHES);

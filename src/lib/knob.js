@@ -3,7 +3,7 @@
 
     var knob = (function(elem, conf) {
 
-        const TRACE = false;    // when true, will log more details in the console
+        const TRACE = true;    // when true, will log more details in the console
 
         // It faster to access a property than to access a variable...
         // See https://jsperf.com/vars-vs-props-speed-comparison/1
@@ -382,7 +382,7 @@
             let a = getPolarAngle();
             let rad = a * Math.PI / 180.0;
 
-            if (TRACE) console.log(`getTrackPath, value=${value}, a=${a}, rad=${rad}, ml=${split_track_min_left}, mr=${split_track_min_right}, mid=${split_track_middle}, zl=${split_track_zero_left}, zr=${split_track_zero_right}`);
+            // if (TRACE) console.log(`getTrackPath, value=${value}, a=${a}, rad=${rad}, ml=${split_track_min_left}, mr=${split_track_min_right}, mid=${split_track_middle}, zl=${split_track_zero_left}, zr=${split_track_zero_right}`);
 
             if (config.center_zero) {
 
@@ -588,7 +588,6 @@
             if (!has_changed) {
                 has_changed = getValue() !== config.default_value;
                 if (has_changed) {
-                    if (TRACE) console.log(`value changed from default ${config.default_value} --> ${v}`);
                     track.setAttribute("stroke", `${config.track_color}`);
                 }
             }
@@ -652,6 +651,8 @@
          */
         function startDrag(e) {
 
+            if (TRACE) console.log('startDrag');
+
             e.preventDefault();
 
             // API: Event.currentTarget
@@ -704,6 +705,7 @@
          *
          */
         function endDrag() {
+            if (TRACE) console.log('endDrag');
             document.removeEventListener('mousemove', handleDrag, false);
             document.removeEventListener('mouseup', endDrag, false);
         }
