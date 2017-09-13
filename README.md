@@ -33,6 +33,12 @@ Bass Station II is disconnected:
 
 ![disconnected](/images/BS2-Web-disconnected.png "Bass Station II disconnected")
 
+## Features:
+
+Double-click on any knob's label to reset the knob to its default value.
+
+![reset](/images/BS2-Web-double-click-to-reset.png "Double-click the label to reset the value")
+
 # Bass Station II MIDI messages
 
 The MIDI parameters are documented in the official Novation Bass Station II user manual. 
@@ -43,36 +49,6 @@ The application is able to receive and decode SysEx dumps coming from the Bass S
 
 The SysEx dump format is not documented by Novation. I have reverse-engineered it and you can find the result
  in my other project [BS2-SysEx](https://github.com/francoisgeorgy/BS2-SysEx).
-
-## Two-bytes values
-
-Some parameters use two bytes to increase the value range from 0..127 to 0..255. 
-
-### Example:
-
-#### Sending:
-
-Value = `201`. In binary : `11001001`
-
-1. The seven _most significants_ bits are `1100100`. Left-pad them to form a byte: `01100100` = `100`. This will be the first byte to send.
-2. The _least significant_ bit is `1`. We left-shift it by 6 positions : `01000000` = `64`. This will be the second byte so send.
-
-In summary:
-
-    byte1 = integer part of value/2
-    byte2 = 0 if value is even, 64 if value is odd
-
-#### Sending:
-
-We receive two bytes: `01100100` and `01000000`
-
-1. Left-shift byte 1 by one position: `01100100 << 1 = 11001000`
-2. Right-shift byte 2 by 6 position:  `01000000 >>> 6 = 00000001`
-3. Add them: `11001000 + 00000001 = 11001001 = 201`
-
-In summary:
-
-    value = byte1*2 + byte2/64
 
 
 # Credits
