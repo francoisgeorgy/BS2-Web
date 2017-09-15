@@ -55,31 +55,38 @@
         $(sel).removeClass('disabled');
     }
 
-    var midi_out_messages = 0;
-    var midi_in_messages = 0;
+    let midi_in_messages = 0;
+    let midi_out_messages = 0;
 
-    function logOutgoingMidiMessage(type, control, value) {
-        //TODO
-        // midi_out_messages++;
-        // $('#midi-messages-out').prepend(`<div>${type.toUpperCase()} ${control} ${value}</div>`);
-        // if (midi_out_messages > 100) $("#midi-messages-out div:last-child").remove();
+    function logIncomingMidiMessage(type, control, value) {
         if (midi_window) {
-            $('#midi-messages-out', midi_window.document).prepend(`<div>${type.toUpperCase()} ${control} ${value}</div>`);
+            midi_in_messages++;
+            // log at max 1000 messages:
+            if (midi_in_messages > 1000) $("#midi-messages-in div:last-child", midi_window.document).remove();
+            let s = type + ' ' +
+                control.toString(10).padStart(3, '0') + ' ' +
+                value.toString(10).padStart(3, '0') + ' (' +
+                control.toString(16).padStart(2, '0') + ' ' +
+                value.toString(16).padStart(2, '0') + ')';
+            $('#midi-messages-in', midi_window.document).prepend(`<div>${s.toUpperCase()}</div>`);
         }
     }
 
-    function logIncomingMidiMessage(type, control, value) {
-        //TODO
-        // midi_in_messages++;
-        //
-        // if (midi_in_messages > 100) $("#midi-messages-in div:last-child").remove();
+    function logOutgoingMidiMessage(type, control, value) {
         if (midi_window) {
-            $('#midi-messages-in', midi_window.document).prepend(`<div>${type.toUpperCase()} ${control} ${value}</div>`);
+            midi_out_messages++;
+            // log at max 1000 messages:
+            if (midi_out_messages > 1000) $("#midi-messages-out div:last-child", midi_window.document).remove();
+            let s = type + ' ' +
+                control.toString(10).padStart(3, '0') + ' ' +
+                value.toString(10).padStart(3, '0') + ' (' +
+                control.toString(16).padStart(2, '0') + ' ' +
+                value.toString(16).padStart(2, '0') + ')';
+            $('#midi-messages-out', midi_window.document).prepend(`<div>${s.toUpperCase()}</div>`);
         }
     }
 
     //==================================================================================================================
-
 
     /**
      * Get a link for the current patch
@@ -271,7 +278,7 @@
 
         console.groupCollapsed(`updateConnectedDevice()`);
 
-        setStatus(`Sending all values to ${DEVICE.name} ...`);
+        // setStatus(`Sending all values to ${DEVICE.name} ...`);
 
         function _send(controls) {
             for (let i=0; i < controls.length; i++) {
@@ -283,7 +290,7 @@
         _send(DEVICE.control);
         _send(DEVICE.nrpn);
 
-        setStatus(`${DEVICE.name} updated.`);
+        // setStatus(`${DEVICE.name} updated.`);
 
         console.groupEnd();
     }
@@ -341,7 +348,7 @@
         if (TRACE) console.log(`init(${sendUpdate})`);
         DEVICE.init();
         updateUI();
-        setStatus(`init done`);
+        // setStatus(`init done`);
         if (sendUpdate) updateConnectedDevice();
         if (TRACE) console.log(`init done`);
         return false;   // disable the normal href behavior
@@ -357,7 +364,7 @@
         } else {
             DEVICE.randomize(settings.randomize);
             updateUI();
-            setStatus(`randomize done`);
+            // setStatus(`randomize done`);
             updateConnectedDevice();
         }
         console.groupEnd();
@@ -916,12 +923,14 @@
     }
 */
 
+    /**
+     *
+     * @param index
+     */
     function deleteFavorite(index) {
         if (TRACE) console.log(`deleteFavorite(${index})`);
         let favorites = getFavorites();
-        // console.log(favorites);
         favorites.splice((favorites.length - 1) - index, 1);
-        // console.log(favorites);
         localStorage.setItem('favorites', JSON.stringify(favorites));
     }
 
@@ -931,12 +940,13 @@
     function refreshFavoritesList() {
         let favorites = getFavorites();
         $("#favorites-list").empty().append(favorites.slice(0).reverse().map((o, i) => {
-            if (TRACE) console.log(o, i);
-            // return $("<div>").attr("id", `fav-${i}`).addClass('fav-handle').text(o.name).append($("<div>").text(o.description));
+            //if (TRACE) console.log(o, i);
             return $("<div>").append($("<a>")
-                            .attr("href", o.url)
-                            .attr("id", `fav-${i}`).text(o.name),
-                    $("<span>").attr("id", `del-${i}`).html("&#x2715;"),    // delete handle
+                        .attr("href", o.url)
+                        .attr("id", `fav-${i}`).text(o.name),
+                    $("<span>")
+                        .attr("id", `del-${i}`)
+                        .attr("title", "delete this favorite").html("&#x2715;"),    // delete handle
                     $("<div>").text(o.description));
         }));
 
@@ -972,13 +982,19 @@
     function openFavoritesPanel() {
 
         if (TRACE) console.log("toggle favorites-panel");
-        $('#favorites-panel').toggle('slide', { direction: 'left' }, 500);
 
-        // init input field:
-        default_favorite_name = moment().format("BS2-YYYY-MM-DD-HHmmSS");
-        $('#add-favorite-patch-name').attr('placeholder', default_favorite_name);
+        // $('#favorites-panel').toggle('slide', {direction: 'left'}, 500);
 
-        refreshFavoritesList();
+        let e = $('#favorites-panel');
+        if (e.css("display") === 'block') {
+            e.hide('slide', {direction: 'left'}, 500);
+        } else {
+            e.show('slide', {direction: 'left'}, 500);
+            // init input field:
+            default_favorite_name = moment().format("BS2-YYYY-MM-DD-HHmmSS");
+            $('#add-favorite-patch-name').attr('placeholder', default_favorite_name);
+            refreshFavoritesList();
+        }
 
         return false;   // disable the normal href behavior
     }
@@ -999,9 +1015,14 @@
 
     function openSettingsPanel() {
         if (TRACE) console.log("toggle settings-panel");
-        $('#settings-panel').toggle('slide', { direction: 'left' }, 500);
+        // $('#settings-panel').toggle('slide', { direction: 'left' }, 500);
+        let e = $('#settings-panel');
+        if (e.css("display") === 'block') {
+            e.hide('slide', {direction: 'left'}, 500);
+        } else {
+            e.show('slide', {direction: 'left'}, 500);
+        }
         return false;   // disable the normal href behavior
-
     }
 
     function closeSettingsPanel() {
@@ -1189,7 +1210,7 @@
      * @returns {boolean}
      */
     function openMidiWindow() {
-        midi_window = window.open("midi.html", '_midi', 'location=no,height=480,width=300,scrollbars=yes,status=no');
+        midi_window = window.open("midi.html", '_midi', 'location=no,height=480,width=350,scrollbars=yes,status=no');
         return false;   // disable the normal href behavior
     }
 
@@ -1475,13 +1496,14 @@
                 if (TRACE) console.log('set sysex value to BS2');
                 if (DEVICE.setValuesFromSysex(e.data)) {
                     updateUI();
-                    setStatus("UI updated from SysEx.");
+                    // setStatus("UI updated from SysEx.");
                 } else {
-                    setStatusError("Unable to set value from SysEx.")
+                    setStatusError("Unable to update from SysEx data.")
                 }
             });
         console.log(`midi_input listening on channel ${midi_channel}`);
         setMidiInStatus(true);
+        setStatus(`${DEVICE.name_device_in} connected on channel ${midi_channel}.`);
     }
 
 
@@ -1616,6 +1638,7 @@
                 let input = WebMidi.getInputByName(DEVICE.name_device_in);
                 if (input) {
                     connectInput(input);
+                    setStatus(`${DEVICE.name_device_in} connected on channel ${midi_channel}.`);
                 } else {
                     setStatusError(`${DEVICE.name_device_in} not found. Please connect your Bass Station II with your computer.`);
                     setMidiInStatus(false);

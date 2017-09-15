@@ -1,5 +1,23 @@
 var Utils = (function () {
 
+/*
+    String.prototype.padZero= function(len, c){
+        let s = '';
+        c = c || '0';
+        len = (len || 2) - this.length;
+        while (s.length < len) s+= c;
+        return s + this;
+    };
+*/
+    let padZero = function(str, len, c) {
+        let s = str;
+        c = c || '0';
+        len = (len || 2) - s.length;
+        while (s.length < len) s += c;
+        return s;
+    };
+
+
     var toHexString = function(byteArray, sep) {
         return Array.from(byteArray, function (byte) {
             return ('0' + (byte & 0xFF).toString(16)).slice(-2);
@@ -71,12 +89,44 @@ var Utils = (function () {
         return c;
     };
 
+
+    /*
+     event Object
+     target          Input       The Input that triggered the event.
+     data            Uint8Array  The raw MIDI message as an array of 8 bit values.
+     receivedTime    Number      The time when the event occurred (in milliseconds since start).
+     timestamp       Uint        The timestamp when the event occurred (in milliseconds since the Unix Epoch).
+     channel         Uint        The channel where the event occurred (between 1 and 16).
+     type            String      The type of event that occurred.
+     controller      Object
+     number      Uint        The number of the controller.
+     name        String      The usual name or function of the controller.
+     value       Uint        The value received (between 0 and 127).
+     */
+/*
+    midiEventForHuman = function(e) {
+        let msg = e.data;   // Uint8Array
+        let dec = "";
+        let hex = "";
+        let bin = "";
+        for (let i=0; i < msg.byteLength; i++) {
+            dec = dec + msg[i].toString(10).padZero(3) + " ";
+            hex = hex + msg[i].toString(16).padZero(2) + " ";
+            bin = bin + msg[i].toString(2).padZero(8) + " ";
+        }
+        return dec.trim() + " - " + hex.trim() + " - " + bin.trim();
+    };
+*/
+
+
     return {
+        padZero,
         toHexString,
         fromHexString,
         getParameterByName,
         getRightShift,
-        getSetBits
+        getSetBits //,
+        // midiEventForHuman
     };
 
 })();

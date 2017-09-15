@@ -5,37 +5,16 @@
     <title>Bass Station II Web Interface</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,500,700|Roboto+Condensed:300,400,700" rel="stylesheet" />
     <link href="css/midi.css" rel="stylesheet" />
-    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>-->
-    <!--<script src="lib/js.cookie.js"></script>-->
-    <!--<script src="lib/webmidi.min.js"></script>-->
-    <!--<script src="lib/envelope.js?ck"></script>-->
-    <!--<script src="lib/knob.js?ck"></script>-->
-    <!--<script src="bs2.js?ck"></script>-->
-    <!--<script src="app.js?ck123"></script>-->
 </head>
 <body>
-    <div id="main">
-<!--
-        <div id="title">
-            <h1>MIDI</h1>
-            <div class="menu">
-                <span><a id="close" href="#">Close</a></span>
-                <span><a href="#">Settings &#x2699;</a></span>
-                <span><a href="#">Help &#x3f;</a></span>
-            </div>
+    <div class="header">
+        <div>MIDI in</div>
+        <div>MIDI out</div>
+    </div>
+    <div class="container">
+        <div id="midi-messages-in" class="midi-messages">
         </div>
--->
-        <div id="midi">
-            <div>
-                <h2>MIDI in</h2>
-                <div id="midi-messages-in" class="midi-messages">
-                </div>
-            </div>
-            <div>
-                <h2>MIDI out</h2>
-                <div id="midi-messages-out" class="midi-messages">
-                </div>
-            </div>
+        <div id="midi-messages-out" class="midi-messages">
         </div>
     </div>
 </body>
