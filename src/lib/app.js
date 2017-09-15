@@ -1,4 +1,6 @@
-(function(){
+// (function(){
+
+    import DEVICE from './bs2.js';
 
     const TRACE = true;    // when true, will log more details in the console
 
@@ -1575,7 +1577,7 @@
 
     const VERSION = '2.0.0';
     const URL_PARAM_SYSEX = 'sysex';    // name of sysex parameter in the query-string
-    const DEVICE = BS2;
+    // const DEVICE = BS2;
 
     var midi_input = null;
     var midi_output = null;
@@ -1675,4 +1677,4 @@
 
     });
 
-})();
+// })();

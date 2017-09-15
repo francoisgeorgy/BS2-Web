@@ -29,7 +29,10 @@ module.exports = {
         // new UglifyJSPlugin()
         new BabiliPlugin({
             removeDebugger: true,
-            removeConsole: false
+            removeConsole: false,
+            mangle: false,
+            simplify: false,
+            deadcode: false
         }, {
             comments: false
         }),
@@ -48,7 +51,8 @@ module.exports = {
             { from: './src/lib/msgpack.min.js', to: 'lib'  },
             { from: './src/lib/moment.min.js', to: 'lib'  },
             { from: './src/lib/tonal.min.js', to: 'lib'  },
-            { from: './src/lib/lity.min.js', to: 'lib'  }
+            { from: './src/lib/lity.min.js', to: 'lib'  },
+            { from: './src/lib/lity.min.css', to: 'lib'  }
         ])
     ]
 };

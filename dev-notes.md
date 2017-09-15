@@ -29,3 +29,21 @@ https://github.com/kevlened/copy-webpack-plugin
 clean dist    
     
     npm install clean-webpack-plugin --save-dev    
+
+TODO:
+
+See 
+- https://medium.com/@rajaraodv/webpack-the-confusing-parts-58712f8fcad9
+- https://blog.madewithenvy.com/getting-started-with-webpack-2-ed2b86c68783
+- https://www.toptal.com/javascript/a-guide-to-managing-webpack-dependencies
+- https://medium.com/@svinkle/getting-started-with-webpack-and-es6-modules-c465d053d988
+
+
+- entry:
+    - index.js
+    - vendor.js
+    - midi.js
+    - print.js
+- output
+    
+    
