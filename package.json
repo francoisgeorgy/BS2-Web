@@ -8,10 +8,9 @@
     "webpack": "^3.6.0"
   },
   "devDependencies": {
-    "babili-webpack-plugin": "^0.1.2",
+    "babel-preset-minify": "^0.2.0",
     "clean-webpack-plugin": "^0.1.16",
     "copy-webpack-plugin": "^4.0.1",
-    "uglifyjs-webpack-plugin": "^0.4.6",
     "webpack": "^3.6.0"
   },
   "scripts": {

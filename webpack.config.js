@@ -1,6 +1,6 @@
 const path = require('path'), glob = require('glob');
 // const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
-const BabiliPlugin = require("babili-webpack-plugin");
+// const BabiliPlugin = require("babili-webpack-plugin");
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 
@@ -27,15 +27,15 @@ module.exports = {
     plugins: [
         new CleanWebpackPlugin(['dist']),
         // new UglifyJSPlugin()
-        new BabiliPlugin({
-            removeDebugger: true,
-            removeConsole: false,
-            mangle: false,
-            simplify: false,
-            deadcode: false
-        }, {
-            comments: false
-        }),
+        // new BabiliPlugin({
+        //     removeDebugger: true,
+        //     removeConsole: false,
+        //     mangle: false,
+        //     simplify: false,
+        //     deadcode: false
+        // }, {
+        //     comments: false
+        // }),
         new CopyWebpackPlugin([
             { from: './src/index.html' },
             { from: './src/midi.html' },
