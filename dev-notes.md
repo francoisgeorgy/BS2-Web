@@ -17,10 +17,11 @@ In order to support ES6, an ES6-capable, a.k.a. harmony, version of UglifyJS has
 
 https://github.com/webpack-contrib/babel-minify-webpack-plugin
 
-    npm install babili-webpack-plugin --save-dev
+    ~~~npm install babili-webpack-plugin --save-dev~~~
     
 https://webcache.googleusercontent.com/search?q=cache:nhDPJXUMekkJ:https://kevin-chappell.com/web-development/smaller-webpack-bundles-with-babili/+&cd=9&hl=en&ct=clnk&gl=ch
 
+    yarn add --dev babel-minify-webpack-plugin
 
 https://github.com/kevlened/copy-webpack-plugin
 

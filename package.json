@@ -5,9 +5,11 @@
   "main": "webpack.config.js",
   "dependencies": {
     "glob": "^7.1.2",
+    "jquery": "^3.2.1",
     "webpack": "^3.6.0"
   },
   "devDependencies": {
+    "babel-minify-webpack-plugin": "^0.2.0",
     "babel-preset-minify": "^0.2.0",
     "clean-webpack-plugin": "^0.1.16",
     "copy-webpack-plugin": "^4.0.1",
