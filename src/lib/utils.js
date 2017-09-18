@@ -1,4 +1,4 @@
-var Utils = (function () {
+// var Utils = (function () {
 
 /*
     String.prototype.padZero= function(len, c){
@@ -9,7 +9,7 @@ var Utils = (function () {
         return s + this;
     };
 */
-    let padZero = function(str, len, c) {
+    export let padZero = function(str, len, c) {
         let s = str;
         c = c || '0';
         len = (len || 2) - s.length;
@@ -18,7 +18,7 @@ var Utils = (function () {
     };
 
 
-    var toHexString = function(byteArray, sep) {
+export let toHexString = function(byteArray, sep) {
         return Array.from(byteArray, function (byte) {
             return ('0' + (byte & 0xFF).toString(16)).slice(-2);
         }).join(sep || '')
@@ -29,7 +29,7 @@ var Utils = (function () {
      * @param string
      * @returns {*}
      */
-    var fromHexString = function(string, sep) {
+    export var fromHexString = function(string, sep) {
         let s = sep ? string.replace(sep, '') : string;
         if ((s.length % 2) > 0) {
             // TODO: throw an exception
@@ -51,7 +51,7 @@ var Utils = (function () {
     };
 */
 
-    function getParameterByName(name) {
+export function getParameterByName(name) {
         var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
         return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
     }
@@ -61,7 +61,7 @@ var Utils = (function () {
      * Returns the number of bit 0 before the rightmost bit set to 1.
      * @param {*} v
      */
-    getRightShift = function(v) {
+export function getRightShift(v) {
         if (!v) return -1;  //means there isn't any 1-bit
         let i = 0;
         while ((v & 1) === 0) {
@@ -69,7 +69,7 @@ var Utils = (function () {
             v = v>>1;
         }
         return i;
-    };
+    }
 
 
     /**
@@ -82,12 +82,12 @@ var Utils = (function () {
      *
      * return the number of bit set
      */
-    getSetBits = function(v) {
+export function getSetBits(v) {
         for (var c = 0; v; c++) {
             v &= v - 1; // clear the least significant bit set
         }
         return c;
-    };
+    }
 
 
     /*
@@ -119,14 +119,14 @@ var Utils = (function () {
 */
 
 
-    return {
-        padZero,
-        toHexString,
-        fromHexString,
-        getParameterByName,
-        getRightShift,
-        getSetBits //,
-        // midiEventForHuman
-    };
-
-})();
+//     return {
+//         padZero,
+//         toHexString,
+//         fromHexString,
+//         getParameterByName,
+//         getRightShift,
+//         getSetBits //,
+//         // midiEventForHuman
+//     };
+//
+// })();

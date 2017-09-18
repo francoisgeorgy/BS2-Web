@@ -175,7 +175,7 @@ function defineControls() {
         name: "Osc2 Range",
         range: [63, 66],
         cc_range: [63, 66],
-        human: v => OSC_RANGES[v], // v is cc raw_value
+        human: v => consts.OSC_RANGES[v], // v is cc raw_value
         init_value: 64,
         sysex: {
             offset: 26,
@@ -247,7 +247,7 @@ function defineControls() {
         range: [0, 2],
         cc_range: [0, 2],
         human: v => {
-            return SUB_WAVE_FORMS[v % SUB_WAVE_FORMS.length]
+            return consts.SUB_WAVE_FORMS[v % consts.SUB_WAVE_FORMS.length]
         },
         init_value: 0,
         sysex: {
@@ -331,7 +331,7 @@ function defineControls() {
     control[control_id.filter_type] = { // 83
         name: "Filter Type",
         cc_range: [0, 1],
-        human: v => FILTER_TYPE[v],
+        human: v => consts.FILTER_TYPE[v],
         sysex: {
             offset: 48,
             mask: [0x04]
@@ -340,7 +340,7 @@ function defineControls() {
     control[control_id.filter_slope] = { // 106
         name: "Filter Slope",
         cc_range: [0, 1],
-        human: v => FILTER_SLOPE[v],
+        human: v => consts.FILTER_SLOPE[v],
         init_value: 1,
         sysex: {
             offset: 48,
@@ -350,7 +350,7 @@ function defineControls() {
     control[control_id.filter_shape] = { // 84
         name: "Filter Shape",
         cc_range: [0, 2],
-        human: v => FILTER_SHAPES[v],
+        human: v => consts.FILTER_SHAPES[v],
         sysex: {
             offset: 48,
             mask: [0x03]
@@ -416,7 +416,7 @@ function defineControls() {
     control[control_id.lfo1_wave] = { // 88
         name: "LFO1 Wave",
         cc_range: [0, 3],
-        human: v => LFO_WAVE_FORMS[v],
+        human: v => consts.LFO_WAVE_FORMS[v],
         sysex: {
             offset: 63,
             mask: [0x06]
@@ -447,7 +447,7 @@ function defineControls() {
     control[control_id.lfo2_wave] = { // 89
         name: "LFO2 Wave",
         cc_range: [0, 3],
-        human: v => LFO_WAVE_FORMS[v],
+        human: v => consts.LFO_WAVE_FORMS[v],
         sysex: {
             offset: 70,
             mask: [0x0C]
@@ -598,7 +598,7 @@ function defineControls() {
     control[control_id.arp_note_mode] = { // 118
         name: "Arp Note Mode",
         cc_range: [0, 7],
-        human: v => ARP_NOTES_MODE[v],
+        human: v => consts.ARP_NOTES_MODE[v],
         sysex: {
             offset: 79,
             mask: [0x0E]

@@ -1,3 +1,4 @@
+import {COARSE_VALUES} from './constants.js';
 
 /**
  * 0..127 to -63..63
