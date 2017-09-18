@@ -48,3 +48,14 @@ See
 - output
     
     
+Used libs:
+    
+    yarn add webmidi
+    yarn add moment
+    yarn add js-cookie
+    yarn add tonal
+    yarn add lity
+    
+https://stackoverflow.com/questions/33998262/jquery-ui-and-webpack-how-to-manage-it-into-module
+
+    yarn add webpack-jquery-ui

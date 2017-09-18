@@ -1,7 +1,7 @@
 import {control} from "./cc.js";
 import meta from './meta.js';
-import {v8, v16} from "./utils.js";
-
+import * as Utils from "./utils.js";
+import * as Bits from '../lib/bits-utils';
 
 /**
  *
@@ -56,9 +56,9 @@ function decodeControls(data, controls) {
 
         let raw_value = 0;
         if (sysex.mask.length === 2) {
-            raw_value = v16(data[sysex.offset], data[sysex.offset + 1], sysex.mask[0], sysex.mask[1])
+            raw_value = Utils.v16(data[sysex.offset], data[sysex.offset + 1], sysex.mask[0], sysex.mask[1])
         } else {
-            raw_value = v8(data[sysex.offset], sysex.mask[0]);
+            raw_value = Utils.v8(data[sysex.offset], sysex.mask[0]);
         }
 
         // console.log(`${i} raw_value=${raw_value}`);
@@ -160,7 +160,7 @@ var getDump = function () {
             // the MSB always starts at the lsb (is always right aligned)
 
             // left shift the value to apply the LSB mask
-            let r = Utils.getRightShift(sysex.mask[1]);
+            let r = Bits.getRightShift(sysex.mask[1]);
             let v = control[i].raw_value << r;
             let sysex_lsb = v & sysex.mask[1];
 
@@ -185,7 +185,7 @@ var getDump = function () {
             data[sysex.offset + 1] |= sysex_lsb;
 
         } else {
-            let r = Utils.getRightShift(sysex.mask[0]);
+            let r = Bits.getRightShift(sysex.mask[0]);
             v = v << r;     // shifts r bits to the left, shifting in zeroes from the right.
             // console.log(`cc ${i}: sysex data[${sysex.offset}]: ${v.toString(2)} (${control[i].name})`);
             data[sysex.offset] |= v;
@@ -212,7 +212,7 @@ var getDump = function () {
             // the MSB always starts at the lsb (is always right aligned)
 
             // left shift the value to apply the LSB mask
-            let r = Utils.getRightShift(sysex.mask[1]);
+            let r = Bits.getRightShift(sysex.mask[1]);
             let v = nrpn[i].raw_value << r;
             let sysex_lsb = v & sysex.mask[1];
 
@@ -237,7 +237,7 @@ var getDump = function () {
             data[sysex.offset + 1] |= sysex_lsb;
 
         } else {
-            let r = Utils.getRightShift(sysex.mask[0]);
+            let r = Bits.getRightShift(sysex.mask[0]);
             v = v << r;     // shifts r bits to the left, shifting in zeroes from the right.
             // console.log(`cc ${i}: sysex data[${sysex.offset}]: ${v.toString(2)} (${nrpn[i].name})`);
             data[sysex.offset] |= v;

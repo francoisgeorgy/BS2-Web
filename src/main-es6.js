@@ -3,14 +3,7 @@ import envelope from './synth-ui/envelope.js';
 import knob from './synth-ui/knob.js';
 import * as Utils from './lib/utils.js';
 // import * as Tonal from "tonal";
-import tonal from 'tonal'
-import * as WebMidi from "webmidi";
-import moment from "moment";
-import Cookies from 'js-cookie';
-import * as lity from "lity";
-// import * as Tonal from "tonal";
 // import * as c from 'js-cookie';
-require('webpack-jquery-ui/effects');
 
 console.log(DEVICE.name);
 
@@ -1158,7 +1151,12 @@ function openCreditsDialog() {
 // UI main commands (buttons in header)
 
 function printPatch() {
+    // let v = BS2.getAllValues();
     if (TRACE) console.log('printPatch');
+    // data = msgpack.encode(v);
+    // let b64 = base64js.fromByteArray(data);
+    // let decoded = msgpack.decode(base64js.toByteArray(b64));
+    // let url = 'print.html?pack=' + b64;
     let url = 'print.html?' + URL_PARAM_SYSEX + '=' + Utils.toHexString(DEVICE.getSysExDump());
     window.open(url, '_blank', 'width=800,height=600,location,resizable,scrollbars,status');
     return false;   // disable the normal href behavior
@@ -1400,11 +1398,12 @@ function noteOn(e) {
     if (neg_octave) note = note.replace('-', '');  // we'll put it back later; the tests are simpler without it
 
     // Get the enharmonics of a note. It returns an array of three elements: the below enharmonic, the note, and the upper enharmonic
-    // tonal.note.enharmonics('Bb4') --> ["A#4", "Bb4", "Cbb5"]
-    // tonal.note.enharmonics('A#4') --> ["G###4", "A#4", "Bb4"]
-    // tonal.note.enharmonics('C')   --> ["B#", "C", "Dbb"]
-    // tonal.note.enharmonics('A')   --> ["G##", "A", "Bbb"]
-    let enharmonics = tonal.note.enharmonics(last_note);
+    // Tonal.note.enharmonics('Bb4') --> ["A#4", "Bb4", "Cbb5"]
+    // Tonal.note.enharmonics('A#4') --> ["G###4", "A#4", "Bb4"]
+    // Tonal.note.enharmonics('C')   --> ["B#", "C", "Dbb"]
+    // Tonal.note.enharmonics('A')   --> ["G##", "A", "Bbb"]
+    let enharmonics = Tonal.note.enharmonics(last_note);
+    // let enharmonic = Tonal.note.simplify(note);
 
     let enharmonic;
     if (note.length === 2) {

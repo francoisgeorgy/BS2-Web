@@ -82,29 +82,15 @@
          value       Uint        The value received (between 0 and 127).
          */
         function midiEventForHuman(e) {
-            //console.log(e);
-
-            var msg = e.data;   // Uint8Array
-            //return toHexString(msg);
-
-            //console.log(msg.byteLength);
-
-            //console.log(msg[0], msg[1], msg[2]);
-
-            //console.log(toHexString(msg));
-            //console.log(toDecString(msg));
-
-            var dec = "";
-            var hex = "";
-            var bin = "";
-            for (var i=0; i<msg.byteLength; i++) {
+            const msg = e.data;   // Uint8Array
+            let dec = "";
+            let hex = "";
+            let bin = "";
+            for (let i=0; i<msg.byteLength; i++) {
                 dec = dec + msg[i].toString(10).padZero(3) + " ";
                 hex = hex + msg[i].toString(16).padZero(2) + " ";
                 bin = bin + msg[i].toString(2).padZero(8) + " ";
             }
-
-            cc2 = 0;
-
             return dec.trim() + " - " + hex.trim() + " - " + bin.trim();
         }
 
