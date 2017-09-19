@@ -743,33 +743,6 @@
 
     </div>
 
-<!--
-    <div id="fav-dialog" class="dialog lity-hide">
-        <h1>Favorites</h1>
-        <div>
-            <h3>Add the current patch to your favorites</h3>
-            Name:<br />
-            <input type="text" name="patch-name" id="add-favorite-patch-name" placeholder="" size="50"><br />
-            Description:<br />
-            <textarea name="patch-description" id="add-favorite-patch-description" rows="4" cols="50"></textarea><br />
-            <button type="button" id="add-favorite-bt">Add to favorites</button>
-        </div>
-        <div>
-            <h3>Load a patch from your favorites</h3>
-            <div style="display: flex">
-                <div>
-                    <select id="load-favorite-list" size="4"></select><br />
-                </div>
-                <div>
-                    <div id="load-favorite-name"></div>
-                    <div id="load-favorite-descr"></div>
-                    <button type="button" id="load-favorite-bt">Load favorite</button>
-                </div>
-            </div>
-        </div>
-    </div>
--->
-
     <div id="load-patch-dialog" class="dialog lity-hide">
         <h2>Load patch from file</h2>
         <div id="import-dialog-instructions">
@@ -781,49 +754,6 @@
         <div id="load-patch-error" style="margin:10px 0;color:red">
         </div>
     </div>
-
-<!--
-    <div id="settings-dialog" class="dialog lity-hide">
-        <h1>Settings</h1>
-        <div id="settings-dialog-instructions">
-        </div>
-        <div style="margin:10px 0;">
-            <h3>Randomizer</h3>
-            <p>Randomize the following groups of parameters:</p>
-            <div id="randomizer-settings">
-            </div>
-        </div>
-        <div style="margin:10px 0;">
-            <h3>MIDI channel</h3>
-            Use MIDI channel <select id="midi-channel">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-                <option value="10">10</option>
-                <option value="11">11</option>
-                <option value="12">12</option>
-                <option value="13">13</option>
-                <option value="14">14</option>
-                <option value="15">15</option>
-                <option value="16">16</option>
-                <option value="all">All</option>
-            </select> to communicate with the Bass Station II.
-        </div>
-        <div id="settings-dialog-error" style="margin:10px 0;color:red">
-        </div>
-        <div class="dialog-info">
-            <span style="float:right">ESC to close</span>
-            All changes are immediately saved and applied.
-        </div>
-    </div>
--->
-
 
     <div id="credits-dialog" class="dialog lity-hide">
         <a href="https://github.com/francoisgeorgy/BS2-Web">
@@ -844,15 +774,15 @@
                 <li><a href="http://sorgalla.com/lity/">Lity</a>: a lightweight, accessible and responsive lightbox.</li>
                 <li><a href="https://github.com/js-cookie/js-cookie" target="_blank">JS-Cookie</a>: a simple, lightweight JavaScript API for handling browser cookies.</li>
                 <li><a href="https://jquery.com/" target="_blank">jQuery</a>: a fast, small, and feature-rich JavaScript library.</li>
-                <li><a href="http://msgpack.org/index.html" target="_blank">MessagePack</a>: an efficient binary serialization format.</li>
+                <!--<li><a href="http://msgpack.org/index.html" target="_blank">MessagePack</a>: an efficient binary serialization format.</li>-->
                 <li><a href="http://momentjs.com/" target="_blank">Moment.js</a>: parse, validate, manipulate, and display dates and times in JavaScript.</li>
                 <li><a href="http://fontawesome.io/" target="_blank">Font Awesome</a>: the iconic font and CSS toolkit.</li>
                 <li><a href="https://fonts.google.com/specimen/Roboto" target="_blank">Roboto font</a> by Google. </li>
             </ul>
         </p>
         <p class="trademarks">
-            Novation is a registered trade mark of Focusrite Audio Engineering Limited.<br />
-            Bass Station II is a trade mark of Focusrite Audio Engineering Limited.
+            <em>Novation</em> is a registered trade mark of Focusrite Audio Engineering Limited.<br />
+            <em>Bass Station II</em> is a trade mark of Focusrite Audio Engineering Limited.
         </p>
     </div>
 
@@ -911,7 +841,6 @@
         </div>
     </div>
 
-
     <div id="favorites-panel" class="panel" style="display:none">
         <div id="favorites-header">
             <h2><span style="float:right" class="close-favorites-panel">&#x2715;</span>Favorites</h2>
@@ -927,21 +856,12 @@
         </div>
         <div id="favorites-load">
             <h3>Load a patch from your favorites</h3>
-            <!--<select id="load-favorite-list" size="4"></select>-->
             <div id="favorites-list"></div>
-            <!--<div>-->
-                <!--<div id="load-favorite-name"></div>-->
-                <!--<div id="load-favorite-descr"></div>-->
-                <!--<button type="button" id="load-favorite-bt" style="float:right">Load favorite</button>-->
-                <!--<div style="clear:both"></div>-->
-            <!--</div>-->
-            <!--<div>Click to load</div>-->
         </div>
         <div id="favorites-footer" class="dialog-info">
             <span style="float:right">ESC to close</span>
         </div>
     </div>
-
 
 </body>
 </html>

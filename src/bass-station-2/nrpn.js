@@ -30,9 +30,7 @@ export const nrpn_id = {
     arp_seq_retrig: 106
 };
 
-
 export const nrpn = new Array(127);
-// nrpn.cc_type = 'nrpn';
 
 function defineNRPNs() {
     nrpn[nrpn_id.osc1_waveform] = { // 0 (MSB), 72 (LSB)
@@ -261,8 +259,10 @@ function defineNRPNs() {
 
     // add the missing default properties
     nrpn.forEach(function (obj) {
+
         obj.cc_number = nrpn.indexOf(obj);   // is also the lsb
         obj.cc_type = 'nrpn';
+
         let bits = 7;
         if (obj.hasOwnProperty('lsb')) {
             bits = 8;
@@ -270,28 +270,18 @@ function defineNRPNs() {
             obj.lsb = -1;  // define the prop.
         }
 
-        // let max_raw;
-        // if (obj.hasOwnProperty('msb')) {
-        //     max_raw = 255;
-        // } else {
-        //     obj.msb = 0;
-        //     max_raw = 127;
-        // }
-        // if (!obj.hasOwnProperty('max_raw')) {
-        //     obj.max_raw = max_raw;
-        // }
-        // if (!obj.hasOwnProperty('raw_value')) {
-        //     obj.raw_value = obj.init_value;
-        // }
         if (!obj.hasOwnProperty('on_off')) {
             obj.on_off = false;
         }
+
         if (!obj.hasOwnProperty('range')) {
             obj.range = obj.on_off ? [0, 1] : [0, (1 << bits) - 1];
         }
+
         if (!obj.hasOwnProperty('cc_range')) {
             obj.cc_range = [0, (1 << bits) - 1];
         }
+
         if (!obj.hasOwnProperty('init_value')) {
             if ((Math.min(...obj.range) < 0) && (Math.max(...obj.range) > 0)) {
                 obj.init_value = (1 << (bits - 1)) - 1; // very simple rule: we take max/2 as default value
@@ -299,13 +289,13 @@ function defineNRPNs() {
                 obj.init_value = Math.min(...obj.range);
             }
         }
+
         if (!obj.hasOwnProperty('raw_value')) {
             obj.raw_value = obj.init_value;
         }
+
         obj.changed = () => obj.raw_value !== obj.init_value;
-        // if (!obj.hasOwnProperty('parse')) {
-        //     obj.parse = v => parseFloat(v);
-        // }
+
     });
 
 } // defineNRPNs()

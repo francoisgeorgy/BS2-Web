@@ -7,33 +7,18 @@ import * as WebMidi from "webmidi";
 import moment from "moment";
 import Cookies from 'js-cookie';
 import * as lity from "lity";
-import 'webpack-jquery-ui/effects';     // require('webpack-jquery-ui/effects');
+import 'webpack-jquery-ui/effects';
 
 // CSS order is important
 import './css/lity.min.css';
 import './css/main.css';
 
-console.log(DEVICE.name);
-
-
 const TRACE = true;    // when true, will log more details in the console
 
-// function toggleOnOff(selector, bool) {
-//     if (bool) {
-//         $(selector).removeClass("off").addClass("on");
-//     } else {
-//         $(selector).removeClass("on").addClass("off");
-//     }
-// }
-
-function setMidiStatus(status) {
-    if (status) {
-        $('#neon').addClass("glow");
-    } else {
-        $('#neon').removeClass("glow");
-    }
-}
-
+/**
+ * Makes the app name glows, or not.
+ * @param status
+ */
 function setMidiInStatus(status) {
     if (status) {
         $('#neon').addClass("glow");
@@ -55,22 +40,9 @@ function setStatusError(msg) {
     $('#status').addClass("error").text(msg);
 }
 
-function hide(sel) {
-    $(sel).css('visibility', 'hidden');
-}
-
-function show(sel) {
-    $(sel).css('visibility', 'visible');
-}
-
-function disable(sel) {
-    $(sel).addClass('disabled');
-}
-
-function enable(sel) {
-    $(sel).removeClass('disabled');
-}
-
+//
+// Count the number of messages displayed in the midi window.
+//
 let midi_in_messages = 0;
 let midi_out_messages = 0;
 
@@ -208,14 +180,6 @@ function dispatch(control_type, control_number, value) {
 
     DEVICE.setControlValue(control_type, control_number, value);
 
-    // the "blur" event will force a redraw of the dial. Do not send the "change" event as this will ping-pong between BS2 and this application.
-    // let e = $('#' + control_type + '-' + control_number);
-    // if (e.is('.dial')) {
-    //     e.trigger('blur', { value });
-    // } else {
-    //     e.val(value).trigger('blur');
-    // }
-
     updateControl(control_type, control_number, value);
 
     // update the customs UI elements. Any input|select element has already been updated by the above instruction.
@@ -257,7 +221,6 @@ function updateControl(control_type, control_number, value) {
                     updateOptionSwitch(id + '-' + value, value);
                 } else {
                     c.val(value).trigger('blur');
-                    //console.error(`unknown control ${id}`);
                 }
             } else {
                 console.warn(`no control for ${id}-${value}`);
@@ -318,8 +281,6 @@ function updateConnectedDevice() {
     _send(DEVICE.control);
     _send(DEVICE.nrpn);
 
-    // setStatus(`${DEVICE.name} updated.`);
-
     console.groupEnd();
 }
 
@@ -357,11 +318,9 @@ function handleUIChange(control_type, control_number, value) {
 
     if (control_type === 'cc') {
         if (['102', '103', '104', '105'].includes(control_number)) {
-            //drawADSR(DEVICE.getADSREnv('mod'), 'mod-ADSR');
             envelopes['mod-envelope'].envelope = DEVICE.getADSREnv('mod');
         } else if (['90', '91', '92', '93'].includes(control_number)) {
             if (TRACE) console.log('redraw amp env', envelopes);
-            //drawADSR(DEVICE.getADSREnv('amp'), 'amp-ADSR');
             envelopes['amp-envelope'].envelope = DEVICE.getADSREnv('amp');
         }
     }
@@ -392,7 +351,6 @@ function randomize() {
     } else {
         DEVICE.randomize(settings.randomize);
         updateUI();
-        // setStatus(`randomize done`);
         updateConnectedDevice();
     }
     console.groupEnd();
@@ -491,8 +449,6 @@ function setupKnobs() {
         knobs[id] = new knob(elem, {
             with_label: false,
             cursor: 50,
-            // value_min: 0,
-            // value_max: c.max_raw,
             value_min: Math.min(...c.cc_range),
             value_max: Math.max(...c.cc_range),
             value_resolution: 1,
@@ -536,8 +492,6 @@ function setupKnobs() {
  * Add double-click handlers on .knob-label elements. A double-click will reset the linked knob.
  */
 function setupResets() {
-    // $(".knob-label:not(.no-reset)").attr("alt", "Double-click to reset").attr("title", "Double-click to reset");
-    // $(".knob-label:not(.no-reset)").dblclick(function() {
     $(".knob-label:not(.no-reset)")
         .attr("alt", "Double-click to reset")
         .attr("title", "Double-click to reset")
@@ -576,11 +530,9 @@ function setupSwitches() {
     $('#cc-80-options').append(DEVICE.SUB_WAVE_FORMS.map((o,i) => {
         return $("<div>").attr("id", `cc-80-${i}`).data("control", "cc-80").data("value", i).text(o).addClass("bt");
     }));
-    // we display the value in reverse order to be like the real BS2
-    // m = DEVICE.SUB_OCTAVE.length - 1;
+
+    // We display the value in reverse order to be like the real BS2
     if (TRACE) console.log(Object.entries(DEVICE.SUB_OCTAVE));
-    // $('#cc-81-options').append(Object.entries(DEVICE.SUB_OCTAVE).map((o,i) => {
-    //     return $("<div>").attr("id", `cc-81-${o[0]}`).data("control", "cc-81").data("value", o[0]).text(o[1]).addClass("bt");
     $('#cc-81-options').append(Object.entries(DEVICE.SUB_OCTAVE).slice(0).reverse().map((o) => {
         return $("<div>").attr("id", `cc-81-${o[0]}`).data("control", "cc-81").data("value", o[0]).text(o[1]).addClass("bt");
     }));
@@ -623,7 +575,7 @@ function setupSwitches() {
     }));
 
     // MOD ENV
-    // we display the value in reverse order to be like the real BS2
+    // We display the value in reverse order to be like the real BS2
     let m = DEVICE.ENV_TRIGGERING.length - 1;
     $('#nrpn-105-options').append(DEVICE.ENV_TRIGGERING.slice(0).reverse().map((o,i) => {
         return $("<div>").attr("id", `nrpn-105-${m-i}`).data("control", "nrpn-105").data("value", m-i).text(o).addClass("bt");
@@ -632,15 +584,13 @@ function setupSwitches() {
     //TODO: mod env triggering is overridden by (or the same as) amp env triggering?
 
     // AMP ENV
-    // we display the value in reverse order to be like the real BS2
+    // We display the value in reverse order to be like the real BS2
     m = DEVICE.ENV_TRIGGERING.length - 1;
-    // $('#nrpn-73-options').append(DEVICE.ENV_TRIGGERING.map((o,i) => {
     $('#nrpn-73-options').append(DEVICE.ENV_TRIGGERING.slice(0).reverse().map((o,i) => {
         return $("<div>").attr("id", `nrpn-73-${m-i}`).data("control", "nrpn-73").data("value", m-i).text(o).addClass("bt");
-        // return $("<div>").attr("id", `nrpn-73-${i}`).data("control", "nrpn-73").data("value", i).text(o).addClass("bt");
     }));
 
-    // TODO: Osc 1+2: PW controls are only displayed when wave form is pulse
+    // TODO: Osc 1+2: PW controls to be displayed only when wave form is pulse
 
     // "radio button"-like behavior:
     $('div.bt').click(function() {
@@ -779,9 +729,7 @@ function updateLinkedUIElements() {
 
     if (TRACE) console.groupCollapsed('updateLinkedUIElements()');
 
-    // // Osc 1+2: PS controls are only displayed when wave form is pulse
-    // $('#nrpn-72').val() == DEVICE.OSC_WAVE_FORMS.indexOf('pulse') ? enable('#osc1-pw-controls') : disable('#osc1-pw-controls');
-    // $('#nrpn-82').val() == DEVICE.OSC_WAVE_FORMS.indexOf('pulse') ? enable('#osc2-pw-controls') : disable('#osc2-pw-controls');
+    // TODO: Osc 1+2: PS controls are to be displayed onky when wave form is pulse
 
     envelopes['mod-envelope'].envelope = DEVICE.getADSREnv('mod');
     envelopes['amp-envelope'].envelope = DEVICE.getADSREnv('amp');
@@ -803,7 +751,6 @@ function updateLinkedUIElements() {
     }
 
     if (TRACE) console.groupEnd();
-
 }
 
 /**
@@ -821,7 +768,6 @@ function updateUI() {
     updateLinkedUIElements();
     updateMeta();
     if (TRACE) console.log('updateUI done');
-    // updateCommands();
 }
 
 /**
@@ -834,25 +780,19 @@ function setupUI() {
 
     $('span.version').text(VERSION);
 
-    setMidiStatus(false);
     setMidiInStatus(false);
     // setMidiOutStatus(false);
 
     setupSettings();    // must be done before loading the settings
     loadSettings();
 
-    // $("link#themesheet").attr("href", THEME[settings.theme].href);
-    // $("#theme-choice").val(settings.theme);
-
     setupKnobs();
     setupResets();
     setupSwitches();
     setupSelects();
-    // setupSwitches(SWITCHES);
     setupSliders();
     setupADSR();
     setupMenu();
-    // updateCommands();
 
     console.groupEnd();
 }
@@ -867,93 +807,6 @@ function getFavorites() {
     if (TRACE) console.log('loaded favorites:', fav);
     return fav ? JSON.parse(fav) : [];
 }
-
-/*
-    function openFavoritesDialog() {
-
-        if (TRACE) console.groupCollapsed('openFavoritesDialog()');
-
-        default_favorite_name = moment().format("BS2-YYYY-MM-DD-HHmmSS");
-        $('#add-favorite-patch-name').attr('placeholder', default_favorite_name);
-
-        let favorites = getFavorites();
-        $('#load-favorite-list').append(favorites.map((o, i) => {
-            if (TRACE) console.log(o, i);
-            return $("<option>").val(o.name).text(o.name);
-        }));
-
-        lightbox = lity('#fav-dialog');
-
-        if (TRACE) console.groupEnd();
-
-        return false;   // disable the normal href behavior
-    }
-*/
-
-/*
-    function closeFavoritesDialog() {
-        lightbox.close();
-    }
-*/
-
-/**
- * Load the favorite selected in #load-favorite-list
- */
-/*
-    function loadSelectedFavorite() {
-        let name = $('#load-favorite-list').val();
-        if (TRACE) console.log(`selected favorite is ${name}`);
-
-        let fav = getFavorites();
-        if (!fav || fav.length < 1) return false; // todo: log a warning
-
-        let url = null;
-        for (let i=0; i<fav.length; i++) {
-            if (fav[i].name === name) {
-                url = fav[i].url;
-                break;
-            }
-        }
-        if (url) {
-            // if (url.match(/^http:\/\/[a-z0-9._]+/)) {
-            window.location = url;  // todo: check url format
-            // } else {
-            //     log.error(`invalid favorites url: {url}`);
-            // }
-        } else {
-            // todo: log a warning
-            closeFavoritesDialog();
-        }
-    }
-*/
-
-/**
- * Load the favorite selected in #load-favorite-list
- */
-/*
-    function loadFavorite(index) {
-        // let name = $('#load-favorite-list').val();
-        if (TRACE) console.log(`selected favorite is number ${index}`);
-
-        let fav = getFavorites();
-        if (!fav || fav.length < 1) return false; // todo: log a warning
-
-        if (index < 0 || index > fav.length) return false;  // todo: log a warning
-
-        let url = fav[index];
-        if (url) {
-            if (TRACE) console.log(`selected favorite is ${url}`);
-            // if (url.match(/^http:\/\/[a-z0-9._]+/)) {
-            // window.location = url;  // todo: check url format
-            // } else {
-            //     log.error(`invalid favorites url: {url}`);
-            // }
-        } else {
-            // todo: log a warning
-            // closeFavoritesDialog();
-        }
-    }
-*/
 
 /**
  *
@@ -972,7 +825,6 @@ function deleteFavorite(index) {
 function refreshFavoritesList() {
     let favorites = getFavorites();
     $("#favorites-list").empty().append(favorites.slice(0).reverse().map((o, i) => {
-        //if (TRACE) console.log(o, i);
         return $("<div>").append($("<a>")
                 .attr("href", o.url)
                 .attr("id", `fav-${i}`).text(o.name),
@@ -1015,8 +867,6 @@ function openFavoritesPanel() {
 
     if (TRACE) console.log("toggle favorites-panel");
 
-    // $('#favorites-panel').toggle('slide', {direction: 'left'}, 500);
-
     let e = $('#favorites-panel');
     if (e.css("display") === 'block') {
         e.hide('slide', {direction: 'left'}, 500);
@@ -1047,7 +897,6 @@ function closeFavoritesPanel() {
 
 function openSettingsPanel() {
     if (TRACE) console.log("toggle settings-panel");
-    // $('#settings-panel').toggle('slide', { direction: 'left' }, 500);
     let e = $('#settings-panel');
     if (e.css("display") === 'block') {
         e.hide('slide', {direction: 'left'}, 500);
@@ -1059,23 +908,13 @@ function openSettingsPanel() {
 
 function closeSettingsPanel() {
     if (TRACE) console.log("closeSettingsPanel");
-    // $('#left-panel').show({duration:400,easing:"slide"});
     $('#settings-panel').hide('slide', { direction: 'left' }, 500);
 }
 
-var lightbox = null;
-
-/*
-    function settingsDialog() {
-        $('#settings-dialog-error').empty();
-        // $('#patch-file').val('');
-        lightbox = lity('#settings-dialog');
-        return false;   // disable the normal href behavior
-    }
-*/
-
 //==================================================================================================================
 // Patch file handling
+
+var lightbox = null;    // lity dialog
 
 /**
  *
@@ -1125,7 +964,6 @@ function savePatchToFile() {
     return false;   // disable the normal href behavior
 }
 
-
 /**
  * Handler for the #patch-file file input element in #load-patch
  */
@@ -1161,7 +999,6 @@ function readFile() {
     }
 }
 
-
 /**
  *
  * @returns {boolean}
@@ -1186,22 +1023,8 @@ function printPatch() {
  */
 function syncUIwithBS2() {
     // ask the BS2 to send us its current patch:
-    requestSysExDump(); //FIXME: what if the mdi_input is not yet ready?
+    requestSysExDump();
     return false;   // disable the normal href behavior
-}
-
-/**
- * header's "record" button handler
- */
-function record() {
-    alert('Sorry, this feature is not yet implemented.');
-}
-
-/**
- * header's "play" button handler
- */
-function play() {
-    alert('Sorry, this feature is not yet implemented.');
 }
 
 /**
@@ -1357,19 +1180,6 @@ function setupSettings() {
     if (TRACE) console.log("settings cookie", Cookies.getJSON());
 
     $('input.chk-rnd').change(saveRandomizerSettings);
-    /*
-                function() {
-                    let checked = []
-                    $("input.chk-rnd:checked").each(function () {
-                        checked.push(this.name);
-                    });
-                    // let checked = $("input.chk-rnd:checked").map(function() { return $(this).name }).get();
-                    settings.randomize = checked;
-                    if (TRACE) console.log('save settings', settings);
-                    Cookies.set('settings', settings);
-                }
-            );
-    */
 
     console.groupEnd();
 }
@@ -1394,8 +1204,6 @@ function displayRandomizerSettings() {
 }
 
 //==================================================================================================================
-
-//==================================================================================================================
 // noteOn & noteOff events handling
 
 /**
@@ -1404,11 +1212,6 @@ function displayRandomizerSettings() {
  */
 function noteOn(e) {
 
-    // let msg = e.data;   // Uint8Array
-    // let cc = msg[1];
-    // logIncomingMidiMessage('CC', cc, msg[2]);
-
-    if (TRACE) console.log('noteOn', e.data);
     if (TRACE) console.log("Received 'noteon' message (" + e.note.name + e.note.octave + ").");
 
     last_note = e.note.name + e.note.octave;
@@ -1470,7 +1273,6 @@ function noteOff() {
 function requestSysExDump() {
     if (midi_output) {
         console.log('requestSysExDump()');
-        //ignore_next_sysex = true;
         midi_output.sendSysex(DEVICE.meta.signature.sysex.value, [0x00, 0x33, 0x00, 0x40]);
     }
 }
@@ -1509,16 +1311,6 @@ function connectInput(input) {
         })
         .on('sysex', midi_channel, function(e) {
             console.log('sysex handler');
-            // last_sysex_data = e.data;   // we keep it here because we may use it as data for the "export" command
-            // if (sysex_received_callback) {
-            //     if (TRACE) console.log('sysex_received_callback is defined');
-            //     sysex_received_callback(last_sysex_data);   // FIXME: not a very good solution
-            //     sysex_received_callback = null;
-            // }
-            // if (ignore_next_sysex) {
-            //     setStatus("SysEx ignored.");
-            //     return;
-            // }
             if (TRACE) console.log('set sysex value to BS2');
             if (DEVICE.setValuesFromSysEx(e.data)) {
                 updateUI();
@@ -1531,8 +1323,6 @@ function connectInput(input) {
     setMidiInStatus(true);
     setStatus(`${DEVICE.name_device_in} connected on channel ${midi_channel}.`);
 }
-
-
 
 /**
  *
@@ -1568,7 +1358,7 @@ function deviceConnect(info) {
             connectOutput(info.output);
             //TODO: we should ask the user
             // ask the BS2 to send us its current patch:
-            requestSysExDump(); //FIXME: what if the midi_input is not yet ready?
+            requestSysExDump();
         } else {
             console.log('deviceConnect: output already connected');
         }
@@ -1601,17 +1391,13 @@ function deviceDisconnect(info) {
 
 const VERSION = '2.0.0';
 const URL_PARAM_SYSEX = 'sysex';    // name of sysex parameter in the query-string
-// const DEVICE = BS2;
 
 var midi_input = null;
 var midi_output = null;
 var midi_channel = 1;
-// var ignore_next_sysex = false;
-// var sysex_received_callback = false;
-// var last_sysex_data = null;     // last sysex dump received
+
 var knobs = {};
 var envelopes = {};     // Visual ADSR envelopes
-
 
 /**
  *
@@ -1651,7 +1437,6 @@ $(function () {
             console.log('webmidi ok');
 
             setStatus("WebMidi enabled.");
-            setMidiStatus(true);
 
             if (TRACE) {
                 WebMidi.inputs.map(i => console.log("input: ", i));
@@ -1700,5 +1485,3 @@ $(function () {
     }, true);   // pass true to enable sysex support
 
 });
-
-// })();

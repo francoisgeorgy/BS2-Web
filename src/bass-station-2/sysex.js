@@ -142,6 +142,7 @@ const getDump = function () {
     data[96] = 0x40;
     data[104] = 0x40;
 
+    //TODO: factorise similar code
 
     // CC
     for (let i = 0; i < control.length; i++) {
@@ -157,8 +158,6 @@ const getDump = function () {
 
         if (sysex.mask.length === 2) {
 
-            // console.log(`mask[0]=${sysex.mask[0].toString(2)} mask[1]=${sysex.mask[1].toString(2)}`);
-
             // the MSB always starts at the lsb (is always right aligned)
 
             // left shift the value to apply the LSB mask
@@ -166,21 +165,14 @@ const getDump = function () {
             let v = control[i].raw_value << r;
             let sysex_lsb = v & sysex.mask[1];
 
-            // console.log(`r=${r}, v=${v.toString(2)} lsb=${sysex_lsb.toString(2)}`);
-
-            // how many bits has gone into the sysex_lsb:
+            // how many bits has gone into the sysex_lsb?:
             let n_bits_lsb = 7 - r;
 
             // throw away those bits:
-            // let w = v;  //debug
             v = control[i].raw_value >>> n_bits_lsb;       // Shift to the right, discarding bits shifted off, and shifting in zeroes from the left.
-
-            // console.log(`${control[i].raw_value.toString(2)} >>>${n_bits_lsb}>>> ${v.toString(2)}`);
 
             // apply the MSB mask:
             let sysex_msb = v & sysex.mask[0];
-
-            // console.log(`cc ${i}: sysex data[${sysex.offset}]: ${sysex_msb.toString(2)} ${sysex_lsb.toString(2)} (${control[i].name}, ${control[i].raw_value} ${control[i].raw_value.toString(2)})`);
 
             // put the values in the sysex data:
             data[sysex.offset] |= sysex_msb;
@@ -189,7 +181,6 @@ const getDump = function () {
         } else {
             let r = Bits.getRightShift(sysex.mask[0]);
             v = v << r;     // shifts r bits to the left, shifting in zeroes from the right.
-            // console.log(`cc ${i}: sysex data[${sysex.offset}]: ${v.toString(2)} (${control[i].name})`);
             data[sysex.offset] |= v;
         }
 
@@ -209,8 +200,6 @@ const getDump = function () {
 
         if (sysex.mask.length === 2) {
 
-            // console.log(`mask[0]=${sysex.mask[0].toString(2)} mask[1]=${sysex.mask[1].toString(2)}`);
-
             // the MSB always starts at the lsb (is always right aligned)
 
             // left shift the value to apply the LSB mask
@@ -218,21 +207,14 @@ const getDump = function () {
             let v = nrpn[i].raw_value << r;
             let sysex_lsb = v & sysex.mask[1];
 
-            // console.log(`r=${r}, v=${v.toString(2)} lsb=${sysex_lsb.toString(2)}`);
-
             // how many bits has gone into the sysex_lsb:
             let n_bits_lsb = 7 - r;
 
             // throw away those bits:
-            // let w = v;  //debug
             v = nrpn[i].raw_value >>> n_bits_lsb;       // Shift to the right, discarding bits shifted off, and shifting in zeroes from the left.
-
-            // console.log(`${nrpn[i].raw_value.toString(2)} >>>${n_bits_lsb}>>> ${v.toString(2)}`);
 
             // apply the MSB mask:
             let sysex_msb = v & sysex.mask[0];
-
-            // console.log(`cc ${i}: sysex data[${sysex.offset}]: ${sysex_msb.toString(2)} ${sysex_lsb.toString(2)} (${nrpn[i].name}, ${nrpn[i].raw_value} ${nrpn[i].raw_value.toString(2)})`);
 
             // put the values in the sysex data:
             data[sysex.offset] |= sysex_msb;
@@ -241,7 +223,6 @@ const getDump = function () {
         } else {
             let r = Bits.getRightShift(sysex.mask[0]);
             v = v << r;     // shifts r bits to the left, shifting in zeroes from the right.
-            // console.log(`cc ${i}: sysex data[${sysex.offset}]: ${v.toString(2)} (${nrpn[i].name})`);
             data[sysex.offset] |= v;
         }
 
@@ -255,7 +236,7 @@ const getDump = function () {
         }
     }
 
-    data[153] = 0xF7;
+    data[153] = 0xF7;   // end-of-sysex marker
 
     console.groupEnd();
 

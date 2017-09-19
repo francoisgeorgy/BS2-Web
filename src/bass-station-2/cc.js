@@ -688,68 +688,47 @@ function defineControls() {
 
     // add the missing default properties
     control.forEach(function (obj) {
+
         obj.cc_number = control.indexOf(obj);   // is also the msb
         obj.cc_type = 'cc';
+
         let bits = 7;
         if (obj.hasOwnProperty('lsb')) {
             bits = 8;
         } else {
             obj.lsb = -1;  // define the prop.
         }
-        // let max_raw;
-        /*
-                    if (!obj.hasOwnProperty('lsb')) {
-                        obj.lsb = -1;
-                        bits = 7;
-                        // max_raw = 127;
-                    } else {
-                        bits = 8;
-                        // max_raw = 255;
-                    }
-        */
-        // if (!obj.hasOwnProperty('max_raw')) {
-        //     if (obj.hasOwnProperty('cc_range')) {
-        //         obj.max_raw = Math.max(...obj.cc_range);
-        //     } else {
-        //         obj.max_raw = max_raw;
-        //     }
-        // }
-        // if (!obj.hasOwnProperty('raw_value')) {
-        //     obj.raw_value = obj.init_value;
-        // }
+
         if (!obj.hasOwnProperty('on_off')) {
             obj.on_off = false;
         }
+
         if (!obj.hasOwnProperty('range')) {
             obj.range = obj.on_off ? [0, 1] : [0, (1 << bits) - 1];
         }
+
         if (!obj.hasOwnProperty('cc_range')) {
             obj.cc_range = [0, (1 << bits) - 1];
         }
+
         if (!obj.hasOwnProperty('init_value')) {
             if ((Math.min(...obj.range) < 0) && (Math.max(...obj.range) > 0)) {
-                // obj.init_value = obj.max_raw >>> 1; // very simple rule: we take max/2 as default value
                 obj.init_value = (1 << (bits - 1)) - 1; // very simple rule: we take max/2 as default value
             } else {
-                obj.init_value = Math.min(...obj.range);    // TODO: range or cc_range ???
+                obj.init_value = Math.min(...obj.range);
             }
         }
+
         if (!obj.hasOwnProperty('raw_value')) {
-            // console.log(`${obj.name}: raw ${obj.raw_value} = ${obj.init_value}`);
             obj.raw_value = obj.init_value;
-            // console.log(`${obj.name}: raw=${obj.raw_value}`, control);
         }
-        // obj.changed = () => obj.raw_value !== obj.init_value;
+
         obj.changed = function () {
             return obj.raw_value !== obj.init_value;
         }
-        // if (!obj.hasOwnProperty('parse')) {
-        //     obj.parse = v => parseFloat(v);
-        // }
+
     });
+
 } // defineControls()
 
 defineControls();
-
-// export control_id;
-// export control;

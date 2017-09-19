@@ -27,7 +27,6 @@ export function v16(msb, lsb, mask_msb, mask_lsb) {
     return a + b;
 }
 
-
 /**
  *
  * @param msb
@@ -38,4 +37,3 @@ export function doubleByteValue(msb, lsb) {
     let v = msb << 1;
     return lsb > 0 ? (v + 1) : v;
 }
-
