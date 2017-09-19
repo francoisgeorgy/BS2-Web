@@ -8,8 +8,7 @@ import {getRightShift, getSetBits} from "../lib/bits-utils";
  */
 export function v8(lsb, mask_lsb) {
     let r = getRightShift(mask_lsb);
-    let b = (lsb & mask_lsb) >> r;
-    return b;
+    return (lsb & mask_lsb) >> r;
 }
 
 /**

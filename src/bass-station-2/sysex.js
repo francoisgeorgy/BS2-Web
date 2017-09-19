@@ -9,7 +9,7 @@ import * as Bits from '../lib/bits-utils';
  * @param data
  * @returns {boolean}
  */
-var validate = function (data) {
+const validate = function (data) {
 
     const SYSEX_START = 0xF0;
     const SYSEX_END = 0xF7;
@@ -34,6 +34,7 @@ var validate = function (data) {
 /**
  * Get values from sysex data and store the value in a (new) property "value" in each control.
  * @param data
+ * @param controls
  */
 function decodeControls(data, controls) {
 
@@ -98,7 +99,7 @@ function decodeMeta(data) {
  * @param data
  * @returns {boolean}
  */
-var setDump = function (data) {
+const setDump = function (data) {
     if (!validate(data)) return false;
     decodeMeta(data);
     decodeControls(data, control);
@@ -109,7 +110,7 @@ var setDump = function (data) {
 /**
  * Create a SysEx dump data structure
  */
-var getDump = function () {
+const getDump = function () {
 
     // MSB: most significant byte
     // LSB: least significant byte

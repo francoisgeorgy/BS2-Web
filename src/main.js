@@ -74,6 +74,12 @@ function enable(sel) {
 let midi_in_messages = 0;
 let midi_out_messages = 0;
 
+/**
+ *
+ * @param type
+ * @param control
+ * @param value
+ */
 function logIncomingMidiMessage(type, control, value) {
     if (midi_window) {
         midi_in_messages++;
@@ -88,6 +94,12 @@ function logIncomingMidiMessage(type, control, value) {
     }
 }
 
+/**
+ *
+ * @param type
+ * @param control
+ * @param value
+ */
 function logOutgoingMidiMessage(type, control, value) {
     if (midi_window) {
         midi_out_messages++;
@@ -524,28 +536,32 @@ function setupKnobs() {
  * Add double-click handlers on .knob-label elements. A double-click will reset the linked knob.
  */
 function setupResets() {
-    $(".knob-label:not(.no-reset)").attr("alt", "Double-click to reset").attr("title", "Double-click to reset");
-    $(".knob-label:not(.no-reset)").dblclick(function() {
-        let knob = $(this).siblings(".knob");
-        if (knob.length < 1) {
-            if (TRACE) console.log('setupResets: no sibbling knob found');
-            return;
-        }
-        if (TRACE) console.log("setupResets knob", knob);
-        let [control_type, control_number] = knob[0].id.split('-');
-        if (TRACE) console.log(`setupResets ${control_type} ${control_number}`);
-        let c;
-        if (control_type === 'cc') {
-            c = DEVICE.control[control_number];
-        } else if (control_type === 'nrpn') {
-            c = DEVICE.nrpn[control_number];
-        } else {
-            // ERROR
-            console.error(`setupResets invalid control id: ${control_type} ${control_number}`);
-            return;
-        }
-        c.raw_value = c.init_value;
-        updateControl(control_type, control_number, c.init_value);
+    // $(".knob-label:not(.no-reset)").attr("alt", "Double-click to reset").attr("title", "Double-click to reset");
+    // $(".knob-label:not(.no-reset)").dblclick(function() {
+    $(".knob-label:not(.no-reset)")
+        .attr("alt", "Double-click to reset")
+        .attr("title", "Double-click to reset")
+        .dblclick(function() {
+            let knob = $(this).siblings(".knob");
+            if (knob.length < 1) {
+                if (TRACE) console.log('setupResets: no sibbling knob found');
+                return;
+            }
+            if (TRACE) console.log("setupResets knob", knob);
+            let [control_type, control_number] = knob[0].id.split('-');
+            if (TRACE) console.log(`setupResets ${control_type} ${control_number}`);
+            let c;
+            if (control_type === 'cc') {
+                c = DEVICE.control[control_number];
+            } else if (control_type === 'nrpn') {
+                c = DEVICE.nrpn[control_number];
+            } else {
+                // ERROR
+                console.error(`setupResets invalid control id: ${control_type} ${control_number}`);
+                return;
+            }
+            c.raw_value = c.init_value;
+            updateControl(control_type, control_number, c.init_value);
     });
 }
 
@@ -565,12 +581,12 @@ function setupSwitches() {
     if (TRACE) console.log(Object.entries(DEVICE.SUB_OCTAVE));
     // $('#cc-81-options').append(Object.entries(DEVICE.SUB_OCTAVE).map((o,i) => {
     //     return $("<div>").attr("id", `cc-81-${o[0]}`).data("control", "cc-81").data("value", o[0]).text(o[1]).addClass("bt");
-    $('#cc-81-options').append(Object.entries(DEVICE.SUB_OCTAVE).slice(0).reverse().map((o,i) => {
+    $('#cc-81-options').append(Object.entries(DEVICE.SUB_OCTAVE).slice(0).reverse().map((o) => {
         return $("<div>").attr("id", `cc-81-${o[0]}`).data("control", "cc-81").data("value", o[0]).text(o[1]).addClass("bt");
     }));
 
     // OSC 1
-    $('#cc-70-options').append(Object.entries(DEVICE.OSC_RANGES).map((o,i) => {
+    $('#cc-70-options').append(Object.entries(DEVICE.OSC_RANGES).map((o) => {
         return $("<div>").attr("id", `cc-70-${o[0]}`).data("control", "cc-70").data("value", o[0]).text(o[1]).addClass("bt");
     }));
     $('#nrpn-72-options').append(DEVICE.OSC_WAVE_FORMS.map((o,i) => {
@@ -578,7 +594,7 @@ function setupSwitches() {
     }));
 
     // OSC 2
-    $('#cc-75-options').append(Object.entries(DEVICE.OSC_RANGES).map((o,i) => {
+    $('#cc-75-options').append(Object.entries(DEVICE.OSC_RANGES).map((o) => {
         return $("<div>").attr("id", `cc-75-${o[0]}`).data("control", "cc-75").data("value", o[0]).text(o[1]).addClass("bt");
     }));
     $('#nrpn-82-options').append(DEVICE.OSC_WAVE_FORMS.map((o,i) => {
@@ -627,7 +643,7 @@ function setupSwitches() {
     // TODO: Osc 1+2: PW controls are only displayed when wave form is pulse
 
     // "radio button"-like behavior:
-    $('div.bt').click(function(e) {
+    $('div.bt').click(function() {
         if (TRACE) console.log(`click on ${this.id}`);
         if (!this.classList.contains("on")) {   // if not already on...
             $(this).siblings(".bt").removeClass("on");
@@ -638,7 +654,7 @@ function setupSwitches() {
     });
 
     // "checkbox"-like behavior:
-    $('div.btc').click(function(e) {
+    $('div.btc').click(function() {
         let v = 0;
         if (this.classList.contains("on")) {
             this.classList.remove("on");
@@ -1382,6 +1398,10 @@ function displayRandomizerSettings() {
 //==================================================================================================================
 // noteOn & noteOff events handling
 
+/**
+ *
+ * @param e
+ */
 function noteOn(e) {
 
     // let msg = e.data;   // Uint8Array
@@ -1429,18 +1449,14 @@ function noteOn(e) {
     if (TRACE) console.log(`noteOn: ${note} (${enharmonic})`);
 
     $('#played-note').addClass('on');
-
-    if (TRACE) console.log($('#note-name'));
     $('#note-name').html(note);
     $('#note-enharmonic').html(enharmonic);
-
-    if (TRACE) console.log('add on class to #played-note', $('#played-note'));
-
-    // $('#note-name').addClass('on');
-
 }
 
-function noteOff(e) {
+/**
+ *
+ */
+function noteOff() {
     $('#played-note').removeClass('on');
 }
 

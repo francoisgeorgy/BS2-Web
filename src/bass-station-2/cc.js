@@ -741,9 +741,7 @@ function defineControls() {
         }
         // obj.changed = () => obj.raw_value !== obj.init_value;
         obj.changed = function () {
-            let b = obj.raw_value !== obj.init_value;
-            // console.log(`changed=${b}`);
-            return b;
+            return obj.raw_value !== obj.init_value;
         }
         // if (!obj.hasOwnProperty('parse')) {
         //     obj.parse = v => parseFloat(v);

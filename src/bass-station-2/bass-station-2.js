@@ -17,7 +17,7 @@ import sysex from './sysex.js';
  * @param name
  * @returns {*}
  */
-var getADSREnv = function (name) {
+const getADSREnv = function (name) {
     switch (name) {
         case 'amp':
             return {
@@ -39,11 +39,10 @@ var getADSREnv = function (name) {
 
 /**
  *
- * @param control_type
- * @param control_number
  * @returns {number}
+ * @param ctrl
  */
-var getControlValue = function (ctrl) {
+const getControlValue = function (ctrl) {
     return 'raw_value' in ctrl ? ctrl.raw_value : 0;
     // let c;
     // if (control.cc_type === 'cc') {
@@ -65,7 +64,7 @@ var getControlValue = function (ctrl) {
  * setControlValue(control_type, control_number, value)
  * return the updated control object
  */
-var setControlValue = function () {
+const setControlValue = function () {
     // console.log('BS2.setControlValue', ...arguments);
     let c;
     if (arguments.length === 2) {
@@ -101,7 +100,7 @@ var setControlValue = function () {
  *
  * @returns {{cc: Array, nrpn: Array}}
  */
-var getAllValues = function () {
+const getAllValues = function () {
     let a = {
         cc: new Array(127),
         nrpn: new Array(127)
@@ -128,7 +127,7 @@ var getAllValues = function () {
  *
  * @param values
  */
-var setAllValues = function (values) {
+const setAllValues = function (values) {
 
     // console.log('setAllValues()', values);
 
@@ -151,7 +150,7 @@ var setAllValues = function (values) {
 /**
  * @param groups Array of group names. Specify which control groups to randomize. Example: ["sub", "lfo1", "lfo2", "osc1", "osc2"]
  */
-var randomize = function (groups) {
+const randomize = function (groups) {
 
     // console.log('randomize()', groups);
 
@@ -195,7 +194,7 @@ var randomize = function (groups) {
 /**
  *
  */
-var init = function () {
+const init = function () {
 
     function _init(controls) {
         for (let i = 0; i < controls.length; i++) {
@@ -214,10 +213,9 @@ var init = function () {
  * Only for CC, not for NRPN
  *
  * Returns an array of "midi messages" to send to update control to value
- * @param control
- * @param value is raw value (0..127 or 0..255)
+ * @param ctrl
  */
-var getMidiMessagesForNormalCC = function (ctrl) {
+const getMidiMessagesForNormalCC = function (ctrl) {
     // console.log('BS2.getMidiMessagesForControl', control_number, value);
     if (ctrl.cc_type !== 'cc') return [];
     let CC = [];
