@@ -22,7 +22,10 @@ module.exports = {
     },
     plugins: [
         // new CleanWebpackPlugin(['dist']),
-        new MinifyPlugin(/*minifyOpts*/ {}, /*pluginOpts*/ {}),
+        new MinifyPlugin(/*minifyOpts*/ {
+            removeConsole: true,
+            removeDebugger: true
+        }, /*pluginOpts*/ {}),
         new webpack.ProvidePlugin({
             $: "jquery",
             jQuery: "jquery",
