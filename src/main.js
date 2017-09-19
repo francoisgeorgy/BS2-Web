@@ -2,15 +2,16 @@ import DEVICE from './bass-station-2/bass-station-2.js';
 import envelope from './synth-ui/envelope.js';
 import knob from './synth-ui/knob.js';
 import * as Utils from './lib/utils.js';
-// import * as Tonal from "tonal";
 import tonal from 'tonal'
 import * as WebMidi from "webmidi";
 import moment from "moment";
 import Cookies from 'js-cookie';
 import * as lity from "lity";
-// import * as Tonal from "tonal";
-// import * as c from 'js-cookie';
-require('webpack-jquery-ui/effects');
+import 'webpack-jquery-ui/effects';     // require('webpack-jquery-ui/effects');
+
+// CSS order is important
+import './css/lity.min.css';
+import './css/main.css';
 
 console.log(DEVICE.name);
 
@@ -109,19 +110,19 @@ function logOutgoingMidiMessage(type, control, value) {
  */
 function getCurrentPatchAsLink() {
     // window.location.href.split('?')[0] is the current URL without the query-string if any
-    return window.location.href.replace('#', '').split('?')[0] + '?' + URL_PARAM_SYSEX + '=' + Utils.toHexString(DEVICE.getSysExDump());
+    return window.location.href.replace('#', '').split('?')[0] + '?' + URL_PARAM_SYSEX + '=' + Utils.toHexString(DEVICE.getDump());
 }
 
 //==================================================================================================================
 // Midi messages handling
 
-var cc_expected = -1;
-var cc_msb = -1;
-var cc_lsb = -1;
-var value_msb = 0;    // msb to compute value
-var value_lsb = 0;    // lsb to compute value
-var nrpn = false;
-var last_note = null;
+let cc_expected = -1;
+let cc_msb = -1;
+let cc_lsb = -1;
+let value_msb = 0;    // msb to compute value
+let value_lsb = 0;    // lsb to compute value
+let nrpn = false;
+let last_note = null;
 
 /**
  * Handle all control change messages received
@@ -1075,7 +1076,7 @@ function loadPatchFromFile() {
  */
 function savePatchToFile() {
 
-    let data = DEVICE.getSysExDump();   // return Uint8Array
+    let data = DEVICE.getDump();   // return Uint8Array
 
     if (TRACE) console.log(data, Utils.toHexString(data, ' '));
     if (TRACE) console.log(encodeURIComponent(data));
@@ -1159,7 +1160,7 @@ function openCreditsDialog() {
 
 function printPatch() {
     if (TRACE) console.log('printPatch');
-    let url = 'print.html?' + URL_PARAM_SYSEX + '=' + Utils.toHexString(DEVICE.getSysExDump());
+    let url = 'print.html?' + URL_PARAM_SYSEX + '=' + Utils.toHexString(DEVICE.getDump());
     window.open(url, '_blank', 'width=800,height=600,location,resizable,scrollbars,status');
     return false;   // disable the normal href behavior
 }

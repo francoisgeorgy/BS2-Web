@@ -19,6 +19,8 @@
     "babel-preset-minify": "^0.2.0",
     "clean-webpack-plugin": "^0.1.16",
     "copy-webpack-plugin": "^4.0.1",
+    "css-loader": "^0.28.7",
+    "style-loader": "^0.18.2",
     "webpack": "^3.6.0"
   },
   "scripts": {

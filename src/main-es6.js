@@ -102,7 +102,7 @@ function logOutgoingMidiMessage(type, control, value) {
  */
 function getCurrentPatchAsLink() {
     // window.location.href.split('?')[0] is the current URL without the query-string if any
-    return window.location.href.replace('#', '').split('?')[0] + '?' + URL_PARAM_SYSEX + '=' + Utils.toHexString(DEVICE.getSysExDump());
+    return window.location.href.replace('#', '').split('?')[0] + '?' + URL_PARAM_SYSEX + '=' + Utils.toHexString(DEVICE.getDump());
 }
 
 //==================================================================================================================
@@ -1068,7 +1068,7 @@ function loadPatchFromFile() {
  */
 function savePatchToFile() {
 
-    let data = DEVICE.getSysExDump();   // return Uint8Array
+    let data = DEVICE.getDump();   // return Uint8Array
 
     if (TRACE) console.log(data, Utils.toHexString(data, ' '));
     if (TRACE) console.log(encodeURIComponent(data));
@@ -1157,7 +1157,7 @@ function printPatch() {
     // let b64 = base64js.fromByteArray(data);
     // let decoded = msgpack.decode(base64js.toByteArray(b64));
     // let url = 'print.html?pack=' + b64;
-    let url = 'print.html?' + URL_PARAM_SYSEX + '=' + Utils.toHexString(DEVICE.getSysExDump());
+    let url = 'print.html?' + URL_PARAM_SYSEX + '=' + Utils.toHexString(DEVICE.getDump());
     window.open(url, '_blank', 'width=800,height=600,location,resizable,scrollbars,status');
     return false;   // disable the normal href behavior
 }
@@ -1403,7 +1403,6 @@ function noteOn(e) {
     // Tonal.note.enharmonics('C')   --> ["B#", "C", "Dbb"]
     // Tonal.note.enharmonics('A')   --> ["G##", "A", "Bbb"]
     let enharmonics = Tonal.note.enharmonics(last_note);
-    // let enharmonic = Tonal.note.simplify(note);
 
     let enharmonic;
     if (note.length === 2) {
