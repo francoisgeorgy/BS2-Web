@@ -1,6 +1,6 @@
-// (function(){
+(function(){
 
-    import DEVICE from './bs2.js';
+    // import DEVICE from './bs2.js';
 
     const TRACE = true;    // when true, will log more details in the console
 
@@ -1677,4 +1677,4 @@
 
     });
 
-// })();
+})();
