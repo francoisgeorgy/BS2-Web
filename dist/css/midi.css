@@ -1,0 +1,66 @@
+
+:root {
+    --body-bg-from: #202023;
+    --body-bg-to: #3E3E46;
+    --title-text: #aaa;
+    --header-text: #ccc;
+    --default-text: #ccc;
+}
+
+*:focus {
+    outline: none;
+}
+
+html {
+    user-select: none;
+    overflow-x: hidden;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background: var(--body-bg-from);
+    font-family: 'Roboto Condensed', sans-serif;
+    font-weight: 400;
+    color: var(--default-text);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    position: relative;
+    z-index: 10;
+    height: 2rem;
+    border-bottom: 1px solid #aaa;
+}
+.header > div {
+    width: 50vw;
+    padding: 0 0.3rem;
+    color: var(--header-text);
+    letter-spacing: 1px;
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+.container {
+    display: flex;
+    overflow: hidden;
+    height: calc(100vh - 2rem - 1px);
+    position: relative;
+    width: 100%;
+    backface-visibility: hidden;
+    will-change: overflow;
+}
+
+.midi-messages {
+    overflow: auto;
+    height: auto;
+    width: 50vw;
+    padding: 0.3rem;
+    font-family: monospace;
+}
+
+#midi-messages-out {
+    border-left: 1px solid #555;
+}

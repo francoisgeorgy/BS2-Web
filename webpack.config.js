@@ -21,7 +21,7 @@ module.exports = {
         }]
     },
     plugins: [
-        new CleanWebpackPlugin(['dist']),
+        // new CleanWebpackPlugin(['dist']),
         new MinifyPlugin(/*minifyOpts*/ {}, /*pluginOpts*/ {}),
         new webpack.ProvidePlugin({
             $: "jquery",
