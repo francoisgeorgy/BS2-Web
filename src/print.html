@@ -4,15 +4,21 @@
     <meta charset="UTF-8">
     <title>Bass Station II Patch Sheet</title>
     <!--<link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Condensed:400,700" rel="stylesheet">-->
-    <link rel="stylesheet" media="all" href="css/patch.css" />
-    <link rel="stylesheet" media="print" href="css/print.css" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="lib/base64js.min.js"></script>
-    <script src="lib/msgpack.min.js"></script>
-    <script src="lib/mustache.min.js"></script>
-    <script src="lib/utils.js"></script>
-    <script src="lib/bs2.js"></script>
-    <script src="lib/print.js"></script>
+    <!--<link rel="stylesheet" media="all" href="css/patch.css" />-->
+    <!--<link rel="stylesheet" media="print" href="css/print.css" />-->
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>-->
+    <!--<script src="lib/base64js.min.js"></script>-->
+    <!--<script src="lib/msgpack.min.js"></script>-->
+    <!--<script src="lib/mustache.min.js"></script>-->
+    <!--<script src="lib/utils.js"></script>-->
+    <!--<script src="lib/bs2.js"></script>-->
+    <!--<script src="lib/print.js"></script>-->
+    <script src="print_bundle.js"></script>
 </head>
 <body>
+    <div id="cmds">
+        <a href="#" id="print">PRINT</a><br />
+        <a href="#" id="only-changed">Show only the changed values from an init patch</a>
+    </div>
+    <h1>Bass Station II Patch <span id="patch-number"></span> <span id="patch-name"></span></h1>
 </body>

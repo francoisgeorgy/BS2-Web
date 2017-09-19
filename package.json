@@ -9,6 +9,7 @@
     "js-cookie": "^2.1.4",
     "lity": "^2.3.0",
     "moment": "^2.18.1",
+    "mustache": "^2.3.0",
     "tonal": "^0.69.9",
     "webmidi": "2.0.0-rc.7",
     "webpack": "^3.6.0",

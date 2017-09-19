@@ -1,4 +1,17 @@
 
+## Version with weback bundle (imports managed by webpack):
+
+    index.html
+        bundle.js   <--   main.js   
+
+## Version full ES6 (natvie ES6 imports):
+
+    index-es6.html
+        main-es6.js   
+
+
+----
+
 https://medium.com/@paooolino/a-modern-javascript-project-setup-b7842955d1d3
 
     npm install --save-dev webpack

@@ -88,3 +88,49 @@ table.values tr:nth-child(even) {
     margin: 0;
 
 }
+
+@media print {
+    @page {
+        margin: 0;
+        size: landscape;
+        /*margin: 15mm;*/
+    }
+
+    body {
+        margin: 0 15mm;
+        /*margin: 0;*/
+        font-size: 8pt;
+    }
+
+    h1 {
+        margin-top: 15mm;
+        page-break-before: always;
+    }
+
+    h2 {
+        padding-bottom: 0;
+        margin-bottom: 2mm;
+        border: none;
+    }
+
+    .wrapper {
+        grid-gap: 2mm;
+        /*display: grid;*/
+        /*grid-gap: 10px;*/
+        grid-template-columns: repeat(4, 1fr);
+        /*background-color: #fff;*/
+        /*margin-bottom: 20px;*/
+    }
+
+    .box {
+        background-color: #eee;
+        border-radius: 1mm;
+        padding: 2mm;
+    }
+
+    a, #cmds {
+        display: none;
+    }
+
+
+}

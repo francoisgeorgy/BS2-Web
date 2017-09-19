@@ -95,7 +95,7 @@ function decodeMeta(data) {
 }
 
 /**
- *
+ * Set values from a SysEx dump
  * @param data
  * @returns {boolean}
  */

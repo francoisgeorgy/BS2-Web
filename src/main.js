@@ -1145,7 +1145,7 @@ function readFile() {
                 data.push(view[i]);
                 if (view[i] === SYSEX_END) break;
             }
-            if (DEVICE.setValuesFromSysex(data)) {
+            if (DEVICE.setDump(data)) {
                 if (TRACE) console.log('file read OK', DEVICE.meta.patch_name['value']);
                 if (lightbox) lightbox.close();
 
@@ -1520,7 +1520,7 @@ function connectInput(input) {
             //     return;
             // }
             if (TRACE) console.log('set sysex value to BS2');
-            if (DEVICE.setValuesFromSysex(e.data)) {
+            if (DEVICE.setDump(e.data)) {
                 updateUI();
                 // setStatus("UI updated from SysEx.");
             } else {
@@ -1638,7 +1638,7 @@ $(function () {
             if (s) {
                 if (TRACE) console.log('sysex param present');
                 let data = Utils.fromHexString(s);
-                if (DEVICE.setValuesFromSysex(data)) {
+                if (DEVICE.setDump(data)) {
                     console.log('sysex loaded in device');
                     updateUI();
                 } else {
@@ -1682,7 +1682,7 @@ $(function () {
             if (s) {
                 console.log('sysex param present');
                 let data = Utils.fromHexString(s);
-                if (DEVICE.setValuesFromSysex(data)) {
+                if (DEVICE.setDump(data)) {
                     console.log('sysex loaded in device');
                     updateUI();
                     updateConnectedDevice();

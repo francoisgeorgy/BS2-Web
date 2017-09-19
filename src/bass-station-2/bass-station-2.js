@@ -267,9 +267,9 @@ export default {
     getAllValues,
     setAllValues,
     getADSREnv,
-    setDump: sysex.setDump,
-    getDump: sysex.getDump,
-    validate: sysex.validate,
+    setDump: sysex.setDump,     // set values from a SysEx dump
+    getDump: sysex.getDump,     // export all values as a SysEx dump
+    validate: sysex.validate,   // validate a SysEx dump
     doubleByteValue,
     getMidiMessagesForNormalCC
 };
