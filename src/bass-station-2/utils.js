@@ -1,4 +1,4 @@
-import {getRightShift, getSetBits} from "../lib/bits-utils";
+import {getRightShift, getSetBits} from '../lib/bits-utils.js';
 
 /**
  *

@@ -122,7 +122,7 @@ function logOutgoingMidiMessage(type, control, value) {
  */
 function getCurrentPatchAsLink() {
     // window.location.href.split('?')[0] is the current URL without the query-string if any
-    return window.location.href.replace('#', '').split('?')[0] + '?' + URL_PARAM_SYSEX + '=' + Utils.toHexString(DEVICE.getDump());
+    return window.location.href.replace('#', '').split('?')[0] + '?' + URL_PARAM_SYSEX + '=' + Utils.toHexString(DEVICE.getSysEx());
 }
 
 //==================================================================================================================
@@ -1092,7 +1092,7 @@ function loadPatchFromFile() {
  */
 function savePatchToFile() {
 
-    let data = DEVICE.getDump();   // return Uint8Array
+    let data = DEVICE.getSysEx();   // return Uint8Array
 
     if (TRACE) console.log(data, Utils.toHexString(data, ' '));
     if (TRACE) console.log(encodeURIComponent(data));
@@ -1145,7 +1145,7 @@ function readFile() {
                 data.push(view[i]);
                 if (view[i] === SYSEX_END) break;
             }
-            if (DEVICE.setDump(data)) {
+            if (DEVICE.setValuesFromSysEx(data)) {
                 if (TRACE) console.log('file read OK', DEVICE.meta.patch_name['value']);
                 if (lightbox) lightbox.close();
 
@@ -1176,7 +1176,7 @@ function openCreditsDialog() {
 
 function printPatch() {
     if (TRACE) console.log('printPatch');
-    let url = 'print.html?' + URL_PARAM_SYSEX + '=' + Utils.toHexString(DEVICE.getDump());
+    let url = 'print.html?' + URL_PARAM_SYSEX + '=' + Utils.toHexString(DEVICE.getSysEx());
     window.open(url, '_blank', 'width=800,height=600,location,resizable,scrollbars,status');
     return false;   // disable the normal href behavior
 }
@@ -1520,7 +1520,7 @@ function connectInput(input) {
             //     return;
             // }
             if (TRACE) console.log('set sysex value to BS2');
-            if (DEVICE.setDump(e.data)) {
+            if (DEVICE.setValuesFromSysEx(e.data)) {
                 updateUI();
                 // setStatus("UI updated from SysEx.");
             } else {
@@ -1638,7 +1638,7 @@ $(function () {
             if (s) {
                 if (TRACE) console.log('sysex param present');
                 let data = Utils.fromHexString(s);
-                if (DEVICE.setDump(data)) {
+                if (DEVICE.setValuesFromSysEx(data)) {
                     console.log('sysex loaded in device');
                     updateUI();
                 } else {
@@ -1682,7 +1682,7 @@ $(function () {
             if (s) {
                 console.log('sysex param present');
                 let data = Utils.fromHexString(s);
-                if (DEVICE.setDump(data)) {
+                if (DEVICE.setValuesFromSysEx(data)) {
                     console.log('sysex loaded in device');
                     updateUI();
                     updateConnectedDevice();

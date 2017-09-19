@@ -66,6 +66,12 @@ function enable(sel) {
 let midi_in_messages = 0;
 let midi_out_messages = 0;
 
+/**
+ *
+ * @param type
+ * @param control
+ * @param value
+ */
 function logIncomingMidiMessage(type, control, value) {
     if (midi_window) {
         midi_in_messages++;
@@ -80,6 +86,12 @@ function logIncomingMidiMessage(type, control, value) {
     }
 }
 
+/**
+ *
+ * @param type
+ * @param control
+ * @param value
+ */
 function logOutgoingMidiMessage(type, control, value) {
     if (midi_window) {
         midi_out_messages++;
@@ -102,19 +114,19 @@ function logOutgoingMidiMessage(type, control, value) {
  */
 function getCurrentPatchAsLink() {
     // window.location.href.split('?')[0] is the current URL without the query-string if any
-    return window.location.href.replace('#', '').split('?')[0] + '?' + URL_PARAM_SYSEX + '=' + Utils.toHexString(DEVICE.getDump());
+    return window.location.href.replace('#', '').split('?')[0] + '?' + URL_PARAM_SYSEX + '=' + Utils.toHexString(DEVICE.getSysEx());
 }
 
 //==================================================================================================================
 // Midi messages handling
 
-var cc_expected = -1;
-var cc_msb = -1;
-var cc_lsb = -1;
-var value_msb = 0;    // msb to compute value
-var value_lsb = 0;    // lsb to compute value
-var nrpn = false;
-var last_note = null;
+let cc_expected = -1;
+let cc_msb = -1;
+let cc_lsb = -1;
+let value_msb = 0;    // msb to compute value
+let value_lsb = 0;    // lsb to compute value
+let nrpn = false;
+let last_note = null;
 
 /**
  * Handle all control change messages received
@@ -516,8 +528,12 @@ function setupKnobs() {
  * Add double-click handlers on .knob-label elements. A double-click will reset the linked knob.
  */
 function setupResets() {
-    $(".knob-label:not(.no-reset)").attr("alt", "Double-click to reset").attr("title", "Double-click to reset");
-    $(".knob-label:not(.no-reset)").dblclick(function() {
+    // $(".knob-label:not(.no-reset)").attr("alt", "Double-click to reset").attr("title", "Double-click to reset");
+    // $(".knob-label:not(.no-reset)").dblclick(function() {
+    $(".knob-label:not(.no-reset)")
+        .attr("alt", "Double-click to reset")
+        .attr("title", "Double-click to reset")
+        .dblclick(function() {
         let knob = $(this).siblings(".knob");
         if (knob.length < 1) {
             if (TRACE) console.log('setupResets: no sibbling knob found');
@@ -557,12 +573,12 @@ function setupSwitches() {
     if (TRACE) console.log(Object.entries(DEVICE.SUB_OCTAVE));
     // $('#cc-81-options').append(Object.entries(DEVICE.SUB_OCTAVE).map((o,i) => {
     //     return $("<div>").attr("id", `cc-81-${o[0]}`).data("control", "cc-81").data("value", o[0]).text(o[1]).addClass("bt");
-    $('#cc-81-options').append(Object.entries(DEVICE.SUB_OCTAVE).slice(0).reverse().map((o,i) => {
+    $('#cc-81-options').append(Object.entries(DEVICE.SUB_OCTAVE).slice(0).reverse().map((o) => {
         return $("<div>").attr("id", `cc-81-${o[0]}`).data("control", "cc-81").data("value", o[0]).text(o[1]).addClass("bt");
     }));
 
     // OSC 1
-    $('#cc-70-options').append(Object.entries(DEVICE.OSC_RANGES).map((o,i) => {
+    $('#cc-70-options').append(Object.entries(DEVICE.OSC_RANGES).map((o) => {
         return $("<div>").attr("id", `cc-70-${o[0]}`).data("control", "cc-70").data("value", o[0]).text(o[1]).addClass("bt");
     }));
     $('#nrpn-72-options').append(DEVICE.OSC_WAVE_FORMS.map((o,i) => {
@@ -570,7 +586,7 @@ function setupSwitches() {
     }));
 
     // OSC 2
-    $('#cc-75-options').append(Object.entries(DEVICE.OSC_RANGES).map((o,i) => {
+    $('#cc-75-options').append(Object.entries(DEVICE.OSC_RANGES).map((o) => {
         return $("<div>").attr("id", `cc-75-${o[0]}`).data("control", "cc-75").data("value", o[0]).text(o[1]).addClass("bt");
     }));
     $('#nrpn-82-options').append(DEVICE.OSC_WAVE_FORMS.map((o,i) => {
@@ -619,7 +635,7 @@ function setupSwitches() {
     // TODO: Osc 1+2: PW controls are only displayed when wave form is pulse
 
     // "radio button"-like behavior:
-    $('div.bt').click(function(e) {
+    $('div.bt').click(function() {
         if (TRACE) console.log(`click on ${this.id}`);
         if (!this.classList.contains("on")) {   // if not already on...
             $(this).siblings(".bt").removeClass("on");
@@ -630,7 +646,7 @@ function setupSwitches() {
     });
 
     // "checkbox"-like behavior:
-    $('div.btc').click(function(e) {
+    $('div.btc').click(function() {
         let v = 0;
         if (this.classList.contains("on")) {
             this.classList.remove("on");
@@ -1068,7 +1084,7 @@ function loadPatchFromFile() {
  */
 function savePatchToFile() {
 
-    let data = DEVICE.getDump();   // return Uint8Array
+    let data = DEVICE.getSysEx();   // return Uint8Array
 
     if (TRACE) console.log(data, Utils.toHexString(data, ' '));
     if (TRACE) console.log(encodeURIComponent(data));
@@ -1121,7 +1137,7 @@ function readFile() {
                 data.push(view[i]);
                 if (view[i] === SYSEX_END) break;
             }
-            if (DEVICE.setValuesFromSysex(data)) {
+            if (DEVICE.setValuesFromSysEx(data)) {
                 if (TRACE) console.log('file read OK', DEVICE.meta.patch_name['value']);
                 if (lightbox) lightbox.close();
 
@@ -1151,13 +1167,8 @@ function openCreditsDialog() {
 // UI main commands (buttons in header)
 
 function printPatch() {
-    // let v = BS2.getAllValues();
     if (TRACE) console.log('printPatch');
-    // data = msgpack.encode(v);
-    // let b64 = base64js.fromByteArray(data);
-    // let decoded = msgpack.decode(base64js.toByteArray(b64));
-    // let url = 'print.html?pack=' + b64;
-    let url = 'print.html?' + URL_PARAM_SYSEX + '=' + Utils.toHexString(DEVICE.getDump());
+    let url = 'print.html?' + URL_PARAM_SYSEX + '=' + Utils.toHexString(DEVICE.getSysEx());
     window.open(url, '_blank', 'width=800,height=600,location,resizable,scrollbars,status');
     return false;   // disable the normal href behavior
 }
@@ -1379,6 +1390,10 @@ function displayRandomizerSettings() {
 //==================================================================================================================
 // noteOn & noteOff events handling
 
+/**
+ *
+ * @param e
+ */
 function noteOn(e) {
 
     // let msg = e.data;   // Uint8Array
@@ -1426,18 +1441,14 @@ function noteOn(e) {
     if (TRACE) console.log(`noteOn: ${note} (${enharmonic})`);
 
     $('#played-note').addClass('on');
-
-    if (TRACE) console.log($('#note-name'));
     $('#note-name').html(note);
     $('#note-enharmonic').html(enharmonic);
-
-    if (TRACE) console.log('add on class to #played-note', $('#played-note'));
-
-    // $('#note-name').addClass('on');
-
 }
 
-function noteOff(e) {
+/**
+ *
+ */
+function noteOff() {
     $('#played-note').removeClass('on');
 }
 
@@ -1501,7 +1512,7 @@ function connectInput(input) {
             //     return;
             // }
             if (TRACE) console.log('set sysex value to BS2');
-            if (DEVICE.setValuesFromSysex(e.data)) {
+            if (DEVICE.setValuesFromSysEx(e.data)) {
                 updateUI();
                 // setStatus("UI updated from SysEx.");
             } else {
@@ -1619,7 +1630,7 @@ $(function () {
             if (s) {
                 if (TRACE) console.log('sysex param present');
                 let data = Utils.fromHexString(s);
-                if (DEVICE.setValuesFromSysex(data)) {
+                if (DEVICE.setValuesFromSysEx(data)) {
                     console.log('sysex loaded in device');
                     updateUI();
                 } else {
@@ -1663,7 +1674,7 @@ $(function () {
             if (s) {
                 console.log('sysex param present');
                 let data = Utils.fromHexString(s);
-                if (DEVICE.setValuesFromSysex(data)) {
+                if (DEVICE.setValuesFromSysEx(data)) {
                     console.log('sysex loaded in device');
                     updateUI();
                     updateConnectedDevice();

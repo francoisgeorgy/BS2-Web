@@ -116,7 +116,7 @@ function loadTemplate(data, changedonly) {
                 if (data[i] === 240) {
                     console.log('start sysex');
                     if (d) {
-                        if (DEVICE.setDump(d)) {
+                        if (DEVICE.setValuesFromSysEx(d)) {
                             console.log('device updated from sysex');
                             renderPatch(template, changedonly);
                         } else {
@@ -134,7 +134,7 @@ function loadTemplate(data, changedonly) {
 
             console.log('loadTemplate: set values from sysex data');
 
-            if (DEVICE.setDump(d)) {
+            if (DEVICE.setValuesFromSysEx(d)) {
                 console.log('device updated from sysex');
                 renderPatch(template, changedonly);
             } else {
@@ -155,7 +155,7 @@ $(function () {
     let s = Utils.getParameterByName(URL_PARAM_SYSEX);
     if (s) {
         data = Utils.fromHexString(s);
-        DEVICE.setDump(data);
+        DEVICE.setValuesFromSysEx(data);
 /*
     } else {
         s = Utils.getParameterByName('pack');

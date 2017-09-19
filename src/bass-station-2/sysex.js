@@ -1,8 +1,8 @@
 import {control} from "./cc.js";
 import {nrpn} from "./nrpn.js";
 import meta from './meta.js';
-import * as Utils from "./utils.js";
-import * as Bits from '../lib/bits-utils';
+import * as Utils from './utils.js';
+import * as Bits from '../lib/bits-utils.js';
 
 /**
  *
