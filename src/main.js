@@ -8,16 +8,30 @@ import moment from "moment";
 import Cookies from 'js-cookie';
 import * as lity from "lity";
 import 'webpack-jquery-ui/effects';
-
-//var analytics = require('universal-ga');
-import analytics from 'universal-ga';
-analytics.initialize('UA-106707755-1');
+import browser from 'detect-browser';
 
 // CSS order is important
 import './css/lity.min.css';
 import './css/main.css';
 
 const TRACE = true;    // when true, will log more details in the console
+
+if (browser) {
+    console.log(browser.name);
+    console.log(browser.version);
+    switch (browser && browser.name) {
+        case 'chrome':
+            if (TRACE) console.log('supported browser');
+            break;
+        case 'firefox':
+        case 'edge':
+        default:
+            if (TRACE) console.log('unsupported browser');
+            alert('Please use Chrome browser (recent version recommended). ' +
+                'Any other browser is unsupported at the moment and the application may not work properly or not work at all. ' +
+                'Thank you for your understanding.');
+    }
+}
 
 /**
  * Makes the app name glows, or not.

@@ -3,7 +3,7 @@
 Control your Bass Station II synthesizer from your web browser. 
 No more hidden parameters. All of the Bass Station II parameters are visible on screen.
 Save, load and even print your patches!
-And, for the fun, leave the application create a patch with the _randomizer_!
+And, for the fun, leave the application create a patch with the _randomizer_.
 
 ![screenshot](/images/BS2-Web_v2.0.0.png "screenshot of current version running in Chrome")
 

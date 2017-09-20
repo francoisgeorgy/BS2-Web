@@ -1,4 +1,11 @@
 
+# Deployment:
+
+    yarn build
+    aws s3 sync dist/ s3://sysex.io/bs2/
+
+----
+
 ## Version with weback bundle (imports managed by webpack):
 
     index.html
@@ -72,3 +79,7 @@ Used libs:
 https://stackoverflow.com/questions/33998262/jquery-ui-and-webpack-how-to-manage-it-into-module
 
     yarn add webpack-jquery-ui
+    
+detect browser    
+    
+    yarn add detect-browser

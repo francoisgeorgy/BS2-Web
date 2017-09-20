@@ -4,6 +4,7 @@
   "description": "Control your Bass Station II synthesizer from your web browser.  No more hidden parameters. All of the Bass Station II parameters are visible on screen. Save, load and even print your patches! And, for the fun, leave the application create a patch with the _randomizer_!",
   "main": "webpack.config.js",
   "dependencies": {
+    "detect-browser": "^1.12.0",
     "glob": "^7.1.2",
     "jquery-ui": "^1.12.1",
     "js-cookie": "^2.1.4",
@@ -11,7 +12,6 @@
     "moment": "^2.18.1",
     "mustache": "^2.3.0",
     "tonal": "^0.69.9",
-    "universal-ga": "^1.1.0",
     "webmidi": "^2.0.0-rc.7",
     "webpack": "^3.6.0",
     "webpack-jquery-ui": "^1.0.0"
