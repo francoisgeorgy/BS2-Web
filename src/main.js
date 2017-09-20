@@ -9,6 +9,10 @@ import Cookies from 'js-cookie';
 import * as lity from "lity";
 import 'webpack-jquery-ui/effects';
 
+//var analytics = require('universal-ga');
+import analytics from 'universal-ga';
+analytics.initialize('UA-106707755-1');
+
 // CSS order is important
 import './css/lity.min.css';
 import './css/main.css';
