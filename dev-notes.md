@@ -17,6 +17,19 @@
         main-es6.js   
 
 
+## dev / prod:
+
+https://webpack.js.org/guides/production/
+
+    yarn add --dev webpack-merge
+    yarn add --dev webpack-dev-server
+
+create:
+
+    webpack.common.js
+    webpack.dev.js
+    webpack.prod.js
+
 ----
 
 https://medium.com/@paooolino/a-modern-javascript-project-setup-b7842955d1d3
@@ -83,3 +96,5 @@ https://stackoverflow.com/questions/33998262/jquery-ui-and-webpack-how-to-manage
 detect browser    
     
     yarn add detect-browser
+    
+    
