@@ -15,19 +15,17 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-106707755-1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments)};
+        function gtag(){dataLayer.push(arguments)}
         gtag('js', new Date());
         gtag('config', 'UA-106707755-1');
     </script>
 </head>
 <body>
-
     <div id="main">
-
         <div id="title">
             <h1 id="neon">Bass Station II</h1>
             <div class="menu">
-                <a id="menu-favorites" href="#"><i class="fa fa-heart-o" aria-hidden="true" alt="favorites" title="favorites"></i> Favorites</a>
+                <a id="menu-favorites" href="#"><i class="fa fa-heart-o" aria-hidden="true" title="favorites"></i> Favorites</a>
                 <span><a id="menu-randomize" href="#"><i class="fa fa-random" aria-hidden="true"></i> Randomize</a></span>
                 <span><a id="menu-init" href="#"><i class="fa fa-bolt" aria-hidden="true"></i> Init</a></span>
                 <span><a id="menu-sync" href="#" title="Sync with the connected Bass Station II"><i class="fa fa-refresh" aria-hidden="true"></i> Sync</a></span> <!--&#8651;-->
@@ -39,7 +37,6 @@
                 <span><a id="menu-about" href="#">About</a></span>      <!--&#x3f;-->
             </div>
         </div>
-
 <!--
     SUB
 -->
@@ -57,7 +54,6 @@
                 </div>
             </div>
         </div>
-
 <!--
     last played note
 -->
@@ -68,51 +64,42 @@
                 <div id="note-enharmonic"></div>
             </div>
         </div>
-
 <!--
     MIXER
 -->
         <div id="mixer">
-
             <div class="header">
                 <div>MIXER</div>
             </div>
-
             <div class="controls">
-
                 <div style="display:flex">
                     <div class="vslider">
                         <div id="cc-22-value" class="slider-value">123</div>
                         <input id="cc-22" class="slider" type="range" min="0" max="255" value="0" step="1" />
                         <div class="slider-label">Sub</div>
                     </div>
-
                     <div class="vslider">
                         <div id="cc-20-value" class="slider-value">123</div>
                         <input id="cc-20" class="slider" type="range" min="0" max="255" value="0" step="1" />
                         <div class="slider-label">Osc 1</div>
                     </div>
-
                     <div class="vslider">
                         <div id="cc-21-value" class="slider-value">123</div>
                         <input id="cc-21" class="slider" type="range" min="0" max="255" value="0" step="1" />
                         <div class="slider-label">Osc 2</div>
                     </div>
                 </div>
-
                 <div style="display:flex">
                     <div class="vslider">
                         <div id="cc-25-value" class="slider-value">123</div>
                         <input id="cc-25" class="slider" type="range" min="0" max="255" value="0" step="1" />
                         <div class="slider-label">Ext</div>
                     </div>
-
                     <div class="vslider">
                         <div id="cc-24-value" class="slider-value">123</div>
                         <input id="cc-24" class="slider" type="range" min="0" max="255" value="0" step="1" />
                         <div class="slider-label">Ring</div>
                     </div>
-
                     <div class="vslider">
                         <div id="cc-23-value" class="slider-value">123</div>
                         <input id="cc-23" class="slider" type="range" min="0" max="255" value="0" step="1" />
@@ -121,36 +108,29 @@
                 </div>
             </div>
         </div>
-
 <!--
     LFO1
 -->
         <div id="lfo1">
-
             <div class="colored-header">
                 <div class="lfo1"></div>
                 <div>LFO 1</div>
                 <div class="lfo1"></div>
             </div>
-
             <div class="control-row" style="grid-column-gap: 0">
-
                 <div class="lfo-options" style="margin-right: 1.5vw;">
                     <div style="margin-top:0.3rem" id="cc-88-options">
                     </div>
                 </div>
-
                 <div class="lfo-key-sync" style="border-bottom: none">
                     <div class="btc" id="nrpn-89">key sync</div>
                 </div>
-
                 <div class="lfo-delay">
                     <div class="knob-combo">
                         <svg class="knob" id="cc-86" ></svg>
                         <div class="knob-label">Delay</div>
                     </div>
                 </div>
-
                 <div class="lfo-speed">
                     <div class="knob-combo">
                         <svg class="knob" id="cc-18" ></svg>
@@ -169,39 +149,31 @@
                         <div class="knob-label">Slew</div>
                     </div>
                 </div>
-
             </div>
         </div>
-
 <!--
     LFO2
 -->
         <div id="lfo2">
-
             <div class="colored-header">
                 <div class="lfo2"></div>
                 <div>LFO 2</div>
                 <div class="lfo2"></div>
             </div>
-
             <div class="control-row" style="grid-column-gap: 0">
-
                 <div class="lfo-options" style="margin-right: 1.5vw;">
                     <div style="margin-top:0.3rem" id="cc-89-options">
                     </div>
                 </div>
-
                 <div class="lfo-key-sync" style="border-bottom: none">
                     <div class="btc" id="nrpn-93">key sync</div>
                 </div>
-
                 <div class="lfo-delay">
                     <div class="knob-combo">
                         <svg class="knob" id="cc-87" ></svg>
                         <div class="knob-label">Delay</div>
                     </div>
                 </div>
-
                 <div class="lfo-speed">
                     <div class="knob-combo">
                         <svg class="knob" id="cc-19" ></svg>
@@ -214,28 +186,22 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="lfo-slew">
                     <div class="knob-combo">
                         <svg class="knob" id="nrpn-90" ></svg>
                         <div class="knob-label">Slew</div>
                     </div>
                 </div>
-
             </div>
         </div>
-
 <!--
     OSC 1
 -->
         <div id="osc1">
-
             <div class="header">
                 <div>OSC 1</div>
             </div>
-
             <div class="control-row">
-
                 <div class="combo-label osc-pitch-label">
                     pitch
                 </div>
@@ -245,14 +211,12 @@
                 <div class="combo-label osc-pw-label">
                     pulse width
                 </div>
-
                 <div class="osc-options">
                     <div style="margin-top:0.3rem" id="nrpn-72-options">
                     </div>
                     <div style="margin-top:0.3rem;margin-left:1vw;text-align:right" id="cc-70-options">
                     </div>
                 </div>
-
                 <div class="osc-pitch">
                     <div class="knob-combo">
                         <svg class="knob" id="cc-27" ></svg>
@@ -263,7 +227,6 @@
                         <div class="knob-label">Fine</div>
                     </div>
                 </div>
-
                 <div class="osc-mod">
                     <div class="knob-combo">
                         <svg class="knob" id="cc-71" ></svg>
@@ -274,7 +237,6 @@
                         <div class="knob-label lfo1">LFO 1</div>
                     </div>
                 </div>
-
                 <div class="osc-pw">
                     <div class="knob-combo">
                         <svg class="knob" id="cc-72" ></svg>
@@ -289,22 +251,16 @@
                         <div class="knob-label lfo2">LFO 2</div>
                     </div>
                 </div>
-
             </div>
         </div>
-
 <!--
     OSC 2
-
-    TODO: 1-2 sync
 -->
         <div id="osc2">
-
             <div class="header">
                 <div class="btc" style="float:right;letter-spacing:normal;font-weight:400" id="cc-110">1-2 sync</div>
                 <div>OSC 2</div>
             </div>
-
             <div class="control-row">
                 <div class="combo-label osc-pitch-label">
                     pitch
@@ -315,14 +271,12 @@
                 <div class="combo-label osc-pw-label">
                     pulse width
                 </div>
-
                 <div class="osc-options">
                     <div style="margin-top:0.3rem" id="nrpn-82-options">
                     </div>
                     <div style="margin-top:0.3rem;margin-left:1vw;text-align:right" id="cc-75-options">
                     </div>
                 </div>
-
                 <div class="osc-pitch">
                     <div class="knob-combo">
                         <svg class="knob" id="cc-30" ></svg>
@@ -333,7 +287,6 @@
                         <div class="knob-label">Fine</div>
                     </div>
                 </div>
-
                 <div class="osc-mod">
                     <div class="knob-combo">
                         <svg class="knob" id="cc-76" ></svg>
@@ -344,7 +297,6 @@
                         <div class="knob-label lfo1">LFO 1</div>
                     </div>
                 </div>
-
                 <div class="osc-pw">
                     <div class="knob-combo">
                         <svg class="knob" id="cc-77" ></svg>
@@ -361,23 +313,18 @@
                 </div>
             </div>
         </div>
-
 <!--
     FILTER
 -->
         <div id="filter">
-
             <div class="header">
                 <div>FILTER</div>
             </div>
-
             <div style="display:flex">
                 <div style="">
                     <div class="control-row">
-
                         <div id="filter-options-label">
                         </div>
-
                         <div id="filter-options">
                             <div style="display:flex;align-items: flex-start">
                                 <div id="cc-83-options">
@@ -390,11 +337,8 @@
                         </div>
                     </div>
                 </div>
-
                 <div style="flex-grow: 1">
-
                     <div class="control-row">
-
                         <div id="filter-reso">
                             <div class="knob-combo">
                                 <svg class="knob" id="cc-82" ></svg>
@@ -427,22 +371,18 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
-
 <!--
     MOD ENV
 -->
         <div class="modenv" id="mod-env">
-
             <div class="colored-header">
                 <div class="modenv"></div>
                 <div>MOD ENV</div>
                 <div class="modenv"></div>
             </div>
-
             <div class="env-combo">
                 <div>
                     <div class="controls">
@@ -478,18 +418,14 @@
                     </div>
                 </div>
             </div>
-
         </div>
-
 <!--
     AMP ENV
 -->
         <div id="amp-env">
-
             <div class="header">
                 <div>AMP ENV</div>
             </div>
-
             <div class="env-combo">
                 <div>
                     <div class="controls">
@@ -526,21 +462,16 @@
                 </div>
             </div>
         </div>
-
         <div id="separator">
         </div>
-
 <!--
     WHEELS
 -->
         <div id="wheels">
-
             <div class="header">
                 <div>WHEELS</div>
             </div>
-
             <div class="control-row add-row">
-
                 <div class="combo-label wheel-pitch-label">
                     osc 1
                 </div>
@@ -572,7 +503,6 @@
                         <div class="knob-label">Pitch</div>
                     </div>
                 </div>
-
                 <div class="wheel-filter">
                     <div class="knob-combo">
                         <svg class="knob" id="nrpn-94" ></svg>
@@ -585,25 +515,20 @@
                 </div>
             </div>
         </div>
-
 <!--
     KEYBOARD
 -->
         <div id="keyboard">
-
             <div class="header">
                 <div>KEYBOARD</div>
             </div>
-
             <div class="control-row" style="justify-content: center;">
-
                 <div class="combo-label keyboard-aftertouch-label">
                     aftertouch
                 </div>
                 <div class="combo-label keyboard-velocity-label">
                     velocity
                 </div>
-
                 <div class="keyboard-start">
                     <div class="knob-combo">
                         <svg class="knob" id="cc-64" ></svg>
@@ -640,7 +565,6 @@
                 </div>
             </div>
         </div>
-
 <!--
     EFFECTS
 -->
@@ -659,16 +583,13 @@
                 </div>
             </div>
         </div>
-
 <!--
     VCA
 -->
         <div id="vca">
-
             <div class="header">
                 <div>VCA</div>
             </div>
-
             <div class="control-row" style="justify-content: center;">
                 <div></div>
                 <div class="knob-combo">
@@ -677,22 +598,16 @@
                 </div>
             </div>
         </div>
-
 <!--
     ARPEGGIATOR
 -->
         <div id="arpeggiator">
-
             <div class="header">
                 <div>ARPEGGIATOR</div>
             </div>
-
             <div class="control-row" style="grid-template-rows: 1vh auto">
-
                 <div></div>
-
                 <div class="controls">
-
                     <div style="margin-right: 1.5vw;">
                         <div style="margin-top:0.3rem">
                             <div class="btc" id="cc-108">ARP</div>
@@ -700,20 +615,17 @@
                             <div class="btc" id="nrpn-106">Retrig</div>
                         </div>
                     </div>
-
                     <div class="arp-options">
                         <div style="justify-self:end">Rhythm</div>
                         <div>
                             <select id="cc-119" style="background: transparent" class="cc">
                             </select>
                         </div>
-
                         <div style="justify-self:end">Octaves</div>
                         <div>
                             <select id="cc-111" style="background: transparent" class="cc">
                             </select>
                         </div>
-
                         <div style="justify-self:end">Note mode</div>
                         <div>
                             <select id="cc-118" style="background: transparent" class="cc">
@@ -725,8 +637,6 @@
                         <svg class="knob" id="cc-116" ></svg>
                         <div class="knob-label">Swing</div>
                     </div>
-
-
                     <div id="arp-editor">
                         <div style="margin-left:10vw;color:#999">Coming soon in this space: ARP and SEQ tools.</div>
 <!--
@@ -737,11 +647,9 @@
                         key R : rest
 -->
                     </div>
-
                 </div>
             </div>
         </div>
-
         <div id="status-bar">
 <!--
             <div style="float:right">
@@ -753,9 +661,7 @@
             <div id="status">
             </div>
         </div>
-
     </div>
-
     <div id="load-patch-dialog" class="dialog lity-hide">
         <h2>Load patch from file</h2>
         <div id="import-dialog-instructions">
@@ -767,7 +673,6 @@
         <div id="load-patch-error" style="margin:10px 0;color:red">
         </div>
     </div>
-
     <div id="credits-dialog" class="dialog lity-hide">
         <a href="https://github.com/francoisgeorgy/BS2-Web">
             <img style="position: absolute; top: 0; right: 0; border: 0;"
@@ -798,7 +703,6 @@
             <em>Bass Station II</em> is a trade mark of Focusrite Audio Engineering Limited.
         </p>
     </div>
-
     <svg xmlns="http://www.w3.org/2000/svg" width="1" height="0" style="display:block">
         <defs>
             <linearGradient id="grad" gradientTransform="rotate(65)">
@@ -811,7 +715,6 @@
             </g>
         </defs>
     </svg>
-
     <div id="settings-panel" class="panel" style="display:none">
         <h2><span style="float:right" class="close-settings-panel">&#x2715;</span>Settings</h2>
         <div id="settings-dialog-instructions">
@@ -853,7 +756,6 @@
             All changes are immediately saved and applied.
         </div>
     </div>
-
     <div id="favorites-panel" class="panel" style="display:none">
         <div id="favorites-header">
             <h2><span style="float:right" class="close-favorites-panel">&#x2715;</span>Favorites</h2>
@@ -875,6 +777,5 @@
             <span style="float:right">ESC to close</span>
         </div>
     </div>
-
 </body>
 </html>

@@ -747,7 +747,7 @@ function updateLinkedUIElements() {
 
     if (TRACE) console.groupCollapsed('updateLinkedUIElements()');
 
-    // TODO: Osc 1+2: PS controls are to be displayed onky when wave form is pulse
+    // TODO: Osc 1+2: PS controls are to be displayed only when wave form is pulse
 
     envelopes['mod-envelope'].envelope = DEVICE.getADSREnv('mod');
     envelopes['amp-envelope'].envelope = DEVICE.getADSREnv('amp');
@@ -1495,7 +1495,7 @@ $(function () {
             } else {
                 //TODO: we should ask the user
                 // ask the BS2 to send us its current patch:
-                requestSysExDump(); //FIXME: what if the mdi_input is not yet ready?
+                requestSysExDump();
             }
 
         }
