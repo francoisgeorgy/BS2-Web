@@ -640,12 +640,12 @@ div.controls {
 
 /* knob.js classes: */
 
-.knob-back {
+.knob-bg {
     fill: url("#grad");
     stroke: var(--knob-back-border);
 }
 
-.knob-back-track {
+.knob-track-bg {
     stroke: var(--knob-back-track-color);
 }
 
@@ -663,24 +663,27 @@ div.controls {
     margin: 0;
 }
 
-.path {     /* TO BE DELETED / replaced by .knob-arc */
-    stroke: #1c1c1c;
-    stroke-width: 5;
-}
+/* TO BE DELETED / replaced by .knob-arc */
+/*.path {     */
+    /*stroke: #1c1c1c;*/
+    /*stroke-width: 5;*/
+/*}*/
 
-.label {    /* TO BE DELETED */
-    font-size: 1rem;
-    stroke: none;
-    fill: #fff;
-}
+/* TO BE DELETED */
+/*.label {    */
+    /*font-size: 1rem;*/
+    /*stroke: none;*/
+    /*fill: #fff;*/
+/*}*/
 
-.value {    /* TO BE DELETED / replaced by .knob-value */
-    font-family: "Roboto Condensed", sans-serif;
-    font-size: 130%;
-    font-weight: 300;
-    stroke: none;
-    fill: var(--knob-value);
-}
+/* TO BE DELETED / replaced by .knob-value */
+/*.value {    */
+    /*font-family: "Roboto Condensed", sans-serif;*/
+    /*font-size: 130%;*/
+    /*font-weight: 300;*/
+    /*stroke: none;*/
+    /*fill: var(--knob-value);*/
+/*}*/
 
 div.bt,     /* "radio button"-like switches */
 div.btc {   /* "checkbox"-like switches: */

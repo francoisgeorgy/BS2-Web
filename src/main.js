@@ -1,6 +1,6 @@
 import DEVICE from './bass-station-2/bass-station-2.js';
-import envelope from './synth-ui/envelope.js';
-import knob from './synth-ui/knob.js';
+import Envelope from 'svg-envelope';
+import Knob from 'svg-knob';
 import * as Utils from './lib/utils.js';
 import tonal from 'tonal'
 import * as WebMidi from "webmidi";
@@ -464,17 +464,60 @@ function setupKnobs() {
 
         if (TRACE) console.log(`configure #${id}: range=${c.cc_range}, init-value=${v}`);
 
-        knobs[id] = new knob(elem, {
-            with_label: false,
-            cursor: 50,
+        knobs[id] = new Knob(elem, {
+
+            // with_label: false,
+            label: false,
             value_min: Math.min(...c.cc_range),
             value_max: Math.max(...c.cc_range),
             value_resolution: 1,
             default_value: v,
             center_zero: Math.min(...c.range) < 0,
             format: v => c.human(v),
+            snap_to_steps: false,
+            mouse_wheel_acceleration: 1,
+            // background disk:
+            bg_radius: 32,
+            bg_border_width: 1,
+            // track background:
+            track_bg_radius: 40,
+            track_bg_width: 8,
+            // track:
+            track_radius: 40,
+            track_width: 8,
+            // cursor
+            cursor_radius: 20,
+            cursor_length: 10,
+            cursor_width: 4,
+            // appearance:
+            palette: 'dark',
+            bg:  true,
+            track_bg: true,
+            track: true,
+            cursor: true,
+            linecap: 'round',
+            value_text: true,
+            value_position: 58,    // empirical value: HALF_HEIGHT + config.font_size / 3
+            font_family: 'sans-serif',
+            font_size: 25,
+            font_weight: 'bold',
+            markers: false,
+            class_bg: 'knob-bg',
+            class_track_bg : 'knob-track-bg',
+            class_track : 'knob-track',
+            class_value : 'knob-value',
+            class_cursor : 'knob-cursor',
+            class_markers: 'knob-markers',
+            bg_color: '#333',
+            bg_border_color: '#888',
+            track_bg_color: '#555',
             track_color_init: '#999',
-            track_color: '#bbb'
+            track_color: '#bbb',
+            cursor_color_init: '#569DC0',
+            cursor_color: '#bbb',
+            markers_color: '#3680A4',
+            font_color: '#FFEA00',
+
         });
 
         elem.addEventListener("change", function(event) {
@@ -691,7 +734,7 @@ function setupSliders() {
  */
 function setupADSR() {
     [].forEach.call(document.querySelectorAll('svg.envelope'), function(element) {
-        envelopes[element.id] = new envelope(element, {});
+        envelopes[element.id] = new Envelope(element, {});
     });
 }
 
@@ -1407,7 +1450,7 @@ function deviceDisconnect(info) {
 //==================================================================================================================
 // Main
 
-const VERSION = '2.0.0';
+const VERSION = '2.0.1';
 const URL_PARAM_SYSEX = 'sysex';    // name of sysex parameter in the query-string
 
 var midi_input = null;

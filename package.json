@@ -11,6 +11,8 @@
         "lity": "^2.3.0",
         "moment": "^2.18.1",
         "mustache": "^2.3.0",
+        "svg-envelope": "^0.1.2",
+        "svg-knob": "^1.0.3",
         "tonal": "^0.69.9",
         "webmidi": "^2.0.0-rc.7",
         "webpack": "^3.6.0",
@@ -28,6 +30,7 @@
         "webpack-merge": "^4.1.0"
     },
     "scripts": {
+        "dev": "webpack --config webpack.dev.js",
         "start": "webpack-dev-server --open --config webpack.dev.js",
         "build": "webpack --config webpack.prod.js",
         "test": "echo \"Error: no test specified\" && exit 1"
