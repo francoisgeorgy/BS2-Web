@@ -21,8 +21,7 @@
 
 https://webpack.js.org/guides/production/
 
-    yarn add --dev webpack-merge
-    yarn add --dev webpack-dev-server
+    yarn add --dev webpack webpack-merge webpack-dev-server
 
 create:
 

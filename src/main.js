@@ -513,12 +513,70 @@ function setupKnobs() {
             track_bg_color: '#555',
             track_color_init: '#999',
             track_color: '#bbb',
-            cursor_color_init: '#569DC0',
+            cursor_color_init: '#999',
             cursor_color: '#bbb',
             markers_color: '#3680A4',
             font_color: '#FFEA00',
 
         });
+
+        let dbg = {
+
+            // with_label: false,
+            label: false,
+            value_min: Math.min(...c.cc_range),
+            value_max: Math.max(...c.cc_range),
+            value_resolution: 1,
+            default_value: v,
+            center_zero: Math.min(...c.range) < 0,
+            center_value: c.init_value,
+            format: v => c.human(v),
+            snap_to_steps: false,
+            mouse_wheel_acceleration: 1,
+            // background disk:
+            bg_radius: 32,
+            bg_border_width: 1,
+            // track background:
+            track_bg_radius: 40,
+            track_bg_width: 8,
+            // track:
+            track_radius: 40,
+            track_width: 8,
+            // cursor
+            cursor_radius: 20,
+            cursor_length: 10,
+            cursor_width: 4,
+            // appearance:
+            palette: 'dark',
+            bg:  true,
+            track_bg: true,
+            track: true,
+            cursor: true,
+            linecap: 'round',
+            value_text: true,
+            value_position: 58,    // empirical value: HALF_HEIGHT + config.font_size / 3
+            font_family: 'sans-serif',
+            font_size: 25,
+            font_weight: 'bold',
+            markers: false,
+            class_bg: 'knob-bg',
+            class_track_bg : 'knob-track-bg',
+            class_track : 'knob-track',
+            class_value : 'knob-value',
+            class_cursor : 'knob-cursor',
+            class_markers: 'knob-markers',
+            bg_color: '#333',
+            bg_border_color: '#888',
+            track_bg_color: '#555',
+            track_color_init: '#999',
+            track_color: '#bbb',
+            cursor_color_init: '#999',
+            cursor_color: '#bbb',
+            markers_color: '#3680A4',
+            font_color: '#FFEA00',
+
+        };
+        console.dir(dbg);
 
         elem.addEventListener("change", function(event) {
             if (TRACE) console.log(event);
