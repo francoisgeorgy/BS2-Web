@@ -84,7 +84,7 @@ function defineControls() {
         range: [-100, 100],         // TODO: rename range to human_range or hrange
         human: mapper._100,
         cc_range: [27, 228],
-        cc_center: 100,             // raw value when the knob is centered
+        cc_center: 127,             // raw value when the knob is centered
         sysex: {
             offset: 22,
             mask: [0x03, 0x7E]
@@ -106,7 +106,6 @@ function defineControls() {
         lsb: 59,
         range: [-12, 12],
         human: v => mapper._12(v).toFixed(1),
-        // cc_center: 63,             // raw value when the knob is centered
         cc_center: 127,             // raw value when the knob is centered ; TODO: check
         sysex: {
             offset: 21,
@@ -170,7 +169,7 @@ function defineControls() {
         range: [-100, 100],
         human: mapper._100,
         cc_range: [27, 228],
-        cc_center: 100,             // raw value when the knob is centered ; TODO: check
+        cc_center: 127,             // raw value when the knob is centered ; TODO: check
         sysex: {
             offset: 28,
             mask: [0x0F, 0x78]
@@ -634,7 +633,7 @@ function defineControls() {
         range: [-24, 24],       // TODO doc says 1..12
         human: mapper._24_24,
         init_value: 96,
-        cc_center: 96,             // raw value when the knob is centered ; TODO: check
+        cc_center: 64,             // raw value when the knob is centered ; TODO: check
         sysex: {
             offset: 16,
             mask: [0x7F]        // to check
@@ -723,6 +722,7 @@ function defineControls() {
 
         if (!obj.hasOwnProperty('init_value')) {
             if (obj.hasOwnProperty('cc_center')) {
+                console.log(`cc-${obj.cc_number}: obj.init_value = obj.cc_center: ${obj.init_value}=${obj.cc_center}`);
                 obj.init_value = obj.cc_center;
             } else if ((Math.min(...obj.range) < 0) && (Math.max(...obj.range) > 0)) {
                 obj.init_value = (1 << (bits - 1)) - 1; // very simple rule: we take max/2 as default value

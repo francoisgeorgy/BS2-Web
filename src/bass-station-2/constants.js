@@ -86,7 +86,7 @@ export const ARP_SEQUENCES = [
 ];
 
 // Mapping 0..255 to -12.0..12.0
-export const COARSE_VALUES = [
+export const    COARSE_VALUES = [
     -120, // -12.0; -12.00000; 0
     -119, // -11.9; -11.89699; 1
     -118, // -11.8; -11.79398; 2

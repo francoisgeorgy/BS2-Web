@@ -25,7 +25,8 @@
     --header-text: #ccc;
     --status-color: #777;
 
-    --menu-text: #ccc;
+    --menu-icon: #ccc;
+    --menu-text: #999;
     --menu-text-hover: yellow;
 
     --default-bg-from: #454547;
@@ -97,12 +98,8 @@ body {
 }
 
 .colored-header > div {
-    /* display: table-cell; */
     font-size: 1.0rem;
     font-family: "Roboto Condensed", sans-serif;
-    /* line-height: 1rem; */
-    /* height: 1rem; */
-    /* vertical-align:baseline;  */
 }
 
 .colored-header div:nth-child(1) {
@@ -138,7 +135,6 @@ body {
 #main > div {
     align-self: stretch;
     background: var(--default-bg-from) linear-gradient(to bottom, var(--default-bg-from), var(--default-bg-to));
-    /* border-radius: 4px; */
     padding: 0.25vh 4px 0 4px;
     border-top: var(--inset-width) solid gray;
     border-bottom: var(--inset-width) solid black;
@@ -153,7 +149,6 @@ body {
     background-color: var(--default-bg-to);
     border-color: var(--select-border);
     border-radius: 3px;
-    /*border: none;*/
     margin-top: -1px;
 }
 
@@ -204,11 +199,15 @@ div.controls {
 
 #title > div.menu {
     margin-bottom: 0.25rem;
-    color: var(--menu-text);
+    /*color: var(--menu-text);*/
 }
 
 .menu span {
     margin-left: 0.8vw;
+    /*color: var(--menu-text);*/
+}
+.menu i {
+    color: var(--menu-icon);
 }
 .menu a {
     color: var(--menu-text);
@@ -221,7 +220,6 @@ div.controls {
 #sub {
     grid-row: 2;
     grid-column: 4;
-    /* min-width: 10vw; */
 }
 
 #top-right {

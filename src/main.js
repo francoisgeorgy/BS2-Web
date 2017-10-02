@@ -1,6 +1,7 @@
 import DEVICE from './bass-station-2/bass-station-2.js';
 import Envelope from 'svg-envelope';
 import Knob from 'svg-knob';
+// import Knob from '/Users/francois/dev/projects/svg-knob/src/svg-knob.js';
 import * as Utils from './lib/utils.js';
 import tonal from 'tonal'
 import * as WebMidi from "webmidi";
@@ -473,6 +474,7 @@ function setupKnobs() {
             value_resolution: 1,
             default_value: v,
             center_zero: Math.min(...c.range) < 0,
+            center_value: c.hasOwnProperty('cc_center') ? c.cc_center : c.init_value,
             format: v => c.human(v),
             snap_to_steps: false,
             mouse_wheel_acceleration: 1,
@@ -519,6 +521,8 @@ function setupKnobs() {
             font_color: '#FFEA00',
 
         });
+
+        knobs[id].disableDebug();
 
         let dbg = {
 

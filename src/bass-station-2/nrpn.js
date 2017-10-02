@@ -82,7 +82,7 @@ function defineNRPNs() {
         name: "Mod Wheel Filter Freq",
         range: [-64, 63],
         human: mapper._63, // TODO: make _64_63 because on the BS2 the values are -64..+63 (same for all mod wheel FN keys)
-        // parse: mapper._parse_63,
+        cc_center: 63,             // raw value when the knob is centered ; TODO: check
         sysex: {
             offset: 82,
             mask: [0x1F, 0x60]
@@ -92,7 +92,7 @@ function defineNRPNs() {
         name: "Mod Wheel LFO1 to Osc Pitch",
         range: [-63, 63],
         human: mapper._63,  // TODO: make _64_63 because on the BS2 the values are -64..+63 (same for all mod wheel FN keys)
-        // parse: mapper._parse_63,
+        cc_center: 63,             // raw value when the knob is centered ; TODO: check
         init_value: 74,
         sysex: {
             offset: 83,
@@ -103,7 +103,7 @@ function defineNRPNs() {
         name: "Mod Wheel LFO2 to Filter Freq",
         range: [-63, 63],
         human: mapper._63,  // TODO: make _64_63 because on the BS2 the values are -64..+63 (same for all mod wheel FN keys)
-        // parse: mapper._parse_63,
+        cc_center: 63,             // raw value when the knob is centered ; TODO: check
         sysex: {
             offset: 84,
             mask: [0x07, 0x78]
@@ -113,7 +113,7 @@ function defineNRPNs() {
         name: "Mod Wheel Osc2 Pitch",
         range: [-63, 63],
         human: mapper._63, // TODO: make _64_63 because on the BS2 the values are -64..+63 (same for all mod wheel FN keys)
-        // parse: mapper._parse_63,
+        cc_center: 63,             // raw value when the knob is centered ; TODO: check
         sysex: {
             offset: 85,
             mask: [0x03, 0x7C]
@@ -124,7 +124,7 @@ function defineNRPNs() {
         name: "Aftertouch Filter Freq",
         range: [-63, 63],
         human: mapper._63,
-        // parse: mapper._parse_63,
+        cc_center: 63,             // raw value when the knob is centered ; TODO: check
         init_value: 63,
         sysex: {
             offset: 86,
@@ -135,7 +135,7 @@ function defineNRPNs() {
         name: "Aftertouch LFO1 to Osc 1+2 Pitch",
         range: [-63, 63],
         human: mapper._63,
-        // parse: mapper._parse_63,
+        cc_center: 63,             // raw value when the knob is centered ; TODO: check
         sysex: {
             offset: 88,
             mask: [0x7F]
@@ -145,7 +145,7 @@ function defineNRPNs() {
         name: "Aftertouch LFO2 Speed",
         range: [-63, 63],
         human: mapper._63,     // todo: check
-        // parse: mapper._parse_63,
+        cc_center: 63,             // raw value when the knob is centered ; TODO: check
         sysex: {
             offset: 89,
             mask: [0x3F, 0x40]
@@ -283,7 +283,10 @@ function defineNRPNs() {
         }
 
         if (!obj.hasOwnProperty('init_value')) {
-            if ((Math.min(...obj.range) < 0) && (Math.max(...obj.range) > 0)) {
+            if (obj.hasOwnProperty('cc_center')) {
+                console.log(`nrpn-${obj.cc_number}: obj.init_value = obj.cc_center: ${obj.init_value}=${obj.cc_center}`);
+                obj.init_value = obj.cc_center;
+            } else if ((Math.min(...obj.range) < 0) && (Math.max(...obj.range) > 0)) {
                 obj.init_value = (1 << (bits - 1)) - 1; // very simple rule: we take max/2 as default value
             } else {
                 obj.init_value = Math.min(...obj.range);
