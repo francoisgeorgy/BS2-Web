@@ -794,8 +794,30 @@ input[type="range"] {
 .env-slider input[type="range"] {
     height: 8.5vh;
     margin: 4px 0 4px 0;
-
 }
+
+
+.v2slider {
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /*width: 3vw;*/
+    text-align: center;
+    margin-bottom: 8px;
+    margin-right: 6px;
+}
+
+.svg-slider {
+    height: 9.5vh;
+    /*width: auto;*/
+    margin: 4px 0;
+}
+.slider-cursor {
+    stroke-width: 2;
+    stroke: 'yellow';
+}
+
 
 input[type=range]::-webkit-slider-runnable-track {
     background: #333;

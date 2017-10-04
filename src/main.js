@@ -1,6 +1,7 @@
 import DEVICE from './bass-station-2/bass-station-2.js';
 import Envelope from 'svg-envelope';
 import Knob from 'svg-knob';
+import Slider from 'svg-slider';
 // import Knob from '/Users/francois/dev/projects/svg-knob/src/svg-knob.js';
 import * as Utils from './lib/utils.js';
 import tonal from 'tonal'
@@ -223,7 +224,9 @@ function updateControl(control_type, control_number, value) {
         let c = $(`#${id}`);
         if (c.length) {
             if (TRACE) console.log(`#${id} found`, c);
-            if (c.is('.slider')) {
+            if (c.is('.svg-slider')) {
+                updateSVGSlider(id, value);
+            }else if (c.is('.slider')) {
                 updateSlider(id, value);
             } else if (c.is('.btc')) {
                 updateToggleSwitch(id, value);
@@ -784,12 +787,42 @@ function setupSelects() {
  *
  */
 function setupSliders() {
+
     $(".slider").on('input', function() {   // "input:range" not yet supported by jquery; on(drag) not supported by chrome?
         if (TRACE) console.log(event, event.currentTarget.value);
         handleUIChange(...this.id.split('-'), this.value);
         $('#' + this.id + '-value').text(this.value);
     });
-}
+
+    let c = {
+        value_min: 0,
+        value_max: 255,
+        palette:'dark', width:40,
+        markers_length: 40,
+        cursor_height: 12,
+        cursor_width: 20,
+        cursor_color: '#aaa',
+        track_bg_color: '#333'
+    };
+
+    const sliders_elems = document.getElementsByClassName("svg-slider");
+
+    for (let i = 0; i < sliders_elems.length; i++) {
+        let id = sliders_elems[i].id;
+        console.log('setup svg-slider ' + id);
+        sliders[id] = new Slider(sliders_elems[i], c);
+        sliders_elems[i].addEventListener("change", function(event) {
+            // Event.target: a reference to the object that dispatched the event. It is different from event.currentTarget
+            //               when the event handler is called during the bubbling or capturing phase of the event.
+            console.log(`${event.target.id}: ${event.detail}`);
+            handleUIChange(...event.target.id.split('-'), event.detail);
+            $(`#${event.target.id}-value`).text(event.detail);
+        });
+    }
+
+    console.log('sliders', sliders);
+
+} // setupSliders()
 
 /**
  *
@@ -842,6 +875,15 @@ function updateToggleSwitch(id, value) {
 function updateSlider(id, value) {
     if (TRACE) console.log(`updateSlider(${id}, ${value})`);
     $('#' + id).val(value);
+    $('#' + id + '-value').text(value);
+}
+
+function updateSVGSlider(id, value) {
+    if (TRACE) console.log(`updateSVGSlider(${id}, ${value})`);
+    if (sliders.hasOwnProperty(id)) {
+        if (TRACE) console.log(`set value for svg-slider ${id}`);
+        sliders[id].value = value;
+    }
     $('#' + id + '-value').text(value);
 }
 
@@ -1519,7 +1561,8 @@ var midi_input = null;
 var midi_output = null;
 var midi_channel = 1;
 
-var knobs = {};
+var knobs = {};         // svg-knob
+var sliders = {};       // svg-slider
 var envelopes = {};     // Visual ADSR envelopes
 
 /**
