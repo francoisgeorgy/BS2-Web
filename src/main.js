@@ -2,7 +2,6 @@ import DEVICE from './bass-station-2/bass-station-2.js';
 import Envelope from 'svg-envelope';
 import Knob from 'svg-knob';
 import Slider from 'svg-slider';
-// import Knob from '/Users/francois/dev/projects/svg-knob/src/svg-knob.js';
 import * as Utils from './lib/utils.js';
 import tonal from 'tonal'
 import * as WebMidi from "webmidi";
@@ -19,8 +18,8 @@ import './css/main.css';
 const TRACE = true;    // when true, will log more details in the console
 
 if (browser) {
-    console.log(browser.name);
-    console.log(browser.version);
+    if (TRACE) console.log(browser.name);
+    if (TRACE) console.log(browser.version);
     switch (browser && browser.name) {
         case 'chrome':
             if (TRACE) console.log('supported browser');
@@ -224,9 +223,9 @@ function updateControl(control_type, control_number, value) {
         let c = $(`#${id}`);
         if (c.length) {
             if (TRACE) console.log(`#${id} found`, c);
-            if (c.is('.svg-slider')) {
+            if (c.is('.svg-slider,.svg-slider-env')) {
                 updateSVGSlider(id, value);
-            }else if (c.is('.slider')) {
+            } else if (c.is('.slider')) {
                 updateSlider(id, value);
             } else if (c.is('.btc')) {
                 updateToggleSwitch(id, value);
@@ -795,9 +794,10 @@ function setupSliders() {
     });
 
     let c = {
+        palette:'dark',
         value_min: 0,
         value_max: 255,
-        palette:'dark', width:40,
+        width:40,
         markers_length: 40,
         cursor_height: 12,
         cursor_width: 20,
@@ -809,18 +809,49 @@ function setupSliders() {
 
     for (let i = 0; i < sliders_elems.length; i++) {
         let id = sliders_elems[i].id;
-        console.log('setup svg-slider ' + id);
+        if (TRACE) console.log('setup svg-slider ' + id);
         sliders[id] = new Slider(sliders_elems[i], c);
         sliders_elems[i].addEventListener("change", function(event) {
             // Event.target: a reference to the object that dispatched the event. It is different from event.currentTarget
             //               when the event handler is called during the bubbling or capturing phase of the event.
-            console.log(`${event.target.id}: ${event.detail}`);
+            //console.log(`${event.target.id}: ${event.detail}`);
             handleUIChange(...event.target.id.split('-'), event.detail);
             $(`#${event.target.id}-value`).text(event.detail);
         });
+
+        sliders[id].enableDebug();
     }
 
-    console.log('sliders', sliders);
+    let c_env = {
+        palette:'dark',
+        value_min: 0,
+        value_max: 127,
+        width:30,
+        markers_length: 30,
+        cursor_height: 12,
+        cursor_width: 20,
+        cursor_color: '#aaa',
+        track_bg_color: '#333'
+    };
+
+    const sliders_env_elems = document.getElementsByClassName("svg-slider-env");
+
+    for (let i = 0; i < sliders_env_elems.length; i++) {
+        let id = sliders_env_elems[i].id;
+        if (TRACE) console.log('setup svg-slider ' + id);
+        sliders[id] = new Slider(sliders_env_elems[i], c_env);
+        sliders_env_elems[i].addEventListener("change", function(event) {
+            // Event.target: a reference to the object that dispatched the event. It is different from event.currentTarget
+            //               when the event handler is called during the bubbling or capturing phase of the event.
+            //console.log(`${event.target.id}: ${event.detail}`);
+            handleUIChange(...event.target.id.split('-'), event.detail);
+            $(`#${event.target.id}-value`).text(event.detail);
+        });
+
+        sliders[id].enableDebug();
+    }
+
+    //console.log('sliders', sliders);
 
 } // setupSliders()
 
@@ -1554,7 +1585,7 @@ function deviceDisconnect(info) {
 //==================================================================================================================
 // Main
 
-const VERSION = '2.0.1';
+const VERSION = '2.1.0';
 const URL_PARAM_SYSEX = 'sysex';    // name of sysex parameter in the query-string
 
 var midi_input = null;
@@ -1591,7 +1622,7 @@ $(function () {
                 if (TRACE) console.log('sysex param present');
                 let data = Utils.fromHexString(s);
                 if (DEVICE.setValuesFromSysEx(data)) {
-                    console.log('sysex loaded in device');
+                    if (TRACE) console.log('sysex loaded in device');
                     updateUI();
                 } else {
                     console.log('unable to set value from sysex param');
@@ -1631,7 +1662,7 @@ $(function () {
 
             let s = Utils.getParameterByName('sysex');
             if (s) {
-                console.log('sysex param present');
+                if (TRACE) console.log('sysex param present');
                 let data = Utils.fromHexString(s);
                 if (DEVICE.setValuesFromSysEx(data)) {
                     console.log('sysex loaded in device');
