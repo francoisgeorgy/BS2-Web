@@ -55,6 +55,10 @@
     --seq-bg: #5C5C66;
     --seq-off: #929181;
     --seq-on: #C1BFAF;
+
+    --side-panel-bg: rgba(40, 40, 40, 0.90);
+    --side-panel-color: #ddd;
+    --side-panel-border: #222;
 }
 
 .novation-blue {
@@ -855,7 +859,7 @@ input[type=range]::-webkit-slider-thumb {
     border-radius:4px;
     color: #ddd;
     padding:15px;
-    min-width:33vw;
+    min-width:45vw;
     max-width:80wv;
     border: 2px solid #222;
     box-shadow: 0 0 15px rgba(0, 0, 0, 1);
@@ -891,9 +895,9 @@ input[type=range]::-webkit-slider-thumb {
     height: 100vh;
     width: 33vw;
     padding: 1vh 1vw;
-    background-color: rgba(40, 40, 40, 0.90);
-    color: #ddd;
-    border-right: 2px solid #222;
+    background-color: var(--side-panel-bg);
+    color: var(--side-panel-color);
+    border-right: 2px solid var(--side-panel-border);
     box-shadow: 0 0 15px rgba(0, 0, 0, 1);
 }
 
@@ -931,6 +935,7 @@ input[type=range]::-webkit-slider-thumb {
 
 .panel button {
     font-size: 1rem;
+    border-radius: 6px;
 }
 
 #favorites-panel input,
@@ -984,6 +989,11 @@ input[type=range]::-webkit-slider-thumb {
     font-size: 0.85rem;
     font-style: italic;
     color: #777;
+}
+
+#favorites-list p {
+    font-style: italic;
+    text-align: center;
 }
 
 #settings-panel a,
