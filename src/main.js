@@ -468,7 +468,6 @@ function setupKnobs() {
         if (TRACE) console.log(`configure #${id}: range=${c.cc_range}, init-value=${v}`);
 
         knobs[id] = new Knob(elem, {
-
             // with_label: false,
             label: false,
             value_min: Math.min(...c.cc_range),
@@ -520,8 +519,7 @@ function setupKnobs() {
             cursor_color_init: '#999',
             cursor_color: '#bbb',
             markers_color: '#3680A4',
-            font_color: '#FFEA00',
-
+            font_color: '#FFEA00'
         });
 
         knobs[id].disableDebug();
