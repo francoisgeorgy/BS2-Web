@@ -1017,7 +1017,14 @@ function deleteFavorite(index) {
  *
  */
 function refreshFavoritesList() {
+
     let favorites = getFavorites();
+
+    if (favorites.length < 1) {
+        $("#favorites-list").empty().append($('<p>').text("You do not have any saved favorites.").addClass('no-fav'));
+        return;
+    }
+
     $("#favorites-list").empty().append(favorites.slice(0).reverse().map((o, i) => {
         return $("<div>").append($("<a>")
                 .attr("href", o.url)
@@ -1067,7 +1074,7 @@ function openFavoritesPanel() {
     } else {
         e.show('slide', {direction: 'left'}, 500);
         // init input field:
-        default_favorite_name = moment().format("BS2-YYYY-MM-DD-HHmmSS");
+        default_favorite_name = 'BS2-' + moment().format("YYYY-MM-DD-HHmmSS");
         $('#add-favorite-patch-name').attr('placeholder', default_favorite_name);
         refreshFavoritesList();
     }
