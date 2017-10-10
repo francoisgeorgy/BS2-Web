@@ -2,7 +2,6 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Bass Station II Web Interface</title>
     <meta name="description" content="Control your Bass Station II synthesizer from your web browser. No more hidden parameters.
         All of the Bass Station II parameters are visible on screen. Save, load and even print your patches!
@@ -698,24 +697,20 @@
         <p>Bass Station II Web Interface is under <strong>GNU General Public License v3.0</strong>. <a href="https://github.com/francoisgeorgy/BS2-Web/blob/master/LICENSE" target="_blank" >View license</a>.</p>
         <h1 style="margin-top:20px">Credits</h1>
         <p>This application uses the following Open Source components:</p>
-        <p>
-            <ul>
-                <li><a href="https://github.com/cotejp/webmidi" target="_blank">WebMidi.js</a> helps you tame the <a href="https://www.w3.org/TR/webmidi/" target="_blank">Web MIDI API</a>.</li>
-                <li><a href="https://github.com/danigb/tonal" target="_blank">Tonal</a>: a functional music theory library for Javascript.</li>
-                <!--<li><a href="https://github.com/francoisgeorgy/synth-ui-controls">Synth-UI-Controls</a>: web UI components for building synthesizer and midi tools and applications.</li>-->
-                <li><a href="https://github.com/francoisgeorgy/svg-knob">svg-knob</a>: a flexible and customizable knob for your web applications.</li>
-                <li><a href="https://github.com/francoisgeorgy/svg-envelope">svg-envelope</a>: a flexible and customizable ADSR like envelope.</li>
-                <li><a href="https://github.com/francoisgeorgy/svg-slider">svg-slider</a>: a flexible and customizable slider for your web application.</li>
-                <li><a href="http://sorgalla.com/lity/">Lity</a>: a lightweight, accessible and responsive lightbox.</li>
-                <li><a href="https://github.com/js-cookie/js-cookie" target="_blank">JS-Cookie</a>: a simple, lightweight JavaScript API for handling browser cookies.</li>
-                <li><a href="https://jquery.com/" target="_blank">jQuery</a>: a fast, small, and feature-rich JavaScript library.</li>
-                <!--<li><a href="http://msgpack.org/index.html" target="_blank">MessagePack</a>: an efficient binary serialization format.</li>-->
-                <li><a href="http://momentjs.com/" target="_blank">Moment.js</a>: parse, validate, manipulate, and display dates and times in JavaScript.</li>
-                <li><a href="https://github.com/DamonOehlman/detect-browser" target="_blank">detext-browser</a>: unpack a browser type and version from the useragent string.</li>
-                <li><a href="http://fontawesome.io/" target="_blank">Font Awesome</a>: the iconic font and CSS toolkit.</li>
-                <li><a href="https://fonts.google.com/specimen/Roboto" target="_blank">Roboto font</a> by Google.</li>
-            </ul>
-        </p>
+        <ul>
+            <li><a href="https://github.com/cotejp/webmidi" target="_blank">WebMidi.js</a> helps you tame the <a href="https://www.w3.org/TR/webmidi/" target="_blank">Web MIDI API</a>.</li>
+            <li><a href="https://github.com/danigb/tonal" target="_blank">Tonal</a>: a functional music theory library for Javascript.</li>
+            <li><a href="https://github.com/francoisgeorgy/svg-knob">svg-knob</a>: a flexible and customizable knob for your web applications.</li>
+            <li><a href="https://github.com/francoisgeorgy/svg-envelope">svg-envelope</a>: a flexible and customizable ADSR-like envelope.</li>
+            <li><a href="https://github.com/francoisgeorgy/svg-slider">svg-slider</a>: a flexible and customizable slider for your web applications.</li>
+            <li><a href="http://sorgalla.com/lity/">Lity</a>: a lightweight, accessible and responsive lightbox.</li>
+            <li><a href="https://github.com/js-cookie/js-cookie" target="_blank">JS-Cookie</a>: a simple, lightweight JavaScript API for handling browser cookies.</li>
+            <li><a href="https://jquery.com/" target="_blank">jQuery</a>: a fast, small, and feature-rich JavaScript library.</li>
+            <li><a href="http://momentjs.com/" target="_blank">Moment.js</a>: parse, validate, manipulate, and display dates and times in JavaScript.</li>
+            <li><a href="https://github.com/DamonOehlman/detect-browser" target="_blank">detext-browser</a>: unpack a browser type and version from the useragent string.</li>
+            <li><a href="http://fontawesome.io/" target="_blank">Font Awesome</a>: the iconic font and CSS toolkit.</li>
+            <li><a href="https://fonts.google.com/specimen/Roboto" target="_blank">Roboto font</a> by Google.</li>
+        </ul>
         <p class="trademarks">
             <em>Novation</em> is a registered trade mark of Focusrite Audio Engineering Limited.<br />
             <em>Bass Station II</em> is a trade mark of Focusrite Audio Engineering Limited.
@@ -727,10 +722,10 @@
                 <stop offset="0%" stop-color="#555" />
                 <stop offset="95%" stop-color="#222" />
             </linearGradient>
-            <g id="knob">
-                <circle fill="url(#grad)" class="path" cx="50" cy="50" r="40"/>
-                <text class="value" text-anchor="middle" x="50" y="58"></text>
-            </g>
+            <!--<g id="knob">-->
+                <!--<circle fill="url(#grad)" class="path" cx="50" cy="50" r="40"/>-->
+                <!--<text class="value" text-anchor="middle" x="50" y="58"></text>-->
+            <!--</g>-->
         </defs>
     </svg>
     <div id="settings-panel" class="panel" style="display:none">
