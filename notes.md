@@ -35,12 +35,16 @@ _FUNCTION_ button + _LATCH_ button:
     0000080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
     0000090: 00 00 00 00 00 00 00 00 00 f7                    ..........
 
+# Future
+
+- WebMidiLink integration <https://www.g200kg.com/en/docs/webmidilink/>
 
 # Resources
 
 ### Icons
 
 - http://fontawesome.io/icons/
+- https://developers.webmusic.io/webmusic-icons/
 
 ### HTML5 storage
 
