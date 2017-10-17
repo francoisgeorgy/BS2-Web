@@ -19,7 +19,7 @@ Still under active development. Feel free to log bugs/issues.
 
 # How to use
 
-1. Open https://francoisgeorgy.github.io/BS2-Web/
+1. Open https://sysex.io/bs2/
 2. Allow the browser to use your MIDI devices
 3. If it's not already done, connect your Bass Station II to your computer.
 4. When the Bass Station II is connected the logo will glow. 

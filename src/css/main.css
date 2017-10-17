@@ -856,13 +856,14 @@ input[type=range]::-webkit-slider-thumb {
 .dialog {
     overflow:auto;
     background-color: rgba(40, 40, 40, 0.90);
+    border: 2px solid #222;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 1);
     border-radius:4px;
-    color: #ddd;
     padding:15px;
     min-width:45vw;
     max-width:80wv;
-    border: 2px solid #222;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 1);
+    color: #ddd;
+    line-height: 140%;
 }
 
 .dialog-info {

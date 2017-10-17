@@ -8,9 +8,6 @@
         And, for the fun, leave the application create a patch with the randomizer." />
     <meta name="author" content="François Georgy" />
     <link rel="icon" href="favicon.png" sizes="32x32">
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,500,700|Roboto+Condensed:300,400,700" rel="stylesheet" />
-    <link href="https://use.fontawesome.com/f0483cf390.css" rel="stylesheet" />
-    <script src="bundle.js"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-106707755-1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -18,6 +15,9 @@
         gtag('js', new Date());
         gtag('config', 'UA-106707755-1');
     </script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,500,700|Roboto+Condensed:300,400,700" rel="stylesheet" />
+    <link href="https://use.fontawesome.com/f0483cf390.css" rel="stylesheet" />
+    <script src="bundle.js"></script>
 </head>
 <body>
     <div id="main">
@@ -33,6 +33,7 @@
                 <span><a id="menu-print-patch" href="#" title="display the current patch for printing"><i class="fa fa-print" aria-hidden="true"></i> Print patch</a></span>
                 <span><a id="menu-midi" href="#"><i class="fa fa-exchange" aria-hidden="true"></i> Midi</a></span>
                 <span><a id="menu-settings" href="#"><i class="fa fa-cog" aria-hidden="true"></i> Settings</a></span>    <!--&#x2699;-->
+                <span><a id="menu-help" href="#">Help</a></span>
                 <span><a id="menu-about" href="#">About</a></span>      <!--&#x3f;-->
             </div>
         </div>
@@ -675,6 +676,7 @@
             </div>
         </div>
     </div>
+
     <div id="load-patch-dialog" class="dialog lity-hide">
         <h2>Load patch from file</h2>
         <div id="import-dialog-instructions">
@@ -686,6 +688,7 @@
         <div id="load-patch-error" style="margin:10px 0;color:red">
         </div>
     </div>
+
     <div id="credits-dialog" class="dialog lity-hide">
         <a href="https://github.com/francoisgeorgy/BS2-Web">
             <img style="position: absolute; top: 0; right: 0; border: 0;"
@@ -716,6 +719,29 @@
             <em>Bass Station II</em> is a trade mark of Focusrite Audio Engineering Limited.
         </p>
     </div>
+
+    <div id="help-dialog" class="dialog lity-hide">
+        <h2>Instructions</h2>
+        <ol>
+            <li>Allow the browser to access your MIDI devices</li>
+            <li>If it's not already done, connect your Bass Station II to your computer.</li>
+            <li>When the Bass Station II is connected the logo will glow.</li>
+            <li>Move a knob or a slider on your Bass Station II, the corresponding on-screen control must move accordingly.</li>
+        </ol>
+        <h4>Knobs and sliders:</h4>
+        <ul>
+            <li>To move the knobs or sliders, use the mouse.</li>
+            <li>Click and drag over the knob/slider. You can also use the mousewheel.</li>
+        </ul>
+        <h4>MIDI:</h4>
+        <ul>
+            <li>Use the MIDI menu to set the MIDI channel if needed.</li>
+        </ul>
+        <div class="dialog-info">
+            <span style="float:right">ESC to close</span>
+        </div>
+    </div>
+
     <svg xmlns="http://www.w3.org/2000/svg" width="1" height="0" style="display:block">
         <defs>
             <linearGradient id="grad" gradientTransform="rotate(65)">
@@ -728,6 +754,7 @@
             <!--</g>-->
         </defs>
     </svg>
+
     <div id="settings-panel" class="panel" style="display:none">
         <h2><span style="float:right" class="close-settings-panel">&#x2715;</span>Settings</h2>
         <div id="settings-dialog-instructions">
@@ -769,6 +796,7 @@
             All changes are immediately saved and applied.
         </div>
     </div>
+
     <div id="favorites-panel" class="panel" style="display:none">
         <div id="favorites-header">
             <h2><span style="float:right" class="close-favorites-panel">&#x2715;</span>Favorites</h2>

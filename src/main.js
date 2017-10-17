@@ -1204,6 +1204,15 @@ function readFile() {
  *
  * @returns {boolean}
  */
+function openHelpDialog() {
+    lightbox = lity('#help-dialog');
+    return false;   // disable the normal href behavior
+}
+
+/**
+ *
+ * @returns {boolean}
+ */
 function openCreditsDialog() {
     lightbox = lity('#credits-dialog');
     return false;   // disable the normal href behavior
@@ -1279,6 +1288,7 @@ function setupMenu() {
     $('#menu-sync').click(syncUIwithBS2);
     $('#menu-midi').click(openMidiWindow);
     $('#menu-settings').click(openSettingsPanel);
+    $('#menu-help').click(openHelpDialog);
     $('#menu-about').click(openCreditsDialog);
 
     $('#played-note').click(playLastNote);
