@@ -2,16 +2,12 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Bass Station II Web Interface</title>
-    <meta name="description" content="Control your Bass Station II synthesizer from your web browser. No more hidden parameters.
-        All of the Bass Station II parameters are visible on screen. Save, load and even print your patches!
+    <title>Bass Station 2 Web Interface</title>
+    <meta name="description" content="Control your Bass Station 2 synthesizer from your web browser. No more hidden parameters.
+        All of the Bass Station 2 parameters are visible on screen. Save, load and even print your patches!
         And, for the fun, leave the application create a patch with the randomizer." />
     <meta name="author" content="François Georgy" />
     <link rel="icon" href="favicon.png" sizes="32x32">
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,500,700|Roboto+Condensed:300,400,700" rel="stylesheet" />
-    <link href="https://use.fontawesome.com/f0483cf390.css" rel="stylesheet" />
-    <script src="bundle.js"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-106707755-1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -19,6 +15,9 @@
         gtag('js', new Date());
         gtag('config', 'UA-106707755-1');
     </script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,500,700|Roboto+Condensed:300,400,700" rel="stylesheet" />
+    <link href="https://use.fontawesome.com/f0483cf390.css" rel="stylesheet" />
+    <script src="bundle.js"></script>
 </head>
 <body>
     <div id="main">
@@ -28,12 +27,13 @@
                 <a id="menu-favorites" href="#"><i class="fa fa-heart-o" aria-hidden="true" title="favorites"></i> Favorites</a>
                 <span><a id="menu-randomize" href="#"><i class="fa fa-random" aria-hidden="true"></i> Randomize</a></span>
                 <span><a id="menu-init" href="#"><i class="fa fa-bolt" aria-hidden="true"></i> Init</a></span>
-                <span><a id="menu-sync" href="#" title="Sync with the connected Bass Station II"><i class="fa fa-refresh" aria-hidden="true"></i> Sync</a></span> <!--&#8651;-->
+                <span><a id="menu-sync" href="#" title="Sync with the connected Bass Station 2"><i class="fa fa-refresh" aria-hidden="true"></i> Sync</a></span> <!--&#8651;-->
                 <span><a id="menu-load-patch" href="#" title="Load a patch from a .syx file"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Load patch</a></span>
                 <span><a id="menu-save-patch" href="#" title="Save the current patch to a .syx file"><i class="fa fa-save" aria-hidden="true"></i> Save patch</a></span>
                 <span><a id="menu-print-patch" href="#" title="display the current patch for printing"><i class="fa fa-print" aria-hidden="true"></i> Print patch</a></span>
                 <span><a id="menu-midi" href="#"><i class="fa fa-exchange" aria-hidden="true"></i> Midi</a></span>
                 <span><a id="menu-settings" href="#"><i class="fa fa-cog" aria-hidden="true"></i> Settings</a></span>    <!--&#x2699;-->
+                <span><a id="menu-help" href="#">Help</a></span>
                 <span><a id="menu-about" href="#">About</a></span>      <!--&#x3f;-->
             </div>
         </div>
@@ -676,10 +676,11 @@
             </div>
         </div>
     </div>
+
     <div id="load-patch-dialog" class="dialog lity-hide">
         <h2>Load patch from file</h2>
         <div id="import-dialog-instructions">
-            Select a file containing a Bass Station II patch (.syx file):
+            Select a file containing a Bass Station 2 patch (.syx file):
         </div>
         <div style="margin:10px 0;">
             <input type="file" id="patch-file" placeholder="patch file" />
@@ -687,51 +688,73 @@
         <div id="load-patch-error" style="margin:10px 0;color:red">
         </div>
     </div>
+
     <div id="credits-dialog" class="dialog lity-hide">
         <a href="https://github.com/francoisgeorgy/BS2-Web">
             <img style="position: absolute; top: 0; right: 0; border: 0;"
                  src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67"
                  alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
         <div class="novation-blue" style="font-size:2rem;font-weight:bold">
-            Bass Station II Web Interface <span class="version">2.0.0</span>
+            Bass Station 2 Web Interface <span class="version">2.0.0</span>
         </div>
-        <p>Bass Station II Web Interface is under <strong>GNU General Public License v3.0</strong>. <a href="https://github.com/francoisgeorgy/BS2-Web/blob/master/LICENSE" target="_blank" >View license</a>.</p>
+        <p>Bass Station 2 Web Interface is under <strong>GNU General Public License v3.0</strong>. <a href="https://github.com/francoisgeorgy/BS2-Web/blob/master/LICENSE" target="_blank" >View license</a>.</p>
         <h1 style="margin-top:20px">Credits</h1>
         <p>This application uses the following Open Source components:</p>
-        <p>
-            <ul>
-                <li><a href="https://github.com/cotejp/webmidi" target="_blank">WebMidi.js</a> helps you tame the <a href="https://www.w3.org/TR/webmidi/" target="_blank">Web MIDI API</a>.</li>
-                <li><a href="https://github.com/danigb/tonal" target="_blank">Tonal</a>: a functional music theory library for Javascript.</li>
-                <!--<li><a href="https://github.com/francoisgeorgy/synth-ui-controls">Synth-UI-Controls</a>: web UI components for building synthesizer and midi tools and applications.</li>-->
-                <li><a href="https://github.com/francoisgeorgy/svg-knob">svg-knob</a>: a flexible and customizable knob for your web applications.</li>
-                <li><a href="https://github.com/francoisgeorgy/svg-envelope">svg-envelope</a>: a flexible and customizable ADSR like envelope.</li>
-                <li><a href="http://sorgalla.com/lity/">Lity</a>: a lightweight, accessible and responsive lightbox.</li>
-                <li><a href="https://github.com/js-cookie/js-cookie" target="_blank">JS-Cookie</a>: a simple, lightweight JavaScript API for handling browser cookies.</li>
-                <li><a href="https://jquery.com/" target="_blank">jQuery</a>: a fast, small, and feature-rich JavaScript library.</li>
-                <!--<li><a href="http://msgpack.org/index.html" target="_blank">MessagePack</a>: an efficient binary serialization format.</li>-->
-                <li><a href="http://momentjs.com/" target="_blank">Moment.js</a>: parse, validate, manipulate, and display dates and times in JavaScript.</li>
-                <li><a href="https://github.com/DamonOehlman/detect-browser" target="_blank">detext-browser</a>: unpack a browser type and version from the useragent string.</li>
-                <li><a href="http://fontawesome.io/" target="_blank">Font Awesome</a>: the iconic font and CSS toolkit.</li>
-                <li><a href="https://fonts.google.com/specimen/Roboto" target="_blank">Roboto font</a> by Google.</li>
-            </ul>
-        </p>
+        <ul>
+            <li><a href="https://github.com/cotejp/webmidi" target="_blank">WebMidi.js</a> helps you tame the <a href="https://www.w3.org/TR/webmidi/" target="_blank">Web MIDI API</a>.</li>
+            <li><a href="https://github.com/danigb/tonal" target="_blank">Tonal</a>: a functional music theory library for Javascript.</li>
+            <li><a href="https://github.com/francoisgeorgy/svg-knob">svg-knob</a>: a flexible and customizable knob for your web applications.</li>
+            <li><a href="https://github.com/francoisgeorgy/svg-envelope">svg-envelope</a>: a flexible and customizable ADSR-like envelope.</li>
+            <li><a href="https://github.com/francoisgeorgy/svg-slider">svg-slider</a>: a flexible and customizable slider for your web applications.</li>
+            <li><a href="http://sorgalla.com/lity/">Lity</a>: a lightweight, accessible and responsive lightbox.</li>
+            <li><a href="https://github.com/js-cookie/js-cookie" target="_blank">JS-Cookie</a>: a simple, lightweight JavaScript API for handling browser cookies.</li>
+            <li><a href="https://jquery.com/" target="_blank">jQuery</a>: a fast, small, and feature-rich JavaScript library.</li>
+            <li><a href="http://momentjs.com/" target="_blank">Moment.js</a>: parse, validate, manipulate, and display dates and times in JavaScript.</li>
+            <li><a href="https://github.com/DamonOehlman/detect-browser" target="_blank">detext-browser</a>: unpack a browser type and version from the useragent string.</li>
+            <li><a href="http://fontawesome.io/" target="_blank">Font Awesome</a>: the iconic font and CSS toolkit.</li>
+            <li><a href="https://fonts.google.com/specimen/Roboto" target="_blank">Roboto font</a> by Google.</li>
+        </ul>
         <p class="trademarks">
             <em>Novation</em> is a registered trade mark of Focusrite Audio Engineering Limited.<br />
             <em>Bass Station II</em> is a trade mark of Focusrite Audio Engineering Limited.
         </p>
     </div>
+
+    <div id="help-dialog" class="dialog lity-hide">
+        <h2>Instructions</h2>
+        <ol>
+            <li>Allow the browser to access your MIDI devices</li>
+            <li>If it's not already done, connect your Bass Station 2 to your computer.</li>
+            <li>When the Bass Station 2 is connected the logo will glow.</li>
+            <li>Move a knob or a slider on your Bass Station 2, the corresponding on-screen control must move accordingly.</li>
+        </ol>
+        <h4>Knobs and sliders:</h4>
+        <ul>
+            <li>To move the knobs or sliders, use the mouse.</li>
+            <li>Click and drag over the knob/slider. You can also use the mousewheel.</li>
+        </ul>
+        <h4>MIDI:</h4>
+        <ul>
+            <li>Use the MIDI menu to set the MIDI channel if needed.</li>
+        </ul>
+        <div class="dialog-info">
+            <span style="float:right">ESC to close</span>
+        </div>
+    </div>
+
     <svg xmlns="http://www.w3.org/2000/svg" width="1" height="0" style="display:block">
         <defs>
             <linearGradient id="grad" gradientTransform="rotate(65)">
                 <stop offset="0%" stop-color="#555" />
                 <stop offset="95%" stop-color="#222" />
             </linearGradient>
-            <g id="knob">
-                <circle fill="url(#grad)" class="path" cx="50" cy="50" r="40"/>
-                <text class="value" text-anchor="middle" x="50" y="58"></text>
-            </g>
+            <!--<g id="knob">-->
+                <!--<circle fill="url(#grad)" class="path" cx="50" cy="50" r="40"/>-->
+                <!--<text class="value" text-anchor="middle" x="50" y="58"></text>-->
+            <!--</g>-->
         </defs>
     </svg>
+
     <div id="settings-panel" class="panel" style="display:none">
         <h2><span style="float:right" class="close-settings-panel">&#x2715;</span>Settings</h2>
         <div id="settings-dialog-instructions">
@@ -756,7 +779,7 @@
             <option value="15">15</option>
             <option value="16">16</option>
             <option value="all">All</option>
-        </select> to communicate with the Bass Station II.
+        </select> to communicate with the Bass Station 2.
         </div>
         <div>
             <h3>Randomizer</h3>
@@ -773,6 +796,7 @@
             All changes are immediately saved and applied.
         </div>
     </div>
+
     <div id="favorites-panel" class="panel" style="display:none">
         <div id="favorites-header">
             <h2><span style="float:right" class="close-favorites-panel">&#x2715;</span>Favorites</h2>

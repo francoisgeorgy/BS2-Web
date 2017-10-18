@@ -1600,7 +1600,8 @@ function deviceDisconnect(info) {
 //==================================================================================================================
 // Main
 
-const VERSION = '2.1.0';
+// const VERSION = '2.2.0';
+const VERSION = '[AIV]{version}[/AIV]';
 const URL_PARAM_SYSEX = 'sysex';    // name of sysex parameter in the query-string
 
 var midi_input = null;
@@ -1616,7 +1617,7 @@ var envelopes = {};     // Visual ADSR envelopes
  */
 $(function () {
 
-    console.log(`Bass Station II Web Interface ${VERSION}`);
+    console.log(`Bass Station 2 Web Interface ${VERSION}`);
 
     setupUI();
 
@@ -1663,7 +1664,7 @@ $(function () {
                 connectInput(input);
                 setStatus(`${DEVICE.name_device_in} connected on channel ${midi_channel}.`);
             } else {
-                setStatusError(`${DEVICE.name_device_in} not found. Please connect your Bass Station II with your computer.`);
+                setStatusError(`${DEVICE.name_device_in} not found. Please connect your Bass Station 2 with your computer.`);
                 setMidiInStatus(false);
             }
 

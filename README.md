@@ -1,7 +1,7 @@
-# Novation Bass Station II Web interface
+# Novation Bass Station 2 Web interface
 
-Control your Bass Station II synthesizer from your web browser. 
-No more hidden parameters. All of the Bass Station II parameters are visible on screen.
+Control your Bass Station 2 synthesizer from your web browser. 
+No more hidden parameters. All of the Bass Station 2 parameters are visible on screen.
 Save, load and even print your patches!
 And, for the fun, leave the application create a patch with the _randomizer_.
 
@@ -21,17 +21,17 @@ Still under active development. Feel free to log bugs/issues.
 
 1. Open https://sysex.io/bs2/
 2. Allow the browser to use your MIDI devices
-3. If it's not already done, connect your Bass Station II to your computer.
-4. When the Bass Station II is connected the logo will glow. 
-5. Move a dial or a slider on your Bass Station II, the corresponding on-screen control must move accordingly.
+3. If it's not already done, connect your Bass Station 2 to your computer.
+4. When the Bass Station 2 is connected the logo will glow. 
+5. Move a dial or a slider on your Bass Station 2, the corresponding on-screen control must move accordingly.
 
 The logo glows when the Bass Station is connected and recognized by the application:
 
-![connected](/images/BS2-Web-connected.png "Bass Station II connected")
+![connected](/images/BS2-Web-connected.png "Bass Station 2 connected")
 
-Bass Station II is disconnected:
+Bass Station 2 is disconnected:
 
-![disconnected](/images/BS2-Web-disconnected.png "Bass Station II disconnected")
+![disconnected](/images/BS2-Web-disconnected.png "Bass Station 2 disconnected")
 
 ## Features:
 
@@ -60,15 +60,15 @@ Randomize the parameters according to the _Randomizer settings_ defined in the _
 
 ### Init
 
-Reset the application and the Bass Station II with the default values.
+Reset the application and the Bass Station 2 with the default values.
 
 ### Sync
 
-Sync the application with the Bass Station II. This is done by sending a request-for-sysex to the Bass Station II.
+Sync the application with the Bass Station 2. This is done by sending a request-for-sysex to the Bass Station 2.
 
 ### Load patch
 
-Open a dialog allowing you to select a sysex patch file (file with `.syx` extension). One loaded the patch is sent to the Bass Station II.
+Open a dialog allowing you to select a sysex patch file (file with `.syx` extension). One loaded the patch is sent to the Bass Station 2.
 
 ### Save patch
 
@@ -83,20 +83,20 @@ Open a new window with the current patch displayed in a ready-to-print layout.
 ### Settings
 
 Open the Settings panel. Within this panel you can configure:
-- the **MIDI channel** to use to communicate with your Bass Station II 
+- the **MIDI channel** to use to communicate with your Bass Station 2 
 - the **randomizer**
 
 ### About
 
 Display the _About_ dialog.
 
-# Bass Station II MIDI messages
+# Bass Station 2 MIDI messages
 
-The MIDI parameters are documented in the official Novation Bass Station II user manual. 
+The MIDI parameters are documented in the official Novation Bass Station 2 user manual. 
 
 ## SysEx Dump
 
-The application is able to receive and decode SysEx dumps coming from the Bass Station II ("FN-Key _Global: Dump_") as well as .syx patch files.
+The application is able to receive and decode SysEx dumps coming from the Bass Station 2 ("FN-Key _Global: Dump_") as well as .syx patch files.
 
 The SysEx dump format is not documented by Novation. I have reverse-engineered it and you can find the result
  in my other project [BS2-SysEx](https://github.com/francoisgeorgy/BS2-SysEx).
