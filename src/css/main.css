@@ -128,12 +128,27 @@ body {
     color: var(--value);
 }
 
+.no-left-border {
+    left-border: none;
+}
+.no-right-border {
+    right-border: none;
+}
+
 #main {
     margin: 0;
-    padding: 1vh 0 0 0;
+    /*padding: 1vh 0 0 0;*/
+    pading: 0;
     display: grid;
-    justify-content: center;
+
+    /*justify-content: center;*/
+    justify-content: stretch;
+    align-content: stretch;
+
     align-items: start;
+
+    width: 100vw;
+    height: 100vh;
 }
 
 #main > div {
@@ -180,7 +195,8 @@ div.controls {
     border-top-color: transparent !important;
     border-left-color: transparent !important;
     border-right-color: transparent !important;
-    padding: 0 !important;
+    /*padding: 0 !important;*/
+    padding: 0 4px !important;
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
@@ -732,7 +748,7 @@ div.btc.on {
 
 .env-combo > div:nth-child(2) > div:nth-child(1) {
     display:flex;
-    justify-content:flex-end;
+    /*justify-content:flex-end;*/
 }
 
 .adsr-graph {
@@ -747,13 +763,20 @@ div.btc.on {
 }
 
 .envelope {
+    margin-top: 0.5vh;
+    margin-right: 0.5vh;
     height: 8.4vh;
-    width: 18vh;
+    /*width: 15vh;*/
+    width: 10vw;
+    border: none;
+    border-left: 1px solid #555;
+    border-bottom: 1px solid #555;
 }
 
 .envelope-path {
     stroke: #aaaa39;
     stroke-width: 2;
+    fill: #333;
 }
 
 /*
