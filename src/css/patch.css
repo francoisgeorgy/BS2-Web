@@ -54,6 +54,7 @@ table.values tr td:first-child {
     /*padding-right: 1em;*/
     /*width: 7cm;*/
 }
+
 table.values tr td:last-child {
     text-align: right;
     /*width: 2cm;*/
@@ -62,10 +63,10 @@ table.values tr td:last-child {
 table.values tr:nth-child(odd) {
     background-color:#fff;
 }
+
 table.values tr:nth-child(even) {
     background-color:#eee;
 }
-
 
 .wrapper {
     display: grid;
@@ -76,10 +77,9 @@ table.values tr:nth-child(even) {
 }
 
 .box {
-    background-color: #eee;
+    border: 1px solid #ccc;
     border-radius: 5px;
     padding: 10px;
-    /*font-size: 150%;*/
     line-height: 140%;
 }
 
@@ -87,6 +87,13 @@ table.values tr:nth-child(even) {
     padding: 0;
     margin: 0;
 
+}
+
+.instructions {
+    /*border-top: 1px solid #ddd;*/
+    /*padding: 10px 0;*/
+    color: #555;
+    line-height: 140%;
 }
 
 @media print {
@@ -103,7 +110,7 @@ table.values tr:nth-child(even) {
     }
 
     h1 {
-        margin-top: 15mm;
+        margin-top: 10mm;
         page-break-before: always;
     }
 
@@ -123,8 +130,8 @@ table.values tr:nth-child(even) {
     }
 
     .box {
-        background-color: #eee;
-        border-radius: 1mm;
+        border: 1px solid #ccc;
+        border-radius: 2mm;
         padding: 2mm;
     }
 
