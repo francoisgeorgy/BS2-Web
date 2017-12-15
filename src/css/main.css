@@ -129,10 +129,10 @@ body {
 }
 
 .no-left-border {
-    left-border: none;
+    border-left: none !important;
 }
 .no-right-border {
-    right-border: none;
+    border-right: none !important;
 }
 
 #main {
