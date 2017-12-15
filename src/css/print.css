@@ -23,15 +23,11 @@ h2 {
 
 .wrapper {
     grid-gap: 2mm;
-    /*display: grid;*/
-    /*grid-gap: 10px;*/
     grid-template-columns: repeat(4, 1fr);
-    /*background-color: #fff;*/
-    /*margin-bottom: 20px;*/
 }
 
 .box {
-    background-color: #eee;
+    border: 1px solid #ccc;
     border-radius: 1mm;
     padding: 2mm;
 }

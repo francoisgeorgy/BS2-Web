@@ -25,12 +25,12 @@
             <h1 id="neon">Bass Station II</h1>
             <div class="menu">
                 <a id="menu-favorites" href="#"><i class="fa fa-heart-o" aria-hidden="true" title="favorites"></i> Favorites</a>
-                <span><a id="menu-randomize" href="#"><i class="fa fa-random" aria-hidden="true"></i> Randomize</a></span>
                 <span><a id="menu-init" href="#"><i class="fa fa-bolt" aria-hidden="true"></i> Init</a></span>
+                <span><a id="menu-randomize" href="#"><i class="fa fa-random" aria-hidden="true"></i> Randomize</a></span>
                 <span><a id="menu-sync" href="#" title="Sync with the connected Bass Station 2"><i class="fa fa-refresh" aria-hidden="true"></i> Sync</a></span> <!--&#8651;-->
                 <span><a id="menu-load-patch" href="#" title="Load a patch from a .syx file"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Load patch</a></span>
                 <span><a id="menu-save-patch" href="#" title="Save the current patch to a .syx file"><i class="fa fa-save" aria-hidden="true"></i> Save patch</a></span>
-                <span><a id="menu-print-patch" href="#" title="display the current patch for printing"><i class="fa fa-print" aria-hidden="true"></i> Print patch</a></span>
+                <span><a id="menu-print-patch" href="#" title="display the current patch for printing"><i class="fa fa-print" aria-hidden="true"></i> Patch sheet</a></span>
                 <span><a id="menu-midi" href="#"><i class="fa fa-exchange" aria-hidden="true"></i> Midi</a></span>
                 <span><a id="menu-settings" href="#"><i class="fa fa-cog" aria-hidden="true"></i> Settings</a></span>    <!--&#x2699;-->
                 <span><a id="menu-help" href="#">Help</a></span>
@@ -142,7 +142,7 @@
                         <svg class="knob" id="cc-18" ></svg>
                         <svg class="knob" id="nrpn-87" style="display:none"></svg>
                         <div class="knob-label no-reset" style="padding: 0px 1px 0px 1px;">
-                            <select id="nrpn-88" style="background:transparent">   <!-- FN key "Speed/Sync LFO 1" -->
+                            <select id="nrpn-88">   <!-- FN key "Speed/Sync LFO 1" -->
                                 <option value="0">Speed</option>
                                 <option value="1">Sync</option>
                             </select>
@@ -185,7 +185,7 @@
                         <svg class="knob" id="cc-19" ></svg>
                         <svg class="knob" id="nrpn-91" style="display:none"></svg>
                         <div class="knob-label no-reset" style="padding: 0px 1px 0px 1px;">
-                            <select id="nrpn-92" style="background:transparent">   <!-- FN key "Speed/Sync LFO 2" -->
+                            <select id="nrpn-92">   <!-- FN key "Speed/Sync LFO 2" -->
                                 <option value="0">Speed</option>
                                 <option value="1">Sync</option>
                             </select>
@@ -383,7 +383,7 @@
 <!--
     MOD ENV
 -->
-        <div class="modenv no-left-border" id="mod-env">
+        <div class="modenv" id="mod-env" class="no-left-border">
             <div class="colored-header">
                 <div class="modenv"></div>
                 <div>MOD ENV</div>
@@ -710,7 +710,7 @@
             <li><a href="https://github.com/js-cookie/js-cookie" target="_blank">JS-Cookie</a>: a simple, lightweight JavaScript API for handling browser cookies.</li>
             <li><a href="https://jquery.com/" target="_blank">jQuery</a>: a fast, small, and feature-rich JavaScript library.</li>
             <li><a href="http://momentjs.com/" target="_blank">Moment.js</a>: parse, validate, manipulate, and display dates and times in JavaScript.</li>
-            <li><a href="https://github.com/DamonOehlman/detect-browser" target="_blank">detext-browser</a>: unpack a browser type and version from the useragent string.</li>
+            <li><a href="https://github.com/DamonOehlman/detect-browser" target="_blank">detect-browser</a>: unpack a browser type and version from the useragent string.</li>
             <li><a href="http://fontawesome.io/" target="_blank">Font Awesome</a>: the iconic font and CSS toolkit.</li>
             <li><a href="https://fonts.google.com/specimen/Roboto" target="_blank">Roboto font</a> by Google.</li>
         </ul>
@@ -735,7 +735,7 @@
         </ul>
         <h4>MIDI:</h4>
         <ul>
-            <li>Use the Settings menu to set the MIDI channel if needed.</li>
+            <li>Use the MIDI menu to set the MIDI channel if needed.</li>
         </ul>
         <div class="dialog-info">
             <span style="float:right">ESC to close</span>

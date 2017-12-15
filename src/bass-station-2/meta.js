@@ -1,5 +1,15 @@
 
 
+const getStringValue = function(bytes) {
+    let s = '';
+    for (let i = 0; i < bytes.length; i++) {
+        if (bytes[i] > 0) {
+            s += String.fromCharCode(bytes[i]);
+        }
+    }
+    return s;
+};
+
 export default {
     patch_id: {
         name: 'Patch Number',
@@ -30,6 +40,7 @@ export default {
             mask: [0x7F, 0x7F, 0x7F],
             value: [0x00, 0x20, 0x29]  // Manufacturer ID
         }
-    }
+    },
+    getStringValue
 };
 

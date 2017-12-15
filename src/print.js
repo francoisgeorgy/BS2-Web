@@ -33,8 +33,7 @@ function renderGroup(group, changed_only) {
             }
 
             // if (typeof c === 'undefined') continue;
-
-            console.log(i, c);
+            // console.log(i, c);
 
             let v;  // = c.value;
             if (c.on_off) {
@@ -65,22 +64,18 @@ function renderPatch(template, changedonly) {
     console.log('renderPatch');
 
     let change_link = $('#only-changed');
-    // let values_link;
     if (changedonly) {
-        // values_link = '<a href="#" id="all-values">Show all values</a>';
-
         change_link.text('Show all values').click(function(){
             window.location = window.location.href.replace(/&changedonly[^&]*/g, '') + "&changedonly=0";
         });
     } else {
-        // values_link = '<a href="#" id="only-changed">Show only the changed values from an init patch</a>';
         change_link.text('Show only the changed values from an init patch').click(function(){
             window.location = window.location.href.replace(/&changedonly[^&]*/g, '') + "&changedonly=1";
         });
     }
 
-    $('#patch-number').text(DEVICE.meta.patch_id.value);
-    $('#patch-name').text(DEVICE.meta.patch_name.value);
+    $('#patch-number').text(DEVICE.meta.getStringValue(DEVICE.meta.patch_id.value));
+    $('#patch-name').text(DEVICE.meta.getStringValue(DEVICE.meta.patch_name.value));
 
     let t = $(template).filter('#template-main').html();
     let p = {
@@ -94,6 +89,8 @@ function renderPatch(template, changedonly) {
 
     let o = Mustache.render(t, p);
     $('body').append(o);
+
+    $('body').append(Mustache.render($(template).filter('#template-instructions').html()));
 
     $("#print").click(function(){
         window.print();
