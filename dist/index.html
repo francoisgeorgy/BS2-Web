@@ -25,12 +25,12 @@
             <h1 id="neon">Bass Station II</h1>
             <div class="menu">
                 <a id="menu-favorites" href="#"><i class="fa fa-heart-o" aria-hidden="true" title="favorites"></i> Favorites</a>
-                <span><a id="menu-randomize" href="#"><i class="fa fa-random" aria-hidden="true"></i> Randomize</a></span>
                 <span><a id="menu-init" href="#"><i class="fa fa-bolt" aria-hidden="true"></i> Init</a></span>
+                <span><a id="menu-randomize" href="#"><i class="fa fa-random" aria-hidden="true"></i> Randomize</a></span>
                 <span><a id="menu-sync" href="#" title="Sync with the connected Bass Station 2"><i class="fa fa-refresh" aria-hidden="true"></i> Sync</a></span> <!--&#8651;-->
                 <span><a id="menu-load-patch" href="#" title="Load a patch from a .syx file"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Load patch</a></span>
                 <span><a id="menu-save-patch" href="#" title="Save the current patch to a .syx file"><i class="fa fa-save" aria-hidden="true"></i> Save patch</a></span>
-                <span><a id="menu-print-patch" href="#" title="display the current patch for printing"><i class="fa fa-print" aria-hidden="true"></i> Print patch</a></span>
+                <span><a id="menu-print-patch" href="#" title="display the current patch for printing"><i class="fa fa-print" aria-hidden="true"></i> Patch sheet</a></span>
                 <span><a id="menu-midi" href="#"><i class="fa fa-exchange" aria-hidden="true"></i> Midi</a></span>
                 <span><a id="menu-settings" href="#"><i class="fa fa-cog" aria-hidden="true"></i> Settings</a></span>    <!--&#x2699;-->
                 <span><a id="menu-help" href="#">Help</a></span>
@@ -57,7 +57,7 @@
 <!--
     last played note
 -->
-        <div id="top-right">
+        <div id="top-right" class="no-right-border">
             <div class="combo-label" style="margin-top:3px">last played</div>
             <div id="played-note">
                 <div id="note-name"></div>
@@ -67,7 +67,7 @@
 <!--
     MIXER
 -->
-        <div id="mixer">
+        <div id="mixer" class="no-right-border">
             <div class="header">
                 <div>MIXER</div>
             </div>
@@ -117,7 +117,7 @@
 <!--
     LFO1
 -->
-        <div id="lfo1">
+        <div id="lfo1" class="no-left-border">
             <div class="colored-header">
                 <div class="lfo1"></div>
                 <div>LFO 1</div>
@@ -160,7 +160,7 @@
 <!--
     LFO2
 -->
-        <div id="lfo2">
+        <div id="lfo2" class="no-left-border">
             <div class="colored-header">
                 <div class="lfo2"></div>
                 <div>LFO 2</div>
@@ -383,7 +383,7 @@
 <!--
     MOD ENV
 -->
-        <div class="modenv" id="mod-env">
+        <div class="modenv" id="mod-env" class="no-left-border">
             <div class="colored-header">
                 <div class="modenv"></div>
                 <div>MOD ENV</div>
@@ -423,16 +423,16 @@
                 <div>
                     <div id="nrpn-105-options">
                     </div>
-                    <div class="adsr-graph">
+                    <!--<div class="adsr-graph">-->
                         <svg class="envelope" id="mod-envelope"></svg>
-                    </div>
+                    <!--</div>-->
                 </div>
             </div>
         </div>
 <!--
     AMP ENV
 -->
-        <div id="amp-env">
+        <div id="amp-env" class="no-right-border">
             <div class="header">
                 <div>AMP ENV</div>
             </div>
@@ -470,9 +470,9 @@
                 <div>
                     <div id="nrpn-73-options">
                     </div>
-                    <div class="adsr-graph">
+                    <!--<div class="adsr-graph">-->
                         <svg class="envelope" id="amp-envelope"></svg>
-                    </div>
+                    <!--</div>-->
                 </div>
             </div>
         </div>
@@ -481,7 +481,7 @@
 <!--
     WHEELS
 -->
-        <div id="wheels">
+        <div id="wheels" class="no-left-border">
             <div class="header">
                 <div>WHEELS</div>
             </div>
@@ -600,7 +600,7 @@
 <!--
     VCA
 -->
-        <div id="vca">
+        <div id="vca" class="no-right-border">
             <div class="header">
                 <div>VCA</div>
             </div>
@@ -615,7 +615,7 @@
 <!--
     ARPEGGIATOR
 -->
-        <div id="arpeggiator">
+        <div id="arpeggiator" class="no-right-border">
             <div class="header">
                 <div>ARPEGGIATOR</div>
             </div>
@@ -710,7 +710,7 @@
             <li><a href="https://github.com/js-cookie/js-cookie" target="_blank">JS-Cookie</a>: a simple, lightweight JavaScript API for handling browser cookies.</li>
             <li><a href="https://jquery.com/" target="_blank">jQuery</a>: a fast, small, and feature-rich JavaScript library.</li>
             <li><a href="http://momentjs.com/" target="_blank">Moment.js</a>: parse, validate, manipulate, and display dates and times in JavaScript.</li>
-            <li><a href="https://github.com/DamonOehlman/detect-browser" target="_blank">detext-browser</a>: unpack a browser type and version from the useragent string.</li>
+            <li><a href="https://github.com/DamonOehlman/detect-browser" target="_blank">detect-browser</a>: unpack a browser type and version from the useragent string.</li>
             <li><a href="http://fontawesome.io/" target="_blank">Font Awesome</a>: the iconic font and CSS toolkit.</li>
             <li><a href="https://fonts.google.com/specimen/Roboto" target="_blank">Roboto font</a> by Google.</li>
         </ul>
