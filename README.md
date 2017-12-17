@@ -54,13 +54,13 @@ Example:
 
     http://<domain>/bs2?sysex=f00020290033000000000000000000006000004804037d7e0220100f777801004340200000ff7c00000000000f78000008200000077800004000000f700000000000126000000000001a4000202004001f190f6923797c7e3f1f5f6f70017c7e403f4f6770017c7e401f4000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000f7
 
+### Init
+
+Reset the application and the Bass Station 2 with the default values (init patch).
+
 ### Randomize
 
 Randomize the parameters according to the _Randomizer settings_ defined in the _Settings_ panel.
-
-### Init
-
-Reset the application and the Bass Station 2 with the default values.
 
 ### Sync
 
@@ -74,11 +74,15 @@ Open a dialog allowing you to select a sysex patch file (file with `.syx` extens
 
 Open your browser's Save File dialog to save the current patch as a sysex dump file (file with `.syx` extension). 
 
-### Print patch Midi
+### Patch sheet
 
 Open a new window with the current patch displayed in a ready-to-print layout. 
 
 :bulb: With Chrome you can even easily create a _PDF_ file. 
+
+### Midi
+
+Open a samll window that will dump all the MIDI messages sent or received.
 
 ### Settings
 
@@ -101,6 +105,15 @@ The application is able to receive and decode SysEx dumps coming from the Bass S
 The SysEx dump format is not documented by Novation. I have reverse-engineered it and you can find the result
  in my other project [BS2-SysEx](https://github.com/francoisgeorgy/BS2-SysEx).
 
+# TODO
+
+- better patches managment
+    - browse patches with auto-preview
+- better randomizer
+- wheels representation
+- arpeggiator support
+    - auto-chords (from a selected scale)
+- record all changes over time and replay
 
 # Credits
 

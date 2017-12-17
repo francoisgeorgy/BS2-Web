@@ -368,7 +368,7 @@ function init(sendUpdate = true) {
 function randomize() {
     console.groupCollapsed(`randomize`);
     if (settings.randomize.length < 1) {
-        alert('nothing to randomize');
+        alert('Nothing to randomize.\nUse the "Settings" menu to configure the randomizer.');
     } else {
         DEVICE.randomize(settings.randomize);
         updateUI();
@@ -1483,7 +1483,7 @@ function noteOff() {
  */
 function requestSysExDump() {
     if (midi_output) {
-        console.log('requestSysExDump()');
+        console.log('requestSysExDump()', midi_output);
         midi_output.sendSysex(DEVICE.meta.signature.sysex.value, [0x00, 0x33, 0x00, 0x40]);
     }
 }
@@ -1553,20 +1553,24 @@ function connectOutput(output) {
  */
 function deviceConnect(info) {
     console.log('deviceConnect', info);
-    if ((info.name !== DEVICE.name_device_in) && (info.name !== DEVICE.name_device_out)) {
+    // console.log('deviceConnect port type ***', typeof info.port);
+    // console.log('deviceConnect port object ***', info.port);
+    if ((info.port.name !== DEVICE.name_device_in) && (info.port.name !== DEVICE.name_device_out)) {
         console.log('ignore deviceConnect');
         return;
     }
-    if (info.hasOwnProperty('input') && info.input && (info.name === DEVICE.name_device_in)) {
+    if (info.port.type === 'input') {
+    // if (info.hasOwnProperty('input') && info.input && (info.port.name === DEVICE.name_device_in)) {
         if (!midi_input) {
-            connectInput(info.input);
+            connectInput(info.port);
         } else {
             console.log('deviceConnect: input already connected');
         }
     }
-    if (info.hasOwnProperty('output') && info.output && (info.name === DEVICE.name_device_out)) {
+    // if (info.hasOwnProperty('output') && info.output && (info.port.name === DEVICE.name_device_out)) {
+    if (info.port.type === 'output') {
         if (!midi_output) {
-            connectOutput(info.output);
+            connectOutput(info.port);
             //TODO: we should ask the user
             // ask the BS2 to send us its current patch:
             requestSysExDump();
@@ -1582,16 +1586,16 @@ function deviceConnect(info) {
  */
 function deviceDisconnect(info) {
     console.log('deviceDisconnect', info);
-    if ((info.name !== DEVICE.name_device_in) && (info.name !== DEVICE.name_device_out)) {
-        console.log(`disconnect event ignored for device ${info.name}`);
+    if ((info.port.name !== DEVICE.name_device_in) && (info.port.name !== DEVICE.name_device_out)) {
+        console.log(`disconnect event ignored for device ${info.port.name}`);
         return;
     }
-    if (info.name === DEVICE.name_device_in) {
+    if (info.port.name === DEVICE.name_device_in) {
         midi_input = null;
         setStatus(`${DEVICE.name_device_in} has been disconnected.`);
         setMidiInStatus(false);
     }
-    if (info.name === DEVICE.name_device_out) {
+    if (info.port.name === DEVICE.name_device_out) {
         midi_output = null;
         // setMidiOutStatus(false);
     }
@@ -1623,7 +1627,7 @@ $(function () {
 
     init(false);    // init DEVICE then UI without sending any CC to the DEVICE
 
-    setStatus("Waiting for MIDI interface...");
+    setStatus("Waiting for MIDI interface access...");
 
     WebMidi.enable(function (err) {
 
@@ -1672,7 +1676,7 @@ $(function () {
             if (output) {
                 connectOutput(output);
             } else {
-                setStatusError(`${DEVICE.name_device_in} not found.`)
+                setStatusError(`${DEVICE.name_device_out} not found. Please connect your Bass Station 2 with your computer.`);
                 // setMidiOutStatus(false);
             }
 
