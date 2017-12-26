@@ -973,8 +973,8 @@ copy-concurrently@^1.0.0:
     run-queue "^1.0.0"
 
 copy-webpack-plugin@^4.0.1:
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/copy-webpack-plugin/-/copy-webpack-plugin-4.3.0.tgz#cfdf4d131c78d66917a1bb863f86630497aacf42"
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/copy-webpack-plugin/-/copy-webpack-plugin-4.3.1.tgz#19ba6370bf6f8e263cbd66185a2b79f2321a9302"
   dependencies:
     cacache "^10.0.1"
     find-cache-dir "^1.0.0"
@@ -2623,8 +2623,8 @@ mkdirp@0.5.x, "mkdirp@>=0.5 0", mkdirp@^0.5.1, mkdirp@~0.5.0, mkdirp@~0.5.1:
     minimist "0.0.8"
 
 moment@^2.18.1:
-  version "2.20.0"
-  resolved "https://registry.yarnpkg.com/moment/-/moment-2.20.0.tgz#53396358994dd3a551e966a66af715ecb6c30ad0"
+  version "2.20.1"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.20.1.tgz#d6eb1a46cbcc14a2b2f9434112c1ff8907f313fd"
 
 move-concurrently@^1.0.1:
   version "1.0.1"
@@ -4405,8 +4405,8 @@ wbuf@^1.1.0, wbuf@^1.7.2:
     minimalistic-assert "^1.0.0"
 
 webmidi@^2.0.0-rc.11:
-  version "2.0.0-rc.11"
-  resolved "https://registry.yarnpkg.com/webmidi/-/webmidi-2.0.0-rc.11.tgz#76364dd4e6e6552d8139e450b222e0c678c74ded"
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/webmidi/-/webmidi-2.0.0.tgz#02a0b8f74b2dd267e783c1f3a589f067d9141315"
 
 webpack-auto-inject-version@^1.0.0:
   version "1.0.0"
