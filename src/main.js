@@ -14,6 +14,7 @@ import browser from 'detect-browser';
 // CSS order is important
 import './css/lity.min.css';
 import './css/main.css';
+import {drawGrid, initPad} from "./xypad/xypad";
 
 const TRACE = true;    // when true, will log more details in the console
 
@@ -964,6 +965,20 @@ function updateUI() {
     if (TRACE) console.log('updateUI done');
 }
 
+var xypad_xy = null;
+
+function displayXY(x, y) {
+    if (xypad_xy == null) return;
+    xypad_xy.textContent = `${x.toFixed(3)}, ${y.toFixed(3)}`;
+}
+
+function setupXYPad() {
+    // drawGrid($('#grid-container'));
+    // startPad(document.getElementById("grid-container"), (v) => console.log('XYPad', v))
+    xypad_xy = document.getElementById('xy');
+    initPad(document.getElementById("grid"), (p) => displayXY(p.x, p.y))
+}
+
 /**
  * Initial setup of the UI.
  * Does a DEVICE.init() too, but only the virtual DEVICE; does not send any CC to the connected device.
@@ -987,6 +1002,8 @@ function setupUI() {
     setupSliders();
     setupADSR();
     setupMenu();
+
+    setupXYPad();
 
     console.groupEnd();
 }

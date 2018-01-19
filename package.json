@@ -11,6 +11,7 @@
         "lity": "^2.3.0",
         "moment": "^2.18.1",
         "mustache": "^2.3.0",
+        "rxjs": "^5.5.6",
         "svg-envelope": "^0.1.2",
         "svg-knob": "^1.0.3",
         "svg-slider": "^1.0.0",
