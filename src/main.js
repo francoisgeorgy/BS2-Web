@@ -966,17 +966,26 @@ function updateUI() {
 }
 
 var xypad_xy = null;
+var xypad_dot = null;
 
 function displayXY(x, y) {
     if (xypad_xy == null) return;
+
+    // console.log(`displayXY(${x}, ${y})`);
+
     xypad_xy.textContent = `${x.toFixed(3)}, ${y.toFixed(3)}`;
+
+    xypad_dot.setAttributeNS(null, "cx", `${x * 100}`);
+    xypad_dot.setAttributeNS(null, "cy", `${y * 100}`);
+
 }
 
 function setupXYPad() {
     // drawGrid($('#grid-container'));
     // startPad(document.getElementById("grid-container"), (v) => console.log('XYPad', v))
     xypad_xy = document.getElementById('xy');
-    initPad(document.getElementById("grid"), (p) => displayXY(p.x, p.y))
+    xypad_dot = document.getElementById('dot');
+    initPad(document.getElementById("pad"), (p) => displayXY(p.x, p.y))
 }
 
 /**

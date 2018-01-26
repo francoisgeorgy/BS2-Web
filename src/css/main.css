@@ -137,16 +137,11 @@ body {
 
 #main {
     margin: 0;
-    /*padding: 1vh 0 0 0;*/
-    pading: 0;
+    padding: 0;
     display: grid;
-
-    /*justify-content: center;*/
     justify-content: stretch;
     align-content: stretch;
-
     align-items: start;
-
     width: 100vw;
     height: 100vh;
 }
@@ -641,7 +636,7 @@ div.controls {
     grid-row: 7 / span 2;
     grid-column: 4 / span 2;
     display: grid !important;
-    grid-template-rows: 2.5vh auto;
+    grid-template-rows: 2.5vh 2.5vh auto;
     grid-row-gap: 0.5vh;
 }
 
@@ -657,6 +652,11 @@ div.controls {
         padding-left: 6px;
     }
 
+    #pad {
+        width: 90%;
+        height: 90%;
+        background-color: #333;
+    }
 
 
 #status-bar {
@@ -931,8 +931,8 @@ input[type=range]::-webkit-slider-thumb {
     box-shadow: 0 0 15px rgba(0, 0, 0, 1);
     border-radius:4px;
     padding:15px;
-    min-width:45vw;
-    max-width:80wv;
+    min-width: 45vw;
+    max-width: 80vw;
     color: #ddd;
     line-height: 140%;
 }
