@@ -137,16 +137,11 @@ body {
 
 #main {
     margin: 0;
-    /*padding: 1vh 0 0 0;*/
-    pading: 0;
+    padding: 0;
     display: grid;
-
-    /*justify-content: center;*/
     justify-content: stretch;
     align-content: stretch;
-
     align-items: start;
-
     width: 100vw;
     height: 100vh;
 }
@@ -242,25 +237,14 @@ div.controls {
     grid-column: 4;
 }
 
+/*
 #top-right {
     grid-row: 2;
     grid-column: 5;
     color: var(--header-text);
 }
+*/
 
-    #played-note {
-        text-align: center;
-        margin-top: 2.5vh;
-        cursor: pointer;
-    }
-
-    #note-name {
-        font-size: 2.5rem;
-    }
-
-    #note-enharmonic {
-        font-size: 1rem;
-    }
 
 #mixer {
     grid-row: 3;
@@ -279,13 +263,17 @@ div.controls {
 }
 
 #vca {
+    /*
     grid-row: 7;
+    grid-column: 5;
+    */
+    grid-row: 2;
     grid-column: 5;
 }
 
 #effects {
-    grid-row: 7;
-    grid-column: 4;
+    grid-row: 8;
+    grid-column: 3;
     display: grid !important;
     grid-template-rows: 2.5vh auto;
     grid-row-gap: 0.5vh;
@@ -545,6 +533,11 @@ div.controls {
         grid-row: 1;
     }
 
+    .keyboard-note-label {
+        grid-column: 8;
+        grid-row: 1;
+    }
+
     .keyboard-start {
         grid-column: 1 / span 2;
         grid-row: 2;
@@ -563,9 +556,29 @@ div.controls {
         display: flex;
     }
 
+    .keyboard-note {
+        grid-column: 8;
+        grid-row: 2;
+    }
+
+    #played-note {
+        text-align: center;
+        margin-top: 2.5vh;
+        cursor: pointer;
+    }
+
+    #note-name {
+        font-size: 2.5rem;
+    }
+
+    #note-enharmonic {
+        font-size: 1rem;
+    }
+
+
 #arpeggiator {
     grid-row: 8;
-    grid-column: 2 / span 4;
+    grid-column: 2;
 }
 
     .arp-options {
@@ -606,8 +619,60 @@ div.controls {
         background-color: var(--seq-on);
     }
 
+    /*
     #arp-editor {
         margin-left:2.5vw;
+    }
+    */
+
+/*
+#pad1 {
+    grid-row: 8;
+    grid-column: 3;
+}
+*/
+
+#xypad {
+    grid-row: 7 / span 2;
+    grid-column: 4 / span 2;
+    display: grid !important;
+    grid-template-rows: 2.5vh 2.5vh auto;
+    grid-row-gap: 0.5vh;
+}
+
+    #xy-conf {
+        padding: 0 0 0 3px;
+        color: var(--header-text);
+    }
+
+    #xy-conf select {
+        margin-right: 12px;
+    }
+
+    #grid-container {
+        width: 90%;
+        padding: 0 0 6px 6px;
+    }
+
+    #pad {
+        /*width: 80%;*/
+        max-height: 100%;
+        /*background-color: #333;*/
+    }
+
+    #xy {
+        float: right;
+        font-family: 'Roboto Condensed', sans-serif;
+        font-weight: 300;
+        color: var(--combo-label);
+        /*padding-left: 6px;*/
+    }
+
+    #xypad-cal {
+        font-size: 0.7rem;
+        /*border: 1px;*/
+        padding: 0 3px;
+        margin: 0 0 0 12px;
     }
 
 
@@ -883,8 +948,8 @@ input[type=range]::-webkit-slider-thumb {
     box-shadow: 0 0 15px rgba(0, 0, 0, 1);
     border-radius:4px;
     padding:15px;
-    min-width:45vw;
-    max-width:80wv;
+    min-width: 45vw;
+    max-width: 80vw;
     color: #ddd;
     line-height: 140%;
 }
@@ -955,6 +1020,10 @@ input[type=range]::-webkit-slider-thumb {
 .panel textarea {
     background-color: #eee;
     margin: 0.5vh 0;
+}
+
+select option {
+    background-color: #333;
 }
 
 .panel button {
