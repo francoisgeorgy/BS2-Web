@@ -189,6 +189,8 @@ function handleCC(e) {
  * @param control_type
  * @param control_number
  * @param value
+ *
+ * Return the device's control
  */
 function dispatch(control_type, control_number, value) {
 
@@ -198,12 +200,14 @@ function dispatch(control_type, control_number, value) {
 
     if ((control_type !== 'cc') && (control_type !== 'nrpn')) return; //TODO: signal an error
 
-    DEVICE.setControlValue(control_type, control_number, value);
+    let control = DEVICE.setControlValue(control_type, control_number, value);  // return a handle on the device control; may be useful later
 
     updateControl(control_type, control_number, value);
 
     // update the customs UI elements. Any input|select element has already been updated by the above instruction.
     updateLinkedUIElements(/*false*/);   //TODO: pass the current CC number and in updateCustoms() only update controls linked to this CC number
+
+    return control;
 }
 
 /**
@@ -346,6 +350,9 @@ function handleUIChange(control_type, control_number, value) {
             envelopes['amp-envelope'].envelope = DEVICE.getADSREnv('amp');
         }
     }
+
+    updateXYPad(control_type, control_number, value);
+
 }
 
 //==================================================================================================================
@@ -945,6 +952,12 @@ function updateLinkedUIElements() {
         $('#cc-19').show();
     }
 
+    //TODO; call updateXYPad(...)
+    displayXY(
+        DEVICE.getControlValue(DEVICE.control[16]) / 255,
+        1.0 - DEVICE.getControlValue(DEVICE.control[82]) / 127,
+    );
+
     if (TRACE) console.groupEnd();
 }
 
@@ -965,6 +978,25 @@ function updateUI() {
     if (TRACE) console.log('updateUI done');
 }
 
+
+let xypad_x_cc = null;
+let xypad_y_cc = null;
+
+function sendXYCC(x, y) {
+    console.group("sendXYCC");
+    if (xypad_x_cc != null) {
+        let v = Math.round(255 * x);
+        let control = dispatch('cc', 16, v);
+        sendSingleValue(control);
+    }
+    if (xypad_y_cc != null) {
+        let v = Math.round(127 * (1.0 - y));
+        let control = dispatch('cc', 82, v);
+        sendSingleValue(control);
+    }
+    console.groupEnd();
+}
+
 var xypad_xy = null;
 var xypad_dot = null;
 
@@ -973,7 +1005,7 @@ function displayXY(x, y) {
 
     // console.log(`displayXY(${x}, ${y})`);
 
-    xypad_xy.textContent = `${x.toFixed(3)}, ${y.toFixed(3)}`;
+    xypad_xy.textContent = `${x.toFixed(3)}, ${(1.0-y).toFixed(3)}`;
 
     xypad_dot.setAttributeNS(null, "cx", `${x * 100}`);
     xypad_dot.setAttributeNS(null, "cy", `${y * 100}`);
@@ -981,12 +1013,37 @@ function displayXY(x, y) {
 }
 
 function setupXYPad() {
+
+    xypad_x_cc = $('#x-cc').val();
+    xypad_y_cc = $('#y-cc').val();
+
+    if (TRACE) console.log(`xypad cc: ${xypad_x_cc} ${xypad_y_cc}`);
+
     // drawGrid($('#grid-container'));
     // startPad(document.getElementById("grid-container"), (v) => console.log('XYPad', v))
     xypad_xy = document.getElementById('xy');       // text infos
     xypad_dot = document.getElementById('dot');     // dot marking the current position
-    initPad(document.getElementById("pad-zone"), (p) => displayXY(p.x, p.y))
+    initPad(document.getElementById("pad-zone"), (p) => {
+        sendXYCC(p.x, p.y);
+        displayXY(p.x, p.y);
+    })
+
 }
+
+function updateXYPad(control_type, control_number, value) {
+
+    if (TRACE) console.log(`updateXYPad(${control_type}, ${control_number}, ${value})`);
+
+    if (control_type !== 'cc') return;
+    if (control_number !== 16 && control_number !== 82) return;
+
+    displayXY(
+        DEVICE.getControlValue(DEVICE.control[16]) / 255,
+        1.0 - DEVICE.getControlValue(DEVICE.control[82]) / 127,
+    );
+
+}
+
 
 /**
  * Initial setup of the UI.

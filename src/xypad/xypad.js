@@ -209,6 +209,14 @@ export const initPad = function(element, f) {
     );
 
 
+    $('#xypad-cal').click(() => {
+        console.log('calibrate before', rect);
+        rect = rect_element.getBoundingClientRect();
+        console.log('calibrate after', rect);
+    });
+
+    f({x: 0.5, y: 0.5});
+
 /*
     const positions = Rx.Observable
         .fromEvent(element, 'mousemove')

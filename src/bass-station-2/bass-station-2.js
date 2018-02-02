@@ -73,7 +73,7 @@ const setControlValue = function () {
         c.raw_value = typeof value === 'number' ? value : parseInt(value);
     } else if (arguments.length === 3) {
         let ca; // controls array
-        if (arguments[0] === 'cc') {
+        if (arguments[0] === 'cc') {                // [0] is control type
             ca = control;
         } else if (arguments[0] === 'nrpn') {
             ca = nrpn;
@@ -81,9 +81,9 @@ const setControlValue = function () {
             console.error("setControlValue: invalid control_type", arguments);
             return null;
         }
-        if (ca[arguments[1]]) {
+        if (ca[arguments[1]]) {                     // [0] is control number
             c = ca[arguments[1]];
-            let value = arguments[2];
+            let value = arguments[2];               // [0] is control value
             c.raw_value = typeof value === 'number' ? value : parseInt(value);
         } else {
             console.error("setControlValue: unknown number", arguments);

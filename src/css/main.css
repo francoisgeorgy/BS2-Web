@@ -640,11 +640,13 @@ div.controls {
     grid-row-gap: 0.5vh;
 }
 
-    #xy {
-        font-family: 'Roboto Condensed', sans-serif;
-        font-weight: 300;
-        color: var(--combo-label);
-        padding-left: 6px;
+    #xy-conf {
+        padding: 0 0 0 3px;
+        color: var(--header-text);
+    }
+
+    #xy-conf select {
+        margin-right: 12px;
     }
 
     #grid-container {
@@ -656,6 +658,21 @@ div.controls {
         /*width: 80%;*/
         max-height: 100%;
         /*background-color: #333;*/
+    }
+
+    #xy {
+        float: right;
+        font-family: 'Roboto Condensed', sans-serif;
+        font-weight: 300;
+        color: var(--combo-label);
+        /*padding-left: 6px;*/
+    }
+
+    #xypad-cal {
+        font-size: 0.7rem;
+        /*border: 1px;*/
+        padding: 0 3px;
+        margin: 0 0 0 12px;
     }
 
 
@@ -1003,6 +1020,10 @@ input[type=range]::-webkit-slider-thumb {
 .panel textarea {
     background-color: #eee;
     margin: 0.5vh 0;
+}
+
+select option {
+    background-color: #333;
 }
 
 .panel button {

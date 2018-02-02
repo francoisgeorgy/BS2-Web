@@ -685,11 +685,21 @@
 
         <div id="xypad">
             <div class="header">
+                <button id="xypad-cal" style="float:right">calibrate</button>
+                <span id="xy">-, -</span>
                 <div>XY PAD</div>
             </div>
-            <div id="xy">
-                -, -
+            <div id="xy-conf">
+                X:
+                <select id="x-cc" style="background:transparent">
+                    <option value="cc-16">filter-freq</option>
+                </select>
+                Y:
+                <select id="y-cc" style="background:transparent">
+                    <option value="cc-82">resonance</option>
+                </select>
             </div>
+
             <div id="grid-container">
                 <svg id="pad" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
                     <path d="M 0 50 L 100 50" stroke="#aaa" stroke-width="1px" vector-effect="non-scaling-stroke" />
