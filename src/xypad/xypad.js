@@ -35,6 +35,22 @@ export const drawGrid = function(container) {
 
 
 var rect = null;
+var rect_element = null;
+
+function getElementRect() {
+    if (rect == null) {
+        rect = rect_element.getBoundingClientRect();
+        console.log("getElementRect", rect);
+    }
+    return rect;
+}
+
+Rx.Observable.fromEvent(window, "resize").subscribe(
+    e => {
+        // console.log(e);
+        rect = rect_element.getBoundingClientRect();
+    }
+);
 
 /*
 function getOffsetPosition(e) {
@@ -52,60 +68,91 @@ function getOffsetPosition(e) {
 }
 */
 
+
+// currentTarget: Identifies the current target for the event, as the event traverses the DOM.
+//                It always refers to the element to which the event handler has been attached,
+//                as opposed to event.target which identifies the element on which the event occurred.
+//
+// target: A reference to the target to which the event was originally dispatched.
+//         A reference to the object that dispatched the event. It is different from event.currentTarget
+//         when the event handler is called during the bubbling or capturing phase of the event.
+//
+// MouseEvent.offsetX: The X coordinate of the mouse pointer relative to the position of the padding edge of the target node.
+
+// Important: we can not use the targetX, targetY properties, which are related to the _target_, because, since we listen to the
+//            window's mousemove events, the target will change and therefore the offsetX|Y reference will also change.
+
+/*
 function getOffsetPositionRel(e) {
 
-    console.log("getOffsetPositionRel");
+    // console.log("getOffsetPositionRel");
     // console.log(document.getElementById("grid").getBoundingClientRect());
     // console.log(rect);
 
     //FIXME: boundingRect will change when resizing the app
 
-    console.log(e);
+    // console.log(e);
     // if (e.offsetX === undefined) {
-    //     return {
-    //         x: (e.clientX - rect.left) / rect.width,
-    //         y: (e.clientY - rect.top) / rect.height
-    //     }
-    // } else {
         return {
-            x: (e.offsetX) / rect.width,
-            y: (e.offsetY) / rect.height
+            x: (e.clientX - rect.left) / rect.width,
+            y: (e.clientY - rect.top) / rect.height
         }
+    // } else {
+    //     return {
+    //         x: (e.offsetX) / rect.width,
+    //         y: (e.offsetY) / rect.height
+    //     }
     // }
 }
+*/
 
 const mouseEventToCoordinate = mouseEvent => {
     mouseEvent.preventDefault();
-    console.log(`move ${mouseEvent.offsetX} ${mouseEvent.offsetY}`);
+    console.log(`mouse->xy ${mouseEvent.offsetX} ${mouseEvent.offsetY}`, rect);
+    let r = getElementRect();
     return {
-        // x: mouseEvent.clientX,
-        // y: mouseEvent.clientY
-        x: mouseEvent.offsetX,
-        y: mouseEvent.offsetY
+        x: mouseEvent.clientX - r.left,
+        y: mouseEvent.clientY - r.top
+        // x: mouseEvent.offsetX,
+        // y: mouseEvent.offsetY
     };
 };
 
 const touchEventToCoordinate = touchEvent => {
     touchEvent.preventDefault();
+    let r = getElementRect();
     return {
-        x: touchEvent.changedTouches[0].clientX - rect.left,
-        y: touchEvent.changedTouches[0].clientY - rect.top
+        x: touchEvent.changedTouches[0].clientX - r.left,
+        y: touchEvent.changedTouches[0].clientY - r.top
     };
 };
 
-const toRelCoord = coord => {
+function toRelCoord(coord) {
+    let x = Math.max(0, coord.x); // stop at 0, do not go negative
+    let y = Math.max(0, coord.y); // stop at 0, do not go negative
+    let r = getElementRect();
     return {
-        x: Math.min(coord.x / rect.width, 1.0),
-        y: Math.min(coord.y / rect.height, 1.0)
+        x: Math.min(x / r.width, 1.0),
+        y: Math.min(y / r.height, 1.0)
     }
-};
+}
+
+/*function start(e) {
+    const x = e.x;
+    const y = e.y;
+    console.log(`start at ${x} ${y} (${e.xr} ${e.yr})`, e);
+    updateDisplay(e);
+    return e;
+}*/
 
 export const initPad = function(element, f) {
 
     console.log("initPad", element);
 
-    if (rect == null) rect = element.getBoundingClientRect();
-    console.log("initPad", rect);
+    rect_element = element;
+
+    // if (rect == null) rect = element.getBoundingClientRect();
+    // console.log("initPad", rect);
 
     const mouseDowns = Rx.Observable.fromEvent(element, "mousedown").map(mouseEventToCoordinate).map(toRelCoord);
     const mouseMoves = Rx.Observable.fromEvent(window, "mousemove").map(mouseEventToCoordinate).map(toRelCoord);
@@ -119,9 +166,14 @@ export const initPad = function(element, f) {
     const moves = mouseMoves.merge(touchMoves);
     const ends = mouseUps.merge(touchEnds);
 
+    // function ff(e) {
+    //     console.log('ff', element.getBoundingClientRect());
+    //     return e;
+    // }
+
 // Once a start event occurs, it does not give back the start event itself,
 // but it only return a sequence of move events till a mouseUp or touchEnd event occurs.
-    const drags = starts.concatMap(dragStartEvent =>
+    const drags = starts.map(f).concatMap(dragStartEvent =>
         moves.takeUntil(ends).map(dragEvent => {
             const x = dragEvent.x; // - dragStartEvent.x;
             const y = dragEvent.y; // - dragStartEvent.y;

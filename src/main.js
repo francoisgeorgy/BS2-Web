@@ -983,9 +983,9 @@ function displayXY(x, y) {
 function setupXYPad() {
     // drawGrid($('#grid-container'));
     // startPad(document.getElementById("grid-container"), (v) => console.log('XYPad', v))
-    xypad_xy = document.getElementById('xy');
-    xypad_dot = document.getElementById('dot');
-    initPad(document.getElementById("pad"), (p) => displayXY(p.x, p.y))
+    xypad_xy = document.getElementById('xy');       // text infos
+    xypad_dot = document.getElementById('dot');     // dot marking the current position
+    initPad(document.getElementById("pad-zone"), (p) => displayXY(p.x, p.y))
 }
 
 /**

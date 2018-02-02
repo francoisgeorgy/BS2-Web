@@ -649,13 +649,13 @@ div.controls {
 
     #grid-container {
         width: 90%;
-        padding-left: 6px;
+        padding: 0 0 6px 6px;
     }
 
     #pad {
-        width: 90%;
-        height: 90%;
-        background-color: #333;
+        /*width: 80%;*/
+        max-height: 100%;
+        /*background-color: #333;*/
     }
 
 
