@@ -57,6 +57,7 @@
 <!--
     last played note
 -->
+<!--
         <div id="top-right" class="no-right-border">
             <div class="combo-label" style="margin-top:3px">last played</div>
             <div id="played-note">
@@ -64,6 +65,7 @@
                 <div id="note-enharmonic"></div>
             </div>
         </div>
+-->
 <!--
     MIXER
 -->
@@ -543,6 +545,9 @@
                 <div class="combo-label keyboard-velocity-label">
                     velocity
                 </div>
+                <div class="combo-label keyboard-note-label">
+                    note played
+                </div>
                 <div class="keyboard-start">
                     <div class="knob-combo">
                         <svg class="knob" id="cc-64" ></svg>
@@ -575,6 +580,12 @@
                     <div class="knob-combo">
                         <svg class="knob" id="cc-112" ></svg>
                         <div class="knob-label">Amp env.</div>
+                    </div>
+                </div>
+                <div class="keyboard-note">
+                    <div id="played-note">
+                        <div id="note-name"></div>
+                        <div id="note-enharmonic"></div>
                     </div>
                 </div>
             </div>
@@ -612,10 +623,11 @@
                 </div>
             </div>
         </div>
+
 <!--
     ARPEGGIATOR
 -->
-        <div id="arpeggiator" class="no-right-border">
+        <div id="arpeggiator">
             <div class="header">
                 <div>ARPEGGIATOR</div>
             </div>
@@ -651,19 +663,54 @@
                         <svg class="knob" id="cc-116" ></svg>
                         <div class="knob-label">Swing</div>
                     </div>
+
+                    <!--
                     <div id="arp-editor">
                         <div style="margin-left:10vw;color:#999">Coming soon in this space: ARP and SEQ tools.</div>
-<!--
                         ARP editor<br />
                         memory: 1..4
                         key A..G : note
                         key 0..9 : octave (def=4)
                         key R : rest
--->
                     </div>
+                    -->
                 </div>
             </div>
+
         </div>
+
+        <!--<div id="pad1">-->
+            <!--pad1-->
+        <!--</div>-->
+
+        <div id="xypad">
+            <div class="header">
+                <button id="xypad-cal" style="float:right">calibrate</button>
+                <span id="xy">-, -</span>
+                <div>XY PAD</div>
+            </div>
+            <div id="xy-conf">
+                X:
+                <select id="x-cc" style="background:transparent">
+                    <option value="cc-16">filter-freq</option>
+                </select>
+                Y:
+                <select id="y-cc" style="background:transparent">
+                    <option value="cc-82">resonance</option>
+                </select>
+            </div>
+
+            <div id="grid-container">
+                <svg id="pad" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+                    <path d="M 0 50 L 100 50" stroke="#aaa" stroke-width="1px" vector-effect="non-scaling-stroke" />
+                    <path d="M 50 0 L 50 100" stroke="#aaa" stroke-width="1px" vector-effect="non-scaling-stroke" />
+                    <circle id="dot" cx="50" cy="50" r="5" fill="#ff0000" fill-opacity="0.5" />
+                    <rect id="pad-zone" x="0" y="0" width="100" height="100" stroke-width="0" fill="#333" fill-opacity="0.25"></rect>
+                </svg>
+            </div>
+        </div>
+
+
         <div id="status-bar">
 <!--
             <div style="float:right">
