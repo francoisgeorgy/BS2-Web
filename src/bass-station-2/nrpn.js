@@ -282,6 +282,11 @@ function defineNRPNs() {
             obj.cc_range = [0, (1 << bits) - 1];
         }
 
+        // pre-computed value that may be useful:
+        obj.cc_min = Math.min(...obj.range);
+        obj.cc_max = Math.max(...obj.range);
+        obj.cc_delta = obj.cc_max - obj.cc_min;
+
         if (!obj.hasOwnProperty('init_value')) {
             if (obj.hasOwnProperty('cc_center')) {
                 console.log(`nrpn-${obj.cc_number}: obj.init_value = obj.cc_center: ${obj.init_value}=${obj.cc_center}`);
