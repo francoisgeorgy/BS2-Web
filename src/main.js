@@ -952,15 +952,8 @@ function updateLinkedUIElements() {
         $('#cc-19').show();
     }
 
-    //TODO; call updateXYPad(...)
-    // updateXYPadDisplay({
-    //     x: DEVICE.getControlValue(DEVICE.control[16]) / 255,
-    //     y: 1.0 - DEVICE.getControlValue(DEVICE.control[82]) / 127,
-    // });
-
-
     let xy = padCCToXY();
-    console.log('updateLinkedUIElements', xy);
+    // console.log('updateLinkedUIElements', xy);
     setDotPosition(xy);    // update dot position
     displayPadCCValues(padCC());           // display CC values corresponding to dot XY position
 
@@ -985,13 +978,12 @@ function updateUI() {
 }
 
 
-let xypad_x_cc = null;
-let xypad_y_cc = null;
-
+var xypad_xy = null;
+var xypad_dot = null;
 let xypad_x_control_type = 'cc';
 let xypad_y_control_type = 'cc';
-let xypad_x_control_number = 26;    //16;
-let xypad_y_control_number = 29;    //82;
+let xypad_x_control_number = 16;
+let xypad_y_control_number = 82;
 
 function padCC() {
     return {
@@ -1001,34 +993,16 @@ function padCC() {
 }
 
 function padXYToCC(xy) {
-    if (xypad_x_cc != null) {
-        let ctrlx = DEVICE.control[xypad_x_control_number];    
-        var x = Math.round(ctrlx.cc_min + ctrlx.cc_delta * xy.x);
-        // let control = dispatch('cc', 16, xv);
-        // sendSingleValue(control);
-    }
-    if (xypad_y_cc != null) {
-        let ctrly = DEVICE.control[xypad_y_control_number];
-        var y = Math.round(ctrly.cc_min + ctrly.cc_delta * (1.0 - xy.y));
-        // let control = dispatch('cc', 82, yv);
-        // sendSingleValue(control);
-    }
-    return {x, y};    
+    let ctrlx = DEVICE.control[xypad_x_control_number];    
+    let ctrly = DEVICE.control[xypad_y_control_number];
+    return {
+        x: Math.round(ctrlx.cc_min + ctrlx.cc_delta * xy.x), 
+        y: Math.round(ctrly.cc_min + ctrly.cc_delta * (1.0 - xy.y))
+    };    
 }
 
 function padCCToXY() {
-    // if (xypad_x_cc != null) {
-    //     let x = Math.round(255 * c.x);
-    //     // let control = dispatch('cc', 16, xv);
-    //     // sendSingleValue(control);
-    // }
-    // if (xypad_y_cc != null) {
-    //     let y = Math.round(127 * (1.0 - c.y));
-    //     // let control = dispatch('cc', 82, yv);
-    //     // sendSingleValue(control);
-    // }
     let cc = padCC();
-    console.log('padCCtoXY', cc, DEVICE.control[xypad_x_control_number].cc_max, DEVICE.control[xypad_y_control_number].cc_max, DEVICE.control[xypad_x_control_number]);
     let ctrlx = DEVICE.control[xypad_x_control_number];
     let ctrly = DEVICE.control[xypad_y_control_number];
     return {
@@ -1038,48 +1012,22 @@ function padCCToXY() {
 }
 
 function sendXYCC(cc) {
-    console.group("sendXYCC");
-    if (xypad_x_cc != null) {
-        // let v = Math.round(255 * x);
-        let control = dispatch(xypad_x_control_type, xypad_x_control_number, cc.x);
-        sendSingleValue(control);
-    }
-    if (xypad_y_cc != null) {
-        // let v = Math.round(127 * (1.0 - y));
-        let control = dispatch(xypad_y_control_type, xypad_y_control_number, cc.y);
-        sendSingleValue(control);
-    }
-    console.groupEnd();
+    if (TRACE) console.group("sendXYCC");
+    sendSingleValue(dispatch(xypad_x_control_type, xypad_x_control_number, cc.x));
+    sendSingleValue(dispatch(xypad_y_control_type, xypad_y_control_number, cc.y));
+    if (TRACE) console.groupEnd();
 }
-
-var xypad_xy = null;
-var xypad_dot = null;
 
 function displayPadCCValues(cc) {
     if (xypad_xy == null) return;
-
-    // console.log(`updateXYPadDisplay(${x}, ${y})`);
-
-    xypad_xy.textContent = `${cc.x}, ${cc.y}`;
-
-    // xypad_dot.setAttributeNS(null, "cx", `${c.x * 100}`);
-    // xypad_dot.setAttributeNS(null, "cy", `${c.y * 100}`);
-    // updateXYPadDisplay(c); 
+    xypad_xy.textContent = `${DEVICE.control[xypad_x_control_number].human(cc.x)}, ${DEVICE.control[xypad_x_control_number].human(cc.y)}`;
 }
 
 function setDotPosition(xy) {
-
-    console.log('setDotPosition', xy);
-
+    // console.log('setDotPosition', xy);
     if (xypad_xy == null) return;
-
-    // console.log(`updateXYPadDisplay(${x}, ${y})`);
-
-    // xypad_xy.textContent = `${c.x.toFixed(3)}, ${(1.0-c.y).toFixed(3)}`;
-
     xypad_dot.setAttributeNS(null, "cx", `${xy.x * 100}`);
     xypad_dot.setAttributeNS(null, "cy", `${xy.y * 100}`);
-
 }
 
 // called on UI and device changes
@@ -1087,49 +1035,43 @@ function updateXYPad(control_type, control_number, value) {
 
     if (TRACE) console.log(`updateXYPad(${control_type}, ${control_number}, ${value})`);
 
-    if ((control_type !== xypad_x_control_type) && (control_type !== xypad_y_control_type)) return;
-    if (control_number !== xypad_x_control_number && control_number !== xypad_y_control_number) return;
+    // console.log(`updateXYPad: ${xypad_x_control_type} ${xypad_x_control_number} - ${control_type} ${control_number}`);
 
-    // updateXYPadDisplay({
-    //     x: DEVICE.getControlValue(DEVICE.control[16]) / 255,
-    //     y: 1.0 - DEVICE.getControlValue(DEVICE.control[82]) / 127,
-    // });
-    // updateXYPadDisplay(padCCToXY());
-    // cc = padXYToCC(xy);  // get CC values for XY position
+    // Note: control_number may be a string representing an integer number
+    if ((control_type === xypad_x_control_type) && (control_number == xypad_x_control_number) || 
+        (control_type === xypad_y_control_type) && (control_number == xypad_y_control_number)) {
 
-    xy = padCCToXY();
-    console.log('updateXYPad', xy);
-    setDotPosition(xy);    // update the display
-    displayPadCCValues(padCC());  
+        let xy = padCCToXY();
+        setDotPosition(xy);    
+        displayPadCCValues(padCC());  
+    }
+
 }
 
-// // called:
-// // - on dot change
-// function updateXYPadDisplay(xy, cc) {
-    
-// }
-
 function setupXYPad() {
-
-    xypad_x_cc = $('#x-cc').val();
-    xypad_y_cc = $('#y-cc').val();
-
-    if (TRACE) console.log(`xypad cc: ${xypad_x_cc} ${xypad_y_cc}`);
 
     xypad_x_control_type = 'cc';
     xypad_y_control_type = 'cc';
     xypad_x_control_number = 16;
     xypad_y_control_number = 82;
-
-    /*
+    
     $('#x-cc').change(function () { 
-        let [xypad_x_control_type, xypad_x_control_number] = this.value.split('-');
-        xy = padCCToXY();
-        // console.log('updateXYPad', xy);
+        [xypad_x_control_type, xypad_x_control_number] = this.value.split('-');
+        if (TRACE) console.log(`xypad X changed to ${xypad_x_control_type} ${xypad_x_control_number}`);
+        let xy = padCCToXY();
         setDotPosition(xy);    // update the display
         displayPadCCValues(padCC());  
     });
-    */
+    
+    
+    $('#y-cc').change(function () { 
+        [xypad_y_control_type, xypad_y_control_number] = this.value.split('-');
+        if (TRACE) console.log(`xypad Y changed to ${xypad_y_control_type} ${xypad_y_control_number}`);
+        let xy = padCCToXY();
+        setDotPosition(xy);    // update the display
+        displayPadCCValues(padCC());  
+    });
+      
 
     // drawGrid($('#grid-container'));
     // startPad(document.getElementById("grid-container"), (v) => console.log('XYPad', v))
@@ -1141,10 +1083,7 @@ function setupXYPad() {
         // updateXYPadDisplay(xy, cc);    // update the display
         setDotPosition(xy);    // update dot position
         displayPadCCValues(cc);           // display CC values corresponding to dot XY position
-    })
-
-
-
+    });
 }
 
 /**
