@@ -675,6 +675,10 @@ div.controls {
         margin: 0 0 0 12px;
     }
 
+    #dot {
+        fill: var(--value);
+    }
+
 
 #status-bar {
     grid-row: 9;

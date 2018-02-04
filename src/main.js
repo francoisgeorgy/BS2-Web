@@ -1332,18 +1332,44 @@ function setMidiChannel() {
 /**
  *
  */
+function playNote(note) {
+    if (TRACE) console.log(`play note ${note}`);
+    if (note) {
+        let e = $('#played-note');
+        // if (e.is('.on')) {
+        //     midi_output.stopNote(note, midi_channel);
+        //     e.removeClass('on');
+        // } else {
+        //     midi_output.playNote(note, midi_channel);
+        //     e.addClass('on');
+        // }
+        midi_output.playNote(note, midi_channel);
+        e.addClass('on');
+    }
+}
+
+function stopNote(note) {
+    if (TRACE) console.log(`stop note ${note}`);
+    if (note) {
+        let e = $('#played-note');
+        // if (e.is('.on')) {
+        //     midi_output.stopNote(note, midi_channel);
+        //     e.removeClass('on');
+        // } else {
+        //     midi_output.playNote(note, midi_channel);
+        //     e.addClass('on');
+        // }
+        midi_output.stopNote(note, midi_channel);
+        e.removeClass('on');
+    }
+}
+
+/**
+ *
+ */
 function playLastNote() {
     if (TRACE) console.log(`play last note ${last_note}`);
-    if (last_note) {
-        let e = $('#played-note');
-        if (e.is('.on')) {
-            midi_output.stopNote(last_note, midi_channel);
-            e.removeClass('on');
-        } else {
-            midi_output.playNote(last_note, midi_channel);
-            e.addClass('on');
-        }
-    }
+    playNote(last_note);    
 }
 
 var midi_window = null;
@@ -1355,6 +1381,82 @@ var midi_window = null;
 function openMidiWindow() {
     midi_window = window.open("midi.html", '_midi', 'location=no,height=480,width=350,scrollbars=yes,status=no');
     return false;   // disable the normal href behavior
+}
+
+function setupKeyboard() {
+     $(document).keydown(function(e) { 
+        console.log(e);
+        switch (e.keyCode) {
+            case 32:                // SPACE
+            //    playLastNote();
+                playNote(last_note);    
+                break;
+            case 65:                // A
+            case 66:                // B
+            case 67:                // C
+            case 68:                // D
+            case 69:                // E
+            case 70:                // F
+            case 71:                // G
+                let note = String.fromCharCode(e.keyCode);
+                let sharp = e.shiftKey;
+                let flat = e.altKey;
+                if (sharp !== flat) {
+                    if (sharp) note += '#';
+                    if (flat) note += 'b';
+                }
+                note += '3';
+                playNote(note);
+                displayNote(note);
+                break;
+            case 83:                // S 
+                stopNote(last_note);    
+                //TODO: panic key
+
+                // if (midi_output) {
+                //     if (TRACE) console.log(`send STOP`);
+                //     midi_output.sendStop();
+                // } else {
+                //     if (TRACE) console.log(`(send STOP`);
+                // }
+                break;
+        }
+    });
+    $(document).keyup(function(e) { 
+        console.log(e);
+        switch (e.keyCode) {
+            case 27:                // close all opened panel with ESC key:
+               closeFavoritesPanel();
+               closeSettingsPanel();
+               break;
+            case 32:                // SPACE
+            //    playLastNote();
+                stopNote(last_note);    
+                break;
+            case 65:                // A
+            case 66:                // B
+            case 67:                // C
+            case 68:                // D
+            case 69:                // E
+            case 70:                // F
+            case 71:                // G
+                let note = String.fromCharCode(e.keyCode);
+                let sharp = e.shiftKey;
+                let flat = e.altKey;
+                if (sharp !== flat) {
+                    if (sharp) note += '#';
+                    if (flat) note += 'b';
+                }
+                note += '3';
+                stopNote(note);
+                displayNote(last_note);
+            break;
+            case 83:                // S 
+               stopNote(last_note);    
+               //TODO: panic key
+
+       }
+   });
 }
 
 /**
@@ -1390,13 +1492,7 @@ function setupMenu() {
     });
     $('.close-favorites-panel').click(closeFavoritesPanel);
 
-    // close all opened panel with ESC key:
-    $(document).keyup(function(e) {         //TODO: move into an ad-hoc function
-        if (e.keyCode === 27) { // ESC key
-            closeFavoritesPanel();
-            closeSettingsPanel();
-        }
-    });
+    setupKeyboard();
 
     // close all opened panel on outside click:
     $(document).mousedown(function(e) {
@@ -1510,6 +1606,8 @@ function noteOn(e) {
 
     last_note = e.note.name + e.note.octave;
 
+    displayNote(last_note);
+/*
     let note = last_note;   // local copy
 
     // Note: only handles single digit octave : -9..9
@@ -1548,6 +1646,8 @@ function noteOn(e) {
     $('#played-note').addClass('on');
     $('#note-name').html(note);
     $('#note-enharmonic').html(enharmonic);
+    */
+    $('#played-note').addClass('on');
 }
 
 /**
@@ -1555,6 +1655,48 @@ function noteOn(e) {
  */
 function noteOff() {
     $('#played-note').removeClass('on');
+}
+
+function displayNote(note) {
+
+    // let note = last_note;   // local copy
+
+    // Note: only handles single digit octave : -9..9
+
+    let neg_octave = note.indexOf('-') > 0;
+    if (neg_octave) note = note.replace('-', '');  // we'll put it back later; the tests are simpler without it
+
+    // Get the enharmonics of a note. It returns an array of three elements: the below enharmonic, the note, and the upper enharmonic
+    // tonal.note.enharmonics('Bb4') --> ["A#4", "Bb4", "Cbb5"]
+    // tonal.note.enharmonics('A#4') --> ["G###4", "A#4", "Bb4"]
+    // tonal.note.enharmonics('C')   --> ["B#", "C", "Dbb"]
+    // tonal.note.enharmonics('A')   --> ["G##", "A", "Bbb"]
+    let enharmonics = tonal.note.enharmonics(last_note);
+
+    let enharmonic;
+    if (note.length === 2) {
+        enharmonic = '';
+    } else {
+        if (note.charAt(1) === '#') {
+            // note = note.replace('#', '&sharp;');                 // the sharp symbol is not good-looking (too wide)
+            enharmonic = enharmonics[2].replace('b', '&flat;');
+        } else {
+            note = note.replace('b', '&flat;');
+            // enharmonic = enharmonics[0].replace('#', '&sharp;');
+        }
+    }
+
+    if (neg_octave) {
+        // put back the minus sign we removed before
+        let i = note.length - 1;
+        note = note.substr(0, i) + '-' + note.substr(i);
+    }
+
+    if (TRACE) console.log(`displayNote: ${note} (${enharmonic})`);
+
+    // $('#played-note').addClass('on');
+    $('#note-name').html(note);
+    $('#note-enharmonic').html(enharmonic);
 }
 
 //==================================================================================================================

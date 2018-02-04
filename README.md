@@ -107,10 +107,18 @@ The SysEx dump format is not documented by Novation. I have reverse-engineered i
 
 # TODO
 
+- Panic button/key
+- Space bar to toggle play
+- A-G keys to play notes
+    - shift for sharp
+    - alt for flat
+- history undo/redo    
 - better patches managment
     - browse patches with auto-preview
+    - S key to save as favorite with lastname+index
 - better randomizer
 - wheels representation
+    - add sliders
 - arpeggiator support
     - auto-chords (from a selected scale)
 - record all changes over time and replay
