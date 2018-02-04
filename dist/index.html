@@ -692,11 +692,17 @@
             <div id="xy-conf">
                 X:
                 <select id="x-cc" style="background:transparent">
-                    <option value="cc-16">filter-freq</option>
+                    <option value="cc-16">Filter freq</option>
+                    <option value="cc-18">LFO 1 speed</option>
+                    <option value="cc-26">Osc 1 fine</option>
+                    <option value="cc-102">Mod env attack</option>
                 </select>
                 Y:
                 <select id="y-cc" style="background:transparent">
-                    <option value="cc-82">resonance</option>
+                    <option value="cc-82">Resonance</option>
+                    <option value="cc-19">LFO 2 speed</option>
+                    <option value="cc-29">Osc 2 fine</option>
+                    <option value="cc-103">Mod env decay</option>
                 </select>
             </div>
 
@@ -704,7 +710,7 @@
                 <svg id="pad" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
                     <path d="M 0 50 L 100 50" stroke="#aaa" stroke-width="1px" vector-effect="non-scaling-stroke" />
                     <path d="M 50 0 L 50 100" stroke="#aaa" stroke-width="1px" vector-effect="non-scaling-stroke" />
-                    <circle id="dot" cx="50" cy="50" r="5" fill="#ff0000" fill-opacity="0.5" />
+                    <circle id="dot" cx="50" cy="50" r="5"  fill-opacity="0.6" />
                     <rect id="pad-zone" x="0" y="0" width="100" height="100" stroke-width="0" fill="#333" fill-opacity="0.25"></rect>
                 </svg>
             </div>
@@ -780,9 +786,17 @@
             <li>To move the knobs or sliders, use the mouse.</li>
             <li>Click and drag over the knob/slider. You can also use the mousewheel.</li>
         </ul>
-        <h4>MIDI:</h4>
+        <h4>MIDI settings:</h4>
         <ul>
             <li>Use the Settings menu to set the MIDI channel if needed.</li>
+        </ul>
+        <h4>Keyboard shortcuts:</h4>
+        <ul>
+            <li>ESC key to close any open dialog.</li>
+            <li>SPACE bar to start/stop playing.</li>
+            <li>A-G keys to play the corresponding note.<br />
+            Shift for flat, Alt for flat.</li>
+            <li>S key to STOP any playing.</li>
         </ul>
         <div class="dialog-info">
             <span style="float:right">ESC to close</span>

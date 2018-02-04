@@ -5,7 +5,7 @@ No more hidden parameters. All of the Bass Station 2 parameters are visible on s
 Save, load and even print your patches!
 And, for the fun, leave the application create a patch with the _randomizer_.
 
-![screenshot](/images/BS2-Web_v2.0.0.png "screenshot of current version running in Chrome")
+![screenshot](/images/BS2-Web_v2.4.0.png "screenshot of current version running in Chrome")
 
 
 # Requirements &amp; Limitations
