@@ -17,7 +17,7 @@ import './css/lity.min.css';
 import './css/main.css';
 import {drawGrid, initPad} from "./xypad/xypad";
 
-const TRACE = true;    // when true, will log more details in the console
+const TRACE = false;    // when true, will log more details in the console
 
 if (browser) {
     if (TRACE) console.log(browser.name);

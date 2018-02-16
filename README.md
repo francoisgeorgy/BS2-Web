@@ -14,6 +14,11 @@ And, for the fun, leave the application create a patch with the _randomizer_.
 
 Currently, only **Chrome 43+** and **Opera 44+** support this standard. This app will therefore _not_ work in Firefox, Safari or IE. 
 
+The Chrome browser is highly recommended. 
+
+This app has mainly be tested with Chrome on a MacBook pro running OS X 10.11. Some tests has been done with success with Chrome under Linux Mint 17.1. 
+The application has never been tested under Windows. Any Windows feedback is welcomed.  
+
 Still under active development. Feel free to log bugs/issues.
 
 
@@ -108,10 +113,10 @@ The SysEx dump format is not documented by Novation. I have reverse-engineered i
 # TODO
 
 - Panic button/key
-- Space bar to toggle play
-- A-G keys to play notes
-    - shift for sharp
-    - alt for flat
+- Space bar to toggle play _DONE!_
+- A-G keys to play notes _DONE!_
+    - shift for sharp _DONE!_
+    - alt for flat _DONE!_
 - history undo/redo    
 - better patches managment
     - browse patches with auto-preview
