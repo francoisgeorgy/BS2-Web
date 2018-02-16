@@ -1658,7 +1658,7 @@ $(function () {
                 connectInput(input);
                 setStatus(`${DEVICE.name_device_in} connected on channel ${midi_channel}.`);
             } else {
-                setStatusError(`${DEVICE.name_device_in} not found. Please connect your Bass Station II with your computer.`);
+                setStatusError(`${DEVICE.name_device_in} not found. Please connect your Bass Station 2 or check the MIDI channel.`);
                 setMidiInStatus(false);
             }
 

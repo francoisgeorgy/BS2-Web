@@ -10,13 +10,14 @@ import Cookies from 'js-cookie';
 import * as lity from "lity";
 import 'webpack-jquery-ui/effects';
 import browser from 'detect-browser';
+import Rx from 'rxjs/Rx';
 
 // CSS order is important
 import './css/lity.min.css';
 import './css/main.css';
 import {drawGrid, initPad} from "./xypad/xypad";
 
-const TRACE = false;    // when true, will log more details in the console
+const TRACE = true;    // when true, will log more details in the console
 
 if (browser) {
     if (TRACE) console.log(browser.name);
@@ -980,10 +981,10 @@ function updateUI() {
 
 var xypad_xy = null;
 var xypad_dot = null;
-let xypad_x_control_type = 'cc';
-let xypad_y_control_type = 'cc';
-let xypad_x_control_number = 16;
-let xypad_y_control_number = 82;
+var xypad_x_control_type = 'cc';
+var xypad_y_control_type = 'cc';
+var xypad_x_control_number = 16;    // default X is filter frequency
+var xypad_y_control_number = 82;    // default Y is filter resonance
 
 function padCC() {
     return {
@@ -1035,8 +1036,6 @@ function updateXYPad(control_type, control_number, value) {
 
     if (TRACE) console.log(`updateXYPad(${control_type}, ${control_number}, ${value})`);
 
-    // console.log(`updateXYPad: ${xypad_x_control_type} ${xypad_x_control_number} - ${control_type} ${control_number}`);
-
     // Note: control_number may be a string representing an integer number
     if ((control_type === xypad_x_control_type) && (control_number == xypad_x_control_number) || 
         (control_type === xypad_y_control_type) && (control_number == xypad_y_control_number)) {
@@ -1045,31 +1044,36 @@ function updateXYPad(control_type, control_number, value) {
         setDotPosition(xy);    
         displayPadCCValues(padCC());  
     }
-
 }
 
 function setupXYPad() {
 
-    xypad_x_control_type = 'cc';
-    xypad_y_control_type = 'cc';
-    xypad_x_control_number = 16;
-    xypad_y_control_number = 82;
-    
-    $('#x-cc').change(function () { 
+    if (TRACE) console.log('setupXYPad', settings, xypad_x_control_type, xypad_x_control_number, xypad_y_control_type, xypad_y_control_number);
+
+    $('#x-cc').val(settings.xypad_x);
+    $('#y-cc').val(settings.xypad_y);
+
+    $('#x-cc').change(function () {
+        settings.xypad_x = this.value;
         [xypad_x_control_type, xypad_x_control_number] = this.value.split('-');
         if (TRACE) console.log(`xypad X changed to ${xypad_x_control_type} ${xypad_x_control_number}`);
         let xy = padCCToXY();
         setDotPosition(xy);    // update the display
-        displayPadCCValues(padCC());  
+        displayPadCCValues(padCC());
+
+        Cookies.set('settings', settings);  //TODO: create a saveSettings method
     });
     
     
-    $('#y-cc').change(function () { 
+    $('#y-cc').change(function () {
+        settings.xypad_y = this.value;
         [xypad_y_control_type, xypad_y_control_number] = this.value.split('-');
         if (TRACE) console.log(`xypad Y changed to ${xypad_y_control_type} ${xypad_y_control_number}`);
         let xy = padCCToXY();
         setDotPosition(xy);    // update the display
-        displayPadCCValues(padCC());  
+        displayPadCCValues(padCC());
+
+        Cookies.set('settings', settings);  //TODO: create a saveSettings method
     });
       
 
@@ -1384,10 +1388,12 @@ function playNote(note) {
         //     midi_output.playNote(note, midi_channel);
         //     e.addClass('on');
         // }
-        midi_output.playNote(note, midi_channel);
+        if (midi_output) midi_output.playNote(note, midi_channel);
         e.addClass('on');
     }
 }
+
+
 
 function stopNote(note) {
     if (TRACE) console.log(`stop note ${note}`);
@@ -1400,7 +1406,7 @@ function stopNote(note) {
         //     midi_output.playNote(note, midi_channel);
         //     e.addClass('on');
         // }
-        midi_output.stopNote(note, midi_channel);
+        if (midi_output) midi_output.stopNote(note, midi_channel);
         e.removeClass('on');
     }
 }
@@ -1410,7 +1416,7 @@ function stopNote(note) {
  */
 function playLastNote() {
     if (TRACE) console.log(`play last note ${last_note}`);
-    playNote(last_note);    
+    playNote(last_note);
 }
 
 var midi_window = null;
@@ -1424,9 +1430,109 @@ function openMidiWindow() {
     return false;   // disable the normal href behavior
 }
 
+/**
+ * https://codepen.io/fgeorgy/pen/NyRgxV?editors=1010
+ */
 function setupKeyboard() {
-     $(document).keydown(function(e) { 
-        console.log(e);
+
+    var keyDowns = Rx.Observable.fromEvent(document, "keydown")
+    var keyUps = Rx.Observable.fromEvent(document, "keyup")
+
+    var keyPresses = keyDowns
+        .merge(keyUps)
+        .groupBy(e => e.keyCode)
+        .map(group => group.distinctUntilChanged(null, e => e.type))
+        .mergeAll()
+
+    keyPresses.subscribe(function(e) {
+        //console.log(e.type, e.key || e.which, e.keyIdentifier);
+        if (TRACE) console.log(e.keyCode, e.type, e.altKey, e.shiftKey, e);
+        if (e.type === 'keydown') {
+            keyDown(e.keyCode, e.altKey, e.shiftKey);
+        } else if (e.type === 'keyup') {
+            keyUp(e.keyCode, e.altKey, e.shiftKey);
+        }
+    });
+
+    if (TRACE) console.log('keyboard set up');
+}
+
+function keyDown(code, alt, shift) {
+    switch (code) {
+        case 32:                // SPACE
+            //    playLastNote();
+            playNote(last_note);
+            break;
+        case 65:                // A
+        case 66:                // B
+        case 67:                // C
+        case 68:                // D
+        case 69:                // E
+        case 70:                // F
+        case 71:                // G
+            let note = String.fromCharCode(code);
+            // let sharp = shift;
+            // let flat = alt;
+            if (shift !== alt) {
+                if (shift) note += '#';
+                if (alt) note += 'b';
+            }
+            note += '3';
+            if (last_note == null) last_note = note;
+            playNote(note);
+            displayNote(note);
+            break;
+        case 83:                // S
+            stopNote(last_note);
+            //TODO: panic key
+            // if (midi_output) {
+            //     if (TRACE) console.log(`send STOP`);
+            //     midi_output.sendStop();
+            // } else {
+            //     if (TRACE) console.log(`(send STOP`);
+            // }
+            break;
+    }
+}
+
+function keyUp(code, alt, shift) {
+    switch (code) {
+        case 27:                // close all opened panel with ESC key:
+            closeFavoritesPanel();
+            closeSettingsPanel();
+            break;
+        case 32:                // SPACE
+            //    playLastNote();
+            stopNote(last_note);
+            break;
+        case 65:                // A
+        case 66:                // B
+        case 67:                // C
+        case 68:                // D
+        case 69:                // E
+        case 70:                // F
+        case 71:                // G
+            let note = String.fromCharCode(code);
+            // let sharp = shift;
+            // let flat = alt;
+            if (shift !== alt) {
+                if (shift) note += '#';
+                if (alt) note += 'b';
+            }
+            note += '3';
+            stopNote(note);
+            displayNote(last_note);
+            break;
+        case 83:                // S
+            stopNote(last_note);
+        //TODO: panic key
+    }
+}
+
+/*
+function setupKeyboard() {
+     $(document).keydown(function(e) {
+        if (TRACE) console.log(e);
         switch (e.keyCode) {
             case 32:                // SPACE
             //    playLastNote();
@@ -1447,10 +1553,11 @@ function setupKeyboard() {
                     if (flat) note += 'b';
                 }
                 note += '3';
+                if (last_note == null) last_note = note;
                 playNote(note);
                 displayNote(note);
                 break;
-            case 83:                // S 
+            case 83:                // S
                 stopNote(last_note);    
                 //TODO: panic key
 
@@ -1463,8 +1570,8 @@ function setupKeyboard() {
                 break;
         }
     });
-    $(document).keyup(function(e) { 
-        console.log(e);
+    $(document).keyup(function(e) {
+        if (TRACE) console.log(e);
         switch (e.keyCode) {
             case 27:                // close all opened panel with ESC key:
                closeFavoritesPanel();
@@ -1499,6 +1606,7 @@ function setupKeyboard() {
        }
    });
 }
+*/
 
 /**
  *
@@ -1557,14 +1665,24 @@ function setupMenu() {
 
 var settings = {
     midi_channel: 1,
-    randomize: []
+    randomize: [],
+    // xypad_x: 'cc-16',   // default X is filter frequency
+    // xypad_y: 'cc-82'    // default Y is filter resonance
+    xypad_x: xypad_x_control_type + '-' + xypad_x_control_number,
+    xypad_y: xypad_y_control_type + '-' + xypad_y_control_number
 };
 
 /**
  *
  */
 function loadSettings() {
+
     Object.assign(settings, Cookies.getJSON('settings'));
+
+    if (TRACE) console.log('load settings', settings);
+
+    if (settings.xypad_x) [xypad_x_control_type, xypad_x_control_number] = settings.xypad_x.split('-');
+    if (settings.xypad_y) [xypad_y_control_type, xypad_y_control_number] = settings.xypad_y.split('-');
 
     // 1. reset all checkboxes:
     $('input.chk-rnd').prop('checked', false);
@@ -1583,6 +1701,7 @@ function loadSettings() {
         $('input.chk-rnd').prop('checked', false);
         saveRandomizerSettings();
     });
+
 }
 
 /**
@@ -1700,6 +1819,8 @@ function noteOff() {
 
 function displayNote(note) {
 
+    if (TRACE) console.log('displayNote', note);
+
     // let note = last_note;   // local copy
 
     // Note: only handles single digit octave : -9..9
@@ -1774,7 +1895,7 @@ function connectInput(input) {
     // if (input) {
     midi_input = input;
     // setStatus(`"${midi_input.name}" input connected.`);
-    console.log(`midi_input assigned to "${midi_input.name}"`);
+    if (TRACE) console.log(`midi_input assigned to "${midi_input.name}"`);
     // }
     midi_input
         .on('controlchange', midi_channel, function(e) {
@@ -1934,7 +2055,7 @@ $(function () {
                 connectInput(input);
                 setStatus(`${DEVICE.name_device_in} connected on channel ${midi_channel}.`);
             } else {
-                setStatusError(`${DEVICE.name_device_in} not found. Please connect your Bass Station 2 with your computer.`);
+                setStatusError(`${DEVICE.name_device_in} not found. Please connect your Bass Station 2 or check the MIDI channel.`);
                 setMidiInStatus(false);
             }
 
@@ -1942,7 +2063,7 @@ $(function () {
             if (output) {
                 connectOutput(output);
             } else {
-                setStatusError(`${DEVICE.name_device_out} not found. Please connect your Bass Station 2 with your computer.`);
+                setStatusError(`${DEVICE.name_device_out} not found. Please connect your Bass Station 2 or check the MIDI channel.`);
                 // setMidiOutStatus(false);
             }
 

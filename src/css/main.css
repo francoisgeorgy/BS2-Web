@@ -698,11 +698,12 @@ div.controls {
     }
 
     .error {
-        background-color: #ff7400;
+        background-color: #ee2222;
         color: #000;
         padding: 3px;
         font-family: 'Roboto', sans-serif;
         font-weight: 400;
+        text-align: center;
     }
 
 .knob-combo {
