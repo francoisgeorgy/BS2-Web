@@ -186,6 +186,7 @@ const randomize = function (groups) {
                 }
             }
             c.raw_value = v;
+            c.randomized = true;
         }
     }
 

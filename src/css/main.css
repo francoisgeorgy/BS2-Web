@@ -217,6 +217,11 @@ div.controls {
     /*color: var(--menu-text);*/
 }
 
+#patch-number {
+    margin-bottom: 0.25rem;
+    
+}
+
 .menu span {
     margin-left: 0.8vw;
     /*color: var(--menu-text);*/

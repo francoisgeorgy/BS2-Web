@@ -127,7 +127,40 @@ let cc_lsb = -1;
 let value_msb = 0;    // msb to compute value
 let value_lsb = 0;    // lsb to compute value
 let nrpn = false;
+
+// other global variables
 let last_note = null;
+let patch_number = 0;   // when powering off, BS2 always starts with patch number 0
+
+function displayPatchNumber() {
+    //TODO: get value from BS2
+    $('#patch-number').text(patch_number);
+}
+
+function sendPatchNumber() {
+    if (midi_output) {
+        if (TRACE) console.log(`send program change ${patch_number}`);
+        midi_output.sendProgramChange(patch_number, midi_channel);
+    }
+}
+
+/**
+ * Handle Program Change messages 
+ * @param e 
+ */
+function handlePC(e) {
+
+    if (TRACE) console.log('receive PC', e);
+
+    if (e.type !== 'programchange') return;
+
+    logIncomingMidiMessage('PC', 0, e.value);
+    
+    //TODO: update value in BS2 object
+
+    patch_number = e.value;
+    displayPatchNumber();
+}
 
 /**
  * Handle all control change messages received
@@ -292,21 +325,24 @@ function sendSingleValue(control) {
 /**
  * Send all values to the connected device
  */
-function updateConnectedDevice() {
+function updateConnectedDevice(onlyChanged = false) {
 
-    console.groupCollapsed(`updateConnectedDevice()`);
+    console.groupCollapsed(`updateConnectedDevice(${onlyChanged})`);
 
     // setStatus(`Sending all values to ${DEVICE.name} ...`);
 
-    function _send(controls) {
+    function _send(controls, onlyChanged = false) {
         for (let i=0; i < controls.length; i++) {
             if (typeof controls[i] === 'undefined') continue;
-            sendSingleValue(controls[i]);
+            if (!onlyChanged || controls[i].randomized) {
+                sendSingleValue(controls[i]);
+                controls[i].randomized = false;
+            }
         }
     }
 
-    _send(DEVICE.control);
-    _send(DEVICE.nrpn);
+    _send(DEVICE.control, onlyChanged);
+    _send(DEVICE.nrpn, onlyChanged);
 
     console.groupEnd();
 }
@@ -381,10 +417,49 @@ function randomize() {
     } else {
         DEVICE.randomize(settings.randomize);
         updateUI();
-        updateConnectedDevice();
+        updateConnectedDevice(true);    // true == update only updated values (values which have been marked as changed)
     }
     console.groupEnd();
     return false;   // disable the normal href behavior
+}
+
+
+/**
+ * Sends all possible Note Offs and relevant panic CCs
+ * 
+ * If allChannel is false, then sends only to current BS2 channel.
+ */
+function panic(allChannel = false) {
+/*
+    for (int ch = 1; ch <= 16; ++ch)
+    {
+        sendMidiMessage(MidiMessage::controllerEvent(ch, 64, 0));
+        sendMidiMessage(MidiMessage::controllerEvent(ch, 120, 0));
+        sendMidiMessage(MidiMessage::controllerEvent(ch, 123, 0));
+        for (int note = 0; note <= 127; ++note)
+        {
+            sendMidiMessage(MidiMessage::noteOff(ch, note, (uint8)0));
+        }
+    }
+*/
+    console.log('panic!');
+
+    //TODO: refactor with no loop if allChannel is false
+    for (let c = 1; c <= 16; c++) {
+        if (!allChannel && c !== midi_channel) continue;
+        if (midi_output) {
+            if (TRACE) console.log(`panic for channel ${c}`);
+            // if (TRACE) console.log(`send CC ${a[i][0]} ${a[i][1]} (${control.name}) on channel ${midi_channel}`);
+            midi_output.sendControlChange(64, 0, c);     // sustain off
+            midi_output.sendControlChange(108, 0, c);     // arpeggiator off
+            midi_output.sendControlChange(109, 0, c);     // latch off
+            midi_output.sendChannelMode('allsoundoff', 0, c);
+            midi_output.sendChannelMode('allnotesoff', 0, c);
+            for (let note = 0; note <= 127; ++note) {
+                midi_output.stopNote(note, midi_channel);
+            }
+        }
+    }
 }
 
 //==================================================================================================================
@@ -1380,7 +1455,7 @@ function setMidiChannel() {
 function playNote(note) {
     if (TRACE) console.log(`play note ${note}`);
     if (note) {
-        let e = $('#played-note');
+        // let e = $('#played-note');
         // if (e.is('.on')) {
         //     midi_output.stopNote(note, midi_channel);
         //     e.removeClass('on');
@@ -1389,7 +1464,7 @@ function playNote(note) {
         //     e.addClass('on');
         // }
         if (midi_output) midi_output.playNote(note, midi_channel);
-        e.addClass('on');
+        $('#played-note').addClass('on');
     }
 }
 
@@ -1398,7 +1473,7 @@ function playNote(note) {
 function stopNote(note) {
     if (TRACE) console.log(`stop note ${note}`);
     if (note) {
-        let e = $('#played-note');
+        // let e = $('#played-note');
         // if (e.is('.on')) {
         //     midi_output.stopNote(note, midi_channel);
         //     e.removeClass('on');
@@ -1407,7 +1482,7 @@ function stopNote(note) {
         //     e.addClass('on');
         // }
         if (midi_output) midi_output.stopNote(note, midi_channel);
-        e.removeClass('on');
+        $('#played-note').removeClass('on');
     }
 }
 
@@ -1419,6 +1494,15 @@ function playLastNote() {
     playNote(last_note);
 }
 
+
+function toggleArpeggiator() {
+    $('#cc-108').trigger("click");
+} 
+
+function toggleLatch() {
+    $('#cc-109').trigger("click");
+} 
+
 var midi_window = null;
 
 /**
@@ -1428,6 +1512,26 @@ var midi_window = null;
 function openMidiWindow() {
     midi_window = window.open("midi.html", '_midi', 'location=no,height=480,width=350,scrollbars=yes,status=no');
     return false;   // disable the normal href behavior
+}
+
+function patchInc() {
+    // if (midi_output) midi_output.sendProgramChange(note, midi_channel);
+    if (TRACE) console.log('patchInc');
+    if (patch_number < 128) {
+        patch_number++;
+        displayPatchNumber(); 
+        sendPatchNumber();
+    }
+}
+
+function patchDec() {
+    // if (midi_output) midi_output.sendProgramChange(note, midi_channel);
+    if (TRACE) console.log('patchDec');
+    if (patch_number > 0) {
+        patch_number--;
+        displayPatchNumber(); 
+        sendPatchNumber();
+    }
 }
 
 /**
@@ -1478,11 +1582,12 @@ function keyDown(code, alt, shift) {
                 if (alt) note += 'b';
             }
             note += '3';
-            if (last_note == null) last_note = note;
+            // if (last_note == null) 
+            last_note = note;
             playNote(note);
             displayNote(note);
             break;
-        case 83:                // S
+        case 83:                // S Stop
             stopNote(last_note);
             //TODO: panic key
             // if (midi_output) {
@@ -1491,6 +1596,35 @@ function keyDown(code, alt, shift) {
             // } else {
             //     if (TRACE) console.log(`(send STOP`);
             // }
+            break;
+        case 82:                // R Randomize
+            randomize();
+            break;
+        case 79:                // O Arpeggiator
+            toggleLatch();
+            break;
+        case 76:                // L Latch 
+            toggleLatch();
+            break;
+        case 27:                // ESC Panic 
+        case 80:                // P Panic 
+            stopNote(last_note);
+            // panic();
+            break;
+        case 73:                // I Init
+            init();
+            break;
+        case 38:                // Up arrow      
+        case 39:                // Right arrow            
+        case 107:               // num keypad '+'
+            // patch up
+            patchInc();
+            break;
+        case 40:                // Down arrow          
+        case 37:                // Left arrow          
+        case 109:               // num keypad '-'
+            patchDec();
+            // patch down
             break;
     }
 }
@@ -1512,101 +1646,11 @@ function keyUp(code, alt, shift) {
         case 69:                // E
         case 70:                // F
         case 71:                // G
-            let note = String.fromCharCode(code);
-            // let sharp = shift;
-            // let flat = alt;
-            if (shift !== alt) {
-                if (shift) note += '#';
-                if (alt) note += 'b';
-            }
-            note += '3';
-            stopNote(note);
+            stopNote(last_note);
             displayNote(last_note);
             break;
-        case 83:                // S
-            stopNote(last_note);
-        //TODO: panic key
     }
 }
-
-/*
-function setupKeyboard() {
-     $(document).keydown(function(e) {
-        if (TRACE) console.log(e);
-        switch (e.keyCode) {
-            case 32:                // SPACE
-            //    playLastNote();
-                playNote(last_note);    
-                break;
-            case 65:                // A
-            case 66:                // B
-            case 67:                // C
-            case 68:                // D
-            case 69:                // E
-            case 70:                // F
-            case 71:                // G
-                let note = String.fromCharCode(e.keyCode);
-                let sharp = e.shiftKey;
-                let flat = e.altKey;
-                if (sharp !== flat) {
-                    if (sharp) note += '#';
-                    if (flat) note += 'b';
-                }
-                note += '3';
-                if (last_note == null) last_note = note;
-                playNote(note);
-                displayNote(note);
-                break;
-            case 83:                // S
-                stopNote(last_note);    
-                //TODO: panic key
-
-                // if (midi_output) {
-                //     if (TRACE) console.log(`send STOP`);
-                //     midi_output.sendStop();
-                // } else {
-                //     if (TRACE) console.log(`(send STOP`);
-                // }
-                break;
-        }
-    });
-    $(document).keyup(function(e) {
-        if (TRACE) console.log(e);
-        switch (e.keyCode) {
-            case 27:                // close all opened panel with ESC key:
-               closeFavoritesPanel();
-               closeSettingsPanel();
-               break;
-            case 32:                // SPACE
-            //    playLastNote();
-                stopNote(last_note);    
-                break;
-            case 65:                // A
-            case 66:                // B
-            case 67:                // C
-            case 68:                // D
-            case 69:                // E
-            case 70:                // F
-            case 71:                // G
-                let note = String.fromCharCode(e.keyCode);
-                let sharp = e.shiftKey;
-                let flat = e.altKey;
-                if (sharp !== flat) {
-                    if (sharp) note += '#';
-                    if (flat) note += 'b';
-                }
-                note += '3';
-                stopNote(note);
-                displayNote(last_note);
-            break;
-            case 83:                // S 
-               stopNote(last_note);    
-               //TODO: panic key
-
-       }
-   });
-}
-*/
 
 /**
  *
@@ -1640,6 +1684,10 @@ function setupMenu() {
         // closeFavoritesDialog();
     });
     $('.close-favorites-panel').click(closeFavoritesPanel);
+
+    // patch number:
+    $('#patch-dec').click(patchDec);
+    $('#patch-inc').click(patchInc);
 
     setupKeyboard();
 
@@ -1762,51 +1810,12 @@ function displayRandomizerSettings() {
  */
 function noteOn(e) {
 
-    if (TRACE) console.log("Received 'noteon' message (" + e.note.name + e.note.octave + ").");
+    if (TRACE) console.log("Received 'noteon' message (" + e.note.name + e.note.octave + ").", e);
 
     last_note = e.note.name + e.note.octave;
 
     displayNote(last_note);
-/*
-    let note = last_note;   // local copy
 
-    // Note: only handles single digit octave : -9..9
-
-    let neg_octave = note.indexOf('-') > 0;
-    if (neg_octave) note = note.replace('-', '');  // we'll put it back later; the tests are simpler without it
-
-    // Get the enharmonics of a note. It returns an array of three elements: the below enharmonic, the note, and the upper enharmonic
-    // tonal.note.enharmonics('Bb4') --> ["A#4", "Bb4", "Cbb5"]
-    // tonal.note.enharmonics('A#4') --> ["G###4", "A#4", "Bb4"]
-    // tonal.note.enharmonics('C')   --> ["B#", "C", "Dbb"]
-    // tonal.note.enharmonics('A')   --> ["G##", "A", "Bbb"]
-    let enharmonics = tonal.note.enharmonics(last_note);
-
-    let enharmonic;
-    if (note.length === 2) {
-        enharmonic = '';
-    } else {
-        if (note.charAt(1) === '#') {
-            // note = note.replace('#', '&sharp;');                 // the sharp symbol is not good-looking (too wide)
-            enharmonic = enharmonics[2].replace('b', '&flat;');
-        } else {
-            note = note.replace('b', '&flat;');
-            // enharmonic = enharmonics[0].replace('#', '&sharp;');
-        }
-    }
-
-    if (neg_octave) {
-        // put back the minus sign we removed before
-        let i = note.length - 1;
-        note = note.substr(0, i) + '-' + note.substr(i);
-    }
-
-    if (TRACE) console.log(`noteOn: ${note} (${enharmonic})`);
-
-    $('#played-note').addClass('on');
-    $('#note-name').html(note);
-    $('#note-enharmonic').html(enharmonic);
-    */
     $('#played-note').addClass('on');
 }
 
@@ -1821,7 +1830,9 @@ function displayNote(note) {
 
     if (TRACE) console.log('displayNote', note);
 
-    // let note = last_note;   // local copy
+    if ((typeof note === "undefined") || (note === null) || (!note)) {
+        return;
+    } 
 
     // Note: only handles single digit octave : -9..9
 
@@ -1833,7 +1844,7 @@ function displayNote(note) {
     // tonal.note.enharmonics('A#4') --> ["G###4", "A#4", "Bb4"]
     // tonal.note.enharmonics('C')   --> ["B#", "C", "Dbb"]
     // tonal.note.enharmonics('A')   --> ["G##", "A", "Bbb"]
-    let enharmonics = tonal.note.enharmonics(last_note);
+    let enharmonics = tonal.note.enharmonics(note);
 
     let enharmonic;
     if (note.length === 2) {
@@ -1898,6 +1909,9 @@ function connectInput(input) {
     if (TRACE) console.log(`midi_input assigned to "${midi_input.name}"`);
     // }
     midi_input
+        .on('programchange', midi_channel, function(e) {
+            handlePC(e);
+        })
         .on('controlchange', midi_channel, function(e) {
             handleCC(e);
         })
