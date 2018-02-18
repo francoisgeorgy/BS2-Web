@@ -1,9 +1,9 @@
 # Novation Bass Station 2 Web interface
 
-Control your Bass Station 2 synthesizer from your web browser. 
-No more hidden parameters. All of the Bass Station 2 parameters are visible on screen.
-Save, load and even print your patches!
-And, for the fun, leave the application create a patch with the _randomizer_.
+- Control your Bass Station 2 synthesizer from your web browser. 
+- All of the Bass Station 2 parameters are visible on screen.
+- Save, load and even print your patches.
+- And, for the fun, leave the application create a patch with the _randomizer_.
 
 ![screenshot](/images/BS2-Web_v2.4.1.png "screenshot of current version running in Chrome")
 
@@ -16,10 +16,10 @@ Currently, only **Chrome 43+** and **Opera 44+** support this standard. This app
 
 The Chrome browser is highly recommended. 
 
-This app has mainly be tested with Chrome on a MacBook pro running OS X 10.11. Some tests has been done with success with Chrome under Linux Mint 17.1. 
-The application has never been tested under Windows. Any Windows feedback is welcomed.  
+This app has mainly be tested with Chrome on a MacBook pro running OS X 10.11. Some tests have been done with success with Chrome under Linux Mint 17.1. 
+The application has never been tested under Windows. Any Windows feedback is very welcome.
 
-Still under active development. Feel free to log bugs/issues.
+Still under active development. Feel free to log bugs/issues. This is a development I'm doing during my freetime. 
 
 
 # Usage
@@ -27,8 +27,9 @@ Still under active development. Feel free to log bugs/issues.
 1. Open https://sysex.io/bs2/
 2. Allow the browser to use your MIDI devices
 3. If it's not already done, connect your Bass Station 2 to your computer.
-4. When the Bass Station 2 is connected the logo will glow. 
+4. When the Bass Station 2 is connected the application logo will glow. 
 5. Move a dial or a slider on your Bass Station 2, the corresponding on-screen control must move accordingly.
+6. Move a knob or a slider in the application, the corresponding parameter must follow in the Bass Station 2.
 
 The logo glows when the Bass Station is connected and recognized by the application:
 
@@ -44,10 +45,10 @@ Bass Station 2 is disconnected:
 * SPACE : play the last played note
 * I : init
 * R : randomize
-* L : toggle Latch
+* L : toggle latch
 * O : toggle arpeggiator
-* P, ESC : panic; send note off for all notes, arp off, latch off and sustain off
-* S : stop the current note
+* S (or P, or ESC) : stop the current note
+* Up, Down, left, Right : patch up / down
 
 ## Features:
 
@@ -129,6 +130,7 @@ The SysEx dump format is not documented by Novation. I have reverse-engineered i
     - shift for sharp _DONE!_
     - alt for flat _DONE!_
 - history undo/redo    
+    - record all changes over time and replay
 - better patches managment
     - browse patches with auto-preview
     - S key to save as favorite with lastname+index
@@ -137,7 +139,6 @@ The SysEx dump format is not documented by Novation. I have reverse-engineered i
     - add sliders
 - arpeggiator support
     - auto-chords (from a selected scale)
-- record all changes over time and replay
 
 # Credits
 
