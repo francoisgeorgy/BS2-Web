@@ -22,7 +22,7 @@ The application has never been tested under Windows. Any Windows feedback is wel
 Still under active development. Feel free to log bugs/issues.
 
 
-# How to use
+# Usage
 
 1. Open https://sysex.io/bs2/
 2. Allow the browser to use your MIDI devices
@@ -37,6 +37,17 @@ The logo glows when the Bass Station is connected and recognized by the applicat
 Bass Station 2 is disconnected:
 
 ![disconnected](/images/BS2-Web-disconnected.png "Bass Station 2 disconnected")
+
+## Keyboard shortcuts:
+
+* A..G : play the corresponding note. Add Shift for sharp and Alt for flat.
+* SPACE : play the last played note
+* I : init
+* R : randomize
+* L : toggle Latch
+* O : toggle arpeggiator
+* P, ESC : panic; send note off for all notes, arp off, latch off and sustain off
+* S : stop the current note
 
 ## Features:
 
