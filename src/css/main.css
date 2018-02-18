@@ -217,9 +217,22 @@ div.controls {
     /*color: var(--menu-text);*/
 }
 
-#patch-number {
+div#patch {
     margin-bottom: 0.25rem;
-    
+}
+
+#patch-number {
+    /* color: var(--menu-text);     */
+    color: var(--value);
+    margin-bottom: 0.25rem; 
+    margin-left: 0.3rem;
+    margin-right: 0.3rem;   
+}
+
+#patch-dec,
+#patch-inc {
+    color: var(--menu-text);
+    cursor: pointer;
 }
 
 .menu span {

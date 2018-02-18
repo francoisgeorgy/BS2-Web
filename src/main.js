@@ -130,7 +130,13 @@ let nrpn = false;
 
 // other global variables
 let last_note = null;
-let patch_number = 0;   // when powering off, BS2 always starts with patch number 0
+let patch_number = -1;
+let patch_name = null;
+
+function displayPatchName() {
+    //TODO: get value from BS2
+    $('#patch-name').text(patch_name);
+}
 
 function displayPatchNumber() {
     //TODO: get value from BS2
@@ -160,6 +166,7 @@ function handlePC(e) {
 
     patch_number = e.value;
     displayPatchNumber();
+    requestSysExDump();
 }
 
 /**
@@ -1040,7 +1047,16 @@ function updateLinkedUIElements() {
  * Update the patch number and patch name displayed in the header.
  */
 function updateMeta() {
-    $('#patch-number').text(DEVICE.meta.patch_id.value + ': ' + DEVICE.meta.patch_name.value);
+    if (DEVICE.meta.patch_id.value) {
+        patch_number = DEVICE.meta.patch_id.value;
+        displayPatchNumber();
+    }
+    // $('#patch-number').text(DEVICE.meta.patch_id.value);
+    if (DEVICE.meta.patch_name.value) {
+        //$('#patch-number').text(': ' + DEVICE.meta.patch_name.value);
+        patch_name = DEVICE.meta.patch_name.value;
+        displayPatchName();
+    }
 }
 
 /**
@@ -1515,23 +1531,21 @@ function openMidiWindow() {
 }
 
 function patchInc() {
-    // if (midi_output) midi_output.sendProgramChange(note, midi_channel);
     if (TRACE) console.log('patchInc');
-    if (patch_number < 128) {
-        patch_number++;
-        displayPatchNumber(); 
-        sendPatchNumber();
-    }
+    patch_number = (patch_number + 1) % 128;
+    displayPatchNumber(); 
+    sendPatchNumber();
+    requestSysExDump();
 }
 
 function patchDec() {
-    // if (midi_output) midi_output.sendProgramChange(note, midi_channel);
     if (TRACE) console.log('patchDec');
-    if (patch_number > 0) {
-        patch_number--;
-        displayPatchNumber(); 
-        sendPatchNumber();
-    }
+    if (patch_number === -1) patch_number = 1;
+    patch_number--;
+    if (patch_number < 0) patch_number = 127;
+    displayPatchNumber(); 
+    sendPatchNumber();
+    requestSysExDump();
 }
 
 /**
