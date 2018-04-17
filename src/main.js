@@ -62,7 +62,12 @@ function setStatusError(msg) {
 }
 
 //
-// Count the number of messages displayed in the midi window.
+// Popup to display MIDI messages
+//
+var midi_window = null;
+
+//
+// Count the number of messages displayed in the MIDI window.
 //
 let midi_in_messages = 0;
 let midi_out_messages = 0;
@@ -1518,8 +1523,6 @@ function toggleArpeggiator() {
 function toggleLatch() {
     $("#cc-109").trigger("click");
 }
-
-var midi_window = null;
 
 /**
  *
