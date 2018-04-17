@@ -17,25 +17,27 @@
         "svg-slider": "^1.0.0",
         "tonal": "^0.69.9",
         "webmidi": "^2.0.0-rc.11",
-        "webpack": "^3.6.0",
         "webpack-jquery-ui": "^1.0.0"
     },
     "devDependencies": {
-        "babel-minify-webpack-plugin": "^0.2.0",
-        "babel-preset-minify": "^0.2.0",
+        "babel-core": "^6.26.0",
+        "babel-loader": "^7.1.4",
+        "babel-preset-env": "^1.6.1",
         "clean-webpack-plugin": "^0.1.16",
         "copy-webpack-plugin": "^4.0.1",
         "css-loader": "^0.28.7",
         "style-loader": "^0.18.2",
-        "webpack": "^3.6.0",
+        "webpack": "^4.5.0",
         "webpack-auto-inject-version": "^1.0.0",
-        "webpack-dev-server": "^2.8.2",
-        "webpack-merge": "^4.1.0"
+        "webpack-cli": "^2.0.14",
+        "webpack-dev-server": "^3.1.3"
     },
     "scripts": {
-        "dev": "webpack --config webpack.dev.js",
-        "start": "webpack-dev-server --open --config webpack.dev.js",
-        "build": "webpack --config webpack.prod.js",
+        "xdev": "webpack --config webpack.dev.js",
+        "dev": "webpack --mode development",
+        "start": "webpack-dev-server --open --mode development",
+        "xbuild": "webpack --config webpack.prod.js",
+        "build": "webpack --mode production",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {
