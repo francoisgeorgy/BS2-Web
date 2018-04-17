@@ -1,5 +1,6 @@
 const webpack = require("webpack");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 
 module.exports = {
     entry: {
@@ -38,5 +39,16 @@ module.exports = {
     performance: {
         maxAssetSize: 1000000,
         maxEntrypointSize: 1000000
+    },
+    optimization: {
+        minimizer: [
+            new UglifyJSPlugin({
+                uglifyOptions: {
+                    compress: {
+                        drop_console: true,
+                    }
+                }
+            })
+        ]
     }
 };
