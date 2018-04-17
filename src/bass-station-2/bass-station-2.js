@@ -1,10 +1,10 @@
-import * as consts from './constants.js';
-import {control_id, control} from './cc.js';
-import {nrpn_id, nrpn} from './nrpn.js';
-import meta from './meta.js';
-import {control_groups} from './groups.js';
-import {doubleByteValue} from './utils.js';
-import sysex from './sysex.js';
+import * as consts from "./constants.js";
+import {control_id, control} from "./cc.js";
+import {nrpn_id, nrpn} from "./nrpn.js";
+import meta from "./meta.js";
+import {control_groups} from "./groups.js";
+import {doubleByteValue} from "./utils.js";
+import sysex from "./sysex.js";
 
 
 "use strict";
@@ -19,14 +19,14 @@ import sysex from './sysex.js';
  */
 const getADSREnv = function (name) {
     switch (name) {
-        case 'amp':
+        case "amp":
             return {
                 attack: control[control_id.amp_env_attack].raw_value / 127,
                 decay: control[control_id.amp_env_decay].raw_value / 127,
                 sustain: control[control_id.amp_env_sustain].raw_value / 127,
                 release: control[control_id.amp_env_release].raw_value / 127
             };
-        case 'mod':
+        case "mod":
             return {
                 attack: control[control_id.mod_env_attack].raw_value / 127,
                 decay: control[control_id.mod_env_decay].raw_value / 127,
@@ -43,17 +43,17 @@ const getADSREnv = function (name) {
  * @param ctrl
  */
 const getControlValue = function (ctrl) {
-    return 'raw_value' in ctrl ? ctrl.raw_value : 0;
+    return "raw_value" in ctrl ? ctrl.raw_value : 0;
     // let c;
-    // if (control.cc_type === 'cc') {
+    // if (control.cc_type === "cc") {
     //     c = control;
-    // } else if (control.cc_type === 'nrpn') {
+    // } else if (control.cc_type === "nrpn") {
     //     c = nrpn;
     // } else {
     //     return 0;
     // }
     // if (c[control_number]) {
-    //     return 'value' in c[control_number] ? c[control_number].raw_value : 0;
+    //     return "value" in c[control_number] ? c[control_number].raw_value : 0;
     // } else {
     //     return 0;
     // }
@@ -65,17 +65,17 @@ const getControlValue = function (ctrl) {
  * return the updated control object
  */
 const setControlValue = function () {
-    // console.log('BS2.setControlValue', ...arguments);
+    // console.log("BS2.setControlValue", ...arguments);
     let c;
     if (arguments.length === 2) {
         let value = arguments[1];
         c = arguments[0];
-        c.raw_value = typeof value === 'number' ? value : parseInt(value);
+        c.raw_value = typeof value === "number" ? value : parseInt(value);
     } else if (arguments.length === 3) {
         let ca; // controls array
-        if (arguments[0] === 'cc') {                // [0] is control type
+        if (arguments[0] === "cc") {                // [0] is control type
             ca = control;
-        } else if (arguments[0] === 'nrpn') {
+        } else if (arguments[0] === "nrpn") {
             ca = nrpn;
         } else {
             console.error("setControlValue: invalid control_type", arguments);
@@ -84,7 +84,7 @@ const setControlValue = function () {
         if (ca[arguments[1]]) {                     // [0] is control number
             c = ca[arguments[1]];
             let value = arguments[2];               // [0] is control value
-            c.raw_value = typeof value === 'number' ? value : parseInt(value);
+            c.raw_value = typeof value === "number" ? value : parseInt(value);
         } else {
             console.error("setControlValue: unknown number", arguments);
             return null;
@@ -108,14 +108,14 @@ const getAllValues = function () {
 
     for (let i = 0; i < control.length; i++) {
         let c = control[i];
-        if (typeof c === 'undefined') continue;
+        if (typeof c === "undefined") continue;
         // console.log(`getAllValues: cc ${i}: ${c.name}: ${c.raw_value}`);
         a.cc[i] = c.raw_value;
     }
 
     for (let i = 0; i < nrpn.length; i++) {
         let c = nrpn[i];
-        if (typeof c === 'undefined') continue;
+        if (typeof c === "undefined") continue;
         // console.log(`getAllValues: nrpn ${i}: ${c.name}: ${c.raw_value}`);
         a.nrpn[i] = c.raw_value;
     }
@@ -129,17 +129,17 @@ const getAllValues = function () {
  */
 const setAllValues = function (values) {
 
-    // console.log('setAllValues()', values);
+    // console.log("setAllValues()", values);
 
     for (let i = 0; i < values.cc.length; i++) {
-        if (typeof control[i] === 'undefined') continue;
+        if (typeof control[i] === "undefined") continue;
         // console.log(`control[${i}].raw_value = ${values.cc[i]}`);
         control[i].raw_value = values.cc[i];
         control[i].value = control[i].human(control[i].raw_value);  //TODO: create a function setRawValue() or setValue() ?
     }
 
     for (let i = 0; i < values.nrpn.length; i++) {
-        if (typeof nrpn[i] === 'undefined') continue;
+        if (typeof nrpn[i] === "undefined") continue;
         // console.log(`set nrpn[${i}] = ${values.nrpn[i]}`);
         nrpn[i].raw_value = values.nrpn[i];
         nrpn[i].value = nrpn[i].human(nrpn[i].raw_value);
@@ -152,7 +152,7 @@ const setAllValues = function (values) {
  */
 const randomize = function (groups) {
 
-    // console.log('randomize()', groups);
+    // console.log("randomize()", groups);
 
     for (let i = 0; i < groups.length; i++) {
 
@@ -164,16 +164,16 @@ const randomize = function (groups) {
             let c;
             let t = g.controls[i].type;
             let n = g.controls[i].number;
-            if (t === 'cc') {
+            if (t === "cc") {
                 c = control[n];
-            } else if (t === 'nrpn') {
+            } else if (t === "nrpn") {
                 c = nrpn[n];
             } else {
                 console.error(`invalid control type: ${g.controls[i].type}`)
             }
 
             let v;
-            if (c.hasOwnProperty('randomize')) {
+            if (c.hasOwnProperty("randomize")) {
                 v = c.randomize;
             } else {
                 if (c.on_off) {
@@ -200,7 +200,7 @@ const init = function () {
     function _init(controls) {
         for (let i = 0; i < controls.length; i++) {
             let c = controls[i];
-            if (typeof c === 'undefined') continue;
+            if (typeof c === "undefined") continue;
             c.raw_value = c.init_value;
             c.value = c.human(c.raw_value);
         }
@@ -217,8 +217,8 @@ const init = function () {
  * @param ctrl
  */
 const getMidiMessagesForNormalCC = function (ctrl) {
-    // console.log('BS2.getMidiMessagesForControl', control_number, value);
-    if (ctrl.cc_type !== 'cc') return [];
+    // console.log("BS2.getMidiMessagesForControl", control_number, value);
+    if (ctrl.cc_type !== "cc") return [];
     let CC = [];
     let value = getControlValue(ctrl);
     if (ctrl.lsb < 0) {

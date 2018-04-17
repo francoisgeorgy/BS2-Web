@@ -1,8 +1,8 @@
 import {control} from "./cc.js";
 import {nrpn} from "./nrpn.js";
-import meta from './meta.js';
-import * as Utils from './utils.js';
-import * as Bits from '../lib/bits-utils.js';
+import meta from "./meta.js";
+import * as Utils from "./utils.js";
+import * as Bits from "../lib/bits-utils.js";
 
 /**
  *
@@ -38,15 +38,15 @@ const validate = function (data) {
  */
 function decodeControls(data, controls) {
 
-    // console.groupCollapsed('decodeSysExControls');
+    // console.groupCollapsed("decodeSysExControls");
 
     for (let i = 0; i < controls.length; i++) {
 
-        if (typeof controls[i] === 'undefined') continue;
-        if (!controls[i].hasOwnProperty('sysex')) continue;
+        if (typeof controls[i] === "undefined") continue;
+        if (!controls[i].hasOwnProperty("sysex")) continue;
 
         let sysex = controls[i].sysex;
-        if (!sysex.hasOwnProperty('mask')) continue;
+        if (!sysex.hasOwnProperty("mask")) continue;
 
         let bytes = new Uint8Array(sysex.mask.length);
 
@@ -65,9 +65,9 @@ function decodeControls(data, controls) {
 
         // console.log(`${i} raw_value=${raw_value}`);
 
-        if (sysex.hasOwnProperty('f')) {
+        if (sysex.hasOwnProperty("f")) {
             raw_value = sysex.f(raw_value);
-            // console.log('${i} sysex.f(raw_value) =' + raw_value);
+            // console.log("${i} sysex.f(raw_value) =" + raw_value);
         }
 
         let final_value = 0;
@@ -75,8 +75,8 @@ function decodeControls(data, controls) {
 
         // console.log(`${i} ${controls[i].cc_type}-${controls[i].cc_number} raw_value=${raw_value} human=${final_value} (${controls[i].name})`);
 
-        controls[i]['raw_value'] = raw_value;
-        controls[i]['value'] = final_value;
+        controls[i]["raw_value"] = raw_value;
+        controls[i]["value"] = final_value;
     }
 
     console.groupEnd();
@@ -88,9 +88,9 @@ function decodeControls(data, controls) {
  * @param data
  */
 function decodeMeta(data) {
-    // console.log('BS2.decodeSysExMeta', data);
-    meta.patch_id['value'] = data[meta.patch_id.sysex.offset];
-    meta.patch_name['value'] = String.fromCharCode(...data.slice(meta.patch_name.sysex.offset, meta.patch_name.sysex.offset + meta.patch_name.sysex.mask.length));
+    // console.log("BS2.decodeSysExMeta", data);
+    meta.patch_id["value"] = data[meta.patch_id.sysex.offset];
+    meta.patch_name["value"] = String.fromCharCode(...data.slice(meta.patch_name.sysex.offset, meta.patch_name.sysex.offset + meta.patch_name.sysex.mask.length));
     // console.log(`decodeSysExMeta, id=${meta.patch_id.value}, name=${meta.patch_name.value}`);
 }
 
@@ -131,7 +131,7 @@ const getDump = function () {
     // - byte 96 is always 0x40
     // - byte 104 is always 0x40
 
-    // console.log('init constant sysex bytes');
+    // console.log("init constant sysex bytes");
     data[5] = 0x33;
     data[30] = 0x01;
     data[31] = 0x00;
@@ -147,10 +147,10 @@ const getDump = function () {
     // CC
     for (let i = 0; i < control.length; i++) {
 
-        if (typeof control[i] === 'undefined') continue;
-        if (!control[i].hasOwnProperty('sysex')) continue;
+        if (typeof control[i] === "undefined") continue;
+        if (!control[i].hasOwnProperty("sysex")) continue;
         let sysex = control[i].sysex;
-        if (!sysex.hasOwnProperty('mask')) continue;
+        if (!sysex.hasOwnProperty("mask")) continue;
 
         let v = control[i].raw_value;
 
@@ -189,10 +189,10 @@ const getDump = function () {
     // NRPN
     for (let i = 0; i < nrpn.length; i++) {
 
-        if (typeof nrpn[i] === 'undefined') continue;
-        if (!nrpn[i].hasOwnProperty('sysex')) continue;
+        if (typeof nrpn[i] === "undefined") continue;
+        if (!nrpn[i].hasOwnProperty("sysex")) continue;
         let sysex = nrpn[i].sysex;
-        if (!sysex.hasOwnProperty('mask')) continue;
+        if (!sysex.hasOwnProperty("mask")) continue;
 
         let v = nrpn[i].raw_value;
 

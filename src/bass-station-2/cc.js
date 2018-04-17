@@ -68,7 +68,7 @@ export const control_id = {
 };
 
 export const control = new Array(127);
-// control.cc_type = 'cc';
+// control.cc_type = "cc";
 
 
 function defineControls() {
@@ -699,24 +699,24 @@ function defineControls() {
     control.forEach(function (obj) {
 
         obj.cc_number = control.indexOf(obj);   // is also the msb
-        obj.cc_type = 'cc';
+        obj.cc_type = "cc";
 
         let bits = 7;
-        if (obj.hasOwnProperty('lsb')) {
+        if (obj.hasOwnProperty("lsb")) {
             bits = 8;
         } else {
             obj.lsb = -1;  // define the prop.
         }
 
-        if (!obj.hasOwnProperty('on_off')) {
+        if (!obj.hasOwnProperty("on_off")) {
             obj.on_off = false;
         }
 
-        if (!obj.hasOwnProperty('range')) {
+        if (!obj.hasOwnProperty("range")) {
             obj.range = obj.on_off ? [0, 1] : [0, (1 << bits) - 1];
         }
 
-        if (!obj.hasOwnProperty('cc_range')) {
+        if (!obj.hasOwnProperty("cc_range")) {
             obj.cc_range = [0, (1 << bits) - 1];
         }
 
@@ -725,8 +725,8 @@ function defineControls() {
         obj.cc_max = Math.max(...obj.cc_range);
         obj.cc_delta = obj.cc_max - obj.cc_min;
 
-        if (!obj.hasOwnProperty('init_value')) {
-            if (obj.hasOwnProperty('cc_center')) {
+        if (!obj.hasOwnProperty("init_value")) {
+            if (obj.hasOwnProperty("cc_center")) {
                 console.log(`cc-${obj.cc_number}: obj.init_value = obj.cc_center: ${obj.init_value}=${obj.cc_center}`);
                 obj.init_value = obj.cc_center;
             } else if ((Math.min(...obj.range) < 0) && (Math.max(...obj.range) > 0)) {
@@ -736,7 +736,7 @@ function defineControls() {
             }
         }
 
-        if (!obj.hasOwnProperty('raw_value')) {
+        if (!obj.hasOwnProperty("raw_value")) {
             obj.raw_value = obj.init_value;
         }
 
