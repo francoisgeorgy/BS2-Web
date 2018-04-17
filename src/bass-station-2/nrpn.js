@@ -1,5 +1,5 @@
-import * as consts from './constants.js';
-import mapper from './mappers.js';
+import * as consts from "./constants.js";
+import mapper from "./mappers.js";
 
 export const nrpn_id = {
     osc1_waveform: 72,
@@ -261,24 +261,24 @@ function defineNRPNs() {
     nrpn.forEach(function (obj) {
 
         obj.cc_number = nrpn.indexOf(obj);   // is also the lsb
-        obj.cc_type = 'nrpn';
+        obj.cc_type = "nrpn";
 
         let bits = 7;
-        if (obj.hasOwnProperty('lsb')) {
+        if (obj.hasOwnProperty("lsb")) {
             bits = 8;
         } else {
             obj.lsb = -1;  // define the prop.
         }
 
-        if (!obj.hasOwnProperty('on_off')) {
+        if (!obj.hasOwnProperty("on_off")) {
             obj.on_off = false;
         }
 
-        if (!obj.hasOwnProperty('range')) {
+        if (!obj.hasOwnProperty("range")) {
             obj.range = obj.on_off ? [0, 1] : [0, (1 << bits) - 1];
         }
 
-        if (!obj.hasOwnProperty('cc_range')) {
+        if (!obj.hasOwnProperty("cc_range")) {
             obj.cc_range = [0, (1 << bits) - 1];
         }
 
@@ -287,8 +287,8 @@ function defineNRPNs() {
         obj.cc_max = Math.max(...obj.range);
         obj.cc_delta = obj.cc_max - obj.cc_min;
 
-        if (!obj.hasOwnProperty('init_value')) {
-            if (obj.hasOwnProperty('cc_center')) {
+        if (!obj.hasOwnProperty("init_value")) {
+            if (obj.hasOwnProperty("cc_center")) {
                 console.log(`nrpn-${obj.cc_number}: obj.init_value = obj.cc_center: ${obj.init_value}=${obj.cc_center}`);
                 obj.init_value = obj.cc_center;
             } else if ((Math.min(...obj.range) < 0) && (Math.max(...obj.range) > 0)) {
@@ -298,7 +298,7 @@ function defineNRPNs() {
             }
         }
 
-        if (!obj.hasOwnProperty('raw_value')) {
+        if (!obj.hasOwnProperty("raw_value")) {
             obj.raw_value = obj.init_value;
         }
 

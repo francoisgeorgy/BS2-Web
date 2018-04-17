@@ -1,7 +1,7 @@
 
 
 const getStringValue = function(bytes) {
-    let s = '';
+    let s = "";
     for (let i = 0; i < bytes.length; i++) {
         if (bytes[i] > 0) {
             s += String.fromCharCode(bytes[i]);
@@ -12,8 +12,8 @@ const getStringValue = function(bytes) {
 
 export default {
     patch_id: {
-        name: 'Patch Number',
-        value: '',
+        name: "Patch Number",
+        value: "",
         sysex: {
             offset: 8,
             range: [0, 127],
@@ -21,8 +21,8 @@ export default {
         }
     },
     patch_name: {
-        name: 'Patch Name',
-        value: '',
+        name: "Patch Name",
+        value: "",
         sysex: {
             offset: 137,
             range: [0, 0x7F],
@@ -33,7 +33,7 @@ export default {
         }
     },
     signature: {
-        name: 'Signature',
+        name: "Signature",
         sysex: {
             offset: 1,
             range: [],
