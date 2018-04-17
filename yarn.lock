@@ -5670,12 +5670,12 @@ svg-envelope@^0.1.2:
   resolved "https://registry.yarnpkg.com/svg-envelope/-/svg-envelope-0.1.4.tgz#af5a04d0fef56434d04bf895dbd5a16afe2c0879"
 
 svg-knob@^1.0.3:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/svg-knob/-/svg-knob-1.5.0.tgz#d9e32223740753f5f170ce7784152892ad31f3fc"
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/svg-knob/-/svg-knob-1.5.1.tgz#894c6640d40ca5785ac826c984a3f7b9a5caa960"
 
 svg-slider@^1.0.0:
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/svg-slider/-/svg-slider-1.3.1.tgz#fbcc470ca4cb2f2160e9984e2fb96d4e2f972343"
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/svg-slider/-/svg-slider-1.3.2.tgz#e139d77f426198550f2dc6869792ca351e87dc22"
 
 svgo@^0.7.0:
   version "0.7.2"
@@ -5761,8 +5761,8 @@ timed-out@^4.0.0, timed-out@^4.0.1:
   resolved "https://registry.yarnpkg.com/timed-out/-/timed-out-4.0.1.tgz#f32eacac5a175bea25d7fab565ab3ed8741ef56f"
 
 timers-browserify@^2.0.4:
-  version "2.0.7"
-  resolved "https://registry.yarnpkg.com/timers-browserify/-/timers-browserify-2.0.7.tgz#e74093629cb62c20332af587ddc0c86b4ba97a05"
+  version "2.0.8"
+  resolved "https://registry.yarnpkg.com/timers-browserify/-/timers-browserify-2.0.8.tgz#ad5ecbc2d081e038f8732406aeb723628b482494"
   dependencies:
     setimmediate "^1.0.4"
 
