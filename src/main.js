@@ -302,20 +302,18 @@ function updateControl(control_type, control_number, value) {
 
     }
 
-
     // hide if value is same as from init patch
     let v = DEVICE.getControl(control_type, control_number);
     if (v) {
         let c = $(`#combo-${id}`);
         if (v.changed()) {
             c.css({ opacity: 1.0 });
-            console.log('control ' + v.name + ` #${id} has changed`);
+            // console.log('control ' + v.name + ` #${id} has changed`);
         } else {
             c.css({ opacity: 0.3 });
-            console.log('control ' + v.name + ` #${id} has not changed`);
+            // console.log('control ' + v.name + ` #${id} has not changed`);
         }
     }
-
 
 
 }
@@ -421,7 +419,6 @@ function handleUIChange(control_type, control_number, value) {
 
     updateXYPad(control_type, control_number, value);
 
-
     // hide if value is same as from init patch
 
     let id = control_type + "-" + control_number;
@@ -431,11 +428,27 @@ function handleUIChange(control_type, control_number, value) {
         if (v) {
             if (v.changed()) {
                 c.css({ opacity: 1.0 });
-                console.log('control ' + v.name + ` #${id} has changed`);
+                //console.log('control ' + v.name + ` #${id} has changed`);
             // } else {
             //     c.css({ opacity: 0.3 });
             //     console.log('control ' + v.name + ` #${id} has not changed`);
             }
+        }
+    }
+
+    // radio-button-like .bt:
+    if (control_type === 'nrpn' && control_number === '72') {
+        if ($('#nrpn-72-3').is('.on')) {
+            $('#osc1-pw,#osc1-pw-label').css({opacity:1.0});
+        } else {
+            $('#osc1-pw,#osc1-pw-label').css({opacity:0.2});
+        }
+    }
+    if (control_type === 'nrpn' && control_number === '82') {
+        if ($('#nrpn-82-3').is('.on')) {
+            $('#osc2-pw,#osc2-pw-label').css({opacity:1.0});
+        } else {
+            $('#osc2-pw,#osc2-pw-label').css({opacity:0.2});
         }
     }
 
@@ -788,7 +801,7 @@ function setupSwitches() {
     }));
 
     // We display the value in reverse order to be like the real BS2
-    if (TRACE) console.log(Object.entries(DEVICE.SUB_OCTAVE));
+    //if (TRACE) console.log(Object.entries(DEVICE.SUB_OCTAVE));
     $("#cc-81-options").append(Object.entries(DEVICE.SUB_OCTAVE).slice(0).reverse().map((o) => {
         return $("<div>").attr("id", `cc-81-${o[0]}`).data("control", "cc-81").data("value", o[0]).text(o[1]).addClass("bt");
     }));
@@ -1056,7 +1069,25 @@ function updateLinkedUIElements() {
 
     if (TRACE) console.groupCollapsed("updateLinkedUIElements()");
 
-    // TODO: Osc 1+2: PS controls are to be displayed only when wave form is pulse
+    // TODO: Osc 1+2: PW controls are to be displayed only when wave form is pulse
+    // radio-button-like .bt:
+    // console.log('-----');
+    // if (control_type === 'nrpn' && control_number === '72') {
+        if ($('#nrpn-72-3').is('.on')) {
+            console.log('72 3 on');
+            $('#osc1-pw,#osc1-pw-label').css({opacity:1.0});
+        } else {
+            console.log('72 3 off');
+            $('#osc1-pw,#osc1-pw-label').css({opacity:0.2});
+        }
+    // }
+    // if (control_type === 'nrpn' && control_number === '82') {
+        if ($('#nrpn-82-3').is('.on')) {
+            $('#osc2-pw,#osc2-pw-label').css({opacity:1.0});
+        } else {
+            $('#osc2-pw,#osc2-pw-label').css({opacity:0.2});
+        }
+    // }
 
     envelopes["mod-envelope"].envelope = DEVICE.getADSREnv("mod");
     envelopes["amp-envelope"].envelope = DEVICE.getADSREnv("amp");
