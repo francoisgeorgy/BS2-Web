@@ -284,6 +284,7 @@ function updateControl(control_type, control_number, value) {
                 c.val(value).trigger("blur");
                 //console.error(`unknown control ${id}`);
             }
+
         } else {
             if (TRACE) console.log(`check #${id}-${value}`);
             c = $(`#${id}-${value}`);
@@ -298,7 +299,25 @@ function updateControl(control_type, control_number, value) {
                 console.warn(`no control for ${id}-${value}`);
             }
         }
+
     }
+
+
+    // hide if value is same as from init patch
+    let v = DEVICE.getControl(control_type, control_number);
+    if (v) {
+        let c = $(`#combo-${id}`);
+        if (v.changed()) {
+            c.css({ opacity: 1.0 });
+            console.log('control ' + v.name + ` #${id} has changed`);
+        } else {
+            c.css({ opacity: 0.3 });
+            console.log('control ' + v.name + ` #${id} has not changed`);
+        }
+    }
+
+
+
 }
 
 //==================================================================================================================
@@ -401,6 +420,24 @@ function handleUIChange(control_type, control_number, value) {
     }
 
     updateXYPad(control_type, control_number, value);
+
+
+    // hide if value is same as from init patch
+
+    let id = control_type + "-" + control_number;
+    let c = $(`#combo-${id}`);
+    if (c.css('opacity') < 1.0) {
+        let v = DEVICE.getControl(control_type, control_number);
+        if (v) {
+            if (v.changed()) {
+                c.css({ opacity: 1.0 });
+                console.log('control ' + v.name + ` #${id} has changed`);
+            // } else {
+            //     c.css({ opacity: 0.3 });
+            //     console.log('control ' + v.name + ` #${id} has not changed`);
+            }
+        }
+    }
 
 }
 
