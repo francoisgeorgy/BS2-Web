@@ -956,7 +956,7 @@ function setupSliders() {
         $("#" + this.id + "-value").text(this.value);
     });
 
-    let slider_scheme = {
+    let mixer_slider_scheme = {
         palette:"dark",
         value_min: 0,
         value_max: 255,
@@ -973,7 +973,7 @@ function setupSliders() {
     for (let i = 0; i < sliders_elems.length; i++) {
         let id = sliders_elems[i].id;
         if (TRACE) console.log("setup svg-slider " + id);
-        sliders[id] = new Slider(sliders_elems[i], slider_scheme);
+        sliders[id] = new Slider(sliders_elems[i], mixer_slider_scheme);
         sliders_elems[i].addEventListener("change", function(event) {
             // Event.target: a reference to the object that dispatched the event. It is different from event.currentTarget
             //               when the event handler is called during the bubbling or capturing phase of the event.
@@ -985,7 +985,10 @@ function setupSliders() {
         // sliders[id].enableDebug();
     }
 
-/*
+    let env_slider_scheme = Object.assign({}, mixer_slider_scheme);
+    env_slider_scheme.value_max = 127;
+    env_slider_scheme.width = 30;
+    /*
     let c_env = {
         palette:"dark",
         value_min: 0,
@@ -998,13 +1001,12 @@ function setupSliders() {
         track_bg_color: "#333"
     };
 */
-
     const sliders_env_elems = document.getElementsByClassName("svg-slider-env");
 
     for (let i = 0; i < sliders_env_elems.length; i++) {
         let id = sliders_env_elems[i].id;
         if (TRACE) console.log("setup svg-slider " + id);
-        sliders[id] = new Slider(sliders_env_elems[i], slider_scheme);
+        sliders[id] = new Slider(sliders_env_elems[i], env_slider_scheme);
         sliders_env_elems[i].addEventListener("change", function(event) {
             // Event.target: a reference to the object that dispatched the event. It is different from event.currentTarget
             //               when the event handler is called during the bubbling or capturing phase of the event.
