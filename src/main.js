@@ -303,15 +303,17 @@ function updateControl(control_type, control_number, value) {
     }
 
     // hide if value is same as from init patch
-    let v = DEVICE.getControl(control_type, control_number);
-    if (v) {
-        let c = $(`#combo-${id}`);
-        if (v.changed()) {
-            c.css({ opacity: 1.0 });
-            // console.log('control ' + v.name + ` #${id} has changed`);
-        } else {
-            c.css({ opacity: 0.3 });
-            // console.log('control ' + v.name + ` #${id} has not changed`);
+    if (settings.fade_unused) {
+        let v = DEVICE.getControl(control_type, control_number);
+        if (v) {
+            let c = $(`#combo-${id}`);
+            if (v.changed()) {
+                c.css({opacity: 1.0});
+                // console.log('control ' + v.name + ` #${id} has changed`);
+            } else {
+                c.css({opacity: 0.3});
+                // console.log('control ' + v.name + ` #${id} has not changed`);
+            }
         }
     }
 
@@ -421,17 +423,19 @@ function handleUIChange(control_type, control_number, value) {
 
     // hide if value is same as from init patch
 
-    let id = control_type + "-" + control_number;
-    let c = $(`#combo-${id}`);
-    if (c.css('opacity') < 1.0) {
-        let v = DEVICE.getControl(control_type, control_number);
-        if (v) {
-            if (v.changed()) {
-                c.css({ opacity: 1.0 });
-                //console.log('control ' + v.name + ` #${id} has changed`);
-            // } else {
-            //     c.css({ opacity: 0.3 });
-            //     console.log('control ' + v.name + ` #${id} has not changed`);
+    if (settings.fade_unused) {
+        let id = control_type + "-" + control_number;
+        let c = $(`#combo-${id}`);
+        if (c.css('opacity') < 1.0) {
+            let v = DEVICE.getControl(control_type, control_number);
+            if (v) {
+                if (v.changed()) {
+                    c.css({opacity: 1.0});
+                    //console.log('control ' + v.name + ` #${id} has changed`);
+                    // } else {
+                    //     c.css({ opacity: 0.3 });
+                    //     console.log('control ' + v.name + ` #${id} has not changed`);
+                }
             }
         }
     }
@@ -1799,6 +1803,7 @@ function setupMenu() {
 var settings = {
     midi_channel: 1,
     randomize: [],
+    fade_unused: false,
     // xypad_x: "cc-16",   // default X is filter frequency
     // xypad_y: "cc-82"    // default Y is filter resonance
     xypad_x: xypad_x_control_type + "-" + xypad_x_control_number,
@@ -1816,6 +1821,17 @@ function loadSettings() {
 
     if (settings.xypad_x) [xypad_x_control_type, xypad_x_control_number] = settings.xypad_x.split("-");
     if (settings.xypad_y) [xypad_y_control_type, xypad_y_control_number] = settings.xypad_y.split("-");
+
+    // --- display settings:
+
+    $(`input:checkbox[name=fade-unused]`).prop("checked", settings.fade_unused);
+
+    $(`input:checkbox[name=fade-unused]`).click(function(){
+        settings.fade_unused = !settings.fade_unused;
+        saveRandomizerSettings();
+    });
+
+    // --- randomizer settings:
 
     // 1. reset all checkboxes:
     $("input.chk-rnd").prop("checked", false);
