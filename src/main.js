@@ -637,7 +637,7 @@ function setupKnobs() {
             mouse_wheel_acceleration: 1,
             // background disk:
             bg_radius: 32,
-            bg_border_width: 1,
+            bg_border_width: 2,
             // track background:
             track_bg_radius: 40,
             track_bg_width: 8,
@@ -667,15 +667,24 @@ function setupKnobs() {
             class_value : "knob-value",
             class_cursor : "knob-cursor",
             class_markers: "knob-markers",
-            bg_color: "#333",
-            bg_border_color: "#888",
-            track_bg_color: "#555",
+            // bg_color: "#333",
+            // bg_border_color: "#888",
+            // track_bg_color: "#555",
             track_color_init: "#999",
             track_color: "#bbb",
-            cursor_color_init: "#999",
-            cursor_color: "#bbb",
+            cursor_color_init: "#bbb",
+            cursor_color: "#ddd",
             markers_color: "#3680A4",
             font_color: "#FFEA00"
+            // bg_color: "#333",
+            // bg_border_color: "#888",
+            // track_bg_color: "#555",
+            // track_color_init: "#999",
+            // track_color: "#bbb",
+            // cursor_color_init: "#999",
+            // cursor_color: "#bbb",
+            // markers_color: "#3680A4",
+            // font_color: "#FFEA00"
         });
 
         knobs[id].disableDebug();
@@ -947,12 +956,12 @@ function setupSliders() {
         $("#" + this.id + "-value").text(this.value);
     });
 
-    let c = {
+    let slider_scheme = {
         palette:"dark",
         value_min: 0,
         value_max: 255,
-        width:40,
-        markers_length: 40,
+        width: 40,
+        markers_length: 30,
         cursor_height: 12,
         cursor_width: 20,
         cursor_color: "#aaa",
@@ -964,7 +973,7 @@ function setupSliders() {
     for (let i = 0; i < sliders_elems.length; i++) {
         let id = sliders_elems[i].id;
         if (TRACE) console.log("setup svg-slider " + id);
-        sliders[id] = new Slider(sliders_elems[i], c);
+        sliders[id] = new Slider(sliders_elems[i], slider_scheme);
         sliders_elems[i].addEventListener("change", function(event) {
             // Event.target: a reference to the object that dispatched the event. It is different from event.currentTarget
             //               when the event handler is called during the bubbling or capturing phase of the event.
@@ -973,27 +982,29 @@ function setupSliders() {
             $(`#${event.target.id}-value`).text(event.detail);
         });
 
-        sliders[id].enableDebug();
+        // sliders[id].enableDebug();
     }
 
+/*
     let c_env = {
         palette:"dark",
         value_min: 0,
         value_max: 127,
-        width:30,
+        width: 30,
         markers_length: 30,
         cursor_height: 12,
         cursor_width: 20,
         cursor_color: "#aaa",
         track_bg_color: "#333"
     };
+*/
 
     const sliders_env_elems = document.getElementsByClassName("svg-slider-env");
 
     for (let i = 0; i < sliders_env_elems.length; i++) {
         let id = sliders_env_elems[i].id;
         if (TRACE) console.log("setup svg-slider " + id);
-        sliders[id] = new Slider(sliders_env_elems[i], c_env);
+        sliders[id] = new Slider(sliders_env_elems[i], slider_scheme);
         sliders_env_elems[i].addEventListener("change", function(event) {
             // Event.target: a reference to the object that dispatched the event. It is different from event.currentTarget
             //               when the event handler is called during the bubbling or capturing phase of the event.
@@ -1002,7 +1013,7 @@ function setupSliders() {
             $(`#${event.target.id}-value`).text(event.detail);
         });
 
-        sliders[id].enableDebug();
+        // sliders[id].enableDebug();
     }
 
     //console.log("sliders", sliders);
@@ -1086,14 +1097,14 @@ function updateLinkedUIElements() {
         if ($('#nrpn-72-3').is('.on')) {
             $('#osc1-pw,#osc1-pw-label').css({opacity:1.0});
         } else {
-            $('#osc1-pw,#osc1-pw-label').css({opacity:0.2});
+            $('#osc1-pw,#osc1-pw-label').css({opacity:0.1});
         }
     // }
     // if (control_type === 'nrpn' && control_number === '82') {
         if ($('#nrpn-82-3').is('.on')) {
             $('#osc2-pw,#osc2-pw-label').css({opacity:1.0});
         } else {
-            $('#osc2-pw,#osc2-pw-label').css({opacity:0.2});
+            $('#osc2-pw,#osc2-pw-label').css({opacity:0.1});
         }
     // }
 
