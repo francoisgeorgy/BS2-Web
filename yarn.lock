@@ -6130,7 +6130,7 @@ webpack-addons@^1.1.5:
   dependencies:
     jscodeshift "^0.4.0"
 
-webpack-auto-inject-version@^1.0.0:
+webpack-auto-inject-version@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/webpack-auto-inject-version/-/webpack-auto-inject-version-1.1.0.tgz#2b87251f254de673840bfd811faed8f37c0fe63e"
 

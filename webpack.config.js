@@ -1,6 +1,8 @@
 const webpack = require("webpack");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
+var WebpackAutoInject = require('webpack-auto-inject-version');
+
 
 module.exports = {
     entry: {
@@ -24,6 +26,13 @@ module.exports = {
             jQuery: "jquery",
             "window.jQuery": "jquery",
             "window.$": "jquery"
+        }),
+        new WebpackAutoInject({
+            // options
+            // example:
+            components: {
+                AutoIncreaseVersion: false
+            }
         }),
         new CopyWebpackPlugin([
             { from: "./src/index.html" },
