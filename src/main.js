@@ -3,21 +3,27 @@ import Envelope from "svg-envelope";
 import Knob from "svg-knob";
 import Slider from "svg-slider";
 import * as Utils from "./lib/utils.js";
-import tonal from "tonal"
+// import tonal from "tonal"
 import * as WebMidi from "webmidi";
 import moment from "moment";
 import Cookies from "js-cookie";
 import * as lity from "lity";
 import "webpack-jquery-ui/effects";
-import browser from "detect-browser";
 import Rx from "rxjs/Rx";
+
+// const { detect } = require('detect-browser');
+// const browser = detect();
 
 // CSS order is important
 import "./css/lity.min.css";
 import "./css/main.css";
 import {drawGrid, initPad} from "./xypad/xypad";
+import {detect} from "detect-browser";
+import * as tonal from "tonal";
 
 const TRACE = false;    // when true, will log more details in the console
+
+const browser = detect();
 
 if (browser) {
     if (TRACE) console.log(browser.name);
@@ -730,7 +736,7 @@ function setupKnobs() {
             font_color: "#FFEA00",
 
         };
-        console.dir(dbg);
+        // console.dir(dbg);
 
         elem.addEventListener("change", function(event) {
             if (TRACE) console.log(event);
@@ -1078,10 +1084,8 @@ function updateLinkedUIElements() {
     // console.log('-----');
     // if (control_type === 'nrpn' && control_number === '72') {
         if ($('#nrpn-72-3').is('.on')) {
-            console.log('72 3 on');
             $('#osc1-pw,#osc1-pw-label').css({opacity:1.0});
         } else {
-            console.log('72 3 off');
             $('#osc1-pw,#osc1-pw-label').css({opacity:0.2});
         }
     // }
