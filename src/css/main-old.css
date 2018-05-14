@@ -59,12 +59,10 @@
     --side-panel-bg: rgba(40, 40, 40, 0.90);
     --side-panel-color: #ddd;
     --side-panel-border: #222;
-
-    --novation-blue: #009AD7;
 }
 
 .novation-blue {
-    color: var(--novation-blue);
+    color: #009AD7;
 }
 
 *:focus {
@@ -80,8 +78,7 @@ html {
 body {
     margin: 0;
     padding: 0 0 0 0;
-    /*background: var(--body-bg-from); !* linear-gradient(to bottom, #202023, #3E3E46); *!*/
-    background-color: var(--novation-blue);
+    background: var(--body-bg-from); /* linear-gradient(to bottom, #202023, #3E3E46); */
     font-family: 'Roboto Condensed', sans-serif;
     font-weight: 400;
 }
@@ -142,29 +139,21 @@ body {
     margin: 0;
     padding: 0;
     display: grid;
-    grid-column-gap: 0.5vh;
-    grid-row-gap: 0.5vh;
-    padding-left: 0.5vh;
-    padding-right: 0.5vh;
     justify-content: stretch;
     align-content: stretch;
     align-items: start;
-    /*width: 100vw;*/
-    /*height: 100vh;*/
-    width: calc(100vw - 1vh);
-    height: calc(100vh - 0.5vh);
+    width: 100vw;
+    height: 100vh;
 }
 
 #main > div {
     align-self: stretch;
-    /*background: var(--default-bg-from) linear-gradient(to bottom, var(--default-bg-from), var(--default-bg-to));*/
-    background-color: #2a2c34;
+    background: var(--default-bg-from) linear-gradient(to bottom, var(--default-bg-from), var(--default-bg-to));
     padding: 0.25vh 4px 0 4px;
-    border-radius: 6px;
-    /*border-top: var(--inset-width) solid gray;*/
-    /*border-bottom: var(--inset-width) solid black;*/
-    /*border-left: var(--inset-width) solid gray;*/
-    /*border-right: var(--inset-width) solid black;*/
+    border-top: var(--inset-width) solid gray;
+    border-bottom: var(--inset-width) solid black;
+    border-left: var(--inset-width) solid gray;
+    border-right: var(--inset-width) solid black;
 }
 
 #main select {
@@ -235,9 +224,9 @@ div#patch {
 #patch-number {
     /* color: var(--menu-text);     */
     color: var(--value);
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.25rem; 
     margin-left: 0.3rem;
-    margin-right: 0.3rem;
+    margin-right: 0.3rem;   
 }
 
 #patch-dec,
@@ -300,9 +289,22 @@ div#patch {
     grid-column: 5;
 }
 
+#effects {
+    grid-row: 8;
+    grid-column: 3;
+    display: grid !important;
+    grid-template-rows: 2.5vh auto;
+    grid-row-gap: 0.5vh;
+}
+
+#effects .controls {
+    align-self: end;
+    /* display: grid !important; */
+    display: flex;
+}
+
 #sub, #lfo1, #lfo2, #mod-env {
-    /*background: var(--mod-bg-from) linear-gradient(to bottom, var(--mod-bg-from), var(--mod-bg-to)) !important;*/
-    background: #000;
+    background: var(--mod-bg-from) linear-gradient(to bottom, var(--mod-bg-from), var(--mod-bg-to)) !important;
 }
 
 #lfo1 {
@@ -359,8 +361,7 @@ div#patch {
 
 #osc1,
 #osc2 {
-    /*background: var(--osc-bg-from) linear-gradient(to bottom, var(--osc-bg-from), var(--osc-bg-to)) !important;*/
-    background: #000;
+    background: var(--osc-bg-from) linear-gradient(to bottom, var(--osc-bg-from), var(--osc-bg-to)) !important;
     display: grid !important;
     grid-template-rows: 2.5vh auto;
     grid-column-gap: 1.5vw;
@@ -411,8 +412,7 @@ div#patch {
 #filter {
     grid-column: 2 / span 2;
     grid-row: 4 / span 2;
-    /*background: linear-gradient(to bottom, var(--filter-bg-from), var(--filter-bg-to)) !important;*/
-    background: #000;
+    background: linear-gradient(to bottom, var(--filter-bg-from), var(--filter-bg-to)) !important;
 }
 
 #filter .control-row {
@@ -465,13 +465,11 @@ div#patch {
 }
 
 #amp-env, #mixer {
-    /*background: var(--amp-bg-from) linear-gradient(to bottom, var(--amp-bg-from), var(--amp-bg-to)) !important;*/
-background: #000;
+    background: var(--amp-bg-from) linear-gradient(to bottom, var(--amp-bg-from), var(--amp-bg-to)) !important;
 }
 
 #effects {
-    /*background: var(--fx-bg-from) linear-gradient(to bottom, var(--fx-bg-from), var(--fx-bg-to)) !important;*/
-background: #000;
+    background: var(--fx-bg-from) linear-gradient(to bottom, var(--fx-bg-from), var(--fx-bg-to)) !important;
 }
 
 #amp-env {
@@ -479,17 +477,18 @@ background: #000;
     grid-column: 4 / span 2;
 }
 
-/*#separator {*/
-    /*grid-row: 6;*/
-    /*grid-column: 1 / span 5;*/
-    /*height: 1vh;*/
-    /*background: transparent!important;*/
-    /*border: none!important;*/
-/*}*/
+#separator {
+    grid-row: 6;
+    grid-column: 1 / span 5;
+    height: 1vh;
+    background: transparent!important;
+    border: none!important;
+
+}
 
 #wheels {
     grid-column: 1;
-    grid-row: 6 / span 2;
+    grid-row: 7 / span 2;
 }
 
     .wheel-pitch-label {
@@ -538,7 +537,7 @@ background: #000;
     }
 
 #keyboard {
-    grid-row: 6;
+    grid-row: 7;
     grid-column: 2 / span 2;
 }
 
@@ -596,7 +595,7 @@ background: #000;
 
 
 #arpeggiator {
-    grid-row: 7;
+    grid-row: 8;
     grid-column: 2;
 }
 
@@ -651,22 +650,8 @@ background: #000;
 }
 */
 
-#effects {
-    grid-row: 7;
-    grid-column: 3;
-    display: grid !important;
-    grid-template-rows: 2.5vh auto;
-    grid-row-gap: 0.5vh;
-}
-
-#effects .controls {
-    align-self: end;
-    /* display: grid !important; */
-    display: flex;
-}
-
 #xypad {
-    grid-row: 6 / span 2;
+    grid-row: 7 / span 2;
     grid-column: 4 / span 2;
     display: grid !important;
     grid-template-rows: 2.5vh 2.5vh auto;
@@ -714,7 +699,7 @@ background: #000;
 
 
 #status-bar {
-    grid-row: 8;
+    grid-row: 9;
     grid-column: 1 / span 5;
 
     background: transparent !important;
@@ -831,7 +816,7 @@ div.btc.on {
 }
 
 .modenv {
-    /*background-color: var(--modenv) !important;*/
+    background-color: var(--modenv) !important;
     color: var(--modenv-text);
 }
 
