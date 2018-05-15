@@ -11,8 +11,16 @@ module.exports = {
     },
     module: {
         rules: [{
-                 test: /\.css$/,
-                 use: ["style-loader", "css-loader"]
+            test: /\.woff$/,
+            use: {
+                loader: "url-loader",
+                options: {
+                    limit: 50000,
+                },
+            },
+        },{
+             test: /\.css$/,
+             use: ["style-loader", "css-loader"]
         }]
     },
     plugins: [
@@ -40,6 +48,7 @@ module.exports = {
             { from: "./src/print.html" },
             { from: "./src/templates/patch-sheet-template.html", to: "templates"},
             { from: "./src/css/midi.css", to: "css" },
+            // { from: "./src/DSEG7Classic-BoldItalic.ttf" },
             { from: "./src/favicon.png" }
             // { from: "./src/css/patch.css", to: "css" },
             // { from: "./src/css/print.css", to: "css" },

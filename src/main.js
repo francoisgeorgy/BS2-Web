@@ -10,10 +10,6 @@ import Cookies from "js-cookie";
 import * as lity from "lity";
 import "webpack-jquery-ui/effects";
 import Rx from "rxjs/Rx";
-
-// const { detect } = require('detect-browser');
-// const browser = detect();
-
 // CSS order is important
 import "./css/lity.min.css";
 import "./css/main.css";
@@ -317,7 +313,7 @@ function updateControl(control_type, control_number, value) {
                 c.css({opacity: 1.0});
                 // console.log('control ' + v.name + ` #${id} has changed`);
             } else {
-                c.css({opacity: 0.3});
+                c.css({opacity: 0.25});
                 // console.log('control ' + v.name + ` #${id} has not changed`);
             }
         }
@@ -413,6 +409,10 @@ function updateDevice(control_type, control_number, value_float) {
 function handleUIChange(control_type, control_number, value) {
 
     if (TRACE) console.log(`handleUIChange(${control_type}, ${control_number}, ${value})`);
+
+    if (control_type==='cc' && (control_number===28 || control_number===71)) {
+        console.log(`${control_type}-${control_number}: ${value}`);
+    }
 
     updateDevice(control_type, control_number, value);
 
@@ -745,7 +745,10 @@ function setupKnobs() {
             font_color: "#FFEA00",
 
         };
-        // console.dir(dbg);
+        // if (id==='cc-28' || id==='cc-71') {
+        //     knobs[id].enableDebug();
+        //     console.log(JSON.stringify(dbg));
+        // }
 
         elem.addEventListener("change", function(event) {
             if (TRACE) console.log(event);
