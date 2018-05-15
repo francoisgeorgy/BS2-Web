@@ -3,7 +3,6 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 var WebpackAutoInject = require('webpack-auto-inject-version');
 
-
 module.exports = {
     entry: {
         bundle: "./src/main.js",
@@ -24,11 +23,6 @@ module.exports = {
         }]
     },
     plugins: [
-        // new CleanWebpackPlugin(["dist"]),
-        // new MinifyPlugin(/*minifyOpts*/ {
-        //     removeConsole: true,
-        //     removeDebugger: true
-        // }, /*pluginOpts*/ {}),
         new webpack.ProvidePlugin({
             $: "jquery",
             jQuery: "jquery",
@@ -36,8 +30,6 @@ module.exports = {
             "window.$": "jquery"
         }),
         new WebpackAutoInject({
-            // options
-            // example:
             components: {
                 AutoIncreaseVersion: false
             }
@@ -48,25 +40,20 @@ module.exports = {
             { from: "./src/print.html" },
             { from: "./src/templates/patch-sheet-template.html", to: "templates"},
             { from: "./src/css/midi.css", to: "css" },
-            // { from: "./src/DSEG7Classic-BoldItalic.ttf" },
             { from: "./src/favicon.png" }
             // { from: "./src/css/patch.css", to: "css" },
             // { from: "./src/css/print.css", to: "css" },
-        ])
+        ]),
+        new UglifyJSPlugin({
+            uglifyOptions: {
+                compress: {
+                    drop_console: true,
+                }
+            }
+        })
     ],
     performance: {
         maxAssetSize: 1000000,
         maxEntrypointSize: 1000000
-    },
-    optimization: {
-        minimizer: [
-            new UglifyJSPlugin({
-                uglifyOptions: {
-                    compress: {
-                        drop_console: true,
-                    }
-                }
-            })
-        ]
     }
 };
