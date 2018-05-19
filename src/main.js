@@ -313,7 +313,7 @@ function updateControl(control_type, control_number, value) {
                 c.css({opacity: 1.0});
                 // console.log('control ' + v.name + ` #${id} has changed`);
             } else {
-                c.css({opacity: 0.25});
+                c.css({opacity: 0.35});
                 // console.log('control ' + v.name + ` #${id} has not changed`);
             }
         }
@@ -335,20 +335,20 @@ function sendSingleValue(control) {
         let a = DEVICE.getMidiMessagesForNormalCC(control);
         for (let i=0; i<a.length; i++) {
             if (midi_output) {
-                if (TRACE) console.log(`send CC ${a[i][0]} ${a[i][1]} (${control.name}) on channel ${midi_channel}`);
+                if (TRACE) console.log(`send CC ${a[i][0]} ${a[i][1]} (${control.name}) on MIDI channel ${midi_channel}`);
                 midi_output.sendControlChange(a[i][0], a[i][1], midi_channel);
             } else {
-                if (TRACE) console.log(`(send CC ${a[i][0]} ${a[i][1]} (${control.name}) on channel ${midi_channel})`);
+                if (TRACE) console.log(`(send CC ${a[i][0]} ${a[i][1]} (${control.name}) on MIDI channel ${midi_channel})`);
             }
             logOutgoingMidiMessage("cc", a[i][0], a[i][1]);
         }
     } else if (control.cc_type === "nrpn") {
         let value = DEVICE.getControlValue(control);
         if (midi_output) {
-            if (TRACE) console.log(`send NRPN ${control.cc_number} ${value} (${control.name}) on channel ${midi_channel}`);
+            if (TRACE) console.log(`send NRPN ${control.cc_number} ${value} (${control.name}) on MIDI channel ${midi_channel}`);
             midi_output.setNonRegisteredParameter([0, control.cc_number], value, midi_channel);  // for the BS2, the NRPN MSB is always 0
         } else {
-            if (TRACE) console.log(`(send NRPN ${control.cc_number} ${value} (${control.name}) on channel ${midi_channel})`);
+            if (TRACE) console.log(`(send NRPN ${control.cc_number} ${value} (${control.name}) on MIDI channel ${midi_channel})`);
         }
         logOutgoingMidiMessage("nrpn", control.cc_number, value);
     }
@@ -2054,7 +2054,7 @@ function connectInput(input) {
         });
     console.log(`midi_input listening on channel ${midi_channel}`);
     setMidiInStatus(true);
-    setStatus(`${DEVICE.name_device_in} connected on channel ${midi_channel}.`);
+    setStatus(`${DEVICE.name_device_in} connected on MIDI channel ${midi_channel}.`);
 }
 
 /**
@@ -2188,7 +2188,7 @@ $(function () {
             let input = WebMidi.getInputByName(DEVICE.name_device_in);
             if (input) {
                 connectInput(input);
-                setStatus(`${DEVICE.name_device_in} connected on channel ${midi_channel}.`);
+                setStatus(`${DEVICE.name_device_in} connected on MIDI channel ${midi_channel}.`);
             } else {
                 setStatusError(`${DEVICE.name_device_in} not found. Please connect your Bass Station 2 or check the MIDI channel.`);
                 setMidiInStatus(false);

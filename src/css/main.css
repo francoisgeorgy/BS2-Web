@@ -27,7 +27,7 @@
 
     --title-text: #fff;
     --header-text: #ddd;
-    --status-color: #777;
+    --status-color: #DAC10F;
 
     --menu-icon: #ccc;
     --menu-text: #ddd;
@@ -223,8 +223,8 @@ div.controls {
 }
 
 .glow {
-    color: #1DBEFB!important;
-    text-shadow: 0 0 15px #98DBF5;
+    color: #ddf6ff!important;
+    text-shadow: 0 0 12px #e7ff00;
 }
 
 #title > div.menu {
@@ -692,10 +692,11 @@ div#patch > span {
 #status-bar {
     grid-row: 8;
     grid-column: 1 / span 5;
+    align-self: center !important;
 
     background: transparent !important;
     border-color: transparent !important;
-    padding: 0 !important;
+    padding: 0 0 0 6px !important;
 
     font-family: 'Roboto Condensed', sans-serif;
     font-weight: 300;
