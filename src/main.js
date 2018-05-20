@@ -3,21 +3,23 @@ import Envelope from "svg-envelope";
 import Knob from "svg-knob";
 import Slider from "svg-slider";
 import * as Utils from "./lib/utils.js";
-import tonal from "tonal"
+// import tonal from "tonal"
 import * as WebMidi from "webmidi";
 import moment from "moment";
 import Cookies from "js-cookie";
 import * as lity from "lity";
 import "webpack-jquery-ui/effects";
-import browser from "detect-browser";
 import Rx from "rxjs/Rx";
-
 // CSS order is important
 import "./css/lity.min.css";
 import "./css/main.css";
 import {drawGrid, initPad} from "./xypad/xypad";
+import {detect} from "detect-browser";
+import * as tonal from "tonal";
 
 const TRACE = false;    // when true, will log more details in the console
+
+const browser = detect();
 
 if (browser) {
     if (TRACE) console.log(browser.name);
@@ -145,7 +147,7 @@ function displayPatchName() {
 
 function displayPatchNumber() {
     //TODO: get value from BS2
-    $("#patch-number").text(patch_number);
+    $("#patch-number").html(patch_number);
 }
 
 function sendPatchNumber() {
@@ -270,10 +272,10 @@ function updateControl(control_type, control_number, value) {
     if (knobs.hasOwnProperty(id)) {
         knobs[id].value = value;
     } else {
-        if (TRACE) console.log(`check #${id}`);
+        // if (TRACE) console.log(`check #${id}`);
         let c = $(`#${id}`);
         if (c.length) {
-            if (TRACE) console.log(`#${id} found`, c);
+            // if (TRACE) console.log(`#${id} found`, c);
             if (c.is(".svg-slider,.svg-slider-env")) {
                 updateSVGSlider(id, value);
             } else if (c.is(".slider")) {
@@ -284,8 +286,9 @@ function updateControl(control_type, control_number, value) {
                 c.val(value).trigger("blur");
                 //console.error(`unknown control ${id}`);
             }
+
         } else {
-            if (TRACE) console.log(`check #${id}-${value}`);
+            // if (TRACE) console.log(`check #${id}-${value}`);
             c = $(`#${id}-${value}`);
             if (c.length) {
                 if (TRACE) console.log(c);
@@ -298,7 +301,27 @@ function updateControl(control_type, control_number, value) {
                 console.warn(`no control for ${id}-${value}`);
             }
         }
+
     }
+
+    // hide if value is same as from init patch
+    if (settings.fade_unused) {
+        let v = DEVICE.getControl(control_type, control_number);
+        if (v) {
+            let c = $(`#combo-${id}`);
+            if (v.changed()) {
+                c.css({ opacity: 1.0 });
+            } else {
+                c.css({ opacity: 0.35 });
+            }
+        }
+    } else {
+        let c = $(`#combo-${id}`);  //TODO: try to do it only if fade_unused has changed
+        if (TRACE) console.log(`reset opacity for #combo-${id}`);
+        c.css({ opacity: 1.0 });
+    }
+
+
 }
 
 //==================================================================================================================
@@ -314,20 +337,20 @@ function sendSingleValue(control) {
         let a = DEVICE.getMidiMessagesForNormalCC(control);
         for (let i=0; i<a.length; i++) {
             if (midi_output) {
-                if (TRACE) console.log(`send CC ${a[i][0]} ${a[i][1]} (${control.name}) on channel ${midi_channel}`);
+                if (TRACE) console.log(`send CC ${a[i][0]} ${a[i][1]} (${control.name}) on MIDI channel ${midi_channel}`);
                 midi_output.sendControlChange(a[i][0], a[i][1], midi_channel);
             } else {
-                if (TRACE) console.log(`(send CC ${a[i][0]} ${a[i][1]} (${control.name}) on channel ${midi_channel})`);
+                if (TRACE) console.log(`(send CC ${a[i][0]} ${a[i][1]} (${control.name}) on MIDI channel ${midi_channel})`);
             }
             logOutgoingMidiMessage("cc", a[i][0], a[i][1]);
         }
     } else if (control.cc_type === "nrpn") {
         let value = DEVICE.getControlValue(control);
         if (midi_output) {
-            if (TRACE) console.log(`send NRPN ${control.cc_number} ${value} (${control.name}) on channel ${midi_channel}`);
+            if (TRACE) console.log(`send NRPN ${control.cc_number} ${value} (${control.name}) on MIDI channel ${midi_channel}`);
             midi_output.setNonRegisteredParameter([0, control.cc_number], value, midi_channel);  // for the BS2, the NRPN MSB is always 0
         } else {
-            if (TRACE) console.log(`(send NRPN ${control.cc_number} ${value} (${control.name}) on channel ${midi_channel})`);
+            if (TRACE) console.log(`(send NRPN ${control.cc_number} ${value} (${control.name}) on MIDI channel ${midi_channel})`);
         }
         logOutgoingMidiMessage("nrpn", control.cc_number, value);
     }
@@ -389,6 +412,10 @@ function handleUIChange(control_type, control_number, value) {
 
     if (TRACE) console.log(`handleUIChange(${control_type}, ${control_number}, ${value})`);
 
+    if (control_type==='cc' && (control_number===28 || control_number===71)) {
+        console.log(`${control_type}-${control_number}: ${value}`);
+    }
+
     updateDevice(control_type, control_number, value);
 
     if (control_type === "cc") {
@@ -401,6 +428,49 @@ function handleUIChange(control_type, control_number, value) {
     }
 
     updateXYPad(control_type, control_number, value);
+
+    // hide if value is same as from init patch
+
+    if (settings.fade_unused) {
+        let id = control_type + "-" + control_number;
+        let v = DEVICE.getControl(control_type, control_number);
+        if (v) {
+            let c = $(`#combo-${id}`);
+            if (c.css('opacity') < 1.0) {
+                // let v = DEVICE.getControl(control_type, control_number);
+                // if (v) {
+                    if (v.changed()) {
+                        c.css({ opacity: 1.0 });
+                        // console.log('control ' + v.name + ` #${id} has changed`);
+                    }
+                // }
+            } else {
+                // let v = DEVICE.getControl(control_type, control_number);
+                // if (v) {
+                    if (!v.changed()) {
+                        c.css({ opacity: 0.35 });
+                        // console.log('control ' + v.name + ` #${id} has not changed`);
+                    }
+                // }
+            }
+        }
+    }
+
+    // radio-button-like .bt:
+    if (control_type === 'nrpn' && control_number === '72') {
+        if ($('#nrpn-72-3').is('.on')) {
+            $('#osc1-pw,#osc1-pw-label').css({opacity:1.0});
+        } else {
+            $('#osc1-pw,#osc1-pw-label').css({opacity:0.2});
+        }
+    }
+    if (control_type === 'nrpn' && control_number === '82') {
+        if ($('#nrpn-82-3').is('.on')) {
+            $('#osc2-pw,#osc2-pw-label').css({opacity:1.0});
+        } else {
+            $('#osc2-pw,#osc2-pw-label').css({opacity:0.2});
+        }
+    }
 
 }
 
@@ -577,7 +647,7 @@ function setupKnobs() {
             mouse_wheel_acceleration: 1,
             // background disk:
             bg_radius: 32,
-            bg_border_width: 1,
+            bg_border_width: 2,
             // track background:
             track_bg_radius: 40,
             track_bg_width: 8,
@@ -607,19 +677,28 @@ function setupKnobs() {
             class_value : "knob-value",
             class_cursor : "knob-cursor",
             class_markers: "knob-markers",
-            bg_color: "#333",
-            bg_border_color: "#888",
-            track_bg_color: "#555",
+            // bg_color: "#333",
+            // bg_border_color: "#888",
+            // track_bg_color: "#555",
             track_color_init: "#999",
             track_color: "#bbb",
-            cursor_color_init: "#999",
-            cursor_color: "#bbb",
+            cursor_color_init: "#bbb",
+            cursor_color: "#ddd",
             markers_color: "#3680A4",
             font_color: "#FFEA00"
+            // bg_color: "#333",
+            // bg_border_color: "#888",
+            // track_bg_color: "#555",
+            // track_color_init: "#999",
+            // track_color: "#bbb",
+            // cursor_color_init: "#999",
+            // cursor_color: "#bbb",
+            // markers_color: "#3680A4",
+            // font_color: "#FFEA00"
         });
 
         knobs[id].disableDebug();
-
+/*
         let dbg = {
 
             // with_label: false,
@@ -629,7 +708,7 @@ function setupKnobs() {
             value_resolution: 1,
             default_value: v,
             center_zero: Math.min(...c.range) < 0,
-            center_value: c.init_value,
+            center_value: c.hasOwnProperty("cc_center") ? c.cc_center : c.init_value,
             format: v => c.human(v),
             snap_to_steps: false,
             mouse_wheel_acceleration: 1,
@@ -676,10 +755,14 @@ function setupKnobs() {
             font_color: "#FFEA00",
 
         };
-        console.dir(dbg);
 
+        if (id==='cc-26' || id==='xcc-71') {
+            knobs[id].enableDebug();
+            console.log(JSON.stringify(dbg));
+        }
+*/
         elem.addEventListener("change", function(event) {
-            if (TRACE) console.log(event);
+            // if (TRACE) console.log(event);
             handleUIChange(c.cc_type, c.cc_number /*i*/, event.detail);
         });
     }
@@ -751,7 +834,7 @@ function setupSwitches() {
     }));
 
     // We display the value in reverse order to be like the real BS2
-    if (TRACE) console.log(Object.entries(DEVICE.SUB_OCTAVE));
+    //if (TRACE) console.log(Object.entries(DEVICE.SUB_OCTAVE));
     $("#cc-81-options").append(Object.entries(DEVICE.SUB_OCTAVE).slice(0).reverse().map((o) => {
         return $("<div>").attr("id", `cc-81-${o[0]}`).data("control", "cc-81").data("value", o[0]).text(o[1]).addClass("bt");
     }));
@@ -887,12 +970,12 @@ function setupSliders() {
         $("#" + this.id + "-value").text(this.value);
     });
 
-    let c = {
+    let mixer_slider_scheme = {
         palette:"dark",
         value_min: 0,
         value_max: 255,
-        width:40,
-        markers_length: 40,
+        width: 40,
+        markers_length: 30,
         cursor_height: 12,
         cursor_width: 20,
         cursor_color: "#aaa",
@@ -904,7 +987,7 @@ function setupSliders() {
     for (let i = 0; i < sliders_elems.length; i++) {
         let id = sliders_elems[i].id;
         if (TRACE) console.log("setup svg-slider " + id);
-        sliders[id] = new Slider(sliders_elems[i], c);
+        sliders[id] = new Slider(sliders_elems[i], mixer_slider_scheme);
         sliders_elems[i].addEventListener("change", function(event) {
             // Event.target: a reference to the object that dispatched the event. It is different from event.currentTarget
             //               when the event handler is called during the bubbling or capturing phase of the event.
@@ -913,27 +996,31 @@ function setupSliders() {
             $(`#${event.target.id}-value`).text(event.detail);
         });
 
-        sliders[id].enableDebug();
+        // sliders[id].enableDebug();
     }
 
+    let env_slider_scheme = Object.assign({}, mixer_slider_scheme);
+    env_slider_scheme.value_max = 127;
+    env_slider_scheme.width = 30;
+    /*
     let c_env = {
         palette:"dark",
         value_min: 0,
         value_max: 127,
-        width:30,
+        width: 30,
         markers_length: 30,
         cursor_height: 12,
         cursor_width: 20,
         cursor_color: "#aaa",
         track_bg_color: "#333"
     };
-
+*/
     const sliders_env_elems = document.getElementsByClassName("svg-slider-env");
 
     for (let i = 0; i < sliders_env_elems.length; i++) {
         let id = sliders_env_elems[i].id;
         if (TRACE) console.log("setup svg-slider " + id);
-        sliders[id] = new Slider(sliders_env_elems[i], c_env);
+        sliders[id] = new Slider(sliders_env_elems[i], env_slider_scheme);
         sliders_env_elems[i].addEventListener("change", function(event) {
             // Event.target: a reference to the object that dispatched the event. It is different from event.currentTarget
             //               when the event handler is called during the bubbling or capturing phase of the event.
@@ -942,7 +1029,7 @@ function setupSliders() {
             $(`#${event.target.id}-value`).text(event.detail);
         });
 
-        sliders[id].enableDebug();
+        // sliders[id].enableDebug();
     }
 
     //console.log("sliders", sliders);
@@ -1006,7 +1093,7 @@ function updateSlider(id, value) {
 function updateSVGSlider(id, value) {
     if (TRACE) console.log(`updateSVGSlider(${id}, ${value})`);
     if (sliders.hasOwnProperty(id)) {
-        if (TRACE) console.log(`set value for svg-slider ${id}`);
+        // if (TRACE) console.log(`set value for svg-slider ${id}`);
         sliders[id].value = value;
     }
     $("#" + id + "-value").text(value);
@@ -1019,7 +1106,18 @@ function updateLinkedUIElements() {
 
     if (TRACE) console.groupCollapsed("updateLinkedUIElements()");
 
-    // TODO: Osc 1+2: PS controls are to be displayed only when wave form is pulse
+    // Osc 1+2: PW controls are to be displayed only when wave form is pulse
+    if ($('#nrpn-72-3').is('.on')) {
+        $('#osc1-pw,#osc1-pw-label').css({ opacity: 1.0 });
+    } else {
+        $('#osc1-pw,#osc1-pw-label').css({ opacity: 0.1 });
+    }
+
+    if ($('#nrpn-82-3').is('.on')) {
+        $('#osc2-pw,#osc2-pw-label').css({ opacity: 1.0 });
+    } else {
+        $('#osc2-pw,#osc2-pw-label').css({ opacity: 0.1 });
+    }
 
     envelopes["mod-envelope"].envelope = DEVICE.getADSREnv("mod");
     envelopes["amp-envelope"].envelope = DEVICE.getADSREnv("amp");
@@ -1041,9 +1139,8 @@ function updateLinkedUIElements() {
     }
 
     let xy = padCCToXY();
-    // console.log("updateLinkedUIElements", xy);
-    setDotPosition(xy);    // update dot position
-    displayPadCCValues(padCC());           // display CC values corresponding to dot XY position
+    setDotPosition(xy);             // update dot position
+    displayPadCCValues(padCC());    // display CC values corresponding to dot XY position
 
     if (TRACE) console.groupEnd();
 }
@@ -1056,9 +1153,7 @@ function updateMeta() {
         patch_number = DEVICE.meta.patch_id.value;
         displayPatchNumber();
     }
-    // $("#patch-number").text(DEVICE.meta.patch_id.value);
     if (DEVICE.meta.patch_name.value) {
-        //$("#patch-number").text(": " + DEVICE.meta.patch_name.value);
         patch_name = DEVICE.meta.patch_name.value;
         displayPatchName();
     }
@@ -1643,6 +1738,7 @@ function keyDown(code, alt, shift) {
             patchDec();
             // patch down
             break;
+        //TODO: add home, end, pageup, pagedn for patch naviation.
     }
 }
 
@@ -1731,6 +1827,7 @@ function setupMenu() {
 var settings = {
     midi_channel: 1,
     randomize: [],
+    fade_unused: false,
     // xypad_x: "cc-16",   // default X is filter frequency
     // xypad_y: "cc-82"    // default Y is filter resonance
     xypad_x: xypad_x_control_type + "-" + xypad_x_control_number,
@@ -1749,6 +1846,18 @@ function loadSettings() {
     if (settings.xypad_x) [xypad_x_control_type, xypad_x_control_number] = settings.xypad_x.split("-");
     if (settings.xypad_y) [xypad_y_control_type, xypad_y_control_number] = settings.xypad_y.split("-");
 
+    // --- display settings:
+
+    $(`input:checkbox[name=fade-unused]`).prop("checked", settings.fade_unused);
+
+    $(`input:checkbox[name=fade-unused]`).click(function(){
+        settings.fade_unused = !settings.fade_unused;
+        saveSettings();
+        updateUI();
+    });
+
+    // --- randomizer settings:
+
     // 1. reset all checkboxes:
     $("input.chk-rnd").prop("checked", false);
 
@@ -1760,11 +1869,11 @@ function loadSettings() {
     // select-all and select-none links:
     $("#randomizer-select-all").click(function(){
         $("input.chk-rnd").prop("checked", true);
-        saveRandomizerSettings();
+        saveSettings();
     });
     $("#randomizer-select-none").click(function(){
         $("input.chk-rnd").prop("checked", false);
-        saveRandomizerSettings();
+        saveSettings();
     });
 
 }
@@ -1772,14 +1881,14 @@ function loadSettings() {
 /**
  *
  */
-function saveRandomizerSettings() {
+function saveSettings() {
     let checked = [];
     $("input.chk-rnd:checked").each(function () {
         checked.push(this.name);
     });
     // let checked = $("input.chk-rnd:checked").map(function() { return $(this).name }).get();
     settings.randomize = checked;
-    if (TRACE) console.log("save settings", settings);
+    if (TRACE) console.log("saveRandomizerSettings: save settings", settings);
     Cookies.set("settings", settings);
 }
 
@@ -1794,7 +1903,7 @@ function setupSettings() {
 
     if (TRACE) console.log("settings cookie", Cookies.getJSON());
 
-    $("input.chk-rnd").change(saveRandomizerSettings);
+    $("input.chk-rnd").change(saveSettings);
 
     console.groupEnd();
 }
@@ -1861,9 +1970,10 @@ function displayNote(note) {
     // tonal.note.enharmonics("A#4") --> ["G###4", "A#4", "Bb4"]
     // tonal.note.enharmonics("C")   --> ["B#", "C", "Dbb"]
     // tonal.note.enharmonics("A")   --> ["G##", "A", "Bbb"]
-    let enharmonics = tonal.note.enharmonics(note);
+    let enharmonics = tonal.Note.enharmonic(note);
+    console.log(enharmonics);
 
-    let enharmonic;
+    let enharmonic;             //FIXME: fix enharmonic re. new tonal.js API
     if (note.length === 2) {
         enharmonic = "";
     } else {
@@ -1882,7 +1992,8 @@ function displayNote(note) {
         note = note.substr(0, i) + "-" + note.substr(i);
     }
 
-    if (TRACE) console.log(`displayNote: ${note} (${enharmonic})`);
+    // if (TRACE)
+        console.log(`displayNote: ${note} (${enharmonic})`);
 
     // $("#played-note").addClass("on");
     $("#note-name").html(note);
@@ -1950,7 +2061,7 @@ function connectInput(input) {
         });
     console.log(`midi_input listening on channel ${midi_channel}`);
     setMidiInStatus(true);
-    setStatus(`${DEVICE.name_device_in} connected on channel ${midi_channel}.`);
+    setStatus(`${DEVICE.name_device_in} connected on MIDI channel ${midi_channel}.`);
 }
 
 /**
@@ -2084,7 +2195,7 @@ $(function () {
             let input = WebMidi.getInputByName(DEVICE.name_device_in);
             if (input) {
                 connectInput(input);
-                setStatus(`${DEVICE.name_device_in} connected on channel ${midi_channel}.`);
+                setStatus(`${DEVICE.name_device_in} connected on MIDI channel ${midi_channel}.`);
             } else {
                 setStatusError(`${DEVICE.name_device_in} not found. Please connect your Bass Station 2 or check the MIDI channel.`);
                 setMidiInStatus(false);

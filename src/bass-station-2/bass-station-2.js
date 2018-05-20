@@ -42,6 +42,21 @@ const getADSREnv = function (name) {
  * @returns {number}
  * @param ctrl
  */
+const getControl = function (type, number) {
+    if (type === "cc") {
+        return control[number];
+    } else if (type === "nrpn") {
+        return nrpn[number];
+    } else {
+        return null;
+    }
+};
+
+/**
+ *
+ * @returns {number}
+ * @param ctrl
+ */
 const getControlValue = function (ctrl) {
     return "raw_value" in ctrl ? ctrl.raw_value : 0;
     // let c;
@@ -263,6 +278,7 @@ export default {
     ARP_SEQUENCES: consts.ARP_SEQUENCES,
     init,
     randomize,
+    getControl,
     getControlValue,
     setControlValue,
     getAllValues,

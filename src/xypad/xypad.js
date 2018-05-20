@@ -189,7 +189,7 @@ export const initPad = function(element, f) {
         ends.first().map(dragEndEvent => {
             const x = dragEndEvent.x; // - dragStartEvent.x;
             const y = dragEndEvent.y; // - dragStartEvent.y;
-            console.log(`drops ${x} ${y}`);
+            // console.log(`drops ${x} ${y}`);
             return {x, y};
         })
     );
@@ -198,21 +198,21 @@ export const initPad = function(element, f) {
         // obj => { infos.innerText = `drag ${obj.x}, ${obj.y}`},
         f,
         err => { console.log(err) },
-        () => { console.log('complete') }
+        () => { /*console.log('complete')*/ }
     );
 
     drops.subscribe(
         //obj => { infos.innerText = `drop ${obj.x}, ${obj.y}`},
         f,
         err => { console.log(err) },
-        () => { console.log('complete') }
+        () => { /*console.log('complete')*/ }
     );
 
 
     $('#xypad-cal').click(() => {
-        console.log('calibrate before', rect);
+        // console.log('calibrate before', rect);
         rect = rect_element.getBoundingClientRect();
-        console.log('calibrate after', rect);
+        // console.log('calibrate after', rect);
     });
 
     f({x: 0.5, y: 0.5});

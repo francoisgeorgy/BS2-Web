@@ -59,12 +59,12 @@ function renderGroup(group, changed_only) {
     return o;
 }
 
-function renderPatch(template, changedonly) {
+function renderPatch(template, changed_only) {
 
     console.log("renderPatch");
 
     let change_link = $("#only-changed");
-    if (changedonly) {
+    if (changed_only) {
         change_link.text("Show all values").click(function(){
             window.location = window.location.href.replace(/&changedonly[^&]*/g, "") + "&changedonly=0";
         });
@@ -82,7 +82,7 @@ function renderPatch(template, changedonly) {
         "name": "Tater",
         "v": function () {
             return function (text, render) {
-                return renderGroup(text.trim().toLowerCase(), changedonly);
+                return renderGroup(text.trim().toLowerCase(), changed_only);
             }
         }
     };

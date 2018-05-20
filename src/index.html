@@ -76,19 +76,19 @@
             </div>
             <div class="controls">
                 <div style="display:flex;margin-left:10px">
-                    <div class="v2slider">
+                    <div class="v2slider" id="combo-cc-22">
                         <div id="cc-22-value" class="slider-value"></div>
                         <!--<input id="cc-22" class="slider" type="range" min="0" max="255" value="0" step="1" />-->
                         <svg id="cc-22" class="svg-slider"></svg>
                         <div class="slider-label">Sub</div>
                     </div>
-                    <div class="v2slider">
+                    <div class="v2slider" id="combo-cc-20">
                         <div id="cc-20-value" class="slider-value"></div>
                         <!--<input id="cc-20" class="slider" type="range" min="0" max="255" value="0" step="1" />-->
                         <svg id="cc-20" class="svg-slider"></svg>
                         <div class="slider-label">Osc 1</div>
                     </div>
-                    <div class="v2slider">
+                    <div class="v2slider" id="combo-cc-21">
                         <div id="cc-21-value" class="slider-value"></div>
                         <!--<input id="cc-21" class="slider" type="range" min="0" max="255" value="0" step="1" />-->
                         <svg id="cc-21" class="svg-slider"></svg>
@@ -96,19 +96,19 @@
                     </div>
                 </div>
                 <div style="display:flex">
-                    <div class="v2slider">
+                    <div class="v2slider" id="combo-cc-25">
                         <div id="cc-25-value" class="slider-value"></div>
                         <!--<input id="cc-25" class="slider" type="range" min="0" max="255" value="0" step="1" />-->
                         <svg id="cc-25" class="svg-slider"></svg>
                         <div class="slider-label">Ext</div>
                     </div>
-                    <div class="v2slider">
+                    <div class="v2slider" id="combo-cc-24">
                         <div id="cc-24-value" class="slider-value"></div>
                         <!--<input id="cc-24" class="slider" type="range" min="0" max="255" value="0" step="1" />-->
                         <svg id="cc-24" class="svg-slider"></svg>
                         <div class="slider-label">Ring</div>
                     </div>
-                    <div class="v2slider">
+                    <div class="v2slider" id="combo-cc-23">
                         <div id="cc-23-value" class="slider-value"></div>
                         <!--<input id="cc-23" class="slider" type="range" min="0" max="255" value="0" step="1" />-->
                         <svg id="cc-23" class="svg-slider"></svg>
@@ -135,13 +135,13 @@
                     <div class="btc" id="nrpn-89">key sync</div>
                 </div>
                 <div class="lfo-delay">
-                    <div class="knob-combo">
+                    <div class="knob-combo" id="combo-cc-86">
                         <svg class="knob" id="cc-86" ></svg>
                         <div class="knob-label">Delay</div>
                     </div>
                 </div>
                 <div class="lfo-speed">
-                    <div class="knob-combo">
+                    <div class="knob-combo" id="combo-cc-18">
                         <svg class="knob" id="cc-18" ></svg>
                         <svg class="knob" id="nrpn-87" style="display:none"></svg>
                         <div class="knob-label no-reset" style="padding: 0px 1px 0px 1px;">
@@ -153,7 +153,7 @@
                     </div>
                 </div>
                 <div class="lfo-slew">
-                    <div class="knob-combo">
+                    <div class="knob-combo" id="combo-nrpn-86">
                         <svg class="knob" id="nrpn-86" ></svg>
                         <div class="knob-label">Slew</div>
                     </div>
@@ -178,13 +178,13 @@
                     <div class="btc" id="nrpn-93">key sync</div>
                 </div>
                 <div class="lfo-delay">
-                    <div class="knob-combo">
+                    <div class="knob-combo" id="combo-cc-87">
                         <svg class="knob" id="cc-87" ></svg>
                         <div class="knob-label">Delay</div>
                     </div>
                 </div>
                 <div class="lfo-speed">
-                    <div class="knob-combo">
+                    <div class="knob-combo" id="combo-cc-19">
                         <svg class="knob" id="cc-19" ></svg>
                         <svg class="knob" id="nrpn-91" style="display:none"></svg>
                         <div class="knob-label no-reset" style="padding: 0px 1px 0px 1px;">
@@ -196,7 +196,7 @@
                     </div>
                 </div>
                 <div class="lfo-slew">
-                    <div class="knob-combo">
+                    <div class="knob-combo" id="combo-nrpn-90">
                         <svg class="knob" id="nrpn-90" ></svg>
                         <div class="knob-label">Slew</div>
                     </div>
@@ -217,7 +217,7 @@
                 <div class="combo-label osc-mod-label">
                     modulation
                 </div>
-                <div class="combo-label osc-pw-label">
+                <div class="combo-label osc-pw-label" id="osc1-pw-label">
                     pulse width
                 </div>
                 <div class="osc-options">
@@ -227,35 +227,35 @@
                     </div>
                 </div>
                 <div class="osc-pitch">
-                    <div class="knob-combo">
-                        <svg class="knob" id="cc-27" ></svg>
+                    <div class="knob-combo" id="combo-cc-27">
+                        <svg class="knob" id="cc-27"></svg>
                         <div class="knob-label">Coarse</div>
                     </div>
-                    <div class="knob-combo">
-                        <svg class="knob" id="cc-26" ></svg>
+                    <div class="knob-combo" id="combo-cc-26">
+                        <svg class="knob" id="cc-26"></svg>
                         <div class="knob-label">Fine</div>
                     </div>
                 </div>
                 <div class="osc-mod">
-                    <div class="knob-combo">
+                    <div class="knob-combo" id="combo-cc-71">
                         <svg class="knob" id="cc-71" ></svg>
                         <div class="knob-label modenv">Env</div>
                     </div>
-                    <div class="knob-combo">
+                    <div class="knob-combo" id="combo-cc-28">
                         <svg class="knob" id="cc-28" ></svg>
                         <div class="knob-label lfo1">LFO 1</div>
                     </div>
                 </div>
-                <div class="osc-pw">
-                    <div class="knob-combo">
+                <div class="osc-pw" id="osc1-pw">
+                    <div class="knob-combo" id="combo-cc-72">
                         <svg class="knob" id="cc-72" ></svg>
                         <div class="knob-label modenv">Env</div>
                     </div>
-                    <div class="knob-combo">
+                    <div class="knob-combo" id="combo-cc-74">
                         <svg class="knob" id="cc-74" ></svg>
                         <div class="knob-label">Man.</div>
                     </div>
-                    <div class="knob-combo">
+                    <div class="knob-combo" id="combo-cc-73">
                         <svg class="knob" id="cc-73" ></svg>
                         <div class="knob-label lfo2">LFO 2</div>
                     </div>
@@ -277,7 +277,7 @@
                 <div class="combo-label osc-mod-label">
                     modulation
                 </div>
-                <div class="combo-label osc-pw-label">
+                <div class="combo-label osc-pw-label" id="osc2-pw-label">
                     pulse width
                 </div>
                 <div class="osc-options">
@@ -287,35 +287,35 @@
                     </div>
                 </div>
                 <div class="osc-pitch">
-                    <div class="knob-combo">
+                    <div class="knob-combo" id="combo-cc-30">
                         <svg class="knob" id="cc-30" ></svg>
                         <div class="knob-label">Coarse</div>
                     </div>
-                    <div class="knob-combo">
+                    <div class="knob-combo" id="combo-cc-29">
                         <svg class="knob" id="cc-29" ></svg>
                         <div class="knob-label">Fine</div>
                     </div>
                 </div>
                 <div class="osc-mod">
-                    <div class="knob-combo">
+                    <div class="knob-combo" id="combo-cc-76">
                         <svg class="knob" id="cc-76" ></svg>
                         <div class="knob-label modenv">Env</div>
                     </div>
-                    <div class="knob-combo">
+                    <div class="knob-combo" id="combo-cc-31">
                         <svg class="knob" id="cc-31" ></svg>
                         <div class="knob-label lfo1">LFO 1</div>
                     </div>
                 </div>
-                <div class="osc-pw">
-                    <div class="knob-combo">
+                <div class="osc-pw" id="osc2-pw">
+                    <div class="knob-combo" id="combo-cc-77">
                         <svg class="knob" id="cc-77" ></svg>
                         <div class="knob-label modenv">Env</div>
                     </div>
-                    <div class="knob-combo">
+                    <div class="knob-combo" id="combo-cc-79">
                         <svg class="knob" id="cc-79" ></svg>
                         <div class="knob-label">Man.</div>
                     </div>
-                    <div class="knob-combo">
+                    <div class="knob-combo" id="combo-cc-78">
                         <svg class="knob" id="cc-78" ></svg>
                         <div class="knob-label lfo2">LFO 2</div>
                     </div>
@@ -349,13 +349,13 @@
                 <div style="flex-grow: 1">
                     <div class="control-row">
                         <div id="filter-reso">
-                            <div class="knob-combo">
+                            <div class="knob-combo" id="combo-cc-82">
                                 <svg class="knob" id="cc-82" ></svg>
                                 <div class="knob-label">Resonance</div>
                             </div>
                         </div>
                         <div id="filter-freq">
-                            <div class="knob-combo">
+                            <div class="knob-combo" id="combo-cc-16">
                                 <svg class="knob" id="cc-16" style="height: 10.9vh;" ></svg>
                                 <div class="knob-label">Frequency</div>
                             </div>
@@ -364,17 +364,17 @@
                             freq. modulation
                         </div>
                         <div id="filter-mod">
-                            <div class="knob-combo">
+                            <div class="knob-combo" id="combo-cc-85">
                                 <svg class="knob" id="cc-85" ></svg>
                                 <div class="knob-label modenv">Env</div>
                             </div>
-                            <div class="knob-combo">
+                            <div class="knob-combo" id="combo-cc-17">
                                 <svg class="knob" id="cc-17" ></svg>
                                 <div class="knob-label lfo2">LFO 2</div>
                             </div>
                         </div>
                         <div id="filter-overdrive">
-                            <div class="knob-combo">
+                            <div class="knob-combo" id="combo-cc-114">
                                 <svg class="knob" id="cc-114" ></svg>
                                 <div class="knob-label">Overdrive</div>
                             </div>
@@ -386,7 +386,7 @@
 <!--
     MOD ENV
 -->
-        <div class="modenv no-left-border" id="mod-env">
+        <div class="no-left-border" id="mod-env">
             <div class="colored-header">
                 <div class="modenv"></div>
                 <div>MOD ENV</div>
@@ -396,25 +396,25 @@
                 <div>
                     <div class="controls">
                         <div style="display:flex">
-                            <div class="env-slider">
+                            <div class="env-slider" id="combo-cc-102">
                                 <div id="cc-102-value" class="slider-value"></div>
                                 <!--<input id="cc-102" class="slider" type="range" min="0" max="127" value="0" step="1" />-->
                                 <svg id="cc-102" class="svg-slider-env"></svg>
                                 <div class="slider-label">A</div>
                             </div>
-                            <div class="env-slider">
+                            <div class="env-slider" id="combo-cc-103">
                                 <div id="cc-103-value" class="slider-value"></div>
                                 <!--<input id="cc-103" class="slider" type="range" min="0" max="127" value="0" step="1" />-->
                                 <svg id="cc-103" class="svg-slider-env"></svg>
                                 <div class="slider-label">D</div>
                             </div>
-                            <div class="env-slider">
+                            <div class="env-slider" id="combo-cc-104">
                                 <div id="cc-104-value" class="slider-value"></div>
                                 <!--<input id="cc-104" class="slider" type="range" min="0" max="127" value="0" step="1" />-->
                                 <svg id="cc-104" class="svg-slider-env"></svg>
                                 <div class="slider-label">S</div>
                             </div>
-                            <div class="env-slider">
+                            <div class="env-slider" id="combo-cc-105">
                                 <div id="cc-105-value" class="slider-value"></div>
                                 <!--<input id="cc-105" class="slider" type="range" min="0" max="127" value="0" step="1" />-->
                                 <svg id="cc-105" class="svg-slider-env"></svg>
@@ -443,25 +443,25 @@
                 <div>
                     <div class="controls">
                         <div style="display:flex">
-                            <div class="env-slider">
+                            <div class="env-slider" id="combo-cc-90">
                                 <div id="cc-90-value" class="slider-value"></div>
                                 <!--<input id="cc-90" class="slider" type="range" min="0" max="127" value="0" step="1" />-->
                                 <svg id="cc-90" class="svg-slider-env"></svg>
                                 <div class="slider-label">A</div>
                             </div>
-                            <div class="env-slider">
+                            <div class="env-slider" id="combo-cc-91">
                                 <div id="cc-91-value" class="slider-value"></div>
                                 <!--<input id="cc-91" class="slider" type="range" min="0" max="127" value="0" step="1" />-->
                                 <svg id="cc-91" class="svg-slider-env"></svg>
                                 <div class="slider-label">D</div>
                             </div>
-                            <div class="env-slider">
+                            <div class="env-slider" id="combo-cc-92">
                                 <div id="cc-92-value" class="slider-value"></div>
                                 <!--<input id="cc-92" class="slider" type="range" min="0" max="127" value="0" step="1" />-->
                                 <svg id="cc-92" class="svg-slider-env"></svg>
                                 <div class="slider-label">S</div>
                             </div>
-                            <div class="env-slider">
+                            <div class="env-slider" id="combo-cc-93">
                                 <div id="cc-93-value" class="slider-value"></div>
                                 <!--<input id="cc-93" class="slider" type="range" min="0" max="127" value="0" step="1" />-->
                                 <svg id="cc-93" class="svg-slider-env"></svg>
@@ -478,8 +478,6 @@
                     <!--</div>-->
                 </div>
             </div>
-        </div>
-        <div id="separator">
         </div>
 <!--
     WHEELS
@@ -503,29 +501,29 @@
                 </div>
 
                 <div id="wheel-pitch">
-                    <div class="knob-combo">
+                    <div class="knob-combo" id="combo-cc-107">
                         <svg class="knob" id="cc-107" ></svg>
                         <div class="knob-label">Pitch</div>
                     </div>
                 </div>
                 <div id="wheel-osc1-2">
-                    <div class="knob-combo">
+                    <div class="knob-combo" id="combo-nrpn-70">
                         <svg class="knob" id="nrpn-70" ></svg>
                         <div class="knob-label lfo1">LFO 1 Pitch</div>
                     </div>
                 </div>
                 <div id="wheel-osc2">
-                    <div class="knob-combo">
+                    <div class="knob-combo" id="combo-nrpn-78">
                         <svg class="knob" id="nrpn-78" ></svg>
                         <div class="knob-label">Pitch</div>
                     </div>
                 </div>
                 <div class="wheel-filter">
-                    <div class="knob-combo">
+                    <div class="knob-combo" id="combo-nrpn-94">
                         <svg class="knob" id="nrpn-94" ></svg>
                         <div class="knob-label"></div>
                     </div>
-                    <div class="knob-combo">
+                    <div class="knob-combo" id="combo-nrpn-71">
                         <svg class="knob" id="nrpn-71" ></svg>
                         <div class="knob-label lfo2">LFO 2</div>
                     </div>
@@ -550,35 +548,35 @@
                     note played
                 </div>
                 <div class="keyboard-start">
-                    <div class="knob-combo">
+                    <div class="knob-combo" id="combo-cc-64">
                         <svg class="knob" id="cc-64" ></svg>
                         <div class="knob-label">Sustain</div>
                     </div>
-                    <div class="knob-combo">
+                    <div class="knob-combo" id="combo-cc-5">
                         <svg class="knob" id="cc-5" ></svg>
                         <div class="knob-label">Glide</div>
                     </div>
                 </div>
                 <div class="keyboard-aftertouch">
-                    <div class="knob-combo">
+                    <div class="knob-combo" id="combo-nrpn-75">
                         <svg class="knob" id="nrpn-75" ></svg>
                         <div class="knob-label lfo1">LFO 1 Osc1+2</div>
                     </div>
-                    <div class="knob-combo">
+                    <div class="knob-combo" id="combo-nrpn-76">
                         <svg class="knob" id="nrpn-76" ></svg>
                         <div class="knob-label lfo2">LFO 2 Speed</div>
                     </div>
-                    <div class="knob-combo">
+                    <div class="knob-combo" id="combo-nrpn-74">
                         <svg class="knob" id="nrpn-74" ></svg>
                         <div class="knob-label">Filter freq.</div>
                     </div>
                 </div>
                 <div class="keyboard-velocity">
-                    <div class="knob-combo">
+                    <div class="knob-combo" id="combo-cc-113">
                         <svg class="knob" id="cc-113" ></svg>
                         <div class="knob-label modenv">Mod env.</div>
                     </div>
-                    <div class="knob-combo">
+                    <div class="knob-combo" id="combo-cc-112">
                         <svg class="knob" id="cc-112" ></svg>
                         <div class="knob-label">Amp env.</div>
                     </div>
@@ -599,11 +597,11 @@
                 <div>EFFECTS</div>
             </div>
             <div class="controls" style="justify-content: space-around;">
-                <div class="knob-combo">
+                <div class="knob-combo" id="combo-cc-94">
                     <svg class="knob" id="cc-94" ></svg>
                     <div class="knob-label">Distorsion</div>
                 </div>
-                <div class="knob-combo">
+                <div class="knob-combo" id="combo-cc-115">
                     <svg class="knob" id="cc-115" ></svg>
                     <div class="knob-label">Osc 2 Filter Mod</div>
                 </div>
@@ -618,7 +616,7 @@
             </div>
             <div class="control-row" style="justify-content: center;">
                 <div></div>
-                <div class="knob-combo">
+                <div class="knob-combo" id="combo-cc-95">
                     <svg class="knob" id="cc-95" ></svg>
                     <div class="knob-label">Limiter</div>
                 </div>
@@ -660,7 +658,7 @@
                         </div>
                     </div>
 
-                    <div class="knob-combo">
+                    <div class="knob-combo" id="combo-cc-116">
                         <svg class="knob" id="cc-116" ></svg>
                         <div class="knob-label">Swing</div>
                     </div>
@@ -781,7 +779,7 @@
                     <path d="M 75 0 L 75 100" stroke="#555" stroke-width="1px" vector-effect="non-scaling-stroke" />
                     <path d="M 0 25 L 100 25" stroke="#555" stroke-width="1px" vector-effect="non-scaling-stroke" />
                     <path d="M 0 75 L 100 75" stroke="#555" stroke-width="1px" vector-effect="non-scaling-stroke" />
-                    <circle id="dot" cx="50" cy="50" r="5"  fill-opacity="0.5" />
+                    <circle id="dot" cx="50" cy="50" r="5"  fill-opacity="0.66" />
                     <rect id="pad-zone" x="0" y="0" width="100" height="100" stroke-width="0" fill="#333" fill-opacity="0.25"></rect>
                 </svg>
             </div>
@@ -837,6 +835,7 @@
             <li><a href="https://github.com/DamonOehlman/detect-browser" target="_blank">detect-browser</a>: unpack a browser type and version from the useragent string.</li>
             <li><a href="http://fontawesome.io/" target="_blank">Font Awesome</a>: the iconic font and CSS toolkit.</li>
             <li><a href="https://fonts.google.com/specimen/Roboto" target="_blank">Roboto font</a> by Google.</li>
+            <li><a href="https://www.keshikan.net/fonts-e.html" target="_blank">7 segments "DSEG" font</a> by keshikan.</li>
         </ul>
         <p class="trademarks">
             <em>Novation</em> is a registered trade mark of Focusrite Audio Engineering Limited.<br />
@@ -912,6 +911,13 @@
             <option value="16">16</option>
             <option value="all">All</option>
         </select> to communicate with the Bass Station 2.
+        </div>
+        <div>
+            <h3>Display</h3>
+            <input type="checkbox" name="fade-unused" value="1"> Fade unused controls
+            <div style="margin-top: 0.5rem;font-size: 0.8rem">
+                When checked, the controls that haven't changed from an init patch will be faded.
+            </div>
         </div>
         <div>
             <h3>Randomizer</h3>
