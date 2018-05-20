@@ -244,7 +244,7 @@ div#patch > span {
 #patch-number {
     font-family: sevensegments;
     color: var(--value);
-    text-shadow: 0 0 8px lightyellow;
+    /*text-shadow: 0 0 8px lightyellow;*/
 }
 
 #patch-dec,

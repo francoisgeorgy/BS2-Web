@@ -147,7 +147,7 @@ function displayPatchName() {
 
 function displayPatchNumber() {
     //TODO: get value from BS2
-    $("#patch-number").text(patch_number);
+    $("#patch-number").html(patch_number);
 }
 
 function sendPatchNumber() {
@@ -272,10 +272,10 @@ function updateControl(control_type, control_number, value) {
     if (knobs.hasOwnProperty(id)) {
         knobs[id].value = value;
     } else {
-        if (TRACE) console.log(`check #${id}`);
+        // if (TRACE) console.log(`check #${id}`);
         let c = $(`#${id}`);
         if (c.length) {
-            if (TRACE) console.log(`#${id} found`, c);
+            // if (TRACE) console.log(`#${id} found`, c);
             if (c.is(".svg-slider,.svg-slider-env")) {
                 updateSVGSlider(id, value);
             } else if (c.is(".slider")) {
@@ -288,7 +288,7 @@ function updateControl(control_type, control_number, value) {
             }
 
         } else {
-            if (TRACE) console.log(`check #${id}-${value}`);
+            // if (TRACE) console.log(`check #${id}-${value}`);
             c = $(`#${id}-${value}`);
             if (c.length) {
                 if (TRACE) console.log(c);
@@ -310,13 +310,15 @@ function updateControl(control_type, control_number, value) {
         if (v) {
             let c = $(`#combo-${id}`);
             if (v.changed()) {
-                c.css({opacity: 1.0});
-                // console.log('control ' + v.name + ` #${id} has changed`);
+                c.css({ opacity: 1.0 });
             } else {
-                c.css({opacity: 0.35});
-                // console.log('control ' + v.name + ` #${id} has not changed`);
+                c.css({ opacity: 0.35 });
             }
         }
+    } else {
+        let c = $(`#combo-${id}`);  //TODO: try to do it only if fade_unused has changed
+        if (TRACE) console.log(`reset opacity for #combo-${id}`);
+        c.css({ opacity: 1.0 });
     }
 
 
@@ -431,17 +433,25 @@ function handleUIChange(control_type, control_number, value) {
 
     if (settings.fade_unused) {
         let id = control_type + "-" + control_number;
-        let c = $(`#combo-${id}`);
-        if (c.css('opacity') < 1.0) {
-            let v = DEVICE.getControl(control_type, control_number);
-            if (v) {
-                if (v.changed()) {
-                    c.css({opacity: 1.0});
-                    //console.log('control ' + v.name + ` #${id} has changed`);
-                    // } else {
-                    //     c.css({ opacity: 0.3 });
-                    //     console.log('control ' + v.name + ` #${id} has not changed`);
-                }
+        let v = DEVICE.getControl(control_type, control_number);
+        if (v) {
+            let c = $(`#combo-${id}`);
+            if (c.css('opacity') < 1.0) {
+                // let v = DEVICE.getControl(control_type, control_number);
+                // if (v) {
+                    if (v.changed()) {
+                        c.css({ opacity: 1.0 });
+                        // console.log('control ' + v.name + ` #${id} has changed`);
+                    }
+                // }
+            } else {
+                // let v = DEVICE.getControl(control_type, control_number);
+                // if (v) {
+                    if (!v.changed()) {
+                        c.css({ opacity: 0.35 });
+                        // console.log('control ' + v.name + ` #${id} has not changed`);
+                    }
+                // }
             }
         }
     }
@@ -688,7 +698,7 @@ function setupKnobs() {
         });
 
         knobs[id].disableDebug();
-
+/*
         let dbg = {
 
             // with_label: false,
@@ -698,7 +708,7 @@ function setupKnobs() {
             value_resolution: 1,
             default_value: v,
             center_zero: Math.min(...c.range) < 0,
-            center_value: c.init_value,
+            center_value: c.hasOwnProperty("cc_center") ? c.cc_center : c.init_value,
             format: v => c.human(v),
             snap_to_steps: false,
             mouse_wheel_acceleration: 1,
@@ -745,13 +755,14 @@ function setupKnobs() {
             font_color: "#FFEA00",
 
         };
-        // if (id==='cc-28' || id==='cc-71') {
-        //     knobs[id].enableDebug();
-        //     console.log(JSON.stringify(dbg));
-        // }
 
+        if (id==='cc-26' || id==='xcc-71') {
+            knobs[id].enableDebug();
+            console.log(JSON.stringify(dbg));
+        }
+*/
         elem.addEventListener("change", function(event) {
-            if (TRACE) console.log(event);
+            // if (TRACE) console.log(event);
             handleUIChange(c.cc_type, c.cc_number /*i*/, event.detail);
         });
     }
@@ -1082,7 +1093,7 @@ function updateSlider(id, value) {
 function updateSVGSlider(id, value) {
     if (TRACE) console.log(`updateSVGSlider(${id}, ${value})`);
     if (sliders.hasOwnProperty(id)) {
-        if (TRACE) console.log(`set value for svg-slider ${id}`);
+        // if (TRACE) console.log(`set value for svg-slider ${id}`);
         sliders[id].value = value;
     }
     $("#" + id + "-value").text(value);
@@ -1095,23 +1106,18 @@ function updateLinkedUIElements() {
 
     if (TRACE) console.groupCollapsed("updateLinkedUIElements()");
 
-    // TODO: Osc 1+2: PW controls are to be displayed only when wave form is pulse
-    // radio-button-like .bt:
-    // console.log('-----');
-    // if (control_type === 'nrpn' && control_number === '72') {
-        if ($('#nrpn-72-3').is('.on')) {
-            $('#osc1-pw,#osc1-pw-label').css({opacity:1.0});
-        } else {
-            $('#osc1-pw,#osc1-pw-label').css({opacity:0.1});
-        }
-    // }
-    // if (control_type === 'nrpn' && control_number === '82') {
-        if ($('#nrpn-82-3').is('.on')) {
-            $('#osc2-pw,#osc2-pw-label').css({opacity:1.0});
-        } else {
-            $('#osc2-pw,#osc2-pw-label').css({opacity:0.1});
-        }
-    // }
+    // Osc 1+2: PW controls are to be displayed only when wave form is pulse
+    if ($('#nrpn-72-3').is('.on')) {
+        $('#osc1-pw,#osc1-pw-label').css({ opacity: 1.0 });
+    } else {
+        $('#osc1-pw,#osc1-pw-label').css({ opacity: 0.1 });
+    }
+
+    if ($('#nrpn-82-3').is('.on')) {
+        $('#osc2-pw,#osc2-pw-label').css({ opacity: 1.0 });
+    } else {
+        $('#osc2-pw,#osc2-pw-label').css({ opacity: 0.1 });
+    }
 
     envelopes["mod-envelope"].envelope = DEVICE.getADSREnv("mod");
     envelopes["amp-envelope"].envelope = DEVICE.getADSREnv("amp");
@@ -1133,9 +1139,8 @@ function updateLinkedUIElements() {
     }
 
     let xy = padCCToXY();
-    // console.log("updateLinkedUIElements", xy);
-    setDotPosition(xy);    // update dot position
-    displayPadCCValues(padCC());           // display CC values corresponding to dot XY position
+    setDotPosition(xy);             // update dot position
+    displayPadCCValues(padCC());    // display CC values corresponding to dot XY position
 
     if (TRACE) console.groupEnd();
 }
@@ -1148,9 +1153,7 @@ function updateMeta() {
         patch_number = DEVICE.meta.patch_id.value;
         displayPatchNumber();
     }
-    // $("#patch-number").text(DEVICE.meta.patch_id.value);
     if (DEVICE.meta.patch_name.value) {
-        //$("#patch-number").text(": " + DEVICE.meta.patch_name.value);
         patch_name = DEVICE.meta.patch_name.value;
         displayPatchName();
     }
@@ -1735,6 +1738,7 @@ function keyDown(code, alt, shift) {
             patchDec();
             // patch down
             break;
+        //TODO: add home, end, pageup, pagedn for patch naviation.
     }
 }
 
@@ -1848,7 +1852,8 @@ function loadSettings() {
 
     $(`input:checkbox[name=fade-unused]`).click(function(){
         settings.fade_unused = !settings.fade_unused;
-        saveRandomizerSettings();
+        saveSettings();
+        updateUI();
     });
 
     // --- randomizer settings:
@@ -1864,11 +1869,11 @@ function loadSettings() {
     // select-all and select-none links:
     $("#randomizer-select-all").click(function(){
         $("input.chk-rnd").prop("checked", true);
-        saveRandomizerSettings();
+        saveSettings();
     });
     $("#randomizer-select-none").click(function(){
         $("input.chk-rnd").prop("checked", false);
-        saveRandomizerSettings();
+        saveSettings();
     });
 
 }
@@ -1876,14 +1881,14 @@ function loadSettings() {
 /**
  *
  */
-function saveRandomizerSettings() {
+function saveSettings() {
     let checked = [];
     $("input.chk-rnd:checked").each(function () {
         checked.push(this.name);
     });
     // let checked = $("input.chk-rnd:checked").map(function() { return $(this).name }).get();
     settings.randomize = checked;
-    if (TRACE) console.log("save settings", settings);
+    if (TRACE) console.log("saveRandomizerSettings: save settings", settings);
     Cookies.set("settings", settings);
 }
 
@@ -1898,7 +1903,7 @@ function setupSettings() {
 
     if (TRACE) console.log("settings cookie", Cookies.getJSON());
 
-    $("input.chk-rnd").change(saveRandomizerSettings);
+    $("input.chk-rnd").change(saveSettings);
 
     console.groupEnd();
 }
@@ -1965,9 +1970,10 @@ function displayNote(note) {
     // tonal.note.enharmonics("A#4") --> ["G###4", "A#4", "Bb4"]
     // tonal.note.enharmonics("C")   --> ["B#", "C", "Dbb"]
     // tonal.note.enharmonics("A")   --> ["G##", "A", "Bbb"]
-    let enharmonics = tonal.note.enharmonics(note);
+    let enharmonics = tonal.Note.enharmonic(note);
+    console.log(enharmonics);
 
-    let enharmonic;
+    let enharmonic;             //FIXME: fix enharmonic re. new tonal.js API
     if (note.length === 2) {
         enharmonic = "";
     } else {
@@ -1986,7 +1992,8 @@ function displayNote(note) {
         note = note.substr(0, i) + "-" + note.substr(i);
     }
 
-    if (TRACE) console.log(`displayNote: ${note} (${enharmonic})`);
+    // if (TRACE)
+        console.log(`displayNote: ${note} (${enharmonic})`);
 
     // $("#played-note").addClass("on");
     $("#note-name").html(note);

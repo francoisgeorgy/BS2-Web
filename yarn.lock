@@ -5646,9 +5646,9 @@ svg-envelope@^0.2.0:
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/svg-envelope/-/svg-envelope-0.2.2.tgz#2d0c0390c048b5e423ec4e7e7c17970b707c4c55"
 
-svg-knob@^1.6.1:
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/svg-knob/-/svg-knob-1.6.1.tgz#e7abf01e9e87a7d4177d3b4846add6c94e187aa4"
+svg-knob@^1.7.0:
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/svg-knob/-/svg-knob-1.7.0.tgz#7c6980ecc48b3adb1205df83b9bb04b64f24e339"
 
 svg-slider@^1.3.1:
   version "1.3.2"

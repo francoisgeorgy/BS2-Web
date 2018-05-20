@@ -2,6 +2,8 @@ import {COARSE_VALUES} from './constants.js';
 
 /**
  * 0..127 to -63..63
+ *
+ * Note: values 63 and 64 map to 0.
  */
 const _63 = function (v) {
     return v < 64 ? (v - 63) : (v - 64);
@@ -16,6 +18,8 @@ const _64 = function (v) {
 
 /**
  * 0..255 to -127..127
+ *
+ * Note: values 127 and 128 map to 0.
  */
 const _127 = function (v) {
     return v < 128 ? (v - 127) : (v - 128);
@@ -23,6 +27,8 @@ const _127 = function (v) {
 
 /**
  * 0..127 to -100..100
+ *
+ * Note: values 127 and 128 map to 0.
  */
 const _100 = function (v) {
     let x = v < 128 ? (v - 127) : (v - 128);
