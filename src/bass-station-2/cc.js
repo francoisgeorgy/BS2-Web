@@ -84,7 +84,7 @@ function defineControls() {
         range: [-100, 100],         // TODO: rename range to human_range or hrange
         human: mapper._100,
         cc_range: [27, 228],
-        cc_center: 127,             // raw value when the knob is centered
+        cc_center: [127, 128],
         sysex: {
             offset: 22,
             mask: [0x03, 0x7E]
@@ -106,7 +106,7 @@ function defineControls() {
         lsb: 59,
         range: [-12, 12],
         human: v => mapper._12(v).toFixed(1),
-        cc_center: 127,             // raw value when the knob is centered ; TODO: check
+        cc_center: [127, 128],
         sysex: {
             offset: 21,
             mask: [0x07, 0x7C]
@@ -116,7 +116,7 @@ function defineControls() {
         name: "Osc1 Mod Env Depth",
         range: [-63, 63],
         human: mapper._63,
-        cc_center: 63,             // raw value when the knob is centered
+        cc_center: [63, 64],
         sysex: {
             offset: 98,
             mask: [0x1F, 0x60]
@@ -127,7 +127,7 @@ function defineControls() {
         lsb: 60,
         range: [-127, 127],
         human: mapper._127,
-        cc_center: 127,             // raw value when the knob is centered ; TODO: check
+        cc_center: [127, 128],
         sysex: {
             offset: 90,
             mask: [0x3F, 0x60]
@@ -137,7 +137,7 @@ function defineControls() {
         name: "Osc1 Mod Env PW Mod",
         range: [-63, 63],
         human: mapper._63,
-        cc_center: 63,             // raw value when the knob is centered ; TODO: check
+        cc_center: [63, 64],
         sysex: {
             offset: 101,
             mask: [0x01, 0x7C]
@@ -147,7 +147,7 @@ function defineControls() {
         name: "Osc1 LFO2 PW Mod",
         range: [-90, 90],
         human: mapper._90_90,
-        cc_center: 63,             // raw value when the knob is centered ; TODO: check
+        cc_center: 63,
         sysex: {
             offset: 93,
             mask: [0x03, 0x7C]
@@ -169,7 +169,7 @@ function defineControls() {
         range: [-100, 100],
         human: mapper._100,
         cc_range: [27, 228],
-        cc_center: 127,             // raw value when the knob is centered ; TODO: check
+        cc_center: [127, 128],
         sysex: {
             offset: 28,
             mask: [0x0F, 0x78]
@@ -191,7 +191,7 @@ function defineControls() {
         lsb: 62,
         range: [-12, 12],
         human: v => mapper._12(v).toFixed(1),
-        cc_center: 127,             // raw value when the knob is centered ; TODO: check
+        cc_center: [127, 128],
         sysex: {
             offset: 27,
             mask: [0x1F, 0x70]
@@ -201,7 +201,7 @@ function defineControls() {
         name: "Osc2 Mod Env Depth",
         range: [-63, 63],
         human: mapper._63,
-        cc_center: 63,             // raw value when the knob is centered ; TODO: check
+        cc_center: [63, 64],
         sysex: {
             offset: 99,
             mask: [0x0F, 0x70]
@@ -212,7 +212,7 @@ function defineControls() {
         range: [-127, 127],
         lsb: 63,
         human: mapper._127,
-        cc_center: 127,             // raw value when the knob is centered ; TODO: check
+        cc_center: [127, 128],
         sysex: {
             offset: 91,
             mask: [0x1F, 0x70]
@@ -222,7 +222,7 @@ function defineControls() {
         name: "Osc2 Mod Env PW Mod",
         range: [-63, 63],
         human: mapper._63,
-        cc_center: 63,             // raw value when the knob is centered ; TODO: check
+        cc_center: [63, 64],
         sysex: {
             offset: 102,
             mask: [0x01, 0x7E]
@@ -386,7 +386,7 @@ function defineControls() {
         name: "Filter Mod Env Depth",
         range: [-63, 63],
         human: mapper._63,
-        cc_center: 63,             // raw value when the knob is centered ; TODO: check
+        cc_center: [63, 64],
         sysex: {
             offset: 105,
             mask: [0x3F, 0x40]
@@ -397,7 +397,7 @@ function defineControls() {
         range: [-127, 127],
         lsb: 49,
         human: mapper._127,
-        cc_center: 127,             // raw value when the knob is centered ; TODO: check
+        cc_center: [127, 128],
         sysex: {
             offset: 97,
             mask: [0x7F, 0x40]      // OK
@@ -727,8 +727,8 @@ function defineControls() {
 
         if (!obj.hasOwnProperty("init_value")) {
             if (obj.hasOwnProperty("cc_center")) {
-                console.log(`cc-${obj.cc_number}: obj.init_value = obj.cc_center: ${obj.init_value}=${obj.cc_center}`);
-                obj.init_value = obj.cc_center;
+                // console.log(`cc-${obj.cc_number}: obj.init_value = obj.cc_center: ${obj.init_value}=${obj.cc_center}`);
+                obj.init_value = Array.isArray(obj.cc_center) ? obj.cc_center[0] : obj.cc_center;
             } else if ((Math.min(...obj.range) < 0) && (Math.max(...obj.range) > 0)) {
                 obj.init_value = (1 << (bits - 1)) - 1; // very simple rule: we take max/2 as default value
             } else {

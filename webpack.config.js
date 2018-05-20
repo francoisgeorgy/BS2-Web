@@ -1,6 +1,7 @@
 const webpack = require("webpack");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
+var WebpackAutoInject = require('webpack-auto-inject-version');
 
 module.exports = {
     entry: {
@@ -9,21 +10,29 @@ module.exports = {
     },
     module: {
         rules: [{
-                 test: /\.css$/,
-                 use: ["style-loader", "css-loader"]
+            test: /\.woff$/,
+            use: {
+                loader: "url-loader",
+                options: {
+                    limit: 50000,
+                },
+            },
+        },{
+             test: /\.css$/,
+             use: ["style-loader", "css-loader"]
         }]
     },
     plugins: [
-        // new CleanWebpackPlugin(["dist"]),
-        // new MinifyPlugin(/*minifyOpts*/ {
-        //     removeConsole: true,
-        //     removeDebugger: true
-        // }, /*pluginOpts*/ {}),
         new webpack.ProvidePlugin({
             $: "jquery",
             jQuery: "jquery",
             "window.jQuery": "jquery",
             "window.$": "jquery"
+        }),
+        new WebpackAutoInject({
+            components: {
+                AutoIncreaseVersion: false
+            }
         }),
         new CopyWebpackPlugin([
             { from: "./src/index.html" },
@@ -34,21 +43,17 @@ module.exports = {
             { from: "./src/favicon.png" }
             // { from: "./src/css/patch.css", to: "css" },
             // { from: "./src/css/print.css", to: "css" },
-        ])
+        ]),
+        new UglifyJSPlugin({
+            uglifyOptions: {
+                compress: {
+                    drop_console: true,
+                }
+            }
+        })
     ],
     performance: {
         maxAssetSize: 1000000,
         maxEntrypointSize: 1000000
-    },
-    optimization: {
-        minimizer: [
-            new UglifyJSPlugin({
-                uglifyOptions: {
-                    compress: {
-                        drop_console: true,
-                    }
-                }
-            })
-        ]
     }
 };
