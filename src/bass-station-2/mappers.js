@@ -26,7 +26,7 @@ const _127 = function (v) {
 };
 
 /**
- * 0..127 to -100..100
+ * 0..255 to -100..100
  *
  * Note: values 127 and 128 map to 0.
  */
