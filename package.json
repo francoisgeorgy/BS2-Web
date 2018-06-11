@@ -4,6 +4,7 @@
     "description": "Control your Bass Station 2 synthesizer from your web browser.  No more hidden parameters. All of the Bass Station 2 parameters are visible on screen. Save, load and even print your patches! And, for the fun, leave the application create a patch with the _randomizer_!",
     "main": "main.js",
     "dependencies": {
+        "base64-js": "^1.3.0",
         "detect-browser": "^2.4.0",
         "glob": "^7.1.2",
         "jquery-ui": "^1.12.1",

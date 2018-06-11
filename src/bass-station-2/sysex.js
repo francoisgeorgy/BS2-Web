@@ -109,6 +109,8 @@ const setDump = function (data) {
 
 /**
  * Create a SysEx dump data structure
+ *
+ * @returns {Uint8Array}
  */
 const getDump = function () {
 

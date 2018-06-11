@@ -16,6 +16,7 @@ import "./css/main.css";
 import {drawGrid, initPad} from "./xypad/xypad";
 import {detect} from "detect-browser";
 import * as tonal from "tonal";
+import * as base64js from "base64-js";
 
 const TRACE = false;    // when true, will log more details in the console
 
@@ -1542,6 +1543,13 @@ function openCreditsDialog() {
 
 function printPatch() {
     if (TRACE) console.log("printPatch");
+
+    let b = DEVICE.getSysEx();
+    let a = Utils.toHexString(b);
+    let s = base64js.fromByteArray(b);
+    console.log(a, s);
+    return false;
+
     let url = "print.html?" + URL_PARAM_SYSEX + "=" + Utils.toHexString(DEVICE.getSysEx());
     window.open(url, "_blank", "width=800,height=600,location,resizable,scrollbars,status");
     return false;   // disable the normal href behavior
