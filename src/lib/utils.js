@@ -28,6 +28,7 @@ export let toHexString = function(byteArray, sep) {
 /**
  *
  * @param string
+ * @param sep
  * @returns {*}
  */
 export var fromHexString = function(string, sep) {

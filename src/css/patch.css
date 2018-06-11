@@ -71,7 +71,7 @@ table.values tr:nth-child(even) {
 .wrapper {
     display: grid;
     grid-gap: 10px;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     background-color: #fff;
     margin-bottom: 20px;
 }
