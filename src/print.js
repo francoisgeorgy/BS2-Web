@@ -4,6 +4,7 @@ import * as Utils from "./lib/utils.js";
 import * as Mustache from "mustache";
 
 import "./css/patch.css";
+import LZString from "lz-string";
 
 const VERSION = "1.0.0";
 console.log(`Bass Station 2 Patch Sheet ${VERSION}`);
@@ -147,22 +148,9 @@ $(function () {
 
     DEVICE.init();
 
-    let data = null;
-
     let s = Utils.getParameterByName(URL_PARAM_SYSEX);
     if (s) {
-        data = Utils.fromHexString(s);
-        DEVICE.setValuesFromSysEx(data);
-/*
-    } else {
-        s = Utils.getParameterByName("pack");
-        if (s) {
-            data = msgpack.decode(base64js.toByteArray(s));
-            if (data) {
-                DEVICE.setAllValues(data);
-            }
-        }
-*/
+        DEVICE.setValuesFromSysEx(Utils.fromHexString(LZString.decompressFromBase64(decodeURI(s))));
     }
 
     loadTemplate(null, Utils.getParameterByName("changedonly") === "1");

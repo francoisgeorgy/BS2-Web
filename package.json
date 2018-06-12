@@ -10,6 +10,7 @@
         "jquery-ui": "^1.12.1",
         "js-cookie": "^2.1.4",
         "lity": "^2.3.0",
+        "lz-string": "^1.4.4",
         "moment": "^2.22.1",
         "mustache": "^2.3.0",
         "rxjs": "5.5.6",
