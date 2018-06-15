@@ -1,13 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Bass Station 2 Patch Sheet</title>
-    <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Condensed:400,700" rel="stylesheet">
-    <link rel="stylesheet" media="all" href="patch.css" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="../bs2.js"></script>
-    <script src="patch-sheet.js"></script>
 </head>
 <body>
     <div id="cmds">
@@ -87,5 +80,9 @@
         1. Init the Bass Station 2<br />
         2. Set all the values written in <strong>bold</strong>
       </div>
+    </div>
+    <div id="template-error">
+        <div class="error">Invalid SysEx data.</div>
+        <pre>{{dump}}</pre>
     </div>
 </body>
