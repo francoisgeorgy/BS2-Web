@@ -2,6 +2,7 @@
 import DEVICE from "./bass-station-2/bass-station-2.js";
 import * as Utils from "./lib/utils.js";
 import * as Mustache from "mustache";
+import {hexy} from "hexy";
 
 import "./css/patch.css";
 import LZString from "lz-string";
@@ -143,16 +144,48 @@ function loadTemplate(data, changedonly) {
     });
 }
 
+function loadErrorTemplate(data) {
+
+    console.log("loadErrorTemplate");
+
+    $.get("templates/patch-sheet-template.html", function(template) {
+
+        console.log("patch-sheet-template.html loaded");
+
+        let t = $(template).filter("#template-error").html();
+
+        $("body").append(Mustache.render(t, {dump: data ? hexy(Array.from(data), {format:"twos"}) : "no data"}));
+
+        $("#cmds").text("");
+
+        $("#print").click(function(){
+            window.print();
+            return false;
+        });
+
+    });
+}
 
 $(function () {
 
     DEVICE.init();
 
+    let valid = false;
+    let data = null;
     let s = Utils.getParameterByName(URL_PARAM_SYSEX);
     if (s) {
-        DEVICE.setValuesFromSysEx(Utils.fromHexString(LZString.decompressFromBase64(decodeURI(s))));
+        try {
+            data = Utils.fromHexString(LZString.decompressFromBase64(decodeURI(s)));
+            valid = DEVICE.setValuesFromSysEx(data);
+        } catch (error) {
+            console.warn(error);
+        }
     }
 
-    loadTemplate(null, Utils.getParameterByName("changedonly") === "1");
+    if (valid) {
+        loadTemplate(null, Utils.getParameterByName("changedonly") === "1");
+    } else {
+        loadErrorTemplate(data);
+    }
 
 });

@@ -8,6 +8,11 @@ a {
     text-decoration: none;
 }
 
+.error {
+    color: red;
+    font-weight: bold;
+}
+
 #cmds {
     float: right;
     text-align: right;
