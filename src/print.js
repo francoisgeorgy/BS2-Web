@@ -6,7 +6,7 @@ import * as Mustache from "mustache";
 import "./css/patch.css";
 import LZString from "lz-string";
 
-const VERSION = "1.0.0";
+const VERSION = "1.1.0";
 console.log(`Bass Station 2 Patch Sheet ${VERSION}`);
 
 const URL_PARAM_SYSEX = "sysex";    // name of sysex parameter in the query-string
