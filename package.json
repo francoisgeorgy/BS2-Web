@@ -47,7 +47,7 @@
         "url": "git+https://github.com/francoisgeorgy/BS2-Web.git"
     },
     "keywords": [],
-    "author": "",
+    "author": "François Georgy <francois.georgy@gmail.com> (http://sysex.io)",
     "license": "ISC",
     "bugs": {
         "url": "https://github.com/francoisgeorgy/BS2-Web/issues"
