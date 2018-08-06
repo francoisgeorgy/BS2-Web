@@ -820,7 +820,10 @@ function setupResets() {
             }
             c.raw_value = c.init_value;
             updateControl(control_type, control_number, c.init_value);
-    });
+
+            updateDevice(control_type, control_number, c.init_value);
+
+        });
 }
 
 /**
