@@ -9,7 +9,9 @@ import moment from "moment";
 import Cookies from "js-cookie";
 import * as lity from "lity";
 import "webpack-jquery-ui/effects";
-import Rx from "rxjs/Rx";
+// import Rx from "rxjs/Rx";
+import { Observable, fromEvent } from 'rxjs'
+import { groupBy, merge, map, mergeAll, distinctUntilChanged } from 'rxjs/operators';
 // CSS order is important
 import "./css/lity.min.css";
 import "./css/main.css";
@@ -1656,14 +1658,21 @@ function patchDec() {
  */
 function setupKeyboard() {
 
-    var keyDowns = Rx.Observable.fromEvent(document, "keydown")
-    var keyUps = Rx.Observable.fromEvent(document, "keyup")
+    var keyDowns = fromEvent(document, "keydown");
+    var keyUps = fromEvent(document, "keyup");
 
-    var keyPresses = keyDowns
-        .merge(keyUps)
-        .groupBy(e => e.keyCode)
-        .map(group => group.distinctUntilChanged(null, e => e.type))
-        .mergeAll()
+    var keyPresses = keyDowns.pipe(
+        merge(keyUps),
+        groupBy(e => e.keyCode),
+        map(group => group.pipe(distinctUntilChanged(null, e => e.type))),
+        mergeAll()
+    );
+
+    // var keyPresses = keyDowns
+    //     .merge(keyUps)
+    //     .groupBy(e => e.keyCode)
+    //     .map(group => group.distinctUntilChanged(null, e => e.type))
+    //     .mergeAll()
 
     keyPresses.subscribe(function(e) {
         //console.log(e.type, e.key || e.which, e.keyIdentifier);

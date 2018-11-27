@@ -1,6 +1,6 @@
 const webpack = require("webpack");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
+// const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 var WebpackAutoInject = require('webpack-auto-inject-version');
 
 module.exports = {
@@ -43,14 +43,14 @@ module.exports = {
             { from: "./src/favicon.png" }
             // { from: "./src/css/patch.css", to: "css" },
             // { from: "./src/css/print.css", to: "css" },
-        ]),
-        new UglifyJSPlugin({
-            uglifyOptions: {
-                compress: {
-                    drop_console: true,
-                }
-            }
-        })
+        ])  //,
+        // new UglifyJSPlugin({
+        //     uglifyOptions: {
+        //         compress: {
+        //             drop_console: true,
+        //         }
+        //     }
+        // })
     ],
     performance: {
         maxAssetSize: 1000000,

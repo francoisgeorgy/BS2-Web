@@ -1,4 +1,6 @@
-import Rx from 'rxjs/Rx';
+// import Rx from 'rxjs/Rx';
+import { Observable, fromEvent } from 'rxjs'
+import { map, merge, takeUntil, concatMap, first } from 'rxjs/operators';
 
 const NS = "http://www.w3.org/2000/svg";
 
@@ -39,16 +41,16 @@ var rect_element = null;
 
 function getElementRect() {
     if (rect == null) {
-        rect = rect_element.getBoundingClientRect();
+        if (rect_element) rect = rect_element.getBoundingClientRect();
         console.log("getElementRect", rect);
     }
     return rect;
 }
 
-Rx.Observable.fromEvent(window, "resize").subscribe(
+fromEvent(window, "resize").subscribe(
     e => {
         // console.log(e);
-        rect = rect_element.getBoundingClientRect();
+        if (rect_element) rect = rect_element.getBoundingClientRect();
     }
 );
 
@@ -154,17 +156,34 @@ export const initPad = function(element, f) {
     // if (rect == null) rect = element.getBoundingClientRect();
     // console.log("initPad", rect);
 
-    const mouseDowns = Rx.Observable.fromEvent(element, "mousedown").map(mouseEventToCoordinate).map(toRelCoord);
-    const mouseMoves = Rx.Observable.fromEvent(window, "mousemove").map(mouseEventToCoordinate).map(toRelCoord);
-    const mouseUps = Rx.Observable.fromEvent(window, "mouseup").map(mouseEventToCoordinate).map(toRelCoord);
+    // const mouseDowns = fromEvent(element, "mousedown").map(mouseEventToCoordinate).map(toRelCoord);
+    // const mouseMoves = fromEvent(window, "mousemove").map(mouseEventToCoordinate).map(toRelCoord);
+    // const mouseUps = fromEvent(window, "mouseup").map(mouseEventToCoordinate).map(toRelCoord);
+    //
+    // const touchStarts = fromEvent(element, "touchstart").map(touchEventToCoordinate).map(toRelCoord);
+    // const touchMoves = fromEvent(element, "touchmove").map(touchEventToCoordinate).map(toRelCoord);
+    // const touchEnds = fromEvent(window, "touchend").map(touchEventToCoordinate).map(toRelCoord);
+    //
+    // const starts = mouseDowns.merge(touchStarts);
+    // const moves = mouseMoves.merge(touchMoves);
+    // const ends = mouseUps.merge(touchEnds);
 
-    const touchStarts = Rx.Observable.fromEvent(element, "touchstart").map(touchEventToCoordinate).map(toRelCoord);
-    const touchMoves = Rx.Observable.fromEvent(element, "touchmove").map(touchEventToCoordinate).map(toRelCoord);
-    const touchEnds = Rx.Observable.fromEvent(window, "touchend").map(touchEventToCoordinate).map(toRelCoord);
 
-    const starts = mouseDowns.merge(touchStarts);
-    const moves = mouseMoves.merge(touchMoves);
-    const ends = mouseUps.merge(touchEnds);
+
+    const mouseDowns = fromEvent(element, "mousedown").pipe(map(mouseEventToCoordinate), map(toRelCoord));
+    const mouseMoves = fromEvent(window, "mousemove").pipe(map(mouseEventToCoordinate), map(toRelCoord));
+    const mouseUps = fromEvent(window, "mouseup").pipe(map(mouseEventToCoordinate), map(toRelCoord));
+
+    const touchStarts = fromEvent(element, "touchstart").pipe(map(touchEventToCoordinate), map(toRelCoord));
+    const touchMoves = fromEvent(element, "touchmove").pipe(map(touchEventToCoordinate), map(toRelCoord));
+    const touchEnds = fromEvent(window, "touchend").pipe(map(touchEventToCoordinate), map(toRelCoord));
+
+    const starts = mouseDowns.pipe(merge(touchStarts));
+    const moves = mouseMoves.pipe(merge(touchMoves));
+    const ends = mouseUps.pipe(merge(touchEnds));
+
+
+
 
     // function ff(e) {
     //     console.log('ff', element.getBoundingClientRect());
@@ -173,26 +192,60 @@ export const initPad = function(element, f) {
 
 // Once a start event occurs, it does not give back the start event itself,
 // but it only return a sequence of move events till a mouseUp or touchEnd event occurs.
-    const drags = starts.map(f).concatMap(dragStartEvent =>
-        moves.takeUntil(ends).map(dragEvent => {
-            const x = dragEvent.x; // - dragStartEvent.x;
-            const y = dragEvent.y; // - dragStartEvent.y;
-            console.log(`drags ${x} ${y}`);
-            return {x, y};
-        })
+    const drags = starts.pipe(
+        map(f),
+        concatMap(dragStartEvent =>
+            moves.pipe(
+                takeUntil(ends),
+                map(dragEvent => {
+                    const x = dragEvent.x; // - dragStartEvent.x;
+                    const y = dragEvent.y; // - dragStartEvent.y;
+                    // console.log(`drags ${x} ${y}`);
+                    return {x, y};
+                })
+            )
+        )
     );
+    // const drags = starts
+    //     .map(f)
+    //     .concatMap(dragStartEvent =>
+    //         moves
+    //             .takeUntil(ends)
+    //             .map(dragEvent => {
+    //                 const x = dragEvent.x; // - dragStartEvent.x;
+    //                 const y = dragEvent.y; // - dragStartEvent.y;
+    //                 console.log(`drags ${x} ${y}`);
+    //                 return {x, y};
+    //             })
+    // );
 
 // Reveals the first end event once a start event happened.
 // "ends.first()" part here will not give back a sequence of end events once once a start event occurs,
 // but it gives back only the first one.
-    const drops = starts.concatMap(dragStartEvent =>
-        ends.first().map(dragEndEvent => {
-            const x = dragEndEvent.x; // - dragStartEvent.x;
-            const y = dragEndEvent.y; // - dragStartEvent.y;
-            // console.log(`drops ${x} ${y}`);
-            return {x, y};
-        })
+    const drops = starts.pipe(
+        concatMap(dragStartEvent =>
+            ends.pipe(
+                first(),
+                map(dragEndEvent => {
+                    const x = dragEndEvent.x; // - dragStartEvent.x;
+                    const y = dragEndEvent.y; // - dragStartEvent.y;
+                    // console.log(`drops ${x} ${y}`);
+                    return {x, y};
+                })
+            )
+        )
     );
+//     const drops = starts
+//         .concatMap(dragStartEvent =>
+//             ends
+//                 .first()
+//                 .map(dragEndEvent => {
+//                     const x = dragEndEvent.x; // - dragStartEvent.x;
+//                     const y = dragEndEvent.y; // - dragStartEvent.y;
+//                     // console.log(`drops ${x} ${y}`);
+//                     return {x, y};
+//                 })
+//     );
 
     drags.subscribe(
         // obj => { infos.innerText = `drag ${obj.x}, ${obj.y}`},
