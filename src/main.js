@@ -1970,6 +1970,7 @@ function displayNote(note) {
     let neg_octave = note.indexOf("-") > 0;
     if (neg_octave) note = note.replace("-", "");  // we"ll put it back later; the tests are simpler without it
 
+/*
     // Get the enharmonics of a note. It returns an array of three elements: the below enharmonic, the note, and the upper enharmonic
     // tonal.note.enharmonics("Bb4") --> ["A#4", "Bb4", "Cbb5"]
     // tonal.note.enharmonics("A#4") --> ["G###4", "A#4", "Bb4"]
@@ -1990,6 +1991,7 @@ function displayNote(note) {
             // enharmonic = enharmonics[0].replace("#", "&sharp;");
         }
     }
+*/
 
     if (neg_octave) {
         // put back the minus sign we removed before
@@ -1997,12 +1999,10 @@ function displayNote(note) {
         note = note.substr(0, i) + "-" + note.substr(i);
     }
 
-    // if (TRACE)
-        console.log(`displayNote: ${note} (${enharmonic})`);
+    // console.log(`displayNote: ${note} (${enharmonic})`);
 
-    // $("#played-note").addClass("on");
     $("#note-name").html(note);
-    $("#note-enharmonic").html(enharmonic);
+    // $("#note-enharmonic").html(enharmonic);
 }
 
 //==================================================================================================================
