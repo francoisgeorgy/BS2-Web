@@ -80,6 +80,7 @@ function defineNRPNs() {
     // firmware 2.5
     nrpn[nrpn_id.amp_env_retriggering] = { // 0 (MSB), 109 (LSB)
         name: "Amp Env Retriggering",
+        on_off: true,
         cc_range: [0, 1],
         human: v => v,
         sysex: {

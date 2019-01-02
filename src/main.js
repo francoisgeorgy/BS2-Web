@@ -21,7 +21,7 @@ import * as tonal from "tonal";
 // import * as base64js from "base64-js";
 import LZString from "lz-string";
 
-const TRACE = true;    // when true, will log more details in the console
+const TRACE = false;    // when true, will log more details in the console
 
 const browser = detect();
 
@@ -497,7 +497,7 @@ function init(sendUpdate = true) {
  *
  */
 function randomize() {
-    console.groupCollapsed("randomize");
+    console.group("randomize");
     if (settings.randomize.length < 1) {
         alert("Nothing to randomize.\nUse the \"Settings\" menu to configure the randomizer.");
     } else {

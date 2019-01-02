@@ -40,7 +40,7 @@ export const control_groups = {
             {type: "cc", number: control_id.osc1_mod_env_pw_mod},
             {type: "cc", number: control_id.osc1_manual_pw},
             {type: "cc", number: control_id.osc1_lfo2_pw_mod},
-            {type: "nrpn", number: control_id.osc_error}]
+            {type: "nrpn", number: nrpn_id.osc_error}]
     },
     osc2: {
         name: "Osc 2",
@@ -83,7 +83,7 @@ export const control_groups = {
             {type: "cc", number: control_id.filter_mod_env_depth},
             {type: "cc", number: control_id.filter_lfo2_depth},
             {type: "cc", number: control_id.filter_overdrive},
-            {type: "nrpn", number: control_id.filter_tracking}],
+            {type: "nrpn", number: nrpn_id.filter_tracking}],
     },
     mod_env: {
         name: "Mod Env",
