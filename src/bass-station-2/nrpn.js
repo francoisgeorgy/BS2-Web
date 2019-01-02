@@ -35,7 +35,9 @@ export const nrpn_id = {
     tuning_table: 101,        // 0x65
     paraphonic: 107,
 
-    filter_tracking: 108
+    filter_tracking: 108,
+
+    osc_error: 111
 
 };
 
@@ -309,12 +311,25 @@ function defineNRPNs() {
         }
     };
     // firmware 2.5
+/*                                                  //TODO: must be RPN
     nrpn[nrpn_id.tuning_table] = { // 101
         name: "Tuning Table",
+        cc_range: [0, 7],
         human: v => v,
         sysex: {
             offset: 115,
             mask: [0x01, 0x70]
+        }
+    };
+*/
+    // firmware 2.5
+    nrpn[nrpn_id.osc_error] = { // 111
+        name: "Osc Error",
+        cc_range: [0, 7],
+        human: v => v,
+        sysex: {
+            offset: 117,
+            mask: [0x38]
         }
     };
 

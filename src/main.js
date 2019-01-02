@@ -951,6 +951,11 @@ function setupSelects() {
         $("#cc-119").append($("<option>").val(i).text(i+1));
     }
 
+    // OSC ERROR
+    for (let i=0; i<8; i++) {
+        $("#nrpn-111").append($("<option>").val(i).text(i));
+    }
+
     $("select.cc").change(function (){ handleUIChange(...this.id.split("-"), this.value) });
 
     // LFO speed/sync selects:
@@ -1978,7 +1983,13 @@ function noteOff() {
     $("#played-note").removeClass("on");
 }
 
+
 function displayNote(note) {
+
+    // disabled from firmware 2.5. to make room in the UI for other options
+
+    return;
+
 
     if (TRACE) console.log("displayNote", note);
 
@@ -2023,6 +2034,7 @@ function displayNote(note) {
     // console.log(`displayNote: ${note} (${enharmonic})`);
 
     $("#note-name").html(note);
+
     // $("#note-enharmonic").html(enharmonic);
 }
 
