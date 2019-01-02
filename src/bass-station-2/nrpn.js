@@ -30,7 +30,13 @@ export const nrpn_id = {
     arp_seq_retrig: 106,
 
     amp_env_retriggering: 109,
-    mod_env_retriggering: 110
+    mod_env_retriggering: 110,
+
+    tuning_table: 101,        // 0x65
+    paraphonic: 107,
+
+    filter_tracking: 108
+
 };
 
 export const nrpn = new Array(127);
@@ -69,6 +75,7 @@ function defineNRPNs() {
             mask: [0x06]
         }
     };
+    // firmware 2.5
     nrpn[nrpn_id.amp_env_retriggering] = { // 0 (MSB), 109 (LSB)
         name: "Amp Env Retriggering",
         cc_range: [0, 1],
@@ -82,6 +89,7 @@ function defineNRPNs() {
         name: "Mod Env Triggering",
         // range: [0, 2],
         // choice: [0,1,2],
+        on_off: true,
         cc_range: [0, 2],
         human: v => consts.ENV_TRIGGERING[v],
         sysex: {
@@ -89,8 +97,10 @@ function defineNRPNs() {
             mask: [0x0C]
         }
     };
+    // firmware 2.5
     nrpn[nrpn_id.mod_env_retriggering] = { // 0 (MSB), 110 (LSB)
         name: "Mod Env Retriggering",
+        on_off: true,
         cc_range: [0, 1],
         human: v => v,
         sysex: {
@@ -275,6 +285,36 @@ function defineNRPNs() {
         sysex: {
             offset: 77,
             mask: [0x20]
+        }
+    };
+
+    // firmware 2.5
+    nrpn[nrpn_id.paraphonic] = { // 107
+        name: "Paraphonic Mode",
+        on_off: true,
+        human: v => v,
+        sysex: {
+            offset: 111,
+            mask: [0x02]
+        }
+    };
+    // firmware 2.5
+    nrpn[nrpn_id.filter_tracking] = { // 108
+        name: "Filter Tracking",
+        on_off: true,
+        human: v => v,
+        sysex: {
+            offset: 112,
+            mask: [0x07]
+        }
+    };
+    // firmware 2.5
+    nrpn[nrpn_id.tuning_table] = { // 101
+        name: "Tuning Table",
+        human: v => v,
+        sysex: {
+            offset: 115,
+            mask: [0x01, 0x70]
         }
     };
 
