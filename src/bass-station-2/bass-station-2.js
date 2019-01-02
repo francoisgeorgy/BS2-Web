@@ -276,6 +276,7 @@ export default {
     ARP_NOTES_MODE : consts.ARP_NOTES_MODE,
     ARP_OCTAVES : consts.ARP_OCTAVES,
     ARP_SEQUENCES: consts.ARP_SEQUENCES,
+    TUNING_TABLE: consts.TUNING_TABLE,
     init,
     randomize,
     getControl,

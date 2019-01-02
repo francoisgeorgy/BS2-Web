@@ -973,6 +973,9 @@ function setupSelects() {
         }
     });
 
+    // firmware 2.5, tuning table
+    // $("#nrpn-101").append(DEVICE.TUNING_TABLE.map((o,i) => { return $("<option>").val(i).text(o); }));
+
 } // setupSelects
 
 /**

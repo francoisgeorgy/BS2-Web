@@ -85,6 +85,11 @@ export const ARP_SEQUENCES = [
 
 ];
 
+export const TUNING_TABLE = [
+    1, 2, 3, 4, 5, 6, 7, 8, 9
+];
+
+
 // Mapping 0..255 to -12.0..12.0
 export const    COARSE_VALUES = [
     -120, // -12.0; -12.00000; 0
