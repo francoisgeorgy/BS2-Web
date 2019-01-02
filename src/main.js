@@ -956,6 +956,17 @@ function setupSelects() {
         $("#nrpn-111").append($("<option>").val(i).text(i));
     }
 
+    // FILTER TRACKING
+    for (let i=0; i<8; i++) {
+        let v;
+        switch (i) {
+            case 0 : v = 'full track.'; break;
+            case 7 : v = 'no track.'; break;
+            default: v =  `track. ${i}`;
+        }
+        $("#nrpn-108").append($("<option>").val(i).text(v));
+    }
+
     $("select.cc").change(function (){ handleUIChange(...this.id.split("-"), this.value) });
 
     // LFO speed/sync selects:

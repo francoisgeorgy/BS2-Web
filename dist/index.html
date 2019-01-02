@@ -210,6 +210,10 @@
 -->
         <div id="osc1">
             <div class="header">
+                <div class="" style="float:right;letter-spacing:normal;font-weight:400">osc error
+                    <select id="nrpn-111" style="background: transparent" class="cc">
+                    </select>
+                </div>
                 <div>OSC 1</div>
             </div>
             <div class="control-row">
@@ -343,7 +347,12 @@
                                 <div id="cc-84-options" style="margin-left:1vw">
                                 </div>
                             </div>
-                            <div id="cc-106-options">
+                            <div style="display:flex;align-items: flex-end; width:100%;justify-content: space-between">
+                                <div id="cc-106-options">
+                                </div>
+                                <!--<div id="nrpn-108" class="btc" style="margin-right:1vw">tracking</div>-->
+                                <select id="nrpn-108" style="background: transparent" class="cc">
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -431,6 +440,7 @@
                     <!--<div class="adsr-graph">-->
                         <svg class="envelope" id="mod-envelope"></svg>
                     <!--</div>-->
+                    <div id="nrpn-110" class="btc">retrigger after decay</div>
                 </div>
             </div>
         </div>
@@ -478,6 +488,7 @@
                     <!--<div class="adsr-graph">-->
                         <svg class="envelope" id="amp-envelope"></svg>
                     <!--</div>-->
+                    <div id="nrpn-109" class="btc">retrigger after decay</div>
                 </div>
             </div>
         </div>
@@ -547,7 +558,7 @@
                     velocity
                 </div>
                 <div class="combo-label keyboard-note-label">
-                    note played
+                    options
                 </div>
                 <div class="keyboard-start">
                     <div class="knob-combo" id="combo-cc-64">
@@ -583,12 +594,23 @@
                         <div class="knob-label">Amp env.</div>
                     </div>
                 </div>
+                <div class="keyboard-options">
+                    <div class="btc" id="nrpn-107">Paraphonic</div>
+<!--
+                    <div>
+                        <select id="nrpn-101" style="background: transparent" class="cc">
+                        </select>
+                    </div>
+-->
+                </div>
+<!--
                 <div class="keyboard-note">
                     <div id="played-note">
                         <div id="note-name"></div>
-                        <!--<div id="note-enharmonic"></div>-->
+                        &lt;!&ndash;<div id="note-enharmonic"></div>&ndash;&gt;
                     </div>
                 </div>
+-->
             </div>
         </div>
 <!--

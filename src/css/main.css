@@ -207,7 +207,7 @@ div.controls {
     /*padding: 0 !important;*/
     padding: 0 4px !important;
     display: flex;
-    justify-content: space-between;
+    /*justify-content: space-between;*/
     align-items: flex-end;
     /*color: var(--title-text);*/
     color: var(--header-text);
@@ -228,10 +228,13 @@ div.controls {
 }
 
 #title > div.menu {
+    flex-grow: 2;
+    text-align: right;
     margin-bottom: 0.25rem;
 }
 
 div#patch {
+    margin-left: 5rem;
     margin-bottom: 0.25rem;
     display: table;
 }

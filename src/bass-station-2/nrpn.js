@@ -303,7 +303,7 @@ function defineNRPNs() {
     // firmware 2.5
     nrpn[nrpn_id.filter_tracking] = { // 108
         name: "Filter Tracking",
-        on_off: true,
+        cc_range: [0, 7],
         human: v => v,
         sysex: {
             offset: 112,
