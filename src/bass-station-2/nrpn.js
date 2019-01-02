@@ -27,7 +27,10 @@ export const nrpn_id = {
     lfo2_sync_value: 91,
     lfo2_slew: 90,          // FN Key "Slew LFO 2"
 
-    arp_seq_retrig: 106
+    arp_seq_retrig: 106,
+
+    amp_env_retriggering: 109,
+    mod_env_retriggering: 110
 };
 
 export const nrpn = new Array(127);
@@ -66,6 +69,15 @@ function defineNRPNs() {
             mask: [0x06]
         }
     };
+    nrpn[nrpn_id.amp_env_retriggering] = { // 0 (MSB), 109 (LSB)
+        name: "Amp Env Retriggering",
+        cc_range: [0, 1],
+        human: v => v,
+        sysex: {
+            offset: 114,
+            mask: [0x40]
+        }
+    };
     nrpn[nrpn_id.mod_env_triggering] = { // 0 (MSB), 105 (LSB)
         name: "Mod Env Triggering",
         // range: [0, 2],
@@ -75,6 +87,15 @@ function defineNRPNs() {
         sysex: {
             offset: 62,
             mask: [0x0C]
+        }
+    };
+    nrpn[nrpn_id.mod_env_retriggering] = { // 0 (MSB), 110 (LSB)
+        name: "Mod Env Retriggering",
+        cc_range: [0, 1],
+        human: v => v,
+        sysex: {
+            offset: 115,
+            mask: [0x20]
         }
     };
     // MOD WHEEL

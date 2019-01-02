@@ -90,7 +90,8 @@ export const control_groups = {
             {type: "cc", number: control_id.mod_env_decay},
             {type: "cc", number: control_id.mod_env_sustain},
             {type: "cc", number: control_id.mod_env_release},
-            {type: "nrpn", number: nrpn_id.mod_env_triggering}]
+            {type: "nrpn", number: nrpn_id.mod_env_triggering},
+            {type: "nrpn", number: nrpn_id.mod_env_retriggering}]
     },
     amp_env: {
         name: "Amp Env",
@@ -99,7 +100,8 @@ export const control_groups = {
             {type: "cc", number: control_id.amp_env_decay},
             {type: "cc", number: control_id.amp_env_sustain},
             {type: "cc", number: control_id.amp_env_release},
-            {type: "nrpn", number: nrpn_id.amp_env_triggering}]
+            {type: "nrpn", number: nrpn_id.amp_env_triggering},
+            {type: "nrpn", number: nrpn_id.amp_env_retriggering}]
     },
     vca: {
         name: "VCA",

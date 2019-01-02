@@ -567,11 +567,18 @@ div#patch > span {
         grid-row: 2;
     }
 
+    .keyboard-options {
+        grid-column: 8;
+        grid-row: 2;
+    }
+
+    /*
     #played-note {
         text-align: center;
         margin-top: 2.5vh;
         cursor: pointer;
     }
+    */
 
     #note-name {
         font-size: 2.5rem;

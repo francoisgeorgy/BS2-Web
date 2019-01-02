@@ -21,7 +21,7 @@ import * as tonal from "tonal";
 // import * as base64js from "base64-js";
 import LZString from "lz-string";
 
-const TRACE = false;    // when true, will log more details in the console
+const TRACE = true;    // when true, will log more details in the console
 
 const browser = detect();
 
@@ -890,6 +890,11 @@ function setupSwitches() {
         return $("<div>").attr("id", `nrpn-105-${m-i}`).data("control", "nrpn-105").data("value", m-i).text(o).addClass("bt");
     }));
 
+    // $("#nrpn-105-options").append(
+    //     $("<div>").attr("id", `nrpn-110`).data("control", "nrpn-110").data("value", 1).text("RETRIG").addClass("bt")
+    // );
+
+
     //TODO: mod env triggering is overridden by (or the same as) amp env triggering?
 
     // AMP ENV
@@ -898,6 +903,10 @@ function setupSwitches() {
     $("#nrpn-73-options").append(DEVICE.ENV_TRIGGERING.slice(0).reverse().map((o,i) => {
         return $("<div>").attr("id", `nrpn-73-${m-i}`).data("control", "nrpn-73").data("value", m-i).text(o).addClass("bt");
     }));
+
+    // $("#nrpn-73-options").append(
+    //     $("<div>").attr("id", `nrpn-109`).data("control", "nrpn-109").data("value", 1).text("RETRIG").addClass("bt")
+    // );
 
     // TODO: Osc 1+2: PW controls to be displayed only when wave form is pulse
 
