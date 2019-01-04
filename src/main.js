@@ -1447,6 +1447,14 @@ function closeFavoritesPanel() {
     $("#favorites-panel").hide("slide", { direction: "left" }, 500);
 }
 
+
+function reloadWithPatchUrl() {
+    let url = getCurrentPatchAsLink();
+    if (TRACE) console.log(`reloadWithPatchUrl: url=${url}`);
+    window.location.href = url;
+    return false;   // disable the normal href behavior
+}
+
 //==================================================================================================================
 // Settings
 
@@ -1817,6 +1825,7 @@ function setupMenu() {
     $("#menu-init").click(init);
     $("#menu-load-patch").click(loadPatchFromFile);
     $("#menu-save-patch").click(savePatchToFile);
+    $("#menu-get-url").click(reloadWithPatchUrl);
     $("#menu-print-patch").click(printPatch);
     $("#menu-sync").click(syncUIwithBS2);
     $("#menu-midi").click(openMidiWindow);
