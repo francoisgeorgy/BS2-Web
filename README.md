@@ -5,7 +5,7 @@
 - Save, load and even print your patches.
 - And, for the fun, leave the application create a patch with the _randomizer_.
 
-![screenshot](/images/BS2-Web_v2.4.1.png "screenshot of current version running in Chrome")
+[![Quick demo](https://img.youtube.com/vi/_413q6qwQWY/maxresdefault.jpg)](https://www.youtube.com/watch?v=_413q6qwQWY)
 
 
 # Requirements &amp; Limitations
