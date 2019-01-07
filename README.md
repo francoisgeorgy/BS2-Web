@@ -7,6 +7,8 @@
 
 [![Quick demo](https://img.youtube.com/vi/_413q6qwQWY/maxresdefault.jpg)](https://www.youtube.com/watch?v=_413q6qwQWY)
 
+Click screenshot above for a Youtube quick demo.
+
 
 # Requirements &amp; Limitations
 
