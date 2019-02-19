@@ -48,8 +48,8 @@ function decodeControls(data, controls) {
         let sysex = controls[i].sysex;
         if (!sysex.hasOwnProperty("mask")) continue;
 
+        //FIXME: bytes is not used
         let bytes = new Uint8Array(sysex.mask.length);
-
         for (let k = 0; k < sysex.mask.length; k++) {
             let b = data[sysex.offset + k];
             b = b & sysex.mask[k];
