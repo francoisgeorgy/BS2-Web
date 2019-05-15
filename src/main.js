@@ -486,7 +486,7 @@ function handleUIChange(control_type, control_number, value) {
 function init(sendUpdate = true) {
     if (TRACE) console.log(`init(${sendUpdate})`);
     DEVICE.init();
-    updateUI();
+    updateUI(true);
     // setStatus(`init done`);
     if (sendUpdate) updateConnectedDevice();
     if (TRACE) console.log(`init done`);
@@ -497,12 +497,12 @@ function init(sendUpdate = true) {
  *
  */
 function randomize() {
-    console.group("randomize");
+    // console.group("randomize", settings);
     if (settings.randomize.length < 1) {
         alert("Nothing to randomize.\nUse the \"Settings\" menu to configure the randomizer.");
     } else {
         DEVICE.randomize(settings.randomize);
-        updateUI();
+        updateUI(true);
         updateConnectedDevice(true);    // true == update only updated values (values which have been marked as changed)
     }
     console.groupEnd();
@@ -1183,12 +1183,13 @@ function updateLinkedUIElements() {
 /**
  * Update the patch number and patch name displayed in the header.
  */
-function updateMeta() {
-    if (DEVICE.meta.patch_id.value) {
+function updateMeta(force = false) {
+    if (TRACE) console.log("updateMeta", DEVICE.meta);
+    if (force || DEVICE.meta.patch_id.value) {
         patch_number = DEVICE.meta.patch_id.value;
         displayPatchNumber();
     }
-    if (DEVICE.meta.patch_name.value) {
+    if (force || DEVICE.meta.patch_name.value) {
         patch_name = DEVICE.meta.patch_name.value;
         displayPatchName();
     }
@@ -1197,10 +1198,10 @@ function updateMeta() {
 /**
  * Update the UI from the DEVICE controls values.
  */
-function updateUI() {
+function updateUI(force = false) {
     updateControls();
     updateLinkedUIElements();
-    updateMeta();
+    updateMeta(force);
     if (TRACE) console.log("updateUI done");
 }
 
@@ -1877,10 +1878,8 @@ function setupMenu() {
 
 var settings = {
     midi_channel: 1,
-    randomize: [],
+    randomize: ["lfo1", "lfo2", "osc1", "osc2", "sub", "mixer", "filter", "mod_env", "amp_env", "effects", "arp"],
     fade_unused: false,
-    // xypad_x: "cc-16",   // default X is filter frequency
-    // xypad_y: "cc-82"    // default Y is filter resonance
     xypad_x: xypad_x_control_type + "-" + xypad_x_control_number,
     xypad_y: xypad_y_control_type + "-" + xypad_y_control_number
 };
@@ -2095,7 +2094,7 @@ function connectInput(input) {
     if (TRACE) console.log(`midi_input assigned to "${midi_input.name}"`);
     // }
     midi_input
-        .on("programchange", midi_channel, function(e) {
+        .on("programchange", midi_channel, function(e) {        // sent by the BS2 when changing patch
             handlePC(e);
         })
         .on("controlchange", midi_channel, function(e) {
@@ -2109,10 +2108,11 @@ function connectInput(input) {
         })
         .on("sysex", midi_channel, function(e) {
             console.log("sysex handler");
-            if (TRACE) console.log("set sysex value to BS2");
+            if (TRACE) console.log("update BS2 with sysex");
             if (DEVICE.setValuesFromSysEx(e.data)) {
                 updateUI();
                 // setStatus("UI updated from SysEx.");
+                if (TRACE) console.log("BS2 updated with sysex");
             } else {
                 setStatusError("Unable to update from SysEx data.")
             }

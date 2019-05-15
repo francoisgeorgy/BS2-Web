@@ -205,6 +205,10 @@ const randomize = function (groups) {
         }
     }
 
+    meta.patch_id.value = "";
+    // meta.patch_name.value = "rAnDOm";
+    meta.patch_name.value = "random".split('').map(c => Math.round(Math.random()) ? c.toUpperCase() : c.toLowerCase()).join('');
+
 };
 
 /**
@@ -223,6 +227,9 @@ const init = function () {
 
     _init(control);
     _init(nrpn);
+
+    meta.patch_id.value = "";
+    meta.patch_name.value = "";
 };
 
 /**
