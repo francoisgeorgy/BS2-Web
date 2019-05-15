@@ -759,7 +759,7 @@ div#patch > span {
 
 .knob-value {
     font-family: "Roboto Condensed", sans-serif;
-    font-size: 130%;
+    font-size: 125%;
     font-weight: 300;
     stroke: none;
     fill: var(--knob-value);
