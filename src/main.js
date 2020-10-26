@@ -21,7 +21,7 @@ import * as tonal from "tonal";
 // import * as base64js from "base64-js";
 import LZString from "lz-string";
 
-const TRACE = false;    // when true, will log more details in the console
+const TRACE = true;    // when true, will log more details in the console
 
 const browser = detect();
 
@@ -1604,9 +1604,11 @@ function syncUIwithBS2() {
  * header"s "midi channel" select handler
  */
 function setMidiChannel() {
+    if (TRACE) console.log('setMidiChannel', this.value);
     disconnectInput();
     midi_channel = this.value;
-    connectInput();
+    if (TRACE) console.log('setMidiChannel: reconnect input', midi_input);
+    connectInput(midi_input);
 }
 
 /**
@@ -2077,7 +2079,7 @@ function requestSysExDump() {
 function disconnectInput() {
     if (midi_input) {
         midi_input.removeListener();    // remove all listeners for all channels
-        console.log("midi_input not listening");
+        console.log("midi_input listener removed");
     }
 }
 
@@ -2086,7 +2088,11 @@ function disconnectInput() {
  * @param input
  */
 function connectInput(input) {
-    if (!input) return;
+    if (TRACE) console.log(`connectInput(}`);
+    if (!input) {
+        if (TRACE) console.log(`connectInput: no input specified`);
+        return;
+    }
     if (TRACE) console.log(`connect input to channel ${midi_channel}`);
     // if (input) {
     midi_input = input;
