@@ -121,7 +121,7 @@
         let split_track_zero  = Math.PI * 0.5;
         let split_track_zero_value = Math.floor(((config.value_max - config.value_min) / 2.0) / config.value_resolution) * config.value_resolution;
 
-        if (TRACE) console.log(`${element.id}: split_track_zero_value=${split_track_zero_value}`);
+        console.log(`${element.id}: split_track_zero_value=${split_track_zero_value}`);
 
         // let split_track_zero_left  = Math.PI * 0.5 * 1.01; // 1%
         // let split_track_zero_right  = Math.PI * 0.5 * 0.99; // 1%
@@ -164,7 +164,7 @@
 
             track_start += `${arcStartX},${arcStartY} A ${config.radius},${config.radius}`;
 
-            if (TRACE) console.log(`track_start = ${track_start}`);
+            console.log(`track_start = ${track_start}`);
 
             mouseWheelDirection = _isMacOS() ? -1 : 1;
 
@@ -237,7 +237,7 @@
         function knobToPolarAngle(angle) {
             let a = config.zero_at - angle;
             if (a < 0) a = a + 360.0;
-            if (TRACE) console.log(`knobToPolarAngle ${angle} -> ${a}`);
+            console.log(`knobToPolarAngle ${angle} -> ${a}`);
             return a;
         }
 
@@ -295,7 +295,7 @@
             // SVG d: "A rx,ry xAxisRotate LargeArcFlag,SweepFlag x,y".
             // SweepFlag is either 0 or 1, and determines if the arc should be swept in a clockwise (1), or anti-clockwise (0) direction
 
-            if (TRACE) console.log(`getPath from ${minAngle} to ${endAngle}`);     // 240 330; 240-330=-90 + 360=270
+            console.log(`getPath from ${minAngle} to ${endAngle}`);     // 240 330; 240-330=-90 + 360=270
 
             let a_rad = endAngle * Math.PI / 180.0;
             let endX = getViewboxX(Math.cos(a_rad) * config.radius);
@@ -304,7 +304,7 @@
             let deltaAngle = (minAngle - endAngle + 360.0) % 360.0;
             let largeArc = deltaAngle < 180.0 ? 0 : 1;
 
-            if (TRACE) console.log(`deltaAngle ${deltaAngle} largeArc ${largeArc}`);
+            console.log(`deltaAngle ${deltaAngle} largeArc ${largeArc}`);
 
             let arcDirection = config.rotation === CW ? 1 : 0;
 
@@ -331,7 +331,7 @@
             //     }
             // }
 
-            if (TRACE) console.log(p);
+            console.log(p);
 
             return p;
         }
@@ -344,7 +344,7 @@
          */
         function getArc(fromAngle, toAngle, radius) {
 
-            if (TRACE) console.log(`getArc(${fromAngle}, ${toAngle}, ${radius})`);
+            console.log(`getArc(${fromAngle}, ${toAngle}, ${radius})`);
 
             // SVG d: "A rx,ry xAxisRotate LargeArcFlag,SweepFlag x,y".
             // SweepFlag is either 0 or 1, and determines if the arc should be swept in a clockwise (1), or anti-clockwise (0) direction
@@ -358,7 +358,7 @@
             // let deltaAngle = (fromAngle - toAngle + 360.0) % 360.0;
             let deltaAngle = (fromAngle - toAngle + 2 * Math.PI) % (2 * Math.PI);
 
-            if (TRACE) console.log("deltaAngle: " + deltaAngle);
+            console.log("deltaAngle: " + deltaAngle);
 
             // let largeArc = deltaAngle < 180.0 ? 0 : 1;
             let largeArc = deltaAngle < Math.PI ? 0 : 1;
@@ -366,7 +366,7 @@
 
             let p = `M ${x0},${y0} A ${radius},${radius} 0 ${largeArc},${arcDirection} ${x1},${y1}`; //TODO: add terminator
 
-            if (TRACE) console.log("arc: " + p);
+            console.log("arc: " + p);
 
             return p;
         }
@@ -382,13 +382,13 @@
             let a = getPolarAngle();
             let rad = a * Math.PI / 180.0;
 
-            // if (TRACE) console.log(`getTrackPath, value=${value}, a=${a}, rad=${rad}, ml=${split_track_min_left}, mr=${split_track_min_right}, mid=${split_track_middle}, zl=${split_track_zero_left}, zr=${split_track_zero_right}`);
+            // console.log(`getTrackPath, value=${value}, a=${a}, rad=${rad}, ml=${split_track_min_left}, mr=${split_track_min_right}, mid=${split_track_middle}, zl=${split_track_zero_left}, zr=${split_track_zero_right}`);
 
             if (config.center_zero) {
 
                 let v = getValue();
 
-                if (TRACE) console.log(`getTrackPath: v=${v}`);
+                console.log(`getTrackPath: v=${v}`);
 
                 if ((v < split_track_zero_value) && (rad > split_track_zero) && (rad < split_track_min_left)) {
                     rad = split_track_min_left;
@@ -406,7 +406,7 @@
                 p = getArc(minAngle * Math.PI / 180.0, rad, config.track_radius);
             }
 
-            if (TRACE) console.log('track path = ' + p);
+            console.log('track path = ' + p);
             return p;
 
         }
@@ -529,7 +529,7 @@
                 // let x1 = getViewboxX(Math.cos(a) * (HALF_HEIGHT - config.cursor_radius + config.cursor_length));
                 // let y1 = getViewboxY(Math.sin(a) * (HALF_HEIGHT - config.cursor_radius + config.cursor_length));
                 // p = `M ${x0},${y0} L ${x1},${y1}`;
-                // if (TRACE) console.log('cursor', a, p);
+                // console.log('cursor', a, p);
                 let p = getTrackCursor();
                 if (p) {
                     cursor = document.createElementNS(NS, "path");
@@ -593,7 +593,7 @@
             }
 
             p = getTrackCursor();
-            if (TRACE) console.log(p);
+            console.log(p);
             if (p) {
                 if (cursor) {
                     cursor.setAttributeNS(null, "d", p);
@@ -636,7 +636,7 @@
 
             if (angle_rad < 0) angle_rad = 2.0*Math.PI + angle_rad;
 
-            if (TRACE) console.log(`mouseUpdate: position in svg = ${dxPixels}, ${dyPixels} pixels; ${dx.toFixed(3)}, ${dy.toFixed(3)} rel.; angle ${angle_rad.toFixed(3)} rad`);
+            console.log(`mouseUpdate: position in svg = ${dxPixels}, ${dyPixels} pixels; ${dx.toFixed(3)}, ${dy.toFixed(3)} rel.; angle ${angle_rad.toFixed(3)} rad`);
 
             setPolarAngle(angle_rad * 180.0 / Math.PI, true);     // rads to degs
 
@@ -651,7 +651,7 @@
          */
         function startDrag(e) {
 
-            if (TRACE) console.log('startDrag');
+            console.log('startDrag');
 
             e.preventDefault();
 
@@ -705,7 +705,7 @@
          *
          */
         function endDrag() {
-            if (TRACE) console.log('endDrag');
+            console.log('endDrag');
             document.removeEventListener('mousemove', handleDrag, false);
             document.removeEventListener('mouseup', endDrag, false);
         }
@@ -765,7 +765,7 @@
          *
          */
         function notifyChange() {
-            if (TRACE) console.log('knob value has changed');
+            console.log('knob value has changed');
             let value = getValue();     // TODO: cache the value
             let event = new CustomEvent('change', { 'detail': value });
             element.dispatchEvent(event);

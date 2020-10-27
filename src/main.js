@@ -18,24 +18,28 @@ import "./css/main.css";
 import {drawGrid, initPad} from "./xypad/xypad";
 import {detect} from "detect-browser";
 import * as tonal from "tonal";
-// import * as base64js from "base64-js";
 import LZString from "lz-string";
 
-const TRACE = true;    // when true, will log more details in the console
+function noop() {}
+if (process.env.NODE_ENV !== 'development') {
+    console.log = noop;
+    console.warn = noop;
+    console.error = noop;
+}
 
 const browser = detect();
 
 if (browser) {
-    if (TRACE) console.log(browser.name);
-    if (TRACE) console.log(browser.version);
+    console.log(browser.name);
+    console.log(browser.version);
     switch (browser && browser.name) {
         case "chrome":
-            if (TRACE) console.log("supported browser");
+            console.log("supported browser");
             break;
         case "firefox":
         case "edge":
         default:
-            if (TRACE) console.log("unsupported browser");
+            console.log("unsupported browser");
             alert("Please use Chrome browser (recent version recommended). " +
                 "Any other browser is unsupported at the moment and the application may not work properly or not work at all. " +
                 "Thank you for your understanding.");
@@ -60,7 +64,7 @@ function setMidiInStatus(status) {
 
 function setStatus(msg) {
     $("#status").removeClass("error").text(msg);
-    if (TRACE) console.log(msg);
+    console.log(msg);
 }
 
 function setStatusError(msg) {
@@ -156,7 +160,7 @@ function displayPatchNumber() {
 
 function sendPatchNumber() {
     if (midi_output) {
-        if (TRACE) console.log(`send program change ${patch_number}`);
+        console.log(`send program change ${patch_number}`);
         midi_output.sendProgramChange(patch_number, midi_channel);
     }
 }
@@ -167,7 +171,7 @@ function sendPatchNumber() {
  */
 function handlePC(e) {
 
-    if (TRACE) console.log("receive PC", e);
+    console.log("receive PC", e);
 
     if (e.type !== "programchange") return;
 
@@ -190,7 +194,7 @@ function handleCC(e) {
     let cc = msg[1];
     let value = -1;
 
-    if (TRACE) console.log("receive CC", cc, msg[2]);
+    console.log("receive CC", cc, msg[2]);
 
     logIncomingMidiMessage("CC", cc, msg[2]);
 
@@ -246,7 +250,7 @@ function handleCC(e) {
  */
 function dispatch(control_type, control_number, value) {
 
-    if (TRACE) console.log("dispatch", control_type, control_number, value, "#" + control_type + "-" + control_number);
+    console.log("dispatch", control_type, control_number, value, "#" + control_type + "-" + control_number);
 
     control_type = control_type.toLowerCase();
 
@@ -270,16 +274,16 @@ function dispatch(control_type, control_number, value) {
  */
 function updateControl(control_type, control_number, value) {
 
-    if (TRACE) console.log(`updateControl(${control_type}, ${control_number}, ${value})`);
+    console.log(`updateControl(${control_type}, ${control_number}, ${value})`);
 
     let id = control_type + "-" + control_number;
     if (knobs.hasOwnProperty(id)) {
         knobs[id].value = value;
     } else {
-        // if (TRACE) console.log(`check #${id}`);
+        // console.log(`check #${id}`);
         let c = $(`#${id}`);
         if (c.length) {
-            // if (TRACE) console.log(`#${id} found`, c);
+            // console.log(`#${id} found`, c);
             if (c.is(".svg-slider,.svg-slider-env")) {
                 updateSVGSlider(id, value);
             } else if (c.is(".slider")) {
@@ -292,10 +296,10 @@ function updateControl(control_type, control_number, value) {
             }
 
         } else {
-            // if (TRACE) console.log(`check #${id}-${value}`);
+            // console.log(`check #${id}-${value}`);
             c = $(`#${id}-${value}`);
             if (c.length) {
-                if (TRACE) console.log(c);
+                console.log(c);
                 if (c.is(".bt")) {
                     updateOptionSwitch(id + "-" + value, value);
                 } else {
@@ -321,7 +325,7 @@ function updateControl(control_type, control_number, value) {
         }
     } else {
         let c = $(`#combo-${id}`);  //TODO: try to do it only if fade_unused has changed
-        if (TRACE) console.log(`reset opacity for #combo-${id}`);
+        console.log(`reset opacity for #combo-${id}`);
         c.css({ opacity: 1.0 });
     }
 
@@ -341,20 +345,20 @@ function sendSingleValue(control) {
         let a = DEVICE.getMidiMessagesForNormalCC(control);
         for (let i=0; i<a.length; i++) {
             if (midi_output) {
-                if (TRACE) console.log(`send CC ${a[i][0]} ${a[i][1]} (${control.name}) on MIDI channel ${midi_channel}`);
+                console.log(`send CC ${a[i][0]} ${a[i][1]} (${control.name}) on MIDI channel ${midi_channel}`);
                 midi_output.sendControlChange(a[i][0], a[i][1], midi_channel);
             } else {
-                if (TRACE) console.log(`(send CC ${a[i][0]} ${a[i][1]} (${control.name}) on MIDI channel ${midi_channel})`);
+                console.log(`(send CC ${a[i][0]} ${a[i][1]} (${control.name}) on MIDI channel ${midi_channel})`);
             }
             logOutgoingMidiMessage("cc", a[i][0], a[i][1]);
         }
     } else if (control.cc_type === "nrpn") {
         let value = DEVICE.getControlValue(control);
         if (midi_output) {
-            if (TRACE) console.log(`send NRPN ${control.cc_number} ${value} (${control.name}) on MIDI channel ${midi_channel}`);
+            console.log(`send NRPN ${control.cc_number} ${value} (${control.name}) on MIDI channel ${midi_channel}`);
             midi_output.setNonRegisteredParameter([0, control.cc_number], value, midi_channel);  // for the BS2, the NRPN MSB is always 0
         } else {
-            if (TRACE) console.log(`(send NRPN ${control.cc_number} ${value} (${control.name}) on MIDI channel ${midi_channel})`);
+            console.log(`(send NRPN ${control.cc_number} ${value} (${control.name}) on MIDI channel ${midi_channel})`);
         }
         logOutgoingMidiMessage("nrpn", control.cc_number, value);
     }
@@ -402,7 +406,7 @@ function updateDevice(control_type, control_number, value_float) {
 
     let value = Math.round(value_float);
 
-    if (TRACE) console.log("updateDevice", control_type, control_number, value_float, value);
+    console.log("updateDevice", control_type, control_number, value_float, value);
 
     let control = DEVICE.setControlValue(control_type, control_number, value);
 
@@ -414,7 +418,7 @@ function updateDevice(control_type, control_number, value_float) {
  */
 function handleUIChange(control_type, control_number, value) {
 
-    if (TRACE) console.log(`handleUIChange(${control_type}, ${control_number}, ${value})`);
+    console.log(`handleUIChange(${control_type}, ${control_number}, ${value})`);
 
     if (control_type==='cc' && (control_number===28 || control_number===71)) {
         console.log(`${control_type}-${control_number}: ${value}`);
@@ -426,7 +430,7 @@ function handleUIChange(control_type, control_number, value) {
         if (["102", "103", "104", "105"].includes(control_number)) {
             envelopes["mod-envelope"].envelope = DEVICE.getADSREnv("mod");
         } else if (["90", "91", "92", "93"].includes(control_number)) {
-            if (TRACE) console.log("redraw amp env", envelopes);
+            console.log("redraw amp env", envelopes);
             envelopes["amp-envelope"].envelope = DEVICE.getADSREnv("amp");
         }
     }
@@ -484,12 +488,12 @@ function handleUIChange(control_type, control_number, value) {
  *
  */
 function init(sendUpdate = true) {
-    if (TRACE) console.log(`init(${sendUpdate})`);
+    console.log(`init(${sendUpdate})`);
     DEVICE.init();
     updateUI(true);
     // setStatus(`init done`);
     if (sendUpdate) updateConnectedDevice();
-    if (TRACE) console.log(`init done`);
+    console.log(`init done`);
     return false;   // disable the normal href behavior
 }
 
@@ -534,8 +538,8 @@ function panic(allChannel = false) {
     for (let c = 1; c <= 16; c++) {
         if (!allChannel && c !== midi_channel) continue;
         if (midi_output) {
-            if (TRACE) console.log(`panic for channel ${c}`);
-            // if (TRACE) console.log(`send CC ${a[i][0]} ${a[i][1]} (${control.name}) on channel ${midi_channel}`);
+            console.log(`panic for channel ${c}`);
+            // console.log(`send CC ${a[i][0]} ${a[i][1]} (${control.name}) on channel ${midi_channel}`);
             midi_output.sendControlChange(64, 0, c);     // sustain off
             midi_output.sendControlChange(108, 0, c);     // arpeggiator off
             midi_output.sendControlChange(109, 0, c);     // latch off
@@ -635,7 +639,7 @@ function setupKnobs() {
 
         if (!elem.classList.contains("knob")) return;
 
-        if (TRACE) console.log(`configure #${id}: range=${c.cc_range}, init-value=${v}`);
+        console.log(`configure #${id}: range=${c.cc_range}, init-value=${v}`);
 
         knobs[id] = new Knob(elem, {
             // with_label: false,
@@ -766,7 +770,7 @@ function setupKnobs() {
         }
 */
         elem.addEventListener("change", function(event) {
-            // if (TRACE) console.log(event);
+            // console.log(event);
             handleUIChange(c.cc_type, c.cc_number /*i*/, event.detail);
         });
     }
@@ -778,7 +782,7 @@ function setupKnobs() {
             let c = controls[i];
             if (typeof c === "undefined") continue;
 
-            if (TRACE) console.log(`${c.cc_type}-${c.cc_number} (${i})`);
+            console.log(`${c.cc_type}-${c.cc_number} (${i})`);
 
             let id = `${c.cc_type}-${c.cc_number}`;
             _setupKnob(id, c, DEVICE.getControlValue(controls[i]));
@@ -804,12 +808,12 @@ function setupResets() {
         .dblclick(function() {
             let knob = $(this).siblings(".knob");
             if (knob.length < 1) {
-                if (TRACE) console.log("setupResets: no sibbling knob found");
+                console.log("setupResets: no sibbling knob found");
                 return;
             }
-            if (TRACE) console.log("setupResets knob", knob);
+            console.log("setupResets knob", knob);
             let [control_type, control_number] = knob[0].id.split("-");
-            if (TRACE) console.log(`setupResets ${control_type} ${control_number}`);
+            console.log(`setupResets ${control_type} ${control_number}`);
             let c;
             if (control_type === "cc") {
                 c = DEVICE.control[control_number];
@@ -841,7 +845,7 @@ function setupSwitches() {
     }));
 
     // We display the value in reverse order to be like the real BS2
-    //if (TRACE) console.log(Object.entries(DEVICE.SUB_OCTAVE));
+    //console.log(Object.entries(DEVICE.SUB_OCTAVE));
     $("#cc-81-options").append(Object.entries(DEVICE.SUB_OCTAVE).slice(0).reverse().map((o) => {
         return $("<div>").attr("id", `cc-81-${o[0]}`).data("control", "cc-81").data("value", o[0]).text(o[1]).addClass("bt");
     }));
@@ -912,7 +916,7 @@ function setupSwitches() {
 
     // "radio button"-like behavior:
     $("div.bt").click(function() {
-        if (TRACE) console.log(`click on ${this.id}`);
+        console.log(`click on ${this.id}`);
         if (!this.classList.contains("on")) {   // if not already on...
             $(this).siblings(".bt").removeClass("on");
             this.classList.add("on");
@@ -1000,7 +1004,7 @@ function setupSelects() {
 function setupSliders() {
 
     $(".slider").on("input", function() {   // "input:range" not yet supported by jquery; on(drag) not supported by chrome?
-        if (TRACE) console.log(event, event.currentTarget.value);
+        console.log(event, event.currentTarget.value);
         handleUIChange(...this.id.split("-"), this.value);
         $("#" + this.id + "-value").text(this.value);
     });
@@ -1021,7 +1025,7 @@ function setupSliders() {
 
     for (let i = 0; i < sliders_elems.length; i++) {
         let id = sliders_elems[i].id;
-        if (TRACE) console.log("setup svg-slider " + id);
+        console.log("setup svg-slider " + id);
         sliders[id] = new Slider(sliders_elems[i], mixer_slider_scheme);
         sliders_elems[i].addEventListener("change", function(event) {
             // Event.target: a reference to the object that dispatched the event. It is different from event.currentTarget
@@ -1054,7 +1058,7 @@ function setupSliders() {
 
     for (let i = 0; i < sliders_env_elems.length; i++) {
         let id = sliders_env_elems[i].id;
-        if (TRACE) console.log("setup svg-slider " + id);
+        console.log("setup svg-slider " + id);
         sliders[id] = new Slider(sliders_env_elems[i], env_slider_scheme);
         sliders_env_elems[i].addEventListener("change", function(event) {
             // Event.target: a reference to the object that dispatched the event. It is different from event.currentTarget
@@ -1087,9 +1091,9 @@ function setupADSR() {
  */
 function updateOptionSwitch(id, value) {
     // "radio button"-like behavior
-    if (TRACE) console.log(`updateOptionSwitch(${id}, ${value})`);
+    console.log(`updateOptionSwitch(${id}, ${value})`);
     let e = $("#" + id);
-    if (TRACE) console.log(e);
+    console.log(e);
     if (!e.is(".on")) {   // if not already on...
         e.siblings(".bt").removeClass("on");
         e.addClass("on");
@@ -1104,7 +1108,7 @@ function updateOptionSwitch(id, value) {
  * @param value
  */
 function updateToggleSwitch(id, value) {
-    if (TRACE) console.log(`updateToggleSwitch(${id}, ${value})`);
+    console.log(`updateToggleSwitch(${id}, ${value})`);
     // "checkbox"-like behavior:
     let e = $("#" + id);
     if (value) {
@@ -1120,15 +1124,15 @@ function updateToggleSwitch(id, value) {
  * @param value
  */
 function updateSlider(id, value) {
-    if (TRACE) console.log(`updateSlider(${id}, ${value})`);
+    console.log(`updateSlider(${id}, ${value})`);
     $("#" + id).val(value);
     $("#" + id + "-value").text(value);
 }
 
 function updateSVGSlider(id, value) {
-    if (TRACE) console.log(`updateSVGSlider(${id}, ${value})`);
+    console.log(`updateSVGSlider(${id}, ${value})`);
     if (sliders.hasOwnProperty(id)) {
-        // if (TRACE) console.log(`set value for svg-slider ${id}`);
+        // console.log(`set value for svg-slider ${id}`);
         sliders[id].value = value;
     }
     $("#" + id + "-value").text(value);
@@ -1139,7 +1143,7 @@ function updateSVGSlider(id, value) {
  */
 function updateLinkedUIElements() {
 
-    if (TRACE) console.groupCollapsed("updateLinkedUIElements()");
+    console.groupCollapsed("updateLinkedUIElements()");
 
     // Osc 1+2: PW controls are to be displayed only when wave form is pulse
     if ($('#nrpn-72-3').is('.on')) {
@@ -1177,14 +1181,14 @@ function updateLinkedUIElements() {
     setDotPosition(xy);             // update dot position
     displayPadCCValues(padCC());    // display CC values corresponding to dot XY position
 
-    if (TRACE) console.groupEnd();
+    console.groupEnd();
 }
 
 /**
  * Update the patch number and patch name displayed in the header.
  */
 function updateMeta(force = false) {
-    if (TRACE) console.log("updateMeta", DEVICE.meta);
+    console.log("updateMeta", DEVICE.meta);
     if (force || DEVICE.meta.patch_id.value) {
         patch_number = DEVICE.meta.patch_id.value;
         displayPatchNumber();
@@ -1202,7 +1206,7 @@ function updateUI(force = false) {
     updateControls();
     updateLinkedUIElements();
     updateMeta(force);
-    if (TRACE) console.log("updateUI done");
+    console.log("updateUI done");
 }
 
 
@@ -1240,10 +1244,10 @@ function padCCToXY() {
 }
 
 function sendXYCC(cc) {
-    if (TRACE) console.group("sendXYCC");
+    console.group("sendXYCC");
     sendSingleValue(dispatch(xypad_x_control_type, xypad_x_control_number, cc.x));
     sendSingleValue(dispatch(xypad_y_control_type, xypad_y_control_number, cc.y));
-    if (TRACE) console.groupEnd();
+    console.groupEnd();
 }
 
 function displayPadCCValues(cc) {
@@ -1261,7 +1265,7 @@ function setDotPosition(xy) {
 // called on UI and device changes
 function updateXYPad(control_type, control_number, value) {
 
-    if (TRACE) console.log(`updateXYPad(${control_type}, ${control_number}, ${value})`);
+    console.log(`updateXYPad(${control_type}, ${control_number}, ${value})`);
 
     // Note: control_number may be a string representing an integer number
     if ((control_type === xypad_x_control_type) && (control_number == xypad_x_control_number) ||
@@ -1275,7 +1279,7 @@ function updateXYPad(control_type, control_number, value) {
 
 function setupXYPad() {
 
-    if (TRACE) console.log("setupXYPad", settings, xypad_x_control_type, xypad_x_control_number, xypad_y_control_type, xypad_y_control_number);
+    console.log("setupXYPad", settings, xypad_x_control_type, xypad_x_control_number, xypad_y_control_type, xypad_y_control_number);
 
     $("#x-cc").val(settings.xypad_x);
     $("#y-cc").val(settings.xypad_y);
@@ -1283,7 +1287,7 @@ function setupXYPad() {
     $("#x-cc").change(function () {
         settings.xypad_x = this.value;
         [xypad_x_control_type, xypad_x_control_number] = this.value.split("-");
-        if (TRACE) console.log(`xypad X changed to ${xypad_x_control_type} ${xypad_x_control_number}`);
+        console.log(`xypad X changed to ${xypad_x_control_type} ${xypad_x_control_number}`);
         let xy = padCCToXY();
         setDotPosition(xy);    // update the display
         displayPadCCValues(padCC());
@@ -1295,7 +1299,7 @@ function setupXYPad() {
     $("#y-cc").change(function () {
         settings.xypad_y = this.value;
         [xypad_y_control_type, xypad_y_control_number] = this.value.split("-");
-        if (TRACE) console.log(`xypad Y changed to ${xypad_y_control_type} ${xypad_y_control_number}`);
+        console.log(`xypad Y changed to ${xypad_y_control_type} ${xypad_y_control_number}`);
         let xy = padCCToXY();
         setDotPosition(xy);    // update the display
         displayPadCCValues(padCC());
@@ -1353,7 +1357,7 @@ let default_favorite_name = "";
 
 function getFavorites() {
     let fav = localStorage.getItem("favorites");
-    if (TRACE) console.log("loaded favorites:", fav);
+    console.log("loaded favorites:", fav);
     return fav ? JSON.parse(fav) : [];
 }
 
@@ -1362,7 +1366,7 @@ function getFavorites() {
  * @param index
  */
 function deleteFavorite(index) {
-    if (TRACE) console.log(`deleteFavorite(${index})`);
+    console.log(`deleteFavorite(${index})`);
     let favorites = getFavorites();
     favorites.splice((favorites.length - 1) - index, 1);
     localStorage.setItem("favorites", JSON.stringify(favorites));
@@ -1404,7 +1408,7 @@ function addToFavorites() {
     if (!name) name = default_favorite_name;
     let description = $("#add-favorite-patch-description").val();
     let url = getCurrentPatchAsLink();
-    if (TRACE) console.log(`add to favorites: name=${name}, url=${url}`);
+    console.log(`add to favorites: name=${name}, url=${url}`);
     let favorites = getFavorites();
     favorites.push({
         name,
@@ -1421,7 +1425,7 @@ function addToFavorites() {
  */
 function openFavoritesPanel() {
 
-    if (TRACE) console.log("toggle favorites-panel");
+    console.log("toggle favorites-panel");
 
     let e = $("#favorites-panel");
     if (e.css("display") === "block") {
@@ -1451,7 +1455,7 @@ function closeFavoritesPanel() {
 
 function reloadWithPatchUrl() {
     let url = getCurrentPatchAsLink();
-    if (TRACE) console.log(`reloadWithPatchUrl: url=${url}`);
+    console.log(`reloadWithPatchUrl: url=${url}`);
     window.location.href = url;
     return false;   // disable the normal href behavior
 }
@@ -1460,7 +1464,7 @@ function reloadWithPatchUrl() {
 // Settings
 
 function openSettingsPanel() {
-    if (TRACE) console.log("toggle settings-panel");
+    console.log("toggle settings-panel");
     let e = $("#settings-panel");
     if (e.css("display") === "block") {
         e.hide("slide", {direction: "left"}, 500);
@@ -1471,7 +1475,7 @@ function openSettingsPanel() {
 }
 
 function closeSettingsPanel() {
-    if (TRACE) console.log("closeSettingsPanel");
+    console.log("closeSettingsPanel");
     $("#settings-panel").hide("slide", { direction: "left" }, 500);
 }
 
@@ -1497,8 +1501,8 @@ function savePatchToFile() {
 
     let data = DEVICE.getSysEx();   // return Uint8Array
 
-    if (TRACE) console.log(data, Utils.toHexString(data, " "));
-    if (TRACE) console.log(encodeURIComponent(data));
+    console.log(data, Utils.toHexString(data, " "));
+    console.log(encodeURIComponent(data));
 
     let shadowlink = document.createElement("a");
 
@@ -1537,7 +1541,7 @@ function readFile() {
 
     let data = [];
     let f = this.files[0];
-    if (TRACE) console.log(`read file`, f);
+    console.log(`read file`, f);
 
     if (f) {
         let reader = new FileReader();
@@ -1548,7 +1552,7 @@ function readFile() {
                 if (view[i] === SYSEX_END) break;
             }
             if (DEVICE.setValuesFromSysEx(data)) {
-                if (TRACE) console.log("file read OK", DEVICE.meta.patch_name["value"]);
+                console.log("file read OK", DEVICE.meta.patch_name["value"]);
                 if (lightbox) lightbox.close();
 
                 updateUI();
@@ -1585,7 +1589,7 @@ function openCreditsDialog() {
 // UI main commands (buttons in header)
 
 function printPatch() {
-    if (TRACE) console.log("printPatch");
+    console.log("printPatch");
     let url = "print.html?" + URL_PARAM_SYSEX + "=" + encodeURIComponent(LZString.compressToBase64(Utils.toHexString(DEVICE.getSysEx())));
     window.open(url, "_blank", "width=800,height=600,location,resizable,scrollbars,status");
     return false;   // disable the normal href behavior
@@ -1604,10 +1608,10 @@ function syncUIwithBS2() {
  * header"s "midi channel" select handler
  */
 function setMidiChannel() {
-    if (TRACE) console.log('setMidiChannel', this.value);
+    console.log('setMidiChannel', this.value);
     disconnectInput();
     midi_channel = this.value;
-    if (TRACE) console.log('setMidiChannel: reconnect input', midi_input);
+    console.log('setMidiChannel: reconnect input', midi_input);
     connectInput(midi_input);
 }
 
@@ -1615,7 +1619,7 @@ function setMidiChannel() {
  *
  */
 function playNote(note) {
-    if (TRACE) console.log(`play note ${note}`);
+    console.log(`play note ${note}`);
     if (note) {
         // let e = $("#played-note");
         // if (e.is(".on")) {
@@ -1633,7 +1637,7 @@ function playNote(note) {
 
 
 function stopNote(note) {
-    if (TRACE) console.log(`stop note ${note}`);
+    console.log(`stop note ${note}`);
     if (note) {
         // let e = $("#played-note");
         // if (e.is(".on")) {
@@ -1652,7 +1656,7 @@ function stopNote(note) {
  *
  */
 function playLastNote() {
-    if (TRACE) console.log(`play last note ${last_note}`);
+    console.log(`play last note ${last_note}`);
     playNote(last_note);
 }
 
@@ -1675,7 +1679,7 @@ function openMidiWindow() {
 }
 
 function patchInc() {
-    if (TRACE) console.log("patchInc");
+    console.log("patchInc");
     patch_number = (patch_number + 1) % 128;
     displayPatchNumber();
     sendPatchNumber();
@@ -1683,7 +1687,7 @@ function patchInc() {
 }
 
 function patchDec() {
-    if (TRACE) console.log("patchDec");
+    console.log("patchDec");
     if (patch_number === -1) patch_number = 1;
     patch_number--;
     if (patch_number < 0) patch_number = 127;
@@ -1715,7 +1719,7 @@ function setupKeyboard() {
 
     keyPresses.subscribe(function(e) {
         //console.log(e.type, e.key || e.which, e.keyIdentifier);
-        if (TRACE) console.log(e.keyCode, e.type, e.altKey, e.shiftKey, e);
+        console.log(e.keyCode, e.type, e.altKey, e.shiftKey, e);
         if (e.type === "keydown") {
             keyDown(e.keyCode, e.altKey, e.shiftKey);
         } else if (e.type === "keyup") {
@@ -1723,7 +1727,7 @@ function setupKeyboard() {
         }
     });
 
-    if (TRACE) console.log("keyboard set up");
+    console.log("keyboard set up");
 }
 
 function keyDown(code, alt, shift) {
@@ -1756,10 +1760,10 @@ function keyDown(code, alt, shift) {
             stopNote(last_note);
             //TODO: panic key
             // if (midi_output) {
-            //     if (TRACE) console.log(`send STOP`);
+            //     console.log(`send STOP`);
             //     midi_output.sendStop();
             // } else {
-            //     if (TRACE) console.log(`(send STOP`);
+            //     console.log(`(send STOP`);
             // }
             break;
         case 82:                // R Randomize
@@ -1893,7 +1897,7 @@ function loadSettings() {
 
     Object.assign(settings, Cookies.getJSON("settings"));
 
-    if (TRACE) console.log("load settings", settings);
+    console.log("load settings", settings);
 
     if (settings.xypad_x) [xypad_x_control_type, xypad_x_control_number] = settings.xypad_x.split("-");
     if (settings.xypad_y) [xypad_y_control_type, xypad_y_control_number] = settings.xypad_y.split("-");
@@ -1940,7 +1944,7 @@ function saveSettings() {
     });
     // let checked = $("input.chk-rnd:checked").map(function() { return $(this).name }).get();
     settings.randomize = checked;
-    if (TRACE) console.log("saveRandomizerSettings: save settings", settings);
+    console.log("saveRandomizerSettings: save settings", settings);
     Cookies.set("settings", settings);
 }
 
@@ -1953,7 +1957,7 @@ function setupSettings() {
 
     displayRandomizerSettings();
 
-    if (TRACE) console.log("settings cookie", Cookies.getJSON());
+    console.log("settings cookie", Cookies.getJSON());
 
     $("input.chk-rnd").change(saveSettings);
 
@@ -1964,7 +1968,7 @@ function setupSettings() {
  *
  */
 function displayRandomizerSettings() {
-    if (TRACE) console.log("displayRandomizerSettings()");
+    console.log("displayRandomizerSettings()");
     let groups = Object.getOwnPropertyNames(DEVICE.control_groups);
     const COLS = 4;
     let i = 0;
@@ -1988,7 +1992,7 @@ function displayRandomizerSettings() {
  */
 function noteOn(e) {
 
-    if (TRACE) console.log("Received \"noteon\" message (" + e.note.name + e.note.octave + ").", e);
+    console.log("Received \"noteon\" message (" + e.note.name + e.note.octave + ").", e);
 
     last_note = e.note.name + e.note.octave;
 
@@ -2012,7 +2016,7 @@ function displayNote(note) {
     return;
 
 
-    if (TRACE) console.log("displayNote", note);
+    console.log("displayNote", note);
 
     if ((typeof note === "undefined") || (note === null) || (!note)) {
         return;
@@ -2088,16 +2092,16 @@ function disconnectInput() {
  * @param input
  */
 function connectInput(input) {
-    if (TRACE) console.log(`connectInput(}`);
+    console.log(`connectInput(}`);
     if (!input) {
-        if (TRACE) console.log(`connectInput: no input specified`);
+        console.log(`connectInput: no input specified`);
         return;
     }
-    if (TRACE) console.log(`connect input to channel ${midi_channel}`);
+    console.log(`connect input to channel ${midi_channel}`);
     // if (input) {
     midi_input = input;
     // setStatus(`"${midi_input.name}" input connected.`);
-    if (TRACE) console.log(`midi_input assigned to "${midi_input.name}"`);
+    console.log(`midi_input assigned to "${midi_input.name}"`);
     // }
     midi_input
         .on("programchange", midi_channel, function(e) {        // sent by the BS2 when changing patch
@@ -2114,11 +2118,11 @@ function connectInput(input) {
         })
         .on("sysex", midi_channel, function(e) {
             console.log("sysex handler");
-            if (TRACE) console.log("update BS2 with sysex");
+            console.log("update BS2 with sysex");
             if (DEVICE.setValuesFromSysEx(e.data)) {
                 updateUI();
                 // setStatus("UI updated from SysEx.");
-                if (TRACE) console.log("BS2 updated with sysex");
+                console.log("BS2 updated with sysex");
             } else {
                 setStatusError("Unable to update from SysEx data.")
             }
@@ -2133,7 +2137,7 @@ function connectInput(input) {
  * @param output
  */
 function connectOutput(output) {
-    if (TRACE) console.log("connect output", output);
+    console.log("connect output", output);
     midi_output = output;
     // setStatus(`"${output.name}" output connected.`)
     console.log(`midi_output assigned to "${midi_output.name}"`);
@@ -2232,10 +2236,10 @@ $(function () {
 
             let s = Utils.getParameterByName("sysex");
             if (s) {
-                if (TRACE) console.log("sysex param present");
+                console.log("sysex param present");
                 let data = Utils.fromHexString(s);
                 if (DEVICE.setValuesFromSysEx(data)) {
-                    if (TRACE) console.log("sysex loaded in device");
+                    console.log("sysex loaded in device");
                     updateUI();
                 } else {
                     console.log("unable to set value from sysex param");
@@ -2248,7 +2252,7 @@ $(function () {
 
             setStatus("WebMidi enabled.");
 
-            if (TRACE) {
+            {
                 WebMidi.inputs.map(i => console.log("input: ", i));
                 WebMidi.outputs.map(i => console.log("output: ", i));
             }
@@ -2275,7 +2279,7 @@ $(function () {
 
             let s = Utils.getParameterByName("sysex");
             if (s) {
-                if (TRACE) console.log("sysex param present");
+                console.log("sysex param present");
                 let data = Utils.fromHexString(s);
                 if (DEVICE.setValuesFromSysEx(data)) {
                     console.log("sysex loaded in device");
