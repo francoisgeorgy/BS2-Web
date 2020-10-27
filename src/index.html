@@ -9,7 +9,6 @@
         All of the Bass Station 2 parameters are visible on screen. Save, load and even print your patches!
         And, for the fun, leave the application create a patch with the randomizer." />
     <meta name="author" content="François Georgy" />
-
     <meta property="og:title" content="Bass Station 2 Web Editor by StudioCode.dev">
     <meta property="og:description" content="Control your Bass Station 2 synthesizer from your web browser. No more hidden parameters.
         All of the Bass Station 2 parameters are visible on screen. Save, load and even print your patches!
@@ -19,15 +18,7 @@
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image:alt" content="An editor for the Bass Station II synth.">
-
     <link rel="icon" href="favicon.png" sizes="32x32">
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-106707755-1"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments)}
-        gtag('js', new Date());
-        gtag('config', 'UA-106707755-1');
-    </script>
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,500,700|Roboto+Condensed:300,400,700" rel="stylesheet" />
     <link href="https://use.fontawesome.com/f0483cf390.css" rel="stylesheet" />
     <script src="https://cdn.usefathom.com/script.js" site="XIWNXTFQ"  excluded-domains="localhost" defer></script>
@@ -926,28 +917,48 @@
         <h2><span style="float:right" class="close-settings-panel">&#x2715;</span>Settings</h2>
         <div id="settings-dialog-instructions">
         </div>
+
         <div>
-            <h3>MIDI channel</h3>
-            Use MIDI channel <select id="midi-channel">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-            <option value="9">9</option>
-            <option value="10">10</option>
-            <option value="11">11</option>
-            <option value="12">12</option>
-            <option value="13">13</option>
-            <option value="14">14</option>
-            <option value="15">15</option>
-            <option value="16">16</option>
-            <option value="all">All</option>
-        </select> to communicate with the Bass Station 2.
+            <h3>MIDI</h3>
+
+            <div>
+                Input:
+                <select id="midi-input-device" class="device">
+                    <option>- select -</option>
+                </select>
+            </div>
+
+            <div>
+                Output:
+                <select id="midi-output-device" class="device">
+                    <option>- select -</option>
+                </select>
+            </div>
+
+            Channel:
+            <select id="midi-channel">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+                <option value="13">13</option>
+                <option value="14">14</option>
+                <option value="15">15</option>
+                <option value="16">16</option>
+                <option value="all">All</option>
+            </select>
+
         </div>
+
+
         <div>
             <h3>Display</h3>
             <input type="checkbox" name="fade-unused" value="1"> Fade unused controls

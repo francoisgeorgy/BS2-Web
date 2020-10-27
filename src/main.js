@@ -3,6 +3,7 @@ import Envelope from "svg-envelope";
 import Knob from "svg-knob";
 import Slider from "svg-slider";
 import * as Utils from "./lib/utils.js";
+import {loadPreferences, savePreferences, preferences} from "./preferences";
 // import tonal from "tonal"
 import * as WebMidi from "webmidi";
 import moment from "moment";
@@ -161,7 +162,7 @@ function displayPatchNumber() {
 function sendPatchNumber() {
     if (midi_output) {
         console.log(`send program change ${patch_number}`);
-        midi_output.sendProgramChange(patch_number, midi_channel);
+        midi_output.sendProgramChange(patch_number, preferences.midi_channel);
     }
 }
 
@@ -345,20 +346,20 @@ function sendSingleValue(control) {
         let a = DEVICE.getMidiMessagesForNormalCC(control);
         for (let i=0; i<a.length; i++) {
             if (midi_output) {
-                console.log(`send CC ${a[i][0]} ${a[i][1]} (${control.name}) on MIDI channel ${midi_channel}`);
-                midi_output.sendControlChange(a[i][0], a[i][1], midi_channel);
+                console.log(`send CC ${a[i][0]} ${a[i][1]} (${control.name}) on MIDI channel ${preferences.midi_channel}`);
+                midi_output.sendControlChange(a[i][0], a[i][1], preferences.midi_channel);
             } else {
-                console.log(`(send CC ${a[i][0]} ${a[i][1]} (${control.name}) on MIDI channel ${midi_channel})`);
+                console.log(`(send CC ${a[i][0]} ${a[i][1]} (${control.name}) on MIDI channel ${preferences.midi_channel})`);
             }
             logOutgoingMidiMessage("cc", a[i][0], a[i][1]);
         }
     } else if (control.cc_type === "nrpn") {
         let value = DEVICE.getControlValue(control);
         if (midi_output) {
-            console.log(`send NRPN ${control.cc_number} ${value} (${control.name}) on MIDI channel ${midi_channel}`);
-            midi_output.setNonRegisteredParameter([0, control.cc_number], value, midi_channel);  // for the BS2, the NRPN MSB is always 0
+            console.log(`send NRPN ${control.cc_number} ${value} (${control.name}) on MIDI channel ${preferences.midi_channel}`);
+            midi_output.setNonRegisteredParameter([0, control.cc_number], value, preferences.midi_channel);  // for the BS2, the NRPN MSB is always 0
         } else {
-            console.log(`(send NRPN ${control.cc_number} ${value} (${control.name}) on MIDI channel ${midi_channel})`);
+            console.log(`(send NRPN ${control.cc_number} ${value} (${control.name}) on MIDI channel ${preferences.midi_channel})`);
         }
         logOutgoingMidiMessage("nrpn", control.cc_number, value);
     }
@@ -536,17 +537,17 @@ function panic(allChannel = false) {
 
     //TODO: refactor with no loop if allChannel is false
     for (let c = 1; c <= 16; c++) {
-        if (!allChannel && c !== midi_channel) continue;
+        if (!allChannel && c !== preferences.midi_channel) continue;
         if (midi_output) {
             console.log(`panic for channel ${c}`);
-            // console.log(`send CC ${a[i][0]} ${a[i][1]} (${control.name}) on channel ${midi_channel}`);
+            // console.log(`send CC ${a[i][0]} ${a[i][1]} (${control.name}) on channel ${preferences.midi_channel}`);
             midi_output.sendControlChange(64, 0, c);     // sustain off
             midi_output.sendControlChange(108, 0, c);     // arpeggiator off
             midi_output.sendControlChange(109, 0, c);     // latch off
             midi_output.sendChannelMode("allsoundoff", 0, c);
             midi_output.sendChannelMode("allnotesoff", 0, c);
             for (let note = 0; note <= 127; ++note) {
-                midi_output.stopNote(note, midi_channel);
+                midi_output.stopNote(note, preferences.midi_channel);
             }
         }
     }
@@ -1604,13 +1605,55 @@ function syncUIwithBS2() {
     return false;   // disable the normal href behavior
 }
 
+
+function updateMidiDevicesList() {
+
+    console.log("updateMidiDevicesList");
+
+    let present = false;
+    let s = $("#midi-input-device");
+    s.empty().append($("<option>").val("").text("- select -"));
+    // noinspection JSUnresolvedVariable
+    s.append(
+        WebMidi.inputs.map((port) => {
+            present = present || (port.id === preferences.input_device_id);
+            return $("<option>").val(port.id).text(`${port.name}`);
+        })
+    );
+    s.val(present ? preferences.input_device_id : "");
+
+    present = false;
+    s = $("#midi-output-device");
+    s.empty().append($("<option>").val("").text("- select -"));
+    // noinspection JSUnresolvedVariable
+    s.append(
+        WebMidi.outputs.map((port) => {
+            present = present || (port.id === preferences.output_device_id);
+            return $("<option>").val(port.id).text(`${port.name}`);
+        })
+    );
+    s.val(present ? preferences.output_device_id : "");
+
+}
+
+function selectMidiInputDevice() {
+    disconnectInput();
+    connectInput(WebMidi.getInputById(this.value));
+}
+
+function selectMidiOutputDevice() {
+    disconnectOutput();
+    connectOutput(WebMidi.getOutputById(this.value));
+}
+
 /**
  * header"s "midi channel" select handler
  */
 function setMidiChannel() {
     console.log('setMidiChannel', this.value);
     disconnectInput();
-    midi_channel = this.value;
+    preferences.midi_channel = this.value;
+    savePreferences();
     console.log('setMidiChannel: reconnect input', midi_input);
     connectInput(midi_input);
 }
@@ -1623,13 +1666,13 @@ function playNote(note) {
     if (note) {
         // let e = $("#played-note");
         // if (e.is(".on")) {
-        //     midi_output.stopNote(note, midi_channel);
+        //     midi_output.stopNote(note, preferences.midi_channel);
         //     e.removeClass("on");
         // } else {
-        //     midi_output.playNote(note, midi_channel);
+        //     midi_output.playNote(note, preferences.midi_channel);
         //     e.addClass("on");
         // }
-        if (midi_output) midi_output.playNote(note, midi_channel);
+        if (midi_output) midi_output.playNote(note, preferences.midi_channel);
         $("#played-note").addClass("on");
     }
 }
@@ -1641,13 +1684,13 @@ function stopNote(note) {
     if (note) {
         // let e = $("#played-note");
         // if (e.is(".on")) {
-        //     midi_output.stopNote(note, midi_channel);
+        //     midi_output.stopNote(note, preferences.midi_channel);
         //     e.removeClass("on");
         // } else {
-        //     midi_output.playNote(note, midi_channel);
+        //     midi_output.playNote(note, preferences.midi_channel);
         //     e.addClass("on");
         // }
-        if (midi_output) midi_output.stopNote(note, midi_channel);
+        if (midi_output) midi_output.stopNote(note, preferences.midi_channel);
         $("#played-note").removeClass("on");
     }
 }
@@ -1846,6 +1889,8 @@ function setupMenu() {
     $("#patch-file").change(readFile);
 
     // in settings dialog:
+    $("#midi-input-device").change(selectMidiInputDevice);
+    $("#midi-output-device").change(selectMidiOutputDevice);
     $("#midi-channel").change(setMidiChannel);
     $(".close-settings-panel").click(closeSettingsPanel);
 
@@ -2089,36 +2134,45 @@ function disconnectInput() {
 
 /**
  *
- * @param input
+ * @param port
  */
-function connectInput(input) {
-    console.log(`connectInput(}`);
-    if (!input) {
+function connectInput(port) {
+
+    console.log(`connectInput()`, port);
+
+    if (!port) {
         console.log(`connectInput: no input specified`);
         return;
     }
-    console.log(`connect input to channel ${midi_channel}`);
+
+    if (midi_input === port) {
+        console.log(`connectInput: port already connected`);
+        return;
+    }
+
+    savePreferences({input_device_id: port.id});
+
+    // console.log(`connect input to channel ${preferences.midi_channel}`);
     // if (input) {
-    midi_input = input;
+    midi_input = port;
     // setStatus(`"${midi_input.name}" input connected.`);
     console.log(`midi_input assigned to "${midi_input.name}"`);
     // }
     midi_input
-        .on("programchange", midi_channel, function(e) {        // sent by the BS2 when changing patch
+        .on("programchange", preferences.midi_channel, function(e) {        // sent by the BS2 when changing patch
             handlePC(e);
         })
-        .on("controlchange", midi_channel, function(e) {
+        .on("controlchange", preferences.midi_channel, function(e) {
             handleCC(e);
         })
-        .on("noteon", midi_channel, function(e) {
+        .on("noteon", preferences.midi_channel, function(e) {
             noteOn(e);
         })
-        .on("noteoff", midi_channel, function(e) {
+        .on("noteoff", preferences.midi_channel, function(e) {
             noteOff(e);
         })
-        .on("sysex", midi_channel, function(e) {
-            console.log("sysex handler");
-            console.log("update BS2 with sysex");
+        .on("sysex", preferences.midi_channel, function(e) {
+            console.log("sysex received");
             if (DEVICE.setValuesFromSysEx(e.data)) {
                 updateUI();
                 // setStatus("UI updated from SysEx.");
@@ -2127,9 +2181,12 @@ function connectInput(input) {
                 setStatusError("Unable to update from SysEx data.")
             }
         });
-    console.log(`midi_input listening on channel ${midi_channel}`);
     setMidiInStatus(true);
-    setStatus(`${DEVICE.name_device_in} connected on MIDI channel ${midi_channel}.`);
+    setStatus(`${DEVICE.name_device_in} connected on ${port.name} and using MIDI channel ${preferences.midi_channel}.`);
+}
+
+function disconnectOutput() {
+    midi_input = null;
 }
 
 /**
@@ -2149,22 +2206,40 @@ function connectOutput(output) {
  * @param info
  */
 function deviceConnect(info) {
+
     console.log("deviceConnect", info);
+
     // console.log("deviceConnect port type ***", typeof info.port);
     // console.log("deviceConnect port object ***", info.port);
-    if ((info.port.name !== DEVICE.name_device_in) && (info.port.name !== DEVICE.name_device_out)) {
-        console.log("ignore deviceConnect");
-        return;
-    }
+
+    updateMidiDevicesList();
+
+    // if ((info.port.name !== DEVICE.name_device_in) && (info.port.name !== DEVICE.name_device_out)) {
+    //     console.log("ignore deviceConnect");
+    //     return;
+    // }
+
     if (info.port.type === "input") {
-    // if (info.hasOwnProperty("input") && info.input && (info.port.name === DEVICE.name_device_in)) {
-        if (!midi_input) {
-            connectInput(info.port);
+
+        let port = null;
+        if (preferences.input_device_id) {
+            port = WebMidi.getInputById(preferences.input_device_id);
         } else {
-            console.log("deviceConnect: input already connected");
+            port = WebMidi.getInputByName(DEVICE.name_device_in);
         }
+
+        if (port) {
+            connectInput(port);
+        } else {
+            console.log("deviceConnect: no port found");
+        }
+        // if (!midi_input) {
+        //     connectInput(info.port);
+        // } else {
+        //     console.log("deviceConnect: input already connected");
+        // }
     }
-    // if (info.hasOwnProperty("output") && info.output && (info.port.name === DEVICE.name_device_out)) {
+
     if (info.port.type === "output") {
         if (!midi_output) {
             connectOutput(info.port);
@@ -2175,6 +2250,7 @@ function deviceConnect(info) {
             console.log("deviceConnect: output already connected");
         }
     }
+
 }
 
 /**
@@ -2182,11 +2258,16 @@ function deviceConnect(info) {
  * @param info
  */
 function deviceDisconnect(info) {
+
     console.log("deviceDisconnect", info);
-    if ((info.port.name !== DEVICE.name_device_in) && (info.port.name !== DEVICE.name_device_out)) {
-        console.log(`disconnect event ignored for device ${info.port.name}`);
-        return;
-    }
+
+    updateMidiDevicesList();
+
+    // if ((info.port.name !== DEVICE.name_device_in) && (info.port.name !== DEVICE.name_device_out)) {
+    //     console.log(`disconnect event ignored for device ${info.port.name}`);
+    //     return;
+    // }
+
     if (info.port.name === DEVICE.name_device_in) {
         midi_input = null;
         setStatus(`${DEVICE.name_device_in} has been disconnected.`);
@@ -2207,7 +2288,7 @@ const URL_PARAM_SYSEX = "sysex";    // name of sysex parameter in the query-stri
 
 var midi_input = null;
 var midi_output = null;
-var midi_channel = 1;
+// var midi_channel = 1;
 
 var knobs = {};         // svg-knob
 var sliders = {};       // svg-slider
@@ -2219,6 +2300,8 @@ var envelopes = {};     // Visual ADSR envelopes
 $(function () {
 
     console.log(`Bass Station 2 Web Interface ${VERSION}`);
+
+    loadPreferences();
 
     setupUI();
 
@@ -2252,20 +2335,21 @@ $(function () {
 
             setStatus("WebMidi enabled.");
 
-            {
-                WebMidi.inputs.map(i => console.log("input: ", i));
-                WebMidi.outputs.map(i => console.log("output: ", i));
-            }
+            // updateMidiDevicesList();
+
+            // WebMidi.inputs.map(i => console.log("input: ", i));
+            // WebMidi.outputs.map(i => console.log("output: ", i));
 
             WebMidi.addListener("connected", e => deviceConnect(e));
             WebMidi.addListener("disconnected", e => deviceDisconnect(e));
 
+/*
             let input = WebMidi.getInputByName(DEVICE.name_device_in);
             if (input) {
                 connectInput(input);
-                setStatus(`${DEVICE.name_device_in} connected on MIDI channel ${midi_channel}.`);
+                setStatus(`${DEVICE.name_device_in} connected on MIDI channel ${preferences.midi_channel}.`);
             } else {
-                setStatusError(`${DEVICE.name_device_in} not found. Please connect your Bass Station 2 or check the MIDI channel.`);
+                setStatusError(`${DEVICE.name_device_in} not found. Connect your Bass Station 2 or check the MIDI channel in the settings.`);
                 setMidiInStatus(false);
             }
 
@@ -2273,7 +2357,7 @@ $(function () {
             if (output) {
                 connectOutput(output);
             } else {
-                setStatusError(`${DEVICE.name_device_out} not found. Please connect your Bass Station 2 or check the MIDI channel.`);
+                setStatusError(`${DEVICE.name_device_out} not found. Connect your Bass Station 2 or check the MIDI channel in the settings.`);
                 // setMidiOutStatus(false);
             }
 
@@ -2293,6 +2377,7 @@ $(function () {
                 // ask the BS2 to send us its current patch:
                 requestSysExDump();
             }
+*/
 
         }
 

@@ -4571,6 +4571,11 @@ statuses@~1.4.0:
   resolved "https://registry.yarnpkg.com/statuses/-/statuses-1.4.0.tgz#bb73d446da2796106efcc1b601a253d6c46bd087"
   integrity sha512-zhSCtt8v2NDrRlPQpCNtw/heZLtfUDqxBM1udqikb/Hbk52LK4nQSwr10u77iopCW5LsyHpuXS0GnEc48mLeew==
 
+storejs@^1.0.25:
+  version "1.0.25"
+  resolved "https://registry.yarnpkg.com/storejs/-/storejs-1.0.25.tgz#fc70d25b4df7866976a62b46b6dc6727761306ce"
+  integrity sha512-UPHetMA+eg1il3GZI1Lnu5/uVszkEkozgnekbjyEFrRHmkjYygbTGJcdKz65Fae6myA+/VnVoes9835E6WS0zw==
+
 stream-browserify@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/stream-browserify/-/stream-browserify-2.0.1.tgz#66266ee5f9bdb9940a4e4514cafb43bb71e5c9db"

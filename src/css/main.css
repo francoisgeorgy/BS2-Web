@@ -1063,9 +1063,13 @@ select option {
     margin-right: 1vw;
 }
 
-#midi-channel {
+#settings-panel select {
     font-size: 1rem;
 }
+
+/*#midi-channel {*/
+/*    font-size: 1rem;*/
+/*}*/
 
 #randomizer-settings td {
     padding-right: 2vw;
