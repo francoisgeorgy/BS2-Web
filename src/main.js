@@ -4,21 +4,19 @@ import Knob from "svg-knob";
 import Slider from "svg-slider";
 import * as Utils from "./lib/utils.js";
 import {loadPreferences, savePreferences, preferences} from "./preferences";
-// import tonal from "tonal"
 import * as WebMidi from "webmidi";
 import moment from "moment";
 import Cookies from "js-cookie";
 import * as lity from "lity";
 import "webpack-jquery-ui/effects";
-// import Rx from "rxjs/Rx";
-import { Observable, fromEvent } from 'rxjs'
+import { fromEvent } from 'rxjs'
 import { groupBy, merge, map, mergeAll, distinctUntilChanged } from 'rxjs/operators';
 // CSS order is important
 import "./css/lity.min.css";
 import "./css/main.css";
-import {drawGrid, initPad} from "./xypad/xypad";
+import {initPad} from "./xypad/xypad";
 import {detect} from "detect-browser";
-import * as tonal from "tonal";
+// import * as tonal from "tonal";
 import LZString from "lz-string";
 
 function noop() {}
@@ -314,7 +312,7 @@ function updateControl(control_type, control_number, value) {
     }
 
     // hide if value is same as from init patch
-    if (settings.fade_unused) {
+    if (preferences.fade_unused) {
         let v = DEVICE.getControl(control_type, control_number);
         if (v) {
             let c = $(`#combo-${id}`);
@@ -440,7 +438,7 @@ function handleUIChange(control_type, control_number, value) {
 
     // hide if value is same as from init patch
 
-    if (settings.fade_unused) {
+    if (preferences.fade_unused) {
         let id = control_type + "-" + control_number;
         let v = DEVICE.getControl(control_type, control_number);
         if (v) {
@@ -503,10 +501,10 @@ function init(sendUpdate = true) {
  */
 function randomize() {
     // console.group("randomize", settings);
-    if (settings.randomize.length < 1) {
+    if (preferences.randomize.length < 1) {
         alert("Nothing to randomize.\nUse the \"Settings\" menu to configure the randomizer.");
     } else {
-        DEVICE.randomize(settings.randomize);
+        DEVICE.randomize(preferences.randomize);
         updateUI(true);
         updateConnectedDevice(true);    // true == update only updated values (values which have been marked as changed)
     }
@@ -1213,10 +1211,6 @@ function updateUI(force = false) {
 
 var xypad_xy = null;
 var xypad_dot = null;
-var xypad_x_control_type = "cc";
-var xypad_y_control_type = "cc";
-var xypad_x_control_number = 16;    // default X is filter frequency
-var xypad_y_control_number = 82;    // default Y is filter resonance
 
 function padCC() {
     return {
@@ -1280,32 +1274,32 @@ function updateXYPad(control_type, control_number, value) {
 
 function setupXYPad() {
 
-    console.log("setupXYPad", settings, xypad_x_control_type, xypad_x_control_number, xypad_y_control_type, xypad_y_control_number);
+    console.log("setupXYPad", xypad_x_control_type, xypad_x_control_number, xypad_y_control_type, xypad_y_control_number);
 
-    $("#x-cc").val(settings.xypad_x);
-    $("#y-cc").val(settings.xypad_y);
+    $("#x-cc").val(preferences.xypad_x);
+    $("#y-cc").val(preferences.xypad_y);
 
     $("#x-cc").change(function () {
-        settings.xypad_x = this.value;
+        preferences.xypad_x = this.value;
+        savePreferences();
         [xypad_x_control_type, xypad_x_control_number] = this.value.split("-");
         console.log(`xypad X changed to ${xypad_x_control_type} ${xypad_x_control_number}`);
         let xy = padCCToXY();
         setDotPosition(xy);    // update the display
         displayPadCCValues(padCC());
-
-        Cookies.set("settings", settings);  //TODO: create a saveSettings method
+        // Cookies.set("settings", settings);  //TODO: create a saveSettings method
     });
 
 
     $("#y-cc").change(function () {
-        settings.xypad_y = this.value;
+        preferences.xypad_y = this.value;
+        savePreferences();
         [xypad_y_control_type, xypad_y_control_number] = this.value.split("-");
         console.log(`xypad Y changed to ${xypad_y_control_type} ${xypad_y_control_number}`);
         let xy = padCCToXY();
         setDotPosition(xy);    // update the display
         displayPadCCValues(padCC());
-
-        Cookies.set("settings", settings);  //TODO: create a saveSettings method
+        // Cookies.set("settings", settings);  //TODO: create a saveSettings method
     });
 
 
@@ -1650,12 +1644,17 @@ function selectMidiOutputDevice() {
  * header"s "midi channel" select handler
  */
 function setMidiChannel() {
-    console.log('setMidiChannel', this.value);
+    const ch = parseInt(this.value, 10);
+    if (isNaN(ch)) {
+        console.log("invalid channel", this.value);
+    }
+    console.log('setMidiChannel', ch);
+    const current_input = midi_input;
     disconnectInput();
-    preferences.midi_channel = this.value;
+    preferences.midi_channel = ch;
     savePreferences();
-    console.log('setMidiChannel: reconnect input', midi_input);
-    connectInput(midi_input);
+    console.log('setMidiChannel: reconnect input', current_input);
+    connectInput(current_input);
 }
 
 /**
@@ -1927,6 +1926,7 @@ function setupMenu() {
 //==================================================================================================================
 // Settings
 
+/*
 var settings = {
     midi_channel: 1,
     randomize: ["lfo1", "lfo2", "osc1", "osc2", "sub", "mixer", "filter", "mod_env", "amp_env", "effects", "arp"],
@@ -1934,25 +1934,29 @@ var settings = {
     xypad_x: xypad_x_control_type + "-" + xypad_x_control_number,
     xypad_y: xypad_y_control_type + "-" + xypad_y_control_number
 };
+*/
 
-/**
- *
- */
+var xypad_x_control_type = "cc";
+var xypad_y_control_type = "cc";
+var xypad_x_control_number = 16;    // default X is filter frequency
+var xypad_y_control_number = 82;    // default Y is filter resonance
+
 function loadSettings() {
 
-    Object.assign(settings, Cookies.getJSON("settings"));
+    // Object.assign(settings, Cookies.getJSON("settings"));
+    // console.log("load settings", settings);
 
-    console.log("load settings", settings);
+    loadPreferences();
 
-    if (settings.xypad_x) [xypad_x_control_type, xypad_x_control_number] = settings.xypad_x.split("-");
-    if (settings.xypad_y) [xypad_y_control_type, xypad_y_control_number] = settings.xypad_y.split("-");
+    if (preferences.xypad_x) [xypad_x_control_type, xypad_x_control_number] = preferences.xypad_x.split("-");
+    if (preferences.xypad_y) [xypad_y_control_type, xypad_y_control_number] = preferences.xypad_y.split("-");
 
     // --- display settings:
 
-    $(`input:checkbox[name=fade-unused]`).prop("checked", settings.fade_unused);
+    $(`input:checkbox[name=fade-unused]`).prop("checked", preferences.fade_unused);
 
     $(`input:checkbox[name=fade-unused]`).click(function(){
-        settings.fade_unused = !settings.fade_unused;
+        preferences.fade_unused = !preferences.fade_unused;
         saveSettings();
         updateUI();
     });
@@ -1963,8 +1967,8 @@ function loadSettings() {
     $("input.chk-rnd").prop("checked", false);
 
     // 2. then, select those that need to be:
-    for (let i=0; i<settings.randomize.length; i++) {
-        $(`input:checkbox[name=${settings.randomize[i]}]`).prop("checked", true);
+    for (let i=0; i<preferences.randomize.length; i++) {
+        $(`input:checkbox[name=${preferences.randomize[i]}]`).prop("checked", true);
     }
 
     // select-all and select-none links:
@@ -1979,18 +1983,16 @@ function loadSettings() {
 
 }
 
-/**
- *
- */
 function saveSettings() {
     let checked = [];
     $("input.chk-rnd:checked").each(function () {
         checked.push(this.name);
     });
     // let checked = $("input.chk-rnd:checked").map(function() { return $(this).name }).get();
-    settings.randomize = checked;
-    console.log("saveRandomizerSettings: save settings", settings);
-    Cookies.set("settings", settings);
+    preferences.randomize = checked;
+    // console.log("saveRandomizerSettings: save settings", settings);
+    // Cookies.set("settings", settings);
+    savePreferences();
 }
 
 /**
@@ -2059,7 +2061,6 @@ function displayNote(note) {
     // disabled from firmware 2.5. to make room in the UI for other options
 
     return;
-
 
     console.log("displayNote", note);
 
@@ -2130,6 +2131,7 @@ function disconnectInput() {
         midi_input.removeListener();    // remove all listeners for all channels
         console.log("midi_input listener removed");
     }
+    midi_input = null;
 }
 
 /**
@@ -2140,8 +2142,11 @@ function connectInput(port) {
 
     console.log(`connectInput()`, port);
 
+    // save here in roder allow reset the port in the preferences
+    savePreferences({input_device_id: port.id});
+
     if (!port) {
-        console.log(`connectInput: no input specified`);
+        console.log(`connectInput: no port specified`);
         return;
     }
 
@@ -2150,14 +2155,14 @@ function connectInput(port) {
         return;
     }
 
-    savePreferences({input_device_id: port.id});
-
     // console.log(`connect input to channel ${preferences.midi_channel}`);
     // if (input) {
     midi_input = port;
     // setStatus(`"${midi_input.name}" input connected.`);
     console.log(`midi_input assigned to "${midi_input.name}"`);
     // }
+
+    console.log(`connect midi_input "${midi_input.name}" with channel ${preferences.midi_channel}`);
     midi_input
         .on("programchange", preferences.midi_channel, function(e) {        // sent by the BS2 when changing patch
             handlePC(e);
@@ -2181,24 +2186,41 @@ function connectInput(port) {
                 setStatusError("Unable to update from SysEx data.")
             }
         });
+
     setMidiInStatus(true);
     setStatus(`${DEVICE.name_device_in} connected on ${port.name} and using MIDI channel ${preferences.midi_channel}.`);
 }
 
 function disconnectOutput() {
-    midi_input = null;
+    midi_output = null;
 }
 
 /**
  *
  * @param output
  */
-function connectOutput(output) {
-    console.log("connect output", output);
-    midi_output = output;
+export function connectOutput(port) {
+
+    console.log("connectOutput()", port);
+
+    // save here in roder allow reset the port in the preferences
+    savePreferences({output_device_id: port.id});
+
+    if (!port) {
+        console.log(`connectOutput: no port specified`);
+        return;
+    }
+
+    if (midi_output === port) {
+        console.log(`connectOutput: port already connected`);
+        return;
+    }
+
+    midi_output = port;
     // setStatus(`"${output.name}" output connected.`)
     console.log(`midi_output assigned to "${midi_output.name}"`);
     // setMidiOutStatus(true);
+
 }
 
 /**
@@ -2241,14 +2263,29 @@ function deviceConnect(info) {
     }
 
     if (info.port.type === "output") {
-        if (!midi_output) {
-            connectOutput(info.port);
-            //TODO: we should ask the user
-            // ask the BS2 to send us its current patch:
+
+        let port = null;
+        if (preferences.output_device_id) {
+            port = WebMidi.getOutputById(preferences.output_device_id);
+        } else {
+            port = WebMidi.getOutputByName(DEVICE.name_device_out);
+        }
+
+        if (port) {
+            connectOutput(port);
             requestSysExDump();
         } else {
-            console.log("deviceConnect: output already connected");
+            console.log("deviceConnect: no port found");
         }
+
+        // if (!midi_output) {
+        //     connectOutput(info.port);
+        //     //TODO: we should ask the user
+        //     // ask the BS2 to send us its current patch:
+        //     requestSysExDump();
+        // } else {
+        //     console.log("deviceConnect: output already connected");
+        // }
     }
 
 }
@@ -2268,12 +2305,16 @@ function deviceDisconnect(info) {
     //     return;
     // }
 
-    if (info.port.name === DEVICE.name_device_in) {
+    // if (info.port.name === DEVICE.name_device_in) {
+    if (info.port === midi_input) {
+        disconnectInput();
         midi_input = null;
         setStatus(`${DEVICE.name_device_in} has been disconnected.`);
         setMidiInStatus(false);
     }
-    if (info.port.name === DEVICE.name_device_out) {
+
+    // if (info.port.name === DEVICE.name_device_out) {
+    if (info.port === midi_output) {
         midi_output = null;
         // setMidiOutStatus(false);
     }
@@ -2349,7 +2390,7 @@ $(function () {
                 connectInput(input);
                 setStatus(`${DEVICE.name_device_in} connected on MIDI channel ${preferences.midi_channel}.`);
             } else {
-                setStatusError(`${DEVICE.name_device_in} not found. Connect your Bass Station 2 or check the MIDI channel in the settings.`);
+                setStatusError(`${DEVICE.name_device_in} not found. Connect your Bass Station 2 or check the MIDI channel in the preferences.`);
                 setMidiInStatus(false);
             }
 
@@ -2357,7 +2398,7 @@ $(function () {
             if (output) {
                 connectOutput(output);
             } else {
-                setStatusError(`${DEVICE.name_device_out} not found. Connect your Bass Station 2 or check the MIDI channel in the settings.`);
+                setStatusError(`${DEVICE.name_device_out} not found. Connect your Bass Station 2 or check the MIDI channel in the preferences.`);
                 // setMidiOutStatus(false);
             }
 
