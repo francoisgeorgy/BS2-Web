@@ -2002,9 +2002,11 @@ function setupSettings() {
 
     console.group("setupSettings");
 
+    $("#midi-channel").val(preferences.midi_channel);
+
     displayRandomizerSettings();
 
-    console.log("settings cookie", Cookies.getJSON());
+    // console.log("settings cookie", Cookies.getJSON());
 
     $("input.chk-rnd").change(saveSettings);
 
