@@ -759,7 +759,7 @@ div#patch > span {
 
 .knob-value {
     font-family: "Roboto Condensed", sans-serif;
-    font-size: 125%;
+    /*font-size: 125%;*/
     font-weight: 300;
     stroke: none;
     fill: var(--knob-value);
@@ -1082,3 +1082,21 @@ select option {
 }
 
 
+.keys-notes {
+    display: grid;
+    grid-template-columns: repeat(16, 20px);
+    grid-gap: 5px;
+}
+
+.keys-notes > div {
+    background-color: #555;
+    text-align: center;
+}
+
+.keys-notes > div.no-bg {
+    background-color: inherit;
+}
+
+.col-span-2 {
+    grid-column: span 2;
+}

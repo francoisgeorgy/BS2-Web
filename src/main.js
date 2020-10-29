@@ -312,21 +312,21 @@ function updateControl(control_type, control_number, value) {
     }
 
     // hide if value is same as from init patch
-    if (preferences.fade_unused) {
-        let v = DEVICE.getControl(control_type, control_number);
-        if (v) {
-            let c = $(`#combo-${id}`);
-            if (v.changed()) {
-                c.css({ opacity: 1.0 });
-            } else {
-                c.css({ opacity: 0.35 });
-            }
-        }
-    } else {
-        let c = $(`#combo-${id}`);  //TODO: try to do it only if fade_unused has changed
-        console.log(`reset opacity for #combo-${id}`);
-        c.css({ opacity: 1.0 });
-    }
+    // if (preferences.fade_unused) {
+    //     let v = DEVICE.getControl(control_type, control_number);
+    //     if (v) {
+    //         let c = $(`#combo-${id}`);
+    //         if (v.changed()) {
+    //             c.css({ opacity: 1.0 });
+    //         } else {
+    //             c.css({ opacity: 0.35 });
+    //         }
+    //     }
+    // } else {
+    //     let c = $(`#combo-${id}`);  //TODO: try to do it only if fade_unused has changed
+    //     console.log(`reset opacity for #combo-${id}`);
+    //     c.css({ opacity: 1.0 });
+    // }
 
 
 }
@@ -438,30 +438,30 @@ function handleUIChange(control_type, control_number, value) {
 
     // hide if value is same as from init patch
 
-    if (preferences.fade_unused) {
-        let id = control_type + "-" + control_number;
-        let v = DEVICE.getControl(control_type, control_number);
-        if (v) {
-            let c = $(`#combo-${id}`);
-            if (c.css('opacity') < 1.0) {
-                // let v = DEVICE.getControl(control_type, control_number);
-                // if (v) {
-                    if (v.changed()) {
-                        c.css({ opacity: 1.0 });
-                        // console.log('control ' + v.name + ` #${id} has changed`);
-                    }
-                // }
-            } else {
-                // let v = DEVICE.getControl(control_type, control_number);
-                // if (v) {
-                    if (!v.changed()) {
-                        c.css({ opacity: 0.35 });
-                        // console.log('control ' + v.name + ` #${id} has not changed`);
-                    }
-                // }
-            }
-        }
-    }
+    // if (preferences.fade_unused) {
+    //     let id = control_type + "-" + control_number;
+    //     let v = DEVICE.getControl(control_type, control_number);
+    //     if (v) {
+    //         let c = $(`#combo-${id}`);
+    //         if (c.css('opacity') < 1.0) {
+    //             // let v = DEVICE.getControl(control_type, control_number);
+    //             // if (v) {
+    //                 if (v.changed()) {
+    //                     c.css({ opacity: 1.0 });
+    //                     // console.log('control ' + v.name + ` #${id} has changed`);
+    //                 }
+    //             // }
+    //         } else {
+    //             // let v = DEVICE.getControl(control_type, control_number);
+    //             // if (v) {
+    //                 if (!v.changed()) {
+    //                     c.css({ opacity: 0.35 });
+    //                     // console.log('control ' + v.name + ` #${id} has not changed`);
+    //                 }
+    //             // }
+    //         }
+    //     }
+    // }
 
     // radio-button-like .bt:
     if (control_type === 'nrpn' && control_number === '72') {
@@ -1657,51 +1657,6 @@ function setMidiChannel() {
     connectInput(current_input);
 }
 
-/**
- *
- */
-function playNote(note) {
-    console.log(`play note ${note}`);
-    if (note) {
-        // let e = $("#played-note");
-        // if (e.is(".on")) {
-        //     midi_output.stopNote(note, preferences.midi_channel);
-        //     e.removeClass("on");
-        // } else {
-        //     midi_output.playNote(note, preferences.midi_channel);
-        //     e.addClass("on");
-        // }
-        if (midi_output) midi_output.playNote(note, preferences.midi_channel);
-        $("#played-note").addClass("on");
-    }
-}
-
-
-
-function stopNote(note) {
-    console.log(`stop note ${note}`);
-    if (note) {
-        // let e = $("#played-note");
-        // if (e.is(".on")) {
-        //     midi_output.stopNote(note, preferences.midi_channel);
-        //     e.removeClass("on");
-        // } else {
-        //     midi_output.playNote(note, preferences.midi_channel);
-        //     e.addClass("on");
-        // }
-        if (midi_output) midi_output.stopNote(note, preferences.midi_channel);
-        $("#played-note").removeClass("on");
-    }
-}
-
-/**
- *
- */
-function playLastNote() {
-    console.log(`play last note ${last_note}`);
-    playNote(last_note);
-}
-
 
 function toggleArpeggiator() {
     $("#cc-108").trigger("click");
@@ -1760,8 +1715,7 @@ function setupKeyboard() {
     //     .mergeAll()
 
     keyPresses.subscribe(function(e) {
-        //console.log(e.type, e.key || e.which, e.keyIdentifier);
-        console.log(e.keyCode, e.type, e.altKey, e.shiftKey, e);
+        // console.log(e.keyCode, e.type, e.altKey, e.shiftKey, e);
         if (e.type === "keydown") {
             keyDown(e.keyCode, e.altKey, e.shiftKey);
         } else if (e.type === "keyup") {
@@ -1772,42 +1726,97 @@ function setupKeyboard() {
     console.log("keyboard set up");
 }
 
+function playNote(note) {
+    console.log(`play note ${note}`);
+    if (note) {
+        // let e = $("#played-note");
+        // if (e.is(".on")) {
+        //     midi_output.stopNote(note, preferences.midi_channel);
+        //     e.removeClass("on");
+        // } else {
+        //     midi_output.playNote(note, preferences.midi_channel);
+        //     e.addClass("on");
+        // }
+        stopNote(last_note);
+        last_note = note;
+        if (midi_output) midi_output.playNote(note, preferences.midi_channel);
+        $("#played-note").addClass("on");
+    }
+}
+
+function stopNote(note) {
+    console.log(`stop note ${note}`);
+    if (note) {
+        // let e = $("#played-note");
+        // if (e.is(".on")) {
+        //     midi_output.stopNote(note, preferences.midi_channel);
+        //     e.removeClass("on");
+        // } else {
+        //     midi_output.playNote(note, preferences.midi_channel);
+        //     e.addClass("on");
+        // }
+        if (midi_output) midi_output.stopNote(note, preferences.midi_channel);
+    } else {
+        if (midi_output) midi_output.stopNote('all', preferences.midi_channel);
+        // if (midi_output) {
+            // for (let i=0; i<128) {
+            //     midi_output.stopNote(i, preferences.midi_channel);
+            // }
+        // }
+    }
+    $("#played-note").removeClass("on");
+}
+
+/**
+ *
+ */
+function playLastNote() {
+    console.log(`play last note ${last_note}`);
+    playNote(last_note);
+}
+
+var octave = 3;
+
 function keyDown(code, alt, shift) {
+
+    // console.log(`keyDown(${code}, ${alt}, ${shift})`);
+
     switch (code) {
         case 32:                // SPACE
             //    playLastNote();
             playNote(last_note);
             break;
-        case 65:                // A
-        case 66:                // B
-        case 67:                // C
-        case 68:                // D
-        case 69:                // E
-        case 70:                // F
-        case 71:                // G
-            let note = String.fromCharCode(code);
-            // let sharp = shift;
-            // let flat = alt;
-            if (shift !== alt) {
-                if (shift) note += "#";
-                if (alt) note += "b";
-            }
-            note += "3";
-            // if (last_note == null)
-            last_note = note;
-            playNote(note);
-            displayNote(note);
+        case 65: playNote(`C${octave}`);  break;
+        case 83: playNote(`D${octave}`);  break;
+        case 68: playNote(`E${octave}`);  break;
+        case 70: playNote(`F${octave}`);  break;
+        case 71: playNote(`G${octave}`);  break;
+        case 72: playNote(`A${octave}`);  break;
+        case 74: playNote(`B${octave}`);  break;
+        case 75: playNote(`C${Math.min(octave+1, 8)}`);  break;
+        case 87: playNote(`C#${octave}`);  break;
+        case 69: playNote(`D#${octave}`);  break;
+        case 84: playNote(`F#${octave}`);  break;
+        case 90: playNote(`G#${octave}`);  break;
+        case 85: playNote(`A#${octave}`);  break;
+        case 89:                //      octave down
+            if (octave > -2) octave--;
             break;
-        case 83:                // S Stop
-            stopNote(last_note);
-            //TODO: panic key
-            // if (midi_output) {
-            //     console.log(`send STOP`);
-            //     midi_output.sendStop();
-            // } else {
-            //     console.log(`(send STOP`);
-            // }
+        case 88:                //      octave up
+            if (octave < 8) octave++;
             break;
+        // case 67:                //      velocity down
+        // case 86:                //      velocity up
+        // case 83:                // S Stop
+        //     stopNote(last_note);
+        //     //TODO: panic key
+        //     // if (midi_output) {
+        //     //     console.log(`send STOP`);
+        //     //     midi_output.sendStop();
+        //     // } else {
+        //     //     console.log(`(send STOP`);
+        //     // }
+        //     break;
         case 82:                // R Randomize
             randomize();
             break;
@@ -1819,7 +1828,7 @@ function keyDown(code, alt, shift) {
             break;
         case 27:                // ESC Panic
         case 80:                // P Panic
-            stopNote(last_note);
+            stopNote('all');
             // panic();
             break;
         case 73:                // I Init
@@ -1849,17 +1858,23 @@ function keyUp(code, alt, shift) {
             break;
         case 32:                // SPACE
             //    playLastNote();
-            stopNote(last_note);
+            stopNote();
             break;
-        case 65:                // A
-        case 66:                // B
-        case 67:                // C
-        case 68:                // D
-        case 69:                // E
-        case 70:                // F
-        case 71:                // G
+        case 65:
+        case 83:
+        case 68:
+        case 70:
+        case 71:
+        case 72:
+        case 74:
+        case 75:
+        case 87:
+        case 69:
+        case 84:
+        case 90:
+        case 85:
             stopNote(last_note);
-            displayNote(last_note);
+            // displayNote(last_note);
             break;
     }
 }
@@ -1953,6 +1968,7 @@ function loadSettings() {
 
     // --- display settings:
 
+/*
     $(`input:checkbox[name=fade-unused]`).prop("checked", preferences.fade_unused);
 
     $(`input:checkbox[name=fade-unused]`).click(function(){
@@ -1960,6 +1976,7 @@ function loadSettings() {
         saveSettings();
         updateUI();
     });
+*/
 
     // --- randomizer settings:
 
@@ -2064,6 +2081,7 @@ function displayNote(note) {
 
     return;
 
+/*
     console.log("displayNote", note);
 
     if ((typeof note === "undefined") || (note === null) || (!note)) {
@@ -2074,6 +2092,7 @@ function displayNote(note) {
 
     let neg_octave = note.indexOf("-") > 0;
     if (neg_octave) note = note.replace("-", "");  // we"ll put it back later; the tests are simpler without it
+*/
 
 /*
     // Get the enharmonics of a note. It returns an array of three elements: the below enharmonic, the note, and the upper enharmonic

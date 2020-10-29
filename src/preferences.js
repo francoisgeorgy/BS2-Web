@@ -7,7 +7,7 @@ export let preferences = {
     input_device_id: null,      // web midi port ID
     output_device_id: null,     // web midi port ID
     randomize: ["lfo1", "lfo2", "osc1", "osc2", "sub", "mixer", "filter", "mod_env", "amp_env", "effects", "arp"],
-    fade_unused: false,
+    // fade_unused: false,
     xypad_x: "cc-16",           // default X is filter frequency
     xypad_y: "cc-82"            // default Y is filter resonance
 };
