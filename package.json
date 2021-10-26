@@ -8,7 +8,7 @@
         "detect-browser": "^3.0.1",
         "glob": "^7.1.2",
         "hexy": "^0.3.0",
-        "jquery-ui": "^1.12.1",
+        "jquery-ui": "^1.13.0",
         "js-cookie": "^2.1.4",
         "lity": "^2.3.0",
         "lz-string": "^1.4.4",
