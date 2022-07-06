@@ -12,7 +12,7 @@
         "js-cookie": "^2.1.4",
         "lity": "^2.3.0",
         "lz-string": "^1.4.4",
-        "moment": "^2.22.1",
+        "moment": "^2.29.4",
         "mustache": "^3.0.1",
         "rxjs": "6.3.3",
         "storejs": "^1.0.25",
